@@ -1,0 +1,25 @@
+import unittest
+from craps.game_state import GameState
+
+class TestGameState(unittest.TestCase):
+    def test_game_state(self):
+        game_state = GameState()
+        self.assertEqual(game_state.phase, "come-out")
+        self.assertIsNone(game_state.point)
+
+        # Test come-out roll
+        game_state.update_state([3, 4])  # Total = 7
+        self.assertEqual(game_state.phase, "come-out")
+        self.assertIsNone(game_state.point)
+
+        game_state.update_state([2, 2])  # Total = 4
+        self.assertEqual(game_state.phase, "point")
+        self.assertEqual(game_state.point, 4)
+
+        # Test point phase
+        game_state.update_state([2, 2])  # Total = 4 (hits point)
+        self.assertEqual(game_state.phase, "come-out")
+        self.assertIsNone(game_state.point)
+
+if __name__ == "__main__":
+    unittest.main()
