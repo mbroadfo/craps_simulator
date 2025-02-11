@@ -18,41 +18,75 @@ class Player:
 
     def place_bet(self, bet, table):
         """Place a bet (or multiple bets) on the table and deduct the amount from the player's balance."""
-        if isinstance(bet, list):  # Handle multiple bets
-            for b in bet:
-                self._place_single_bet(b, table)
-        else:  # Handle a single bet
-            self._place_single_bet(bet, table)
+        # Convert single bet to a list for uniform handling
+        bets = [bet] if not isinstance(bet, list) else bet
 
-    def _place_single_bet(self, bet, table):
-        """Place a single bet on the table and deduct the amount from the player's balance."""
-        if bet.amount > self.balance:
-            # print(f"{self.name} has insufficient funds to place a ${bet.amount} bet.")
+        # Calculate the total amount to be wagered
+        total_amount = sum(b.amount for b in bets)
+
+        # Check if the player has sufficient funds
+        if total_amount > self.balance:
+            #print(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
             return False
-        
-        self.balance -= bet.amount
-        table.place_bet(bet)
-        self.active_bets.append(bet)
-        print(f"{self.name} placed a ${bet.amount} {bet.bet_type} bet. Bankroll: ${self.balance}")
+
+        # Place each bet and deduct the amount from the player's balance
+        for b in bets:
+            self.balance -= b.amount
+            table.place_bet(b)
+            self.active_bets.append(b)
+
+        # Summarize the bets placed
+        if len(bets) == 1:
+            print(f"{self.name} placed a ${bets[0].amount} {bets[0].bet_type} bet. Bankroll: ${self.balance}")
+        else:
+            bet_summary = ", ".join(f"{b.bet_type} ${b.amount}" for b in bets)
+            print(f"{self.name} bet ${total_amount} on {bet_summary}. Bankroll: ${self.balance}")
+
         return True
 
     def resolve_bets(self, table, stats):
         """Resolve all active bets for the player and update the bankroll."""
+        # Summarize Won/Lost bets for the player
+        won_lost_bets = []
+        total_payout = 0
+
         for bet in self.active_bets:
             if bet.status == "won":
-                # Calculate the total payout (original bet + profit)
+                # Calculate the payout (original bet + profit for Pass-Line, profit only for Place)
                 payout = bet.payout()
+                total_payout += payout
+                won_lost_bets.append(f"{bet.bet_type} bet WON ${payout}")
                 self.balance += payout
-                stats.update_player_win_loss(payout - bet.amount)  # Update player win/loss (profit only)
-                stats.update_house_win_loss(-(payout - bet.amount))  # Update house win/loss (loss of profit only)
-                print(f"{self.name} WON ${payout} on a ${bet.amount} {bet.bet_type} bet. Bankroll: ${self.balance}")
+                stats.total_player_win_loss += payout  # Update player win/loss (total payout)
+                stats.total_house_win_loss -= payout  # Update house win/loss (loss of total payout)
+
+                # Remove Pass-Line bets from the table when won
+                if bet.bet_type == "Pass Line":
+                    self.active_bets.remove(bet)
+                # Reset the Place bet status to "active" after winning
+                elif bet.bet_type.startswith("Place"):
+                    bet.status = "active"
             elif bet.status == "lost":
-                stats.update_player_win_loss(-bet.amount)  # Update player win/loss (loss of bet)
-                stats.update_house_win_loss(bet.amount)  # Update house win/loss (gain of bet)
-                print(f"{self.name} LOST a ${bet.amount} {bet.bet_type} bet. Bankroll: ${self.balance}")
+                won_lost_bets.append(f"{bet.bet_type} bet LOST ${bet.amount}")
+                stats.total_player_win_loss -= bet.amount  # Update player win/loss (loss of bet)
+                stats.total_house_win_loss += bet.amount  # Update house win/loss (gain of bet)
 
-        # Remove resolved bets (won or lost) from the active bets list
-        self.active_bets = [bet for bet in self.active_bets if bet.status in ["active", "inactive"]]
+                # Remove lost bets from the table
+                self.active_bets.remove(bet)
 
-    def __str__(self):
-        return f"Player: {self.name}, Balance: ${self.balance}"
+        # Print summary of resolved bets
+        if won_lost_bets:
+            print(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}")
+
+        # Summarize bets still on the table for the player
+        active_bets_summary = [
+            f"{bet.bet_type}{' (Off)' if bet.status == 'inactive' else ''}"
+            for bet in self.active_bets
+        ]
+        if active_bets_summary:
+            print(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
+        else:
+            print(f"{self.name} has no active bets.")
+
+        def __str__(self):
+            return f"Player: {self.name}, Balance: ${self.balance}"

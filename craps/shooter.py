@@ -3,11 +3,20 @@ from craps.dice import Dice
 
 class Shooter(Player):
     def __init__(self, name, initial_balance=0, betting_strategy=None):
-        super().__init__(name, initial_balance, betting_strategy)  # Pass betting_strategy to Player
+        super().__init__(name, initial_balance, betting_strategy)
         self.dice = Dice()
+        self.points_rolled = 0  # Number of times the shooter rolled the point
+        self.rolls_before_7_out = 0  # Number of rolls before 7-ing out
+        self.current_roll_count = 0  # Tracks rolls in the current turn
 
     def roll_dice(self):
-        return self.dice.roll()
+        """Roll the dice and update shooter statistics."""
+        outcome = self.dice.roll()
+        self.current_roll_count += 1
+        return outcome
 
-    def __str__(self):
-        return f"Shooter: {self.name}, Balance: ${self.balance}"
+    def reset_stats(self):
+        """Reset shooter statistics for a new turn."""
+        self.points_rolled = 0
+        self.rolls_before_7_out = 0
+        self.current_roll_count = 0

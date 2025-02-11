@@ -6,12 +6,15 @@ class GameState:
         self.phase = "come-out"
         self.point = None
         self.puck = Puck()
+        self.shooter = None
 
     def set_shooter(self, shooter):
+        """Set the current shooter and reset their statistics."""
         self.shooter = shooter
-        self.shooter.point = self.point  # Pass the point to the shooter
+        self.shooter.reset_stats()
 
     def update_state(self, dice_outcome):
+        """Update the game state based on the dice outcome."""
         total = sum(dice_outcome)
         message = None
 
@@ -29,11 +32,13 @@ class GameState:
                 message = f"{Fore.YELLOW}Point Set: {total}{Style.RESET_ALL}"
         else:  # Point phase
             if total == self.puck.point:
+                self.shooter.points_rolled += 1  # Increment points rolled
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
                 message = f"{Fore.GREEN}✅ Point Hit: {total}. Pass Line bets win!{Style.RESET_ALL}"
             elif total == 7:
+                self.shooter.rolls_before_7_out = self.shooter.current_roll_count  # Record rolls before 7-out
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None

@@ -1,6 +1,6 @@
 # File: .\main.py
 
-from colorama import init
+from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
 
 from craps.table import Table
@@ -59,7 +59,7 @@ def main():
 
             # Resolve bets for each player and update their bankroll
             for player in players:
-                player.resolve_bets(table, stats)  # Pass stats to resolve_bets
+                player.resolve_bets(table, stats)
             
             # Update game state
             previous_phase = game_state.phase
@@ -67,14 +67,24 @@ def main():
             if message:
                 print(message)
 
+            # Reactivate inactive Place bets after resolving bets
+            if game_state.phase == "point":
+                for player in players:
+                    for bet in player.active_bets:
+                        if bet.bet_type.startswith("Place") and bet.status == "inactive":
+                            bet.status = "active"
+                            #print(f"{player.name}'s {bet.bet_type} bet is now ACTIVE.")
+
             # Check if the shooter 7-outs (only if the point was set)
             if previous_phase == "point" and total == 7:
                 print(f"{shooter.name} has 7-ed out. Their turn is over.")
+                stats.update_shooter_stats(shooter)  # Update shooter statistics
                 break
 
     # Update player bankrolls and calculate statistics
     stats.update_player_bankrolls(players)
     stats.print_statistics()
+    stats.print_shooter_report()  # Print shooter performance report
 
 if __name__ == "__main__":
     main()

@@ -30,26 +30,29 @@ class Bet:
         """
         raise NotImplementedError("Subclasses must implement this method.")
 
-def payout(self):
-    """
-    Calculate the total payout for the bet, including the original bet amount and the profit.
-    
-    :return: The total payout amount (original bet + profit).
-    """
-    if self.status != "won":
-        return 0  # No payout if the bet is not won
-    
-    # Calculate the profit based on the payout ratio
-    numerator, denominator = self.payout_ratio
-    profit = self.amount * numerator // denominator
-    
-    # Deduct the vig (if applicable)
-    if self.vig > 0:
-        vig_amount = self.amount * self.vig // 100
-        profit -= vig_amount
-    
-    # Return the total payout (original bet + profit)
-    return self.amount + profit
+    def payout(self):
+        """
+        Calculate the payout for the bet.
+        - For Pass-Line bets: Return the total payout (original bet + profit).
+        - For Place bets: Return the profit only (original bet remains on the table).
+        """
+        if self.status != "won":
+            return 0  # No payout if the bet is not won
+        
+        # Calculate the profit based on the payout ratio
+        numerator, denominator = self.payout_ratio
+        profit = self.amount * numerator // denominator
+        
+        # Deduct the vig (if applicable)
+        if self.vig > 0:
+            vig_amount = self.amount * self.vig // 100
+            profit -= vig_amount
+        
+        # Return the total payout for Pass-Line bets or profit only for Place bets
+        if self.bet_type == "Pass Line":
+            return self.amount + profit  # Total payout (original bet + profit)
+        else:
+            return profit  # Profit only (original bet remains on the table)
 
     def is_resolved(self):
         """Check if the bet has been resolved (won, lost, or pushed)."""

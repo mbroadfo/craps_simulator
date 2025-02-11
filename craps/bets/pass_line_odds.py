@@ -1,6 +1,6 @@
 # File: .\craps\bets\pass_line_odds.py
 
-from ..bets import Bet  # Import the base Bet class
+from craps.bets import Bet  # Import the base Bet class
 
 class PassLineOddsBet(Bet):
     """Class representing a Pass Line Odds bet."""
@@ -21,8 +21,11 @@ class PassLineOddsBet(Bet):
                 elif game_state.point in [6, 8]:
                     self.payout_ratio = (6, 5)  # 6:5 payout for 6 and 8
                 self.status = "won"  # Pass Line Odds bet wins
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
             elif total == 7:
                 self.status = "lost"  # Pass Line Odds bet loses
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (7-out).")
             else:
                 # Bet remains active
                 self.status = "active"
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (rolled {total}).")

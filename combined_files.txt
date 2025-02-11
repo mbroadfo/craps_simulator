@@ -29,7 +29,7 @@ print(f"All Python files have been combined into {output_file}")
 
 # File: .\main.py
 
-from colorama import init
+from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
 
 from craps.table import Table
@@ -88,7 +88,7 @@ def main():
 
             # Resolve bets for each player and update their bankroll
             for player in players:
-                player.resolve_bets(table)
+                player.resolve_bets(table, stats)
             
             # Update game state
             previous_phase = game_state.phase
@@ -96,17 +96,38 @@ def main():
             if message:
                 print(message)
 
+            # Reactivate inactive Place bets after resolving bets
+            if game_state.phase == "point":
+                for player in players:
+                    for bet in player.active_bets:
+                        if bet.bet_type.startswith("Place") and bet.status == "inactive":
+                            bet.status = "active"
+                            print(f"{player.name}'s {bet.bet_type} bet is now ACTIVE.")
+
             # Check if the shooter 7-outs (only if the point was set)
             if previous_phase == "point" and total == 7:
                 print(f"{shooter.name} has 7-ed out. Their turn is over.")
+                stats.update_shooter_stats(shooter)  # Update shooter statistics
                 break
 
     # Update player bankrolls and calculate statistics
     stats.update_player_bankrolls(players)
     stats.print_statistics()
+    stats.print_shooter_report()  # Print shooter performance report
 
 if __name__ == "__main__":
     main()
+
+
+# File: .\setup.py
+
+from setuptools import setup, find_packages
+
+setup(
+    name="craps_simulator",
+    version="0.1",
+    packages=find_packages(),
+)
 
 # File: .\craps\bet.py
 
@@ -144,23 +165,27 @@ class Bet:
 
     def payout(self):
         """
-        Calculate the payout for the bet, including the vig (if applicable).
-        
-        :return: The payout amount.
+        Calculate the payout for the bet.
+        - For Pass-Line bets: Return the total payout (original bet + profit).
+        - For Place bets: Return the profit only (original bet remains on the table).
         """
         if self.status != "won":
-            return 0
+            return 0  # No payout if the bet is not won
         
-        # Calculate the payout based on the payout ratio
+        # Calculate the profit based on the payout ratio
         numerator, denominator = self.payout_ratio
-        payout = self.amount * numerator // denominator
+        profit = self.amount * numerator // denominator
         
         # Deduct the vig (if applicable)
         if self.vig > 0:
             vig_amount = self.amount * self.vig // 100
-            payout -= vig_amount
+            profit -= vig_amount
         
-        return payout
+        # Return the total payout for Pass-Line bets or profit only for Place bets
+        if self.bet_type == "Pass Line":
+            return self.amount + profit  # Total payout (original bet + profit)
+        else:
+            return profit  # Profit only (original bet remains on the table)
 
     def is_resolved(self):
         """Check if the bet has been resolved (won, lost, or pushed)."""
@@ -221,12 +246,15 @@ class GameState:
         self.phase = "come-out"
         self.point = None
         self.puck = Puck()
+        self.shooter = None
 
     def set_shooter(self, shooter):
+        """Set the current shooter and reset their statistics."""
         self.shooter = shooter
-        self.shooter.point = self.point  # Pass the point to the shooter
+        self.shooter.reset_stats()
 
     def update_state(self, dice_outcome):
+        """Update the game state based on the dice outcome."""
         total = sum(dice_outcome)
         message = None
 
@@ -244,11 +272,13 @@ class GameState:
                 message = f"{Fore.YELLOW}Point Set: {total}{Style.RESET_ALL}"
         else:  # Point phase
             if total == self.puck.point:
+                self.shooter.points_rolled += 1  # Increment points rolled
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
                 message = f"{Fore.GREEN}✅ Point Hit: {total}. Pass Line bets win!{Style.RESET_ALL}"
             elif total == 7:
+                self.shooter.rolls_before_7_out = self.shooter.current_roll_count  # Record rolls before 7-out
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
@@ -287,39 +317,78 @@ class Player:
 
     def place_bet(self, bet, table):
         """Place a bet (or multiple bets) on the table and deduct the amount from the player's balance."""
-        if isinstance(bet, list):  # Handle multiple bets
-            for b in bet:
-                self._place_single_bet(b, table)
-        else:  # Handle a single bet
-            self._place_single_bet(bet, table)
+        # Convert single bet to a list for uniform handling
+        bets = [bet] if not isinstance(bet, list) else bet
 
-    def _place_single_bet(self, bet, table):
-        """Place a single bet on the table and deduct the amount from the player's balance."""
-        if bet.amount > self.balance:
-            # print(f"{self.name} has insufficient funds to place a ${bet.amount} bet.")
+        # Calculate the total amount to be wagered
+        total_amount = sum(b.amount for b in bets)
+
+        # Check if the player has sufficient funds
+        if total_amount > self.balance:
+            #print(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
             return False
-        
-        self.balance -= bet.amount
-        table.place_bet(bet)
-        self.active_bets.append(bet)
-        print(f"{self.name} placed a ${bet.amount} {bet.bet_type} bet. Bankroll: ${self.balance}")
+
+        # Place each bet and deduct the amount from the player's balance
+        for b in bets:
+            self.balance -= b.amount
+            table.place_bet(b)
+            self.active_bets.append(b)
+
+        # Summarize the bets placed
+        if len(bets) == 1:
+            print(f"{self.name} placed a ${bets[0].amount} {bets[0].bet_type} bet. Bankroll: ${self.balance}")
+        else:
+            bet_summary = ", ".join(f"{b.bet_type} ${b.amount}" for b in bets)
+            print(f"{self.name} bet ${total_amount} on {bet_summary}. Bankroll: ${self.balance}")
+
         return True
 
-    def resolve_bets(self, table):
+    def resolve_bets(self, table, stats):
         """Resolve all active bets for the player and update the bankroll."""
+        # Summarize Won/Lost bets for the player
+        won_lost_bets = []
+        total_payout = 0
+
         for bet in self.active_bets:
             if bet.status == "won":
+                # Calculate the payout (original bet + profit for Pass-Line, profit only for Place)
                 payout = bet.payout()
+                total_payout += payout
+                won_lost_bets.append(f"{bet.bet_type} bet WON ${payout}")
                 self.balance += payout
-                print(f"{self.name} WON ${payout} on a ${bet.amount} {bet.bet_type} bet. Bankroll: ${self.balance}")
+                stats.update_player_win_loss(payout)  # Update player win/loss (total payout)
+                stats.update_house_win_loss(-payout)  # Update house win/loss (loss of total payout)
+
+                # Remove Pass-Line bets from the table when won
+                if bet.bet_type == "Pass Line":
+                    self.active_bets.remove(bet)
+                # Reset the Place bet status to "active" after winning
+                elif bet.bet_type.startswith("Place"):
+                    bet.status = "active"
             elif bet.status == "lost":
-                print(f"{self.name} LOST a ${bet.amount} {bet.bet_type} bet. Bankroll: ${self.balance}")
+                won_lost_bets.append(f"{bet.bet_type} bet LOST ${bet.amount}")
+                stats.update_player_win_loss(-bet.amount)  # Update player win/loss (loss of bet)
+                stats.update_house_win_loss(bet.amount)  # Update house win/loss (gain of bet)
 
-        # Remove resolved bets (won or lost) from the active bets list
-        self.active_bets = [bet for bet in self.active_bets if bet.status == "active"]
+                # Remove lost bets from the table
+                self.active_bets.remove(bet)
 
-    def __str__(self):
-        return f"Player: {self.name}, Balance: ${self.balance}"
+        # Print summary of resolved bets
+        if won_lost_bets:
+            print(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}")
+
+        # Summarize bets still on the table for the player
+        active_bets_summary = [
+            f"{bet.bet_type}{' (Off)' if bet.status == 'inactive' else ''}"
+            for bet in self.active_bets
+        ]
+        if active_bets_summary:
+            print(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
+        else:
+            print(f"{self.name} has no active bets.")
+
+        def __str__(self):
+            return f"Player: {self.name}, Balance: ${self.balance}"
 
 # File: .\craps\puck.py
 
@@ -343,14 +412,23 @@ from craps.dice import Dice
 
 class Shooter(Player):
     def __init__(self, name, initial_balance=0, betting_strategy=None):
-        super().__init__(name, initial_balance, betting_strategy)  # Pass betting_strategy to Player
+        super().__init__(name, initial_balance, betting_strategy)
         self.dice = Dice()
+        self.points_rolled = 0  # Number of times the shooter rolled the point
+        self.rolls_before_7_out = 0  # Number of rolls before 7-ing out
+        self.current_roll_count = 0  # Tracks rolls in the current turn
 
     def roll_dice(self):
-        return self.dice.roll()
+        """Roll the dice and update shooter statistics."""
+        outcome = self.dice.roll()
+        self.current_roll_count += 1
+        return outcome
 
-    def __str__(self):
-        return f"Shooter: {self.name}, Balance: ${self.balance}"
+    def reset_stats(self):
+        """Reset shooter statistics for a new turn."""
+        self.points_rolled = 0
+        self.rolls_before_7_out = 0
+        self.current_roll_count = 0
 
 # File: .\craps\statistics.py
 
@@ -369,30 +447,35 @@ class Statistics:
         self.table_minimum = table_minimum
         self.num_shooters = num_shooters
         self.num_players = num_players
-        self.num_rolls = 0
+        self.num_rolls = 0  # Initialize roll count
         self.total_house_win_loss = 0
         self.total_player_win_loss = 0
         self.player_bankrolls = []
         self.highest_bankroll = 0
         self.lowest_bankroll = float('inf')
+        self.shooter_stats = {}  # Track shooter statistics
 
     def update_rolls(self):
         """Increment the roll count."""
         self.num_rolls += 1
-
-    def update_house_win_loss(self, amount):
-        """Update the total house win/loss."""
-        self.total_house_win_loss += amount
-
-    def update_player_win_loss(self, amount):
-        """Update the total player win/loss."""
-        self.total_player_win_loss += amount
 
     def update_player_bankrolls(self, players):
         """Update player bankrolls and track highest/lowest bankroll."""
         self.player_bankrolls = [player.balance for player in players]
         self.highest_bankroll = max(self.player_bankrolls)
         self.lowest_bankroll = min(self.player_bankrolls)
+
+    def update_shooter_stats(self, shooter):
+        """Update shooter statistics."""
+        if shooter.name not in self.shooter_stats:
+            self.shooter_stats[shooter.name] = {
+                "points_rolled": 0,
+                "rolls_before_7_out": [],
+                "total_rolls": 0,
+            }
+        self.shooter_stats[shooter.name]["points_rolled"] += shooter.points_rolled
+        self.shooter_stats[shooter.name]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
+        self.shooter_stats[shooter.name]["total_rolls"] += shooter.current_roll_count
 
     def print_statistics(self):
         """Print the simulation statistics."""
@@ -406,6 +489,21 @@ class Statistics:
         print(f"Player Bankrolls: {self.player_bankrolls}")
         print(f"Highest Player Bankroll: ${self.highest_bankroll}")
         print(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
+
+    def print_shooter_report(self):
+        """Print a report summarizing each shooter's performance."""
+        print("\n=== Shooter Performance Report ===")
+        for shooter_name, stats in self.shooter_stats.items():
+            total_points_rolled = stats["points_rolled"]
+            total_rolls = stats["total_rolls"]
+            rolls_before_7_out = stats["rolls_before_7_out"]
+            avg_rolls_before_7_out = sum(rolls_before_7_out) / len(rolls_before_7_out) if rolls_before_7_out else 0
+
+            print(f"\nShooter: {shooter_name}")
+            print(f"  Total Points Rolled: {total_points_rolled}")
+            print(f"  Total Rolls: {total_rolls}")
+            print(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
+            print(f"  Rolls Before 7-Out: {rolls_before_7_out}")
 
 # File: .\craps\table.py
 
@@ -427,12 +525,13 @@ class Table:
         self.bets.append(bet)
 
     def check_bets(self, outcome, game_state):
-        """Resolve all bets on the table based on the dice outcome and game state."""
+        """Check and resolve all bets on the table based on the dice outcome and game state."""
+        total = sum(outcome)
+        
         for bet in self.bets:
-            bet.resolve(outcome, game_state)
-
-        # Remove all resolved bets (won or lost), but keep active/pushed bets
-        self.bets = [bet for bet in self.bets if bet.status == "active"]
+            # Only resolve active bets
+            if bet.status == "active":
+                bet.resolve(outcome, game_state)
 
     def get_minimum_bet(self, number):
         """
@@ -456,7 +555,7 @@ class Table:
 
 # File: .\craps\bets\pass_line.py
 
-from ..bets import Bet  # Import the base Bet class
+from craps.bets import Bet  # Import the base Bet class
 
 class PassLineBet(Bet):
     """Class representing a Pass Line bet."""
@@ -471,25 +570,31 @@ class PassLineBet(Bet):
             # Come-out phase rules
             if total in [7, 11]:
                 self.status = "won"  # Pass Line bet wins
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
             elif total in [2, 3, 12]:
                 self.status = "lost"  # Pass Line bet loses
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (craps).")
             else:
                 # Point is set; bet remains active
                 self.status = "active"
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (point set to {total}).")
         else:  # Point phase
             if total == game_state.point:
                 self.status = "won"  # Pass Line bet wins
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
             elif total == 7:
                 self.status = "lost"  # Pass Line bet loses
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (7-out).")
             else:
                 # Bet remains active
                 self.status = "active"
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (rolled {total}).")
 
 # File: .\craps\bets\pass_line_odds.py
 
 # File: .\craps\bets\pass_line_odds.py
 
-from ..bets import Bet  # Import the base Bet class
+from craps.bets import Bet  # Import the base Bet class
 
 class PassLineOddsBet(Bet):
     """Class representing a Pass Line Odds bet."""
@@ -510,17 +615,20 @@ class PassLineOddsBet(Bet):
                 elif game_state.point in [6, 8]:
                     self.payout_ratio = (6, 5)  # 6:5 payout for 6 and 8
                 self.status = "won"  # Pass Line Odds bet wins
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
             elif total == 7:
                 self.status = "lost"  # Pass Line Odds bet loses
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (7-out).")
             else:
                 # Bet remains active
                 self.status = "active"
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (rolled {total}).")
 
 # File: .\craps\bets\place_bet.py
 
 # File: .\craps\bets\place_bet.py
 
-from ..bets import Bet  # Import the base Bet class
+from craps.bets import Bet  # Import the base Bet class
 
 class PlaceBet(Bet):
     """Class representing a Place bet."""
@@ -539,81 +647,39 @@ class PlaceBet(Bet):
         """Resolve the Place bet based on the dice outcome and game state."""
         total = sum(outcome)
         
-        if total == self.number:
-            # Determine the payout ratio based on the number
-            if self.number in [4, 10]:
-                self.payout_ratio = (9, 5)  # 9:5 payout for 4 and 10
-            elif self.number in [5, 9]:
-                self.payout_ratio = (7, 5)  # 7:5 payout for 5 and 9
-            elif self.number in [6, 8]:
-                self.payout_ratio = (7, 6)  # 7:6 payout for 6 and 8
-            self.status = "won"  # Place bet wins
-        elif total == 7:
-            self.status = "lost"  # Place bet loses
-        else:
-            # Bet remains active
-            self.status = "active"
+        if game_state.phase == "come-out":
+            # Place bets are inactive during the come-out phase
+            self.status = "inactive"
+            #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet is now INACTIVE (come-out phase).")
+            return
+        
+        # Only resolve Place bets during the point phase
+        if game_state.phase == "point":
+            if total == self.number:
+                # Determine the payout ratio based on the number
+                if self.number in [4, 10]:
+                    self.payout_ratio = (9, 5)  # 9:5 payout for 4 and 10
+                elif self.number in [5, 9]:
+                    self.payout_ratio = (7, 5)  # 7:5 payout for 5 and 9
+                elif self.number in [6, 8]:
+                    self.payout_ratio = (7, 6)  # 7:6 payout for 6 and 8
+                self.status = "won"  # Place bet wins
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
+                
+            elif total == 7:
+                self.status = "lost"  # Place bet loses on 7-out
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (7-out).")
+            else:
+                # Bet remains active
+                self.status = "active"
+                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (rolled {total}).")
 
 # File: .\craps\bets\__init__.py
 
-# File: .\craps\bets\__init__.py
+from ..bet import Bet  # Import the Bet class from the parent directory
 
-class Bet:
-    """Base class for all bet types."""
-    def __init__(self, bet_type, amount, owner, payout_ratio=(1, 1), locked=True, vig=0):
-        """
-        Initialize a bet.
-        
-        :param bet_type: The type of bet (e.g., "Pass Line", "Come").
-        :param amount: The amount of the bet.
-        :param owner: The player who placed the bet.
-        :param payout_ratio: The payout ratio as a tuple (numerator, denominator).
-        :param locked: Whether the bet is locked (cannot be taken down).
-        :param vig: The vig (commission) as a percentage of the bet amount.
-        """
-        self.bet_type = bet_type
-        self.amount = amount
-        self.owner = owner
-        self.payout_ratio = payout_ratio
-        self.locked = locked
-        self.vig = vig
-        self.status = "active"  # Can be "active", "won", "lost", or "pushed"
-
-    def resolve(self, outcome, game_state):
-        """
-        Resolve the bet based on the dice outcome and game state.
-        
-        :param outcome: The result of the dice roll (e.g., [3, 4]).
-        :param game_state: The current state of the game (e.g., come-out phase, point phase).
-        """
-        raise NotImplementedError("Subclasses must implement this method.")
-
-    def payout(self):
-        """
-        Calculate the payout for the bet, including the vig (if applicable).
-        
-        :return: The payout amount.
-        """
-        if self.status != "won":
-            return 0
-        
-        # Calculate the payout based on the payout ratio
-        numerator, denominator = self.payout_ratio
-        payout = self.amount * numerator // denominator
-        
-        # Deduct the vig (if applicable)
-        if self.vig > 0:
-            vig_amount = self.amount * self.vig // 100
-            payout -= vig_amount
-        
-        return payout
-
-    def is_resolved(self):
-        """Check if the bet has been resolved (won, lost, or pushed)."""
-        return self.status in ["won", "lost", "pushed"]
-
-    def __str__(self):
-        return f"{self.owner}'s ${self.amount} {self.bet_type} bet (Status: {self.status})"
+# Re-export the Bet class for convenience
+__all__ = ["Bet"]
 
 # File: .\craps\strategies\pass_line.py
 
@@ -727,20 +793,103 @@ class PlaceBetStrategy:
 
 # File: .\tests\test_dice.py
 
+import sys
+import os
 import unittest
 from craps.dice import Dice
 
 class TestDice(unittest.TestCase):
     def test_roll(self):
         dice = Dice()
-        for _ in range(100):  # Test 100 rolls
+        num_rolls = 1_000_000  # Number of rolls to simulate
+        tolerance = 0.001  # Tolerance for probability comparison
+
+        # Initialize counters for single die outcomes
+        single_die_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
+
+        # Initialize counters for total outcomes
+        total_counts = {
+            2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
+            7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0
+        }
+
+        # Roll the dice 1 million times
+        for _ in range(num_rolls):
             outcome = dice.roll()
-            self.assertIsInstance(outcome, list)
-            self.assertEqual(len(outcome), 2)
-            self.assertTrue(1 <= outcome[0] <= 6)
-            self.assertTrue(1 <= outcome[1] <= 6)
             total = sum(outcome)
-            self.assertTrue(2 <= total <= 12)
+
+            # Count single die outcomes
+            for die in outcome:
+                single_die_counts[die] += 1
+
+            # Count total outcomes
+            total_counts[total] += 1
+
+        # Calculate observed probabilities for single die outcomes
+        single_die_probs = {
+            die: count / (num_rolls * 2)  # Each roll involves 2 dice
+            for die, count in single_die_counts.items()
+        }
+
+        # Calculate observed probabilities for total outcomes
+        total_probs = {
+            total: count / num_rolls
+            for total, count in total_counts.items()
+        }
+
+        # Expected probabilities for single die outcomes
+        expected_single_die_prob = 1 / 6
+
+        # Expected probabilities for total outcomes
+        expected_total_probs = {
+            2: 1 / 36,
+            3: 2 / 36,
+            4: 3 / 36,
+            5: 4 / 36,
+            6: 5 / 36,
+            7: 6 / 36,
+            8: 5 / 36,
+            9: 4 / 36,
+            10: 3 / 36,
+            11: 2 / 36,
+            12: 1 / 36,
+        }
+
+        # Display results for single die outcomes
+        print("\nSingle Die Outcomes:")
+        print(f"{'Outcome':<10} {'Actual':<10} {'Expected':<10} {'Deviation':<10}")
+        for die in range(1, 7):
+            actual = single_die_probs[die]
+            expected = expected_single_die_prob
+            deviation = actual - expected
+            print(f"{die:<10} {actual:<10.6f} {expected:<10.6f} {deviation:<10.6f}")
+
+        # Display results for total outcomes
+        print("\nTotal Outcomes:")
+        print(f"{'Total':<10} {'Actual':<10} {'Expected':<10} {'Deviation':<10}")
+        for total in range(2, 13):
+            actual = total_probs[total]
+            expected = expected_total_probs[total]
+            deviation = actual - expected
+            print(f"{total:<10} {actual:<10.6f} {expected:<10.6f} {deviation:<10.6f}")
+
+        # Test single die outcomes
+        for die, prob in single_die_probs.items():
+            self.assertAlmostEqual(
+                prob,
+                expected_single_die_prob,
+                delta=tolerance,
+                msg=f"Single die outcome {die} probability is not within tolerance."
+            )
+
+        # Test total outcomes
+        for total, prob in total_probs.items():
+            self.assertAlmostEqual(
+                prob,
+                expected_total_probs[total],
+                delta=tolerance,
+                msg=f"Total outcome {total} probability is not within tolerance."
+            )
 
 if __name__ == "__main__":
     unittest.main()
