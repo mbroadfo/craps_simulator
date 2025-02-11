@@ -40,7 +40,8 @@ class Player:
         """Resolve all active bets for the player and update the bankroll."""
         for bet in self.active_bets:
             if bet.status == "won":
-                payout = bet.payout()  # This now includes the original bet + profit
+                # Calculate the total payout (original bet + profit)
+                payout = bet.payout()
                 self.balance += payout
                 stats.update_player_win_loss(payout - bet.amount)  # Update player win/loss (profit only)
                 stats.update_house_win_loss(-(payout - bet.amount))  # Update house win/loss (loss of profit only)
@@ -51,7 +52,7 @@ class Player:
                 print(f"{self.name} LOST a ${bet.amount} {bet.bet_type} bet. Bankroll: ${self.balance}")
 
         # Remove resolved bets (won or lost) from the active bets list
-        self.active_bets = [bet for bet in self.active_bets if bet.status == "active"]
+        self.active_bets = [bet for bet in self.active_bets if bet.status in ["active", "inactive"]]
 
     def __str__(self):
         return f"Player: {self.name}, Balance: ${self.balance}"
