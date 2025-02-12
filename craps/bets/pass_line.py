@@ -15,22 +15,16 @@ class PassLineBet(Bet):
             # Come-out phase rules
             if total in [7, 11]:
                 self.status = "won"  # Pass Line bet wins
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
             elif total in [2, 3, 12]:
                 self.status = "lost"  # Pass Line bet loses
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (craps).")
             else:
                 # Point is set; bet remains active
                 self.status = "active"
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (point set to {total}).")
         else:  # Point phase
             if total == game_state.point:
                 self.status = "won"  # Pass Line bet wins
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
             elif total == 7:
                 self.status = "lost"  # Pass Line bet loses
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (7-out).")
             else:
                 # Bet remains active
                 self.status = "active"
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (rolled {total}).")

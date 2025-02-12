@@ -22,7 +22,6 @@ class PlaceBet(Bet):
         if game_state.phase == "come-out":
             # Place bets are inactive during the come-out phase
             self.status = "inactive"
-            #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet is now INACTIVE (come-out phase).")
             return
         
         # Only resolve Place bets during the point phase
@@ -36,12 +35,8 @@ class PlaceBet(Bet):
                 elif self.number in [6, 8]:
                     self.payout_ratio = (7, 6)  # 7:6 payout for 6 and 8
                 self.status = "won"  # Place bet wins
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet WON! Payout: ${self.payout()}.")
-                
             elif total == 7:
                 self.status = "lost"  # Place bet loses on 7-out
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet LOST (7-out).")
             else:
                 # Bet remains active
                 self.status = "active"
-                #print(f"{self.owner}'s ${self.amount} {self.bet_type} bet remains ACTIVE (rolled {total}).")

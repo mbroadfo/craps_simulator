@@ -13,15 +13,70 @@ class Statistics:
         self.lowest_bankroll = float('inf')
         self.shooter_stats = {}
 
+        # For visualization
+        self.roll_numbers = []  # Track roll numbers
+        self.bankroll_history = {}  # Track bankroll history for each player
+        self.seven_out_rolls = []  # Track rolls where a 7-out occurs
+        self.point_number_rolls = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
+
     def update_rolls(self):
         """Increment the roll count."""
         self.num_rolls += 1
+        self.roll_numbers.append(self.num_rolls)
 
     def update_player_bankrolls(self, players):
         """Update player bankrolls and track highest/lowest bankroll."""
         self.player_bankrolls = [player.balance for player in players]
         self.highest_bankroll = max(self.player_bankrolls)
         self.lowest_bankroll = min(self.player_bankrolls)
+
+        # Track bankroll history for visualization
+        for player in players:
+            if player.name not in self.bankroll_history:
+                self.bankroll_history[player.name] = []
+            self.bankroll_history[player.name].append(player.balance)
+
+    def record_seven_out(self):
+        """Record the roll number where a 7-out occurs."""
+        self.seven_out_rolls.append(self.num_rolls)
+        
+    def record_point_number_roll(self):
+        """Record the roll number where a point number (4, 5, 6, 8, 9, 10) is rolled."""
+        self.point_number_rolls.append(self.num_rolls)
+
+    def visualize_bankrolls(self):
+        """Visualize player bankrolls over time."""
+        import matplotlib.pyplot as plt
+
+        plt.figure(figsize=(12, 6))
+
+        # Plot each player's bankroll
+        for player, bankrolls in self.bankroll_history.items():
+            # Ensure bankrolls and roll_numbers have the same length
+            if len(bankrolls) != len(self.roll_numbers):
+                # Trim the longer list to match the shorter one
+                min_length = min(len(bankrolls), len(self.roll_numbers))
+                bankrolls = bankrolls[:min_length]
+                roll_numbers = self.roll_numbers[:min_length]
+            else:
+                roll_numbers = self.roll_numbers
+            plt.plot(roll_numbers, bankrolls, label=player)
+
+        # Add red vertical lines for 7-out events
+        for roll in self.seven_out_rolls:
+            plt.axvline(x=roll, color='red', linestyle='--', alpha=0.5, label='7-Out' if roll == self.seven_out_rolls[0] else "")
+
+        # Add green dotted lines for point number rolls
+        for roll in self.point_number_rolls:
+            plt.axvline(x=roll, color='green', linestyle=':', alpha=0.5, label='Point Number Rolled' if roll == self.point_number_rolls[0] else "")
+
+        # Add labels and title
+        plt.xlabel("Roll Number")
+        plt.ylabel("Bankroll")
+        plt.title("Player Bankrolls Over Time")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
 
     def update_shooter_stats(self, shooter):
         """Update shooter statistics."""
