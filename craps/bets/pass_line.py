@@ -7,11 +7,11 @@ class PassLineBet(Bet):
     def __init__(self, amount, owner):
         super().__init__("Pass Line", amount, owner, payout_ratio=(1, 1), locked=True)
 
-    def resolve(self, outcome, game_state):
-        """Resolve the Pass Line bet based on the dice outcome and game state."""
+    def resolve(self, outcome, phase, point):
+        """Resolve the Pass Line bet based on the dice outcome, phase, and point."""
         total = sum(outcome)
         
-        if game_state.phase == "come-out":
+        if phase == "come-out":
             # Come-out phase rules
             if total in [7, 11]:
                 self.status = "won"  # Pass Line bet wins
@@ -21,7 +21,7 @@ class PassLineBet(Bet):
                 # Point is set; bet remains active
                 self.status = "active"
         else:  # Point phase
-            if total == game_state.point:
+            if total == point:
                 self.status = "won"  # Pass Line bet wins
             elif total == 7:
                 self.status = "lost"  # Pass Line bet loses

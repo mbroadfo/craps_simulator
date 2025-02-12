@@ -47,7 +47,7 @@ class Player:
 
         return True
 
-    def resolve_bets(self, table, stats, outcome):
+    def resolve_bets(self, table, stats, outcome, phase, point):
         """Resolve all active bets for the player and update the bankroll."""
         # Summarize Won/Lost bets for the player
         won_lost_bets = []
@@ -58,7 +58,7 @@ class Player:
 
         for bet in active_bets_copy:
             # Resolve the bet (let the bet class handle the logic)
-            bet.resolve(outcome, table.game_state)
+            bet.resolve(outcome, phase, point)  # Pass phase and point directly
 
             if bet.status == "won":
                 # Calculate the payout

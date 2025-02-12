@@ -21,12 +21,13 @@ class Bet:
         self.vig = vig
         self.status = "active"  # Can be "active", "won", "lost", or "pushed"
 
-    def resolve(self, outcome, game_state):
+    def resolve(self, outcome, phase, point):
         """
-        Resolve the bet based on the dice outcome and game state.
+        Resolve the bet based on the dice outcome, phase, and point.
         
         :param outcome: The result of the dice roll (e.g., [3, 4]).
-        :param game_state: The current state of the game (e.g., come-out phase, point phase).
+        :param phase: The current game phase ("come-out" or "point").
+        :param point: The current point number (if in point phase).
         """
         raise NotImplementedError("Subclasses must implement this method.")
 

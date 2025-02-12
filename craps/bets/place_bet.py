@@ -5,27 +5,20 @@ from craps.bets import Bet  # Import the base Bet class
 class PlaceBet(Bet):
     """Class representing a Place bet."""
     def __init__(self, amount, owner, number):
-        """
-        Initialize a Place bet.
-        
-        :param amount: The amount of the bet.
-        :param owner: The player who placed the bet.
-        :param number: The number being bet on (4, 5, 6, 8, 9, or 10).
-        """
         super().__init__(f"Place {number}", amount, owner, locked=False)
         self.number = number
 
-    def resolve(self, outcome, game_state):
-        """Resolve the Place bet based on the dice outcome and game state."""
+    def resolve(self, outcome, phase, point):
+        """Resolve the Place bet based on the dice outcome, phase, and point."""
         total = sum(outcome)
         
-        if game_state.phase == "come-out":
+        if phase == "come-out":
             # Place bets are inactive during the come-out phase
             self.status = "inactive"
             return
         
         # Only resolve Place bets during the point phase
-        if game_state.phase == "point":
+        if phase == "point":
             if total == self.number:
                 # Determine the payout ratio based on the number
                 if self.number in [4, 10]:

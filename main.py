@@ -9,6 +9,7 @@ from craps.shooter import Shooter
 from craps.strategies.pass_line import PassLineStrategy
 from craps.strategies.place_bet import PlaceBetStrategy
 from craps.statistics import Statistics
+from craps.visualizer import Visualizer
 
 def main():
     # Initialize components
@@ -18,8 +19,8 @@ def main():
     # Create the GameState object
     game_state = GameState(stats, players=[])  # Pass stats and empty players list initially
 
-    # Create the Table object and pass the GameState
-    table = Table(table_minimum=table_minimum, game_state=game_state)
+    # Create the Table object
+    table = Table(table_minimum=table_minimum)
 
     # Set the number of players, shooters, and initial bankroll
     num_players = 3
@@ -60,11 +61,11 @@ def main():
             print(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
 
             # Check bets on the table
-            table.check_bets(outcome, game_state)
+            table.check_bets(outcome, game_state.phase, game_state.point)
 
             # Resolve bets for each player and update their bankroll
             for player in players:
-                player.resolve_bets(table, stats, outcome)  # Pass the outcome to resolve_bets
+                player.resolve_bets(table, stats, outcome, game_state.phase, game_state.point)  # Pass phase and point
 
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)
@@ -90,7 +91,7 @@ def main():
 
                 # Resolve all bets for all players
                 for player in players:
-                    player.resolve_bets(table, stats, outcome)  # Pass the outcome to resolve_bets
+                    player.resolve_bets(table, stats, outcome, game_state.phase, game_state.point)  # Pass phase and point
 
                 # Clear all bets from the table
                 table.bets.clear()
@@ -104,7 +105,8 @@ def main():
     stats.print_shooter_report()
 
     # Visualize player bankrolls
-    stats.visualize_bankrolls()
+    visualizer = Visualizer(stats)
+    visualizer.visualize_bankrolls()
 
 if __name__ == "__main__":
     main()
