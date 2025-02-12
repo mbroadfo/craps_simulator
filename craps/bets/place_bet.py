@@ -1,6 +1,6 @@
 # File: .\craps\bets\place_bet.py
 
-from craps.bets import Bet  # Import the base Bet class
+from . import Bet  # Import the base Bet class from the bets package
 
 class PlaceBet(Bet):
     """Class representing a Place bet."""
@@ -13,14 +13,11 @@ class PlaceBet(Bet):
         total = sum(outcome)
         
         if phase == "come-out":
-            # Place bets are inactive during the come-out phase
-            self.status = "inactive"
+            self.status = "inactive"  # Place bets are inactive during the come-out phase
             return
         
-        # Only resolve Place bets during the point phase
         if phase == "point":
             if total == self.number:
-                # Determine the payout ratio based on the number
                 if self.number in [4, 10]:
                     self.payout_ratio = (9, 5)  # 9:5 payout for 4 and 10
                 elif self.number in [5, 9]:
@@ -31,5 +28,4 @@ class PlaceBet(Bet):
             elif total == 7:
                 self.status = "lost"  # Place bet loses on 7-out
             else:
-                # Bet remains active
-                self.status = "active"
+                self.status = "active"  # Bet remains active

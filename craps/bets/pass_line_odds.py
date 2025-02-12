@@ -1,6 +1,6 @@
 # File: .\craps\bets\pass_line_odds.py
 
-from craps.bets import Bet  # Import the base Bet class
+from . import Bet  # Import the base Bet class from the bets package
 
 class PassLineOddsBet(Bet):
     """Class representing a Pass Line Odds bet."""
@@ -13,7 +13,6 @@ class PassLineOddsBet(Bet):
         
         if phase == "point":
             if total == point:
-                # Determine the payout ratio based on the point
                 if point in [4, 10]:
                     self.payout_ratio = (2, 1)  # 2:1 payout for 4 and 10
                 elif point in [5, 9]:
@@ -24,5 +23,4 @@ class PassLineOddsBet(Bet):
             elif total == 7:
                 self.status = "lost"  # Pass Line Odds bet loses
             else:
-                # Bet remains active
-                self.status = "active"
+                self.status = "active"  # Bet remains active

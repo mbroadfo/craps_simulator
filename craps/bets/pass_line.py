@@ -1,6 +1,6 @@
 # File: .\craps\bets\pass_line.py
 
-from craps.bets import Bet  # Import the base Bet class
+from . import Bet  # Import the base Bet class from the bets package
 
 class PassLineBet(Bet):
     """Class representing a Pass Line bet."""
@@ -12,19 +12,16 @@ class PassLineBet(Bet):
         total = sum(outcome)
         
         if phase == "come-out":
-            # Come-out phase rules
             if total in [7, 11]:
                 self.status = "won"  # Pass Line bet wins
             elif total in [2, 3, 12]:
                 self.status = "lost"  # Pass Line bet loses
             else:
-                # Point is set; bet remains active
-                self.status = "active"
+                self.status = "active"  # Point is set; bet remains active
         else:  # Point phase
             if total == point:
                 self.status = "won"  # Pass Line bet wins
             elif total == 7:
                 self.status = "lost"  # Pass Line bet loses
             else:
-                # Bet remains active
-                self.status = "active"
+                self.status = "active"  # Bet remains active

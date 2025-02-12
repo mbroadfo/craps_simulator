@@ -1,6 +1,6 @@
 # File: .\craps\strategies\place_bet.py
 
-from craps.bets.place_bet import PlaceBet
+from craps.bet_factory import BetFactory
 
 class PlaceBetStrategy:
     """Betting strategy for Place Bets."""
@@ -40,10 +40,10 @@ class PlaceBetStrategy:
             )
         ]
 
-        # Place bets on the remaining numbers
+        # Use the BetFactory to create Place bets
         bets = []
         for number in numbers:
             min_bet = self.table.get_minimum_bet(number)
-            bets.append(PlaceBet(min_bet, player.name, number))
+            bets.append(BetFactory.create_place_bet(min_bet, player.name, number))
 
         return bets if bets else None

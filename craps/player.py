@@ -104,5 +104,5 @@ class Player:
         else:
             print(f"{self.name} has no active bets.")
 
-        def __str__(self):
-            return f"Player: {self.name}, Balance: ${self.balance}"
+    def __str__(self):
+        return f"Player: {self.name}, Balance: ${self.balance}"
