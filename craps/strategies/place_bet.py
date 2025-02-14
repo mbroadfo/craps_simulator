@@ -1,5 +1,4 @@
-# File: .\craps\strategies\place_bet.py
-
+# File: craps/strategies/place_bet.py
 from craps.bet_factory import BetFactory
 
 class PlaceBetStrategy:

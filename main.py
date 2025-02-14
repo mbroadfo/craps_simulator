@@ -1,5 +1,4 @@
-# File: .\main.py
-
+# File: main.py
 from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
 
@@ -7,6 +6,7 @@ from craps.table import Table
 from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.strategies.pass_line import PassLineStrategy
+from craps.strategies.pass_line_odds import PassLineOddsStrategy
 from craps.strategies.place_bet import PlaceBetStrategy
 from craps.statistics import Statistics
 from craps.visualizer import Visualizer
@@ -23,20 +23,17 @@ def main():
     table = Table(table_minimum=table_minimum)
 
     # Set the number of players, shooters, and initial bankroll
-    num_players = 3
     num_shooters = 10
     initial_bankroll = 500
 
     # Create players with different betting strategies
     players = [
-        Shooter("Pass Line", initial_balance=initial_bankroll, betting_strategy=PassLineStrategy(min_bet=10))
-        if i == 0 else
-        Shooter("44 Inside", initial_balance=initial_bankroll, betting_strategy=PlaceBetStrategy(table, "inside"))
-        if i == 1 else
-        Shooter("54 Across", initial_balance=initial_bankroll, betting_strategy=PlaceBetStrategy(table, "across"))
-        for i in range(num_players)
+        Shooter("Pass Line", initial_balance=initial_bankroll, betting_strategy=PassLineStrategy(min_bet=table_minimum)),
+        Shooter("2x Odds", initial_balance=initial_bankroll, betting_strategy=PassLineOddsStrategy(table, 2)),
+        Shooter("44 Inside", initial_balance=initial_bankroll, betting_strategy=PlaceBetStrategy(table, "across"))
     ]
-
+    num_players = len(players)
+    
     # Update the GameState with the players
     game_state.players = players
 
