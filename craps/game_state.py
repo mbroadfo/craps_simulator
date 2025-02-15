@@ -1,3 +1,5 @@
+# File: craps/game_state.py
+
 from colorama import Fore, Style
 from craps.puck import Puck
 
@@ -20,6 +22,7 @@ class GameState:
         """Set the current shooter and reset their statistics."""
         self.shooter = shooter
         self.shooter.reset_stats()
+        print(f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}")
 
     def update_state(self, dice_outcome):
         """Update the game state based on the dice outcome."""
@@ -29,40 +32,37 @@ class GameState:
         if self.phase == "come-out":
             if total in [7, 11]:
                 self.puck.reset()
-                message = f"{Fore.GREEN}✅ 7-Winner: Pass Line bets won!{Style.RESET_ALL}"
+                message = f"{Fore.GREEN}✅ 7-Winner: Pass Line bets win!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total in [2, 3, 12]:
                 self.puck.reset()
-                message = f"{Fore.RED}❌ Craps: Pass Line bets lose!{Style.RESET_ALL}"
+                message = f"{Fore.RED}❌ Craps: Pass Line bets lose!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             else:
                 self.phase = "point"
                 self.puck.set_point(total)
                 self.point = total
-                message = f"{Fore.YELLOW}Point Set: {total}{Style.RESET_ALL}"
+                message = f"{Fore.YELLOW}Point Set: {total}. Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
                 # Reactivate inactive Place bets
                 for player in self.players:
                     for bet in player.active_bets:
                         if bet.bet_type.startswith("Place") and bet.status == "inactive":
                             bet.status = "active"
-                            print(f"{player.name}'s {bet.bet_type} bet is now ACTIVE.")
+                            print(f"{player.name}'s {bet.bet_type} bet is now ON.")
         else:  # Point phase
             if total == self.puck.point:
                 self.shooter.points_rolled += 1  # Increment points rolled
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
-                message = f"{Fore.GREEN}✅ Point Hit: {total}. Pass Line bets win!{Style.RESET_ALL}"
+                message = f"{Fore.GREEN}✅ Point Hit: {total}. Pass Line bets win!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total == 7:
                 self.shooter.rolls_before_7_out = self.shooter.current_roll_count  # Record rolls before 7-out
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
-                message = f"{Fore.RED}❌ 7-Out: Pass Line bets lose!{Style.RESET_ALL}"
+                message = f"{Fore.RED}❌ 7-Out: Pass Line bets lose!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total in [4, 5, 6, 8, 9, 10]:  # Point number rolled during point phase
                 self.stats.record_point_number_roll()  # Record the roll number
 
-        if message:
-                print(message)
-        
         return message
 
     def get_puck_state(self):

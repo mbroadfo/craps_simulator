@@ -51,6 +51,8 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             outcome = shooter.roll_dice()
             total = sum(outcome)
             stats.update_rolls()
+
+            # Print the dice roll and total
             print(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
 
             # Check bets on the table
@@ -62,10 +64,12 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
 
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)
-
+            
             # Update game state
             previous_phase = game_state.phase
-            game_state.update_state(outcome)
+            message = game_state.update_state(outcome)
+            if message:
+                print(message)
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:
