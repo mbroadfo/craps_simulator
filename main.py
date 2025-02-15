@@ -8,6 +8,7 @@ from craps.strategies.pass_line import PassLineStrategy
 from craps.strategies.pass_line_odds import PassLineOddsStrategy
 from craps.strategies.place_bet import PlaceBetStrategy
 from craps.strategies.field_bet import FieldBetStrategy
+from craps.strategies.iron_cross import IronCrossStrategy
 from craps.visualizer import Visualizer
 from craps.table import Table  # Import the Table class
 
@@ -26,7 +27,8 @@ def main():
         PassLineOddsStrategy(table=table, odds_multiple=1),  # Pass-Line w/ Odds
         PlaceBetStrategy(table=table, numbers_or_strategy="inside"),  # $44 Inside
         PlaceBetStrategy(table=table, numbers_or_strategy="across"),  # $54 Across
-        FieldBetStrategy(min_bet=house_rules.table_minimum)  # Field
+        FieldBetStrategy(min_bet=house_rules.table_minimum),  # Field
+        IronCrossStrategy(table=table, min_bet=house_rules.table_minimum)  # Iron Cross        
     ]
 
     # Define player names
@@ -35,7 +37,8 @@ def main():
         "Pass-Line w/ Odds",
         "$44 Inside",
         "$54 Across",
-        "Field"
+        "Field",
+        "Iron Cross"
     ]
 
     # Run a single session
