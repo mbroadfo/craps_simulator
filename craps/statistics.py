@@ -13,10 +13,15 @@ class Statistics:
         self.shooter_stats = {}
 
         # For visualization
-        self.roll_numbers = []  # Track roll numbers
+        self.roll_numbers = [0]  # Start with roll 0
         self.bankroll_history = {}  # Track bankroll history for each player
         self.seven_out_rolls = []  # Track rolls where a 7-out occurs
         self.point_number_rolls = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
+        
+    def initialize_bankroll_history(self, players):
+        """Initialize bankroll history with the starting bankroll for each player."""
+        for player in players:
+            self.bankroll_history[player.name] = [player.balance]  # Roll 0: initial bankroll
 
     def merge(self, other_stats):
         """Merge statistics from another session."""

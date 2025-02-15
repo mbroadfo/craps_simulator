@@ -30,6 +30,23 @@ class Visualizer:
         for roll in self.stats.point_number_rolls:
             plt.axvline(x=roll, color='green', linestyle=':', alpha=0.5, label='Point Number Rolled' if roll == self.stats.point_number_rolls[0] else "")
 
+        # Set x-axis limits to start at 0 and end at the last roll
+        last_roll = self.stats.roll_numbers[-1]
+        plt.xlim(left=0, right=last_roll)
+
+        # Customize x-axis ticks to include the last roll number
+        x_ticks = list(range(0, last_roll + 1, 10))  # Major ticks every 10 rolls
+
+        # Remove the next-to-last tick if it is within 3 of the last roll
+        if len(x_ticks) >= 2 and (last_roll - x_ticks[-2]) <= 3:
+            x_ticks.pop(-2)  # Remove the next-to-last tick
+
+        # Add the last roll number if it's not already included
+        if last_roll not in x_ticks:
+            x_ticks.append(last_roll)
+
+        plt.xticks(x_ticks)
+
         # Add labels and title
         plt.xlabel("Roll Number")
         plt.ylabel("Bankroll")

@@ -1,5 +1,5 @@
+# File: craps/strategies/iron_cross.py
 from craps.bet_factory import BetFactory
-from craps.bets.pass_line import PassLineBet
 
 class IronCrossStrategy:
     """Betting strategy for Iron Cross."""
@@ -20,8 +20,12 @@ class IronCrossStrategy:
             if not any(b.bet_type == "Pass Line" for b in player.active_bets):
                 return BetFactory.create_pass_line_bet(self.min_bet, player.name)
         elif game_state.phase == "point":
-            # Place Place bets on 5, 6, and 8 during the point phase
+            # Place Place bets on 5, 6, and 8 during the point phase (excluding the point number)
             numbers = [5, 6, 8]  # Numbers for the Iron Cross
+
+            # Exclude the point number
+            if game_state.point in numbers:
+                numbers.remove(game_state.point)
 
             # Filter out numbers already covered by a Place bet
             numbers = [
@@ -38,6 +42,10 @@ class IronCrossStrategy:
                 min_bet = self.table.get_minimum_bet(number)
                 bets.append(BetFactory.create_place_bet(min_bet, player.name, number))
 
+            # Add a Field bet if no active Field bet exists
+            if not any(b.bet_type == "Field" for b in player.active_bets):
+                bets.append(BetFactory.create_field_bet(self.min_bet, player.name))
+            
             return bets if bets else None
 
         return None  # No bet to place

@@ -31,6 +31,9 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     ]
     game_state.players = players
 
+    # Initialize bankroll history with the starting bankroll for each player
+    stats.initialize_bankroll_history(players)
+
     # Simulate shooters
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
@@ -57,9 +60,9 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             for player in players:
                 player.resolve_bets(table, stats, outcome, game_state.phase, game_state.point)
 
-             # Update player bankrolls in statistics
-            stats.update_player_bankrolls(players)  # <-- Add this line back
-            
+            # Update player bankrolls in statistics
+            stats.update_player_bankrolls(players)
+
             # Update game state
             previous_phase = game_state.phase
             game_state.update_state(outcome)
