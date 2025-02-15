@@ -20,6 +20,12 @@ class IronCrossStrategy:
             if not any(b.bet_type == "Pass Line" for b in player.active_bets):
                 return BetFactory.create_pass_line_bet(self.min_bet, player.name)
         elif game_state.phase == "point":
+            # Reactivate inactive Place bets
+            for bet in player.active_bets:
+                if bet.bet_type.startswith("Place") and bet.status == "inactive":
+                    bet.status = "active"
+                    print(f"{player.name}'s {bet.bet_type} bet is now ON.")
+
             # Place Place bets on 5, 6, and 8 during the point phase (excluding the point number)
             numbers = [5, 6, 8]  # Numbers for the Iron Cross
 
@@ -45,7 +51,7 @@ class IronCrossStrategy:
             # Add a Field bet if no active Field bet exists
             if not any(b.bet_type == "Field" for b in player.active_bets):
                 bets.append(BetFactory.create_field_bet(self.min_bet, player.name))
-            
+
             return bets if bets else None
 
         return None  # No bet to place
