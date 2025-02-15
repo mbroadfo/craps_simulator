@@ -4,13 +4,12 @@ init()  # Initialize colorama for colored text
 
 from craps.house_rules import HouseRules
 from craps.single_session import run_single_session
-from craps.strategies.pass_line import PassLineStrategy
-from craps.strategies.pass_line_odds import PassLineOddsStrategy
-from craps.strategies.place_bet import PlaceBetStrategy
-from craps.strategies.field_bet import FieldBetStrategy
-from craps.strategies.iron_cross import IronCrossStrategy
 from craps.visualizer import Visualizer
-from craps.table import Table  # Import the Table class
+from craps.table import Table
+from lineup import PlayerLineup  # Import the PlayerLineup class
+
+# Import the configuration
+from config import ACTIVE_PLAYERS
 
 def main():
     # Initialize house rules
@@ -21,25 +20,11 @@ def main():
     # Create the Table object
     table = Table(house_rules)
 
-    # Define strategies to evaluate
-    strategies = [
-        PassLineStrategy(min_bet=house_rules.table_minimum),  # Pass-Line
-        PassLineOddsStrategy(table=table, odds_multiple=1),  # Pass-Line w/ Odds
-        PlaceBetStrategy(table=table, numbers_or_strategy="inside"),  # $44 Inside
-        PlaceBetStrategy(table=table, numbers_or_strategy="across"),  # $54 Across
-        FieldBetStrategy(min_bet=house_rules.table_minimum),  # Field
-        IronCrossStrategy(table=table, min_bet=house_rules.table_minimum)  # Iron Cross        
-    ]
+    # Initialize the player lineup
+    player_lineup = PlayerLineup(house_rules, table)
 
-    # Define player names
-    player_names = [
-        "Pass-Line",
-        "Pass-Line w/ Odds",
-        "$44 Inside",
-        "$54 Across",
-        "Field",
-        "Iron Cross"
-    ]
+    # Get active strategies and player names
+    strategies, player_names = player_lineup.get_active_players(ACTIVE_PLAYERS)
 
     # Run a single session
     stats = run_single_session(house_rules, strategies, player_names=player_names)
