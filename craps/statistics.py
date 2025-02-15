@@ -1,5 +1,4 @@
-# File: .\craps\statistics.py
-
+## File: craps/statistics.py
 class Statistics:
     def __init__(self, table_minimum, num_shooters, num_players):
         self.table_minimum = table_minimum
@@ -18,6 +17,36 @@ class Statistics:
         self.bankroll_history = {}  # Track bankroll history for each player
         self.seven_out_rolls = []  # Track rolls where a 7-out occurs
         self.point_number_rolls = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
+
+    def merge(self, other_stats):
+        """Merge statistics from another session."""
+        self.num_rolls += other_stats.num_rolls
+        self.total_house_win_loss += other_stats.total_house_win_loss
+        self.total_player_win_loss += other_stats.total_player_win_loss
+        self.player_bankrolls.extend(other_stats.player_bankrolls)
+        self.highest_bankroll = max(self.highest_bankroll, other_stats.highest_bankroll)
+        self.lowest_bankroll = min(self.lowest_bankroll, other_stats.lowest_bankroll)
+        self.roll_numbers.extend(other_stats.roll_numbers)
+        self.seven_out_rolls.extend(other_stats.seven_out_rolls)
+        self.point_number_rolls.extend(other_stats.point_number_rolls)
+
+        # Merge shooter stats
+        for shooter_name, stats in other_stats.shooter_stats.items():
+            if shooter_name not in self.shooter_stats:
+                self.shooter_stats[shooter_name] = {
+                    "points_rolled": 0,
+                    "rolls_before_7_out": [],
+                    "total_rolls": 0,
+                }
+            self.shooter_stats[shooter_name]["points_rolled"] += stats["points_rolled"]
+            self.shooter_stats[shooter_name]["rolls_before_7_out"].extend(stats["rolls_before_7_out"])
+            self.shooter_stats[shooter_name]["total_rolls"] += stats["total_rolls"]
+
+        # Merge bankroll history
+        for player, bankrolls in other_stats.bankroll_history.items():
+            if player not in self.bankroll_history:
+                self.bankroll_history[player] = []
+            self.bankroll_history[player].extend(bankrolls)
 
     def update_rolls(self):
         """Increment the roll count."""

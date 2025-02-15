@@ -1,6 +1,5 @@
-# File: .\craps\bets\pass_line.py
-
-from . import Bet  # Import the base Bet class from the bets package
+# File: craps/bets/pass_line.py
+from . import Bet  # Import the base Bet class
 
 class PassLineBet(Bet):
     """Class representing a Pass Line bet."""

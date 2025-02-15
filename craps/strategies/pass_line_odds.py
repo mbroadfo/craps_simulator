@@ -21,7 +21,7 @@ class PassLineOddsStrategy:
                 return None  # No new bet to place
 
             # Use the BetFactory to create a Pass Line bet
-            return BetFactory.create_pass_line_bet(self.table.table_minimum, player.name)
+            return BetFactory.create_pass_line_bet(self.table.house_rules.table_minimum, player.name)
         
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
@@ -30,7 +30,7 @@ class PassLineOddsStrategy:
 
             # Use the BetFactory to create a Place Odds bet on the point number
             return BetFactory.create_place_odds_bet(
-                self.table.table_minimum * self.odds_multiple,  # Bet amount
+                self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
                 player.name,  # Owner
                 game_state.point  # Point number
             )

@@ -60,6 +60,9 @@ class GameState:
             elif total in [4, 5, 6, 8, 9, 10]:  # Point number rolled during point phase
                 self.stats.record_point_number_roll()  # Record the roll number
 
+        if message:
+                print(message)
+        
         return message
 
     def get_puck_state(self):

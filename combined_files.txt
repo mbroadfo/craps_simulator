@@ -27,8 +27,63 @@ print(f"All Python files have been combined into {output_file}")
 
 # File: .\main.py
 
-# File: .\main.py
+# File: main.py
+from colorama import init, Fore, Style
+init()  # Initialize colorama for colored text
 
+from craps.house_rules import HouseRules
+from craps.single_session import run_single_session
+from craps.strategies.pass_line import PassLineStrategy
+from craps.strategies.pass_line_odds import PassLineOddsStrategy
+from craps.strategies.place_bet import PlaceBetStrategy
+from craps.strategies.field_bet import FieldBetStrategy
+from craps.visualizer import Visualizer
+from craps.table import Table  # Import the Table class
+
+def main():
+    # Initialize house rules
+    house_rules = HouseRules()
+    house_rules.set_field_bet_payouts((3, 1), (2, 1))  # 3:1 for 2, 2:1 for 12
+    house_rules.set_table_limits(10, 1000)  # Table limits
+
+    # Create the Table object
+    table = Table(house_rules)
+
+    # Define strategies to evaluate
+    strategies = [
+        PassLineStrategy(min_bet=house_rules.table_minimum),  # Pass-Line
+        PassLineOddsStrategy(table=table, odds_multiple=1),  # Pass-Line w/ Odds
+        PlaceBetStrategy(table=table, numbers_or_strategy="inside"),  # $44 Inside
+        PlaceBetStrategy(table=table, numbers_or_strategy="across"),  # $54 Across
+        FieldBetStrategy(min_bet=house_rules.table_minimum)  # Field
+    ]
+
+    # Define player names
+    player_names = [
+        "Pass-Line",
+        "Pass-Line w/ Odds",
+        "$44 Inside",
+        "$54 Across",
+        "Field"
+    ]
+
+    # Run a single session
+    stats = run_single_session(house_rules, strategies, player_names=player_names)
+
+    # Print statistics
+    stats.print_statistics()
+    stats.print_shooter_report()
+
+    # Visualize player bankrolls
+    visualizer = Visualizer(stats)
+    visualizer.visualize_bankrolls()
+
+if __name__ == "__main__":
+    main()
+
+# File: .\old_main.py
+
+# File: main.py
 from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
 
@@ -36,14 +91,16 @@ from craps.table import Table
 from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.strategies.pass_line import PassLineStrategy
+from craps.strategies.pass_line_odds import PassLineOddsStrategy
 from craps.strategies.place_bet import PlaceBetStrategy
+from craps.strategies.field_bet import FieldBetStrategy  # Import FieldBetStrategy
 from craps.statistics import Statistics
 from craps.visualizer import Visualizer
 
 def main():
     # Initialize components
     table_minimum = 10  # Set table minimum
-    stats = Statistics(table_minimum, num_shooters=10, num_players=3)  # Initialize stats
+    stats = Statistics(table_minimum, num_shooters=10, num_players=4)  # Increase num_players to 4
 
     # Create the GameState object
     game_state = GameState(stats, players=[])  # Pass stats and empty players list initially
@@ -52,20 +109,18 @@ def main():
     table = Table(table_minimum=table_minimum)
 
     # Set the number of players, shooters, and initial bankroll
-    num_players = 3
     num_shooters = 10
     initial_bankroll = 500
 
     # Create players with different betting strategies
     players = [
-        Shooter("Pass Line", initial_balance=initial_bankroll, betting_strategy=PassLineStrategy(min_bet=10))
-        if i == 0 else
-        Shooter("44 Inside", initial_balance=initial_bankroll, betting_strategy=PlaceBetStrategy(table, "inside"))
-        if i == 1 else
-        Shooter("54 Across", initial_balance=initial_bankroll, betting_strategy=PlaceBetStrategy(table, "across"))
-        for i in range(num_players)
+        Shooter("Pass Line", initial_balance=initial_bankroll, betting_strategy=PassLineStrategy(min_bet=table_minimum)),
+        Shooter("1x Odds", initial_balance=initial_bankroll, betting_strategy=PassLineOddsStrategy(table, 1)),
+        Shooter("44 Inside", initial_balance=initial_bankroll, betting_strategy=PlaceBetStrategy(table, "across")),
+        Shooter("Field Bet", initial_balance=initial_bankroll, betting_strategy=FieldBetStrategy(min_bet=table_minimum))
     ]
-
+    num_players = len(players)
+    
     # Update the GameState with the players
     game_state.players = players
 
@@ -139,7 +194,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 # File: .\setup.py
 
@@ -241,9 +295,11 @@ class PassLineStrategy:
 
 # File: .\craps\bet_factory.py
 
-# File: .\craps\bet_factory.py
-
-from craps.bets import PassLineBet, PlaceBet, PassLineOddsBet
+# File: craps/bet_factory.py
+from .bets.pass_line import PassLineBet  # Import PassLineBet
+from .bets.place_bet import PlaceBet  # Import PlaceBet
+from .bets.place_odds import PlaceOddsBet  # Import PlaceOddsBet
+from .bets.field_bet import FieldBet  # Import FieldBet
 
 class BetFactory:
     @staticmethod
@@ -257,27 +313,34 @@ class BetFactory:
         return PlaceBet(amount, owner, number)
 
     @staticmethod
-    def create_pass_line_odds_bet(amount, owner):
-        """Create a Pass Line Odds bet."""
-        return PassLineOddsBet(amount, owner)
+    def create_place_odds_bet(amount, owner, number):
+        """Create a Place Odds bet."""
+        return PlaceOddsBet(amount, owner, number)
+
+    @staticmethod
+    def create_field_bet(amount, owner):
+        """Create a Field bet."""
+        return FieldBet(amount, owner)
 
     @staticmethod
     def create_bets(bet_type, amount, owner, number=None):
         """
         Create one or more bets based on the bet type.
         
-        :param bet_type: The type of bet (e.g., "Pass Line", "Place", "Pass Line Odds").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Place", "Place Odds", "Field").
         :param amount: The amount of the bet.
         :param owner: The player who placed the bet.
-        :param number: The number for Place bets (optional).
+        :param number: The number for Place or Place Odds bets (optional).
         :return: A single bet or a list of bets.
         """
         if bet_type == "Pass Line":
             return BetFactory.create_pass_line_bet(amount, owner)
         elif bet_type == "Place":
             return BetFactory.create_place_bet(amount, owner, number)
-        elif bet_type == "Pass Line Odds":
-            return BetFactory.create_pass_line_odds_bet(amount, owner)
+        elif bet_type == "Place Odds":
+            return BetFactory.create_place_odds_bet(amount, owner, number)
+        elif bet_type == "Field":
+            return BetFactory.create_field_bet(amount, owner)
         else:
             raise ValueError(f"Unknown bet type: {bet_type}")
 
@@ -367,6 +430,30 @@ class GameState:
 
     def __str__(self):
         return f"Game State: {self.get_puck_state()}"
+
+# File: .\craps\house_rules.py
+
+# File: craps/house_rules.py
+class HouseRules:
+    """Class representing house rules for payouts and table limits."""
+    def __init__(self):
+        # Default payout ratios for Field Bet
+        self.field_bet_payout_2 = (2, 1)  # 2:1 payout for 2
+        self.field_bet_payout_12 = (3, 1)  # 3:1 payout for 12
+
+        # Table limits
+        self.table_minimum = 10  # Minimum bet amount
+        self.table_maximum = 5000  # Maximum bet amount
+
+    def set_field_bet_payouts(self, payout_2, payout_12):
+        """Set the payout ratios for the Field Bet."""
+        self.field_bet_payout_2 = payout_2
+        self.field_bet_payout_12 = payout_12
+
+    def set_table_limits(self, minimum, maximum):
+        """Set the table limits."""
+        self.table_minimum = minimum
+        self.table_maximum = maximum
 
 # File: .\craps\player.py
 
@@ -522,10 +609,110 @@ class Shooter(Player):
         self.rolls_before_7_out = 0
         self.current_roll_count = 0
 
-# File: .\craps\statistics.py
+# File: .\craps\simulation_manager.py
+
+# File: craps/simulation_manager.py
+from craps.single_session import run_single_session
+
+class SimulationManager:
+    def __init__(self, house_rules, num_tables, num_shooters, strategies):
+        """
+        Initialize the SimulationManager.
+        
+        :param house_rules: The HouseRules object for payout rules and limits.
+        :param num_tables: The number of tables to simulate.
+        :param num_shooters: The number of shooters per session.
+        :param strategies: A list of betting strategies to evaluate.
+        """
+        self.house_rules = house_rules
+        self.num_tables = num_tables
+        self.num_shooters = num_shooters
+        self.strategies = strategies
+        self.stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
+
+    def run_simulation(self, num_sessions):
+        """Run multiple sessions and collect statistics."""
+        for _ in range(num_sessions):
+            for _ in range(self.num_tables):
+                stats = run_single_session(self.house_rules, self.strategies, num_shooters=self.num_shooters)
+                self.stats.merge(stats)  # Merge session stats into overall stats
+
+        self.stats.print_statistics()
+        self.stats.print_shooter_report()
+
+# File: .\craps\single_session.py
+
+# File: craps/single_session.py
+from craps.table import Table
+from craps.game_state import GameState
+from craps.shooter import Shooter
+from craps.statistics import Statistics
+
+def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10):
+    """
+    Run a single session of craps.
+    
+    :param house_rules: The HouseRules object for payout rules and limits.
+    :param strategies: A list of betting strategies to evaluate.
+    :param player_names: A list of names for the players (optional).
+    :param initial_bankroll: The initial bankroll for each player.
+    :param num_shooters: The number of shooters per session.
+    :return: The Statistics object containing session results.
+    """
+    # Initialize components
+    table = Table(house_rules)
+    stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
+    game_state = GameState(stats, players=[])
+
+    # Create players with different betting strategies
+    if player_names is None:
+        player_names = [f"Player {i+1}" for i in range(len(strategies))]
+
+    players = [
+        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy)
+        for i, strategy in enumerate(strategies)
+    ]
+    game_state.players = players
+
+    # Simulate shooters
+    for shooter_num in range(1, num_shooters + 1):
+        player_index = (shooter_num - 1) % len(players)
+        shooter = players[player_index]
+        game_state.set_shooter(shooter)
+
+        while True:
+            # Allow all players to place bets
+            for player in players:
+                bet = player.betting_strategy.get_bet(game_state, player)
+                if bet:
+                    player.place_bet(bet, table)
+
+            # Roll the dice and resolve bets
+            outcome = shooter.roll_dice()
+            total = sum(outcome)
+            stats.update_rolls()
+
+            # Check bets on the table
+            table.check_bets(outcome, game_state.phase, game_state.point)
+
+            # Resolve bets for each player and update their bankroll
+            for player in players:
+                player.resolve_bets(table, stats, outcome, game_state.phase, game_state.point)
+
+            # Update game state
+            previous_phase = game_state.phase
+            game_state.update_state(outcome)
+
+            # Check if the shooter 7-outs
+            if previous_phase == "point" and total == 7:
+                stats.record_seven_out()
+                break
+
+    return stats
 
 # File: .\craps\statistics.py
 
+## File: craps/statistics.py
 class Statistics:
     def __init__(self, table_minimum, num_shooters, num_players):
         self.table_minimum = table_minimum
@@ -544,6 +731,36 @@ class Statistics:
         self.bankroll_history = {}  # Track bankroll history for each player
         self.seven_out_rolls = []  # Track rolls where a 7-out occurs
         self.point_number_rolls = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
+
+    def merge(self, other_stats):
+        """Merge statistics from another session."""
+        self.num_rolls += other_stats.num_rolls
+        self.total_house_win_loss += other_stats.total_house_win_loss
+        self.total_player_win_loss += other_stats.total_player_win_loss
+        self.player_bankrolls.extend(other_stats.player_bankrolls)
+        self.highest_bankroll = max(self.highest_bankroll, other_stats.highest_bankroll)
+        self.lowest_bankroll = min(self.lowest_bankroll, other_stats.lowest_bankroll)
+        self.roll_numbers.extend(other_stats.roll_numbers)
+        self.seven_out_rolls.extend(other_stats.seven_out_rolls)
+        self.point_number_rolls.extend(other_stats.point_number_rolls)
+
+        # Merge shooter stats
+        for shooter_name, stats in other_stats.shooter_stats.items():
+            if shooter_name not in self.shooter_stats:
+                self.shooter_stats[shooter_name] = {
+                    "points_rolled": 0,
+                    "rolls_before_7_out": [],
+                    "total_rolls": 0,
+                }
+            self.shooter_stats[shooter_name]["points_rolled"] += stats["points_rolled"]
+            self.shooter_stats[shooter_name]["rolls_before_7_out"].extend(stats["rolls_before_7_out"])
+            self.shooter_stats[shooter_name]["total_rolls"] += stats["total_rolls"]
+
+        # Merge bankroll history
+        for player, bankrolls in other_stats.bankroll_history.items():
+            if player not in self.bankroll_history:
+                self.bankroll_history[player] = []
+            self.bankroll_history[player].extend(bankrolls)
 
     def update_rolls(self):
         """Increment the roll count."""
@@ -646,38 +863,30 @@ class Statistics:
 
 # File: .\craps\table.py
 
-# File: .\craps\table.py
-
+# File: craps/table.py
 class Table:
-    def __init__(self, table_minimum=5):
+    def __init__(self, house_rules):
         """
-        Initialize the table with a minimum bet.
+        Initialize the table.
         
-        :param table_minimum: The minimum bet for the table (e.g., 5, 10, 15, 25).
+        :param house_rules: The HouseRules object for payout rules and limits.
         """
+        self.house_rules = house_rules
         self.bets = []
-        self.table_minimum = table_minimum
-        self.unit = table_minimum // 5  # Unit is table minimum divided by 5
+        self.unit = self.house_rules.table_minimum // 5
 
     def place_bet(self, bet):
         """Place a bet on the table."""
+        if bet.amount < self.house_rules.table_minimum:
+            raise ValueError(f"Bet amount ${bet.amount} is below the table minimum of ${self.house_rules.table_minimum}.")
+        if bet.amount > self.house_rules.table_maximum:
+            raise ValueError(f"Bet amount ${bet.amount} exceeds the table maximum of ${self.house_rules.table_maximum}.")
         self.bets.append(bet)
 
     def check_bets(self, outcome, phase, point):
         """Check and resolve all bets on the table based on the dice outcome, phase, and point."""
-        total = sum(outcome)
-
-        # Create a copy of bets to avoid modifying the list while iterating
-        bets_copy = self.bets.copy()
-
-        for bet in bets_copy:
-            # Only resolve active bets
-            if bet.status == "active":
-                bet.resolve(outcome, phase, point)
-
-        # If a 7-out occurs, clear all bets from the table
-        if phase == "come-out" and total == 7:
-            self.bets.clear()
+        for bet in self.bets:
+            bet.resolve(outcome, phase, point)
 
     def get_minimum_bet(self, number):
         """
@@ -688,10 +897,10 @@ class Table:
         """
         if number in [6, 8]:
             # For 6 and 8, the minimum bet is table minimum + unit
-            return self.table_minimum + self.unit
+            return self.house_rules.table_minimum + self.unit
         else:
             # For other numbers, the minimum bet is the table minimum
-            return self.table_minimum
+            return self.house_rules.table_minimum
 
 # File: .\craps\visualizer.py
 
@@ -739,11 +948,32 @@ class Visualizer:
 
 
 
-# File: .\craps\bets\pass_line.py
+# File: .\craps\bets\field_bet.py
+
+# File: craps/bets/field_bet.py
+from . import Bet  # Import the base Bet class
+
+class FieldBet(Bet):
+    """Class representing a Field bet."""
+    def __init__(self, amount, owner):
+        super().__init__("Field", amount, owner, payout_ratio=(1, 1), locked=False)
+
+    def resolve(self, outcome, phase, point):
+        """Resolve the Field bet based on the dice outcome."""
+        total = sum(outcome)
+
+        # Field bet wins on 2, 3, 4, 9, 10, 11, 12
+        if total in [2, 3, 4, 9, 10, 11, 12]:
+            if total in [2, 12]:  # Special payouts for 2 and 12
+                self.payout_ratio = (2, 1)  # 2:1 payout for 2 and 12 (adjust as needed)
+            self.status = "won"  # Field bet wins
+        else:
+            self.status = "lost"  # Field bet loses
 
 # File: .\craps\bets\pass_line.py
 
-from . import Bet  # Import the base Bet class from the bets package
+# File: craps/bets/pass_line.py
+from . import Bet  # Import the base Bet class
 
 class PassLineBet(Bet):
     """Class representing a Pass Line bet."""
@@ -832,6 +1062,43 @@ class PlaceBet(Bet):
             else:
                 self.status = "active"  # Bet remains active
 
+# File: .\craps\bets\place_odds.py
+
+# File: craps/bets/place_odds.py
+from . import Bet
+
+class PlaceOddsBet(Bet):
+    """Class representing a Place Odds bet."""
+    def __init__(self, amount, owner, number):
+        """
+        Initialize a Place Odds bet.
+        
+        :param amount: The amount of the bet.
+        :param owner: The player who placed the bet.
+        :param number: The number being bet on (e.g., 4, 5, 6, 8, 9, 10).
+        """
+        super().__init__(f"Place Odds on {number}", amount, owner, payout_ratio=(1, 1), locked=False)
+        self.number = number
+
+    def resolve(self, outcome, phase, point):
+        """Resolve the Place Odds bet based on the dice outcome, phase, and point."""
+        total = sum(outcome)
+        
+        if phase == "point":
+            if total == self.number:
+                # Set the payout ratio based on the number
+                if self.number in [4, 10]:
+                    self.payout_ratio = (2, 1)  # 2:1 payout for 4 and 10
+                elif self.number in [5, 9]:
+                    self.payout_ratio = (3, 2)  # 3:2 payout for 5 and 9
+                elif self.number in [6, 8]:
+                    self.payout_ratio = (6, 5)  # 6:5 payout for 6 and 8
+                self.status = "won"  # Place Odds bet wins
+            elif total == 7:
+                self.status = "lost"  # Place Odds bet loses
+            else:
+                self.status = "active"  # Bet remains active
+
 # File: .\craps\bets\__init__.py
 
 # File: .\craps\bets\__init__.py
@@ -913,6 +1180,30 @@ from .pass_line_odds import PassLineOddsBet
 # Optionally, define __all__ to make it clear which classes are exported
 __all__ = ["Bet", "PassLineBet", "PlaceBet", "PassLineOddsBet"]
 
+# File: .\craps\strategies\field_bet.py
+
+# File: craps/strategies/field_bet.py
+from craps.bet_factory import BetFactory
+
+class FieldBetStrategy:
+    """Betting strategy for Field bets."""
+    def __init__(self, min_bet):
+        """
+        Initialize the Field Bet strategy.
+        
+        :param min_bet: The minimum bet amount for the table.
+        """
+        self.min_bet = min_bet
+
+    def get_bet(self, game_state, player):
+        """Place a Field bet if no active Field bet exists."""
+        # Check if the player already has an active Field bet
+        if any(b.bet_type == "Field" for b in player.active_bets):
+            return None  # No new bet to place
+
+        # Use the BetFactory to create a Field bet
+        return BetFactory.create_field_bet(self.min_bet, player.name)
+
 # File: .\craps\strategies\pass_line.py
 
 # File: .\craps\strategies\pass_line.py
@@ -938,14 +1229,19 @@ class PassLineStrategy:
 
 # File: .\craps\strategies\pass_line_odds.py
 
-# File: .\craps\strategies\pass_line_odds.py
-
+# File: craps/strategies/pass_line_odds.py
 from craps.bet_factory import BetFactory
 
 class PassLineOddsStrategy:
     """Betting strategy for Pass Line with Odds bets."""
-    def __init__(self, min_bet, odds_multiple=1):
-        self.min_bet = min_bet
+    def __init__(self, table, odds_multiple=1):
+        """
+        Initialize the Pass Line Odds strategy.
+        
+        :param table: The table object to determine minimum bets.
+        :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
+        """
+        self.table = table
         self.odds_multiple = odds_multiple
 
     def get_bet(self, game_state, player):
@@ -956,22 +1252,25 @@ class PassLineOddsStrategy:
                 return None  # No new bet to place
 
             # Use the BetFactory to create a Pass Line bet
-            return BetFactory.create_pass_line_bet(self.min_bet, player.name)
+            return BetFactory.create_pass_line_bet(self.table.house_rules.table_minimum, player.name)
         
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
-            if any(b.bet_type == "Pass Line Odds" for b in player.active_bets):
+            if any(b.bet_type.startswith("Place Odds") for b in player.active_bets):
                 return None  # No new bet to place
 
-            # Use the BetFactory to create a Pass Line Odds bet
-            return BetFactory.create_pass_line_odds_bet(self.min_bet * self.odds_multiple, player.name)
+            # Use the BetFactory to create a Place Odds bet on the point number
+            return BetFactory.create_place_odds_bet(
+                self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
+                player.name,  # Owner
+                game_state.point  # Point number
+            )
         
         return None  # No bet to place
 
 # File: .\craps\strategies\place_bet.py
 
-# File: .\craps\strategies\place_bet.py
-
+# File: craps/strategies/place_bet.py
 from craps.bet_factory import BetFactory
 
 class PlaceBetStrategy:
