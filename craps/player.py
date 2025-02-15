@@ -49,9 +49,9 @@ class Player:
 
     def resolve_bets(self, table, stats, outcome, phase, point):
         """Resolve all active bets for the player and update the bankroll."""
-        # Summarize Won/Lost bets for the player
         won_lost_bets = []
         total_payout = 0
+        bets_changed = False  # Track if any bets were resolved or changed
 
         # Create a copy of active_bets to avoid modifying the list while iterating
         active_bets_copy = self.active_bets.copy()
@@ -72,9 +72,11 @@ class Player:
                 # Remove Pass-Line bets from the table when won
                 if bet.bet_type == "Pass Line":
                     self.active_bets.remove(bet)
+                    bets_changed = True
                 # Reset the Place bet status to "active" after winning
                 elif bet.bet_type.startswith("Place"):
                     bet.status = "active"
+                    bets_changed = True
             elif bet.status == "lost":
                 won_lost_bets.append(f"{bet.bet_type} bet LOST ${bet.amount}")
                 # Do NOT deduct the bet amount again (it was already deducted when the bet was placed)
@@ -83,26 +85,25 @@ class Player:
 
                 # Remove lost bets from the table
                 self.active_bets.remove(bet)
+                bets_changed = True
             elif bet.status == "inactive":
                 # Do NOT remove inactive bets; they will be reactivated when the puck is turned on
                 pass
 
-        # Calculate the total amount at risk on the table
-        total_at_risk = sum(b.amount for b in self.active_bets)
-
         # Print summary of resolved bets
         if won_lost_bets:
-            print(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}. Updated Bankroll: ${self.balance}. Bet: ${total_at_risk}")
+            print(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}. Updated Bankroll: ${self.balance}. Bet: ${sum(b.amount for b in self.active_bets)}")
 
-        # Summarize bets still on the table for the player
-        active_bets_summary = [
-            f"{bet.bet_type}{' (Off)' if bet.status == 'inactive' else ''}"
-            for bet in self.active_bets
-        ]
-        if active_bets_summary:
-            print(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
-        else:
-            print(f"{self.name} has no active bets.")
+        # Summarize bets still on the table for the player (only if bets changed)
+        if bets_changed:
+            active_bets_summary = [
+                f"{bet.bet_type}{' (Off)' if bet.status == 'inactive' else ''}"
+                for bet in self.active_bets
+            ]
+            if active_bets_summary:
+                print(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
+            else:
+                print(f"{self.name} has no active bets.")
 
     def __str__(self):
         return f"Player: {self.name}, Balance: ${self.balance}"

@@ -42,11 +42,14 @@ class GameState:
                 self.point = total
                 message = f"{Fore.YELLOW}Point Set: {total}. Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
                 # Reactivate inactive Place bets
+                reactivated_bets = []
                 for player in self.players:
                     for bet in player.active_bets:
                         if bet.bet_type.startswith("Place") and bet.status == "inactive":
                             bet.status = "active"
-                            print(f"{player.name}'s {bet.bet_type} bet is now ON.")
+                            reactivated_bets.append(f"{player.name}'s {bet.bet_type}")
+                if reactivated_bets:
+                    print(f"{', '.join(reactivated_bets)} are now ON.")
         else:  # Point phase
             if total == self.puck.point:
                 self.shooter.points_rolled += 1  # Increment points rolled
