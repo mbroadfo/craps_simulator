@@ -72,7 +72,7 @@ class Bet:
 # Import and re-export the bet classes
 from .pass_line import PassLineBet
 from .place_bet import PlaceBet
-from .pass_line_odds import PassLineOddsBet
+from .free_odds import FreeOddsBet
 
 # Optionally, define __all__ to make it clear which classes are exported
 __all__ = ["Bet", "PassLineBet", "PlaceBet", "PassLineOddsBet"]

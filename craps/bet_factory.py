@@ -1,7 +1,8 @@
 # File: craps/bet_factory.py
+
 from .bets.pass_line import PassLineBet  # Import PassLineBet
 from .bets.place_bet import PlaceBet  # Import PlaceBet
-from .bets.place_odds import PlaceOddsBet  # Import PlaceOddsBet
+from .bets.free_odds import FreeOddsBet  # Import PlaceOddsBet
 from .bets.field_bet import FieldBet  # Import FieldBet
 
 class BetFactory:
@@ -16,9 +17,14 @@ class BetFactory:
         return PlaceBet(amount, owner, number)
 
     @staticmethod
+    def create_pass_line_odds_bet(amount, owner):
+        """Create a Pass Line Odds bet."""
+        return FreeOddsBet("Pass Line Odds", amount, owner)
+
+    @staticmethod
     def create_place_odds_bet(amount, owner, number):
         """Create a Place Odds bet."""
-        return PlaceOddsBet(amount, owner, number)
+        return FreeOddsBet("Place Odds", amount, owner, number)
 
     @staticmethod
     def create_field_bet(amount, owner):

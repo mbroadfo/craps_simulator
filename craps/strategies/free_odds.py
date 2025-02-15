@@ -1,0 +1,47 @@
+from craps.bet_factory import BetFactory
+
+class FreeOddsStrategy:
+    """Betting strategy for Free Odds on any active bet."""
+    def __init__(self, table, odds_multiple="1x"):
+        """
+        Initialize the Free Odds strategy.
+        
+        :param table: The table object to determine minimum bets.
+        :param odds_multiple: The odds multiple (e.g., "1x", "2x", "3x", "1-2-3", "3-4-5").
+        """
+        self.table = table
+        self.odds_multiple = odds_multiple
+
+    def get_odds_amount(self, original_bet_amount):
+        """Calculate the odds amount based on the original bet amount and the selected multiple."""
+        if self.odds_multiple == "1x":
+            return original_bet_amount
+        elif self.odds_multiple == "2x":
+            return original_bet_amount * 2
+        elif self.odds_multiple == "3x":
+            return original_bet_amount * 3
+        elif self.odds_multiple == "1-2-3":
+            # 1x on 4/10, 2x on 5/9, 3x on 6/8
+            return original_bet_amount
+        elif self.odds_multiple == "3-4-5":
+            # 3x on 4/10, 4x on 5/9, 5x on 6/8
+            return original_bet_amount
+        else:
+            raise ValueError(f"Invalid odds multiple: {self.odds_multiple}")
+
+    def get_bet(self, game_state, player):
+        """Place Free Odds bets on any active bets."""
+        bets = []
+
+        for active_bet in player.active_bets:
+            if active_bet.bet_type in ["Pass Line", "Place"]:
+                # Calculate the odds amount based on the original bet amount
+                odds_amount = self.get_odds_amount(active_bet.amount)
+
+                # Create a Free Odds bet
+                if active_bet.bet_type == "Pass Line":
+                    bets.append(BetFactory.create_pass_line_odds_bet(odds_amount, player.name))
+                elif active_bet.bet_type == "Place":
+                    bets.append(BetFactory.create_place_odds_bet(odds_amount, player.name, active_bet.number))
+
+        return bets if bets else None
