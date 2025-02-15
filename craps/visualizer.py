@@ -37,9 +37,11 @@ class Visualizer:
         # Customize x-axis ticks to include the last roll number
         x_ticks = list(range(0, last_roll + 1, 10))  # Major ticks every 10 rolls
 
-        # Remove the next-to-last tick if it is within 3 of the last roll
-        if len(x_ticks) >= 2 and (last_roll - x_ticks[-2]) <= 3:
-            x_ticks.pop(-2)  # Remove the next-to-last tick
+        # Remove the next-to-last tick if it is within 3 of the last roll and the last roll is not a multiple of 10
+        if len(x_ticks) >= 2:
+            next_to_last_tick = x_ticks[-2]
+            if (last_roll - next_to_last_tick) <= 3 and (last_roll % 10 != 0):
+                x_ticks.pop(-2)  # Remove the next-to-last tick
 
         # Add the last roll number if it's not already included
         if last_roll not in x_ticks:
