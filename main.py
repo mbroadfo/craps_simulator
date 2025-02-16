@@ -6,10 +6,18 @@ from craps.house_rules import HouseRules
 from craps.single_session import run_single_session
 from craps.visualizer import Visualizer
 from craps.table import Table
+from craps.view_log import InteractiveLogViewer
 from lineup import PlayerLineup  # Import the PlayerLineup class
+from config import ACTIVE_PLAYERS   # Import the list of active players
+import logging
 
-# Import the configuration
-from config import ACTIVE_PLAYERS
+# Configure logging
+logging.basicConfig(
+    filename='play_by_play.log',
+    level=logging.INFO,
+    format='%(message)s',  # No timestamp, just the message
+    encoding='utf-8'  # Ensure UTF-8 encoding
+)
 
 def main():
     # Initialize house rules
@@ -33,9 +41,13 @@ def main():
     stats.print_statistics()
     stats.print_shooter_report()
 
+    # View the log file interactively
+    log_viewer = InteractiveLogViewer()
+    log_viewer.view('./play_by_play.log')
+    
     # Visualize player bankrolls
     visualizer = Visualizer(stats)
     visualizer.visualize_bankrolls()
-
+    
 if __name__ == "__main__":
     main()

@@ -1,6 +1,7 @@
 # File: .\craps\player.py
 
 from craps.bet import Bet
+import logging
 
 class Player:
     def __init__(self, name, initial_balance=500, betting_strategy=None):
@@ -26,7 +27,7 @@ class Player:
 
         # Check if the player has sufficient funds
         if total_amount > self.balance:
-            print(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
+            logging.info(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
             return False
 
         # Place each bet and deduct the amount from the player's balance
@@ -40,10 +41,10 @@ class Player:
 
         # Summarize the bets placed
         if len(bets) == 1:
-            print(f"{self.name} placed a ${bets[0].amount} {bets[0].bet_type} bet. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
+            logging.info(f"{self.name} placed a ${bets[0].amount} {bets[0].bet_type} bet. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
         else:
             bet_summary = ", ".join(f"{b.bet_type} ${b.amount}" for b in bets)
-            print(f"{self.name} bet ${total_amount} on {bet_summary}. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
+            logging.info(f"{self.name} bet ${total_amount} on {bet_summary}. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
 
         return True
 
@@ -92,7 +93,7 @@ class Player:
 
         # Print summary of resolved bets
         if won_lost_bets:
-            print(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}. Updated Bankroll: ${self.balance}. Bet: ${sum(b.amount for b in self.active_bets)}")
+            logging.info(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}. Updated Bankroll: ${self.balance}. Bet: ${sum(b.amount for b in self.active_bets)}")
 
         # Summarize bets still on the table for the player (only if bets changed)
         if bets_changed:
@@ -101,9 +102,9 @@ class Player:
                 for bet in self.active_bets
             ]
             if active_bets_summary:
-                print(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
+                logging.info(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
             else:
-                print(f"{self.name} has no active bets.")
+                logging.info(f"{self.name} has no active bets.")
 
     def __str__(self):
         return f"Player: {self.name}, Balance: ${self.balance}"

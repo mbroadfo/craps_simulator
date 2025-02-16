@@ -1,4 +1,6 @@
 ## File: craps/statistics.py
+
+import logging
 class Statistics:
     def __init__(self, table_minimum, num_shooters, num_players):
         self.table_minimum = table_minimum
@@ -126,28 +128,28 @@ class Statistics:
 
     def print_statistics(self):
         """Print the simulation statistics."""
-        print("\n=== Simulation Statistics ===")
-        print(f"Table Minimum: ${self.table_minimum}")
-        print(f"Number of Shooters: {self.num_shooters}")
-        print(f"Number of Players: {self.num_players}")
-        print(f"Number of Rolls: {self.num_rolls}")
-        print(f"Total House Win/Loss: ${self.total_house_win_loss}")
-        print(f"Total Player Win/Loss: ${self.total_player_win_loss}")
-        print(f"Player Bankrolls: {self.player_bankrolls}")
-        print(f"Highest Player Bankroll: ${self.highest_bankroll}")
-        print(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
+        logging.info("\n=== Simulation Statistics ===")
+        logging.info(f"Table Minimum: ${self.table_minimum}")
+        logging.info(f"Number of Shooters: {self.num_shooters}")
+        logging.info(f"Number of Players: {self.num_players}")
+        logging.info(f"Number of Rolls: {self.num_rolls}")
+        logging.info(f"Total House Win/Loss: ${self.total_house_win_loss}")
+        logging.info(f"Total Player Win/Loss: ${self.total_player_win_loss}")
+        logging.info(f"Player Bankrolls: {self.player_bankrolls}")
+        logging.info(f"Highest Player Bankroll: ${self.highest_bankroll}")
+        logging.info(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
 
     def print_shooter_report(self):
         """Print a report summarizing each shooter's performance."""
-        print("\n=== Shooter Performance Report ===")
+        logging.info("\n=== Shooter Performance Report ===")
         for shooter_name, stats in self.shooter_stats.items():
             total_points_rolled = stats["points_rolled"]
             total_rolls = stats["total_rolls"]
             rolls_before_7_out = stats["rolls_before_7_out"]
             avg_rolls_before_7_out = sum(rolls_before_7_out) / len(rolls_before_7_out) if rolls_before_7_out else 0
 
-            print(f"\nShooter: {shooter_name}")
-            print(f"  Total Points Rolled: {total_points_rolled}")
-            print(f"  Total Rolls: {total_rolls}")
-            print(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
-            print(f"  Rolls Before 7-Out: {rolls_before_7_out}")
+            logging.info(f"\nShooter: {shooter_name}")
+            logging.info(f"  Total Points Rolled: {total_points_rolled}")
+            logging.info(f"  Total Rolls: {total_rolls}")
+            logging.info(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
+            logging.info(f"  Rolls Before 7-Out: {rolls_before_7_out}")

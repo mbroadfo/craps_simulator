@@ -1,9 +1,11 @@
 # File: craps/single_session.py
+
 from colorama import init, Fore, Style
 from craps.table import Table
 from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.statistics import Statistics
+import logging
 
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10):
     """
@@ -53,7 +55,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             stats.update_rolls()
 
             # Print the dice roll and total
-            print(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
+            logging.info(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
 
             # Check bets on the table
             table.check_bets(outcome, game_state.phase, game_state.point)
@@ -69,7 +71,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             previous_phase = game_state.phase
             message = game_state.update_state(outcome)
             if message:
-                print(message)
+                logging.info(message)
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:
