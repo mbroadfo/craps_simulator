@@ -1,4 +1,5 @@
 # File: config.py
+
 ACTIVE_PLAYERS = {
     "Pass-Line": True,
     "Pass-Line w/ Odds": True,
@@ -7,3 +8,6 @@ ACTIVE_PLAYERS = {
     "Field": True,
     "Iron Cross": True,
 }
+
+# Add a new configuration entry for session mode
+SESSION_MODE = "live"  # Options: "live" or "history"

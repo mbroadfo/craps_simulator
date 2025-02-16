@@ -4,15 +4,25 @@ from colorama import init, Fore, Style
 from craps.table import Table
 from craps.game_state import GameState
 from craps.shooter import Shooter
+from craps.dice import Dice
 from craps.statistics import Statistics
+from craps.visualizer import Visualizer
 import logging
-import json
 import os
+import csv
 
-def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10):
+def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None):
     """
     Run a single session of craps and log the roll history.
     """
+    # Print session mode
+    if roll_history_file and os.path.exists(roll_history_file):
+        print(f"Running session in 'history' mode using roll history from: {roll_history_file}")
+        dice = Dice(roll_history_file)  # Use the roll history file for dice rolls
+    else:
+        print("Running session in 'live' mode with random rolls.")
+        dice = Dice()  # Use random rolls
+
     # Initialize components
     table = Table(house_rules)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
@@ -23,7 +33,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         player_names = [f"Player {i+1}" for i in range(len(strategies))]
 
     players = [
-        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy)
+        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice)
         for i, strategy in enumerate(strategies)
     ]
     game_state.players = players
@@ -54,6 +64,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
 
             # Log the roll to the history
             roll_history.append({
+                "shooter_num": shooter_num,
                 "roll_number": stats.num_rolls,
                 "dice": outcome,
                 "total": total,
@@ -85,12 +96,21 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
                 stats.record_seven_out()
                 break
 
-    # Ensure the output directory exists
-    os.makedirs('output', exist_ok=True)
+    # Save the roll history to a CSV file if a file path is provided (only for live sessions)
+    if roll_history_file and not os.path.exists(roll_history_file):
+        with open(roll_history_file, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = ["shooter_num", "roll_number", "dice", "total", "phase", "point"]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-    # Save the roll history to a file in the output folder
-    roll_history_file = os.path.join('output', 'single_session_roll_history.json')
-    with open(roll_history_file, 'w', encoding='utf-8') as f:
-        json.dump(roll_history, f, indent=4)
+            # Write the header
+            writer.writeheader()
+
+            # Write the roll history
+            for roll in roll_history:
+                writer.writerow(roll)
+
+    # Visualize player bankrolls
+    visualizer = Visualizer(stats)
+    visualizer.visualize_bankrolls()
 
     return stats

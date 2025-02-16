@@ -2,9 +2,9 @@ from craps.player import Player
 from craps.dice import Dice
 
 class Shooter(Player):
-    def __init__(self, name, initial_balance=0, betting_strategy=None):
+    def __init__(self, name, initial_balance=0, betting_strategy=None, dice=None):
         super().__init__(name, initial_balance, betting_strategy)
-        self.dice = Dice()
+        self.dice = dice if dice else Dice()  # Use provided Dice instance or create a new one
         self.points_rolled = 0  # Number of times the shooter rolled the point
         self.rolls_before_7_out = 0  # Number of rolls before 7-ing out
         self.current_roll_count = 0  # Tracks rolls in the current turn
