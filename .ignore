@@ -17,3 +17,5 @@ env/
 
 # Ignore local output files
 combined_files.txt
+*.log
+*.csv

@@ -11,3 +11,11 @@ ACTIVE_PLAYERS = {
 
 # Add a new configuration entry for session mode
 SESSION_MODE = "history"  # Options: "live" or "history"
+
+# House Rules Configuration
+HOUSE_RULES = {
+    "field_bet_payout_2": (2, 1),  # 2:1 payout for 2
+    "field_bet_payout_12": (3, 1),  # 3:1 payout for 12
+    "table_minimum": 10,  # Minimum bet amount
+    "table_maximum": 5000,  # Maximum bet amount
+}

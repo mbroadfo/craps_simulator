@@ -1,8 +1,9 @@
 # File: main.py
+
 from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
 
-from config import ACTIVE_PLAYERS, SESSION_MODE
+from config import ACTIVE_PLAYERS, SESSION_MODE, HOUSE_RULES  # Import HOUSE_RULES
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.lineup import PlayerLineup
@@ -13,17 +14,15 @@ def main():
     # Initialize the RollHistoryManager
     roll_history_manager = RollHistoryManager()
 
-    # Prepare for the session based on the session mode
     try:
+        # Prepare for the session based on the session mode
         roll_history_manager.prepare_for_session(SESSION_MODE)
     except (ValueError, FileNotFoundError) as e:
         print(f"Error: {e}")
         return
 
-    # Initialize house rules
-    house_rules = HouseRules()
-    house_rules.set_field_bet_payouts((3, 1), (2, 1))  # 3:1 for 2, 2:1 for 12
-    house_rules.set_table_limits(10, 1000)  # Table limits
+    # Initialize house rules using the configuration from config.py
+    house_rules = HouseRules(HOUSE_RULES)
 
     # Create the Table object
     table = Table(house_rules)
