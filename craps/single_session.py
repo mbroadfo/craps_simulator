@@ -7,9 +7,7 @@ from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.visualizer import Visualizer
-import logging
 import os
-import csv
 
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None):
     """
@@ -96,21 +94,10 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
                 stats.record_seven_out()
                 break
 
-    # Save the roll history to a CSV file if a file path is provided (only for live sessions)
-    if roll_history_file and not os.path.exists(roll_history_file):
-        with open(roll_history_file, 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ["shooter_num", "roll_number", "dice", "total", "phase", "point"]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-            # Write the header
-            writer.writeheader()
-
-            # Write the roll history
-            for roll in roll_history:
-                writer.writerow(roll)
-
     # Visualize player bankrolls
     visualizer = Visualizer(stats)
     visualizer.visualize_bankrolls()
 
+    # Return stats and roll history
+    stats.roll_history = roll_history
     return stats

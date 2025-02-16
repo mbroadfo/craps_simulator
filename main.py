@@ -2,41 +2,22 @@
 from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
 
-import os
-from config import ACTIVE_PLAYERS, SESSION_MODE  # Import the new SESSION_MODE
+from config import ACTIVE_PLAYERS, SESSION_MODE
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.lineup import PlayerLineup
 from craps.single_session import run_single_session
+from craps.roll_history_manager import RollHistoryManager  # Import the new class
 
 def main():
-    # Define the output folder and roll history file
-    output_folder = 'output'
-    roll_history_file = os.path.join(output_folder, 'single_session_roll_history.csv')
+    # Initialize the RollHistoryManager
+    roll_history_manager = RollHistoryManager()
 
-    # Ensure the output folder exists
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-        print(f"Created output folder: {output_folder}")
-
-    # Handle live and history modes
-    if SESSION_MODE == "live":
-        # Delete the roll history file if it exists
-        if os.path.exists(roll_history_file):
-            os.remove(roll_history_file)
-            print(f"Deleted existing roll history file: {roll_history_file}")
-        
-        # Run a live session and save the roll history to a CSV file
-        print("Running session in 'live' mode with random rolls.")
-    elif SESSION_MODE == "history":
-        # Check if the roll history file exists
-        if not os.path.exists(roll_history_file):
-            print(f"Error: Roll history file '{roll_history_file}' not found. Please run in 'live' mode first.")
-            return
-        # Replay a session using the roll history file
-        print(f"Running session in 'history' mode using roll history from: {roll_history_file}")
-    else:
-        print(f"Error: Invalid SESSION_MODE '{SESSION_MODE}'. Must be 'live' or 'history'.")
+    # Prepare for the session based on the session mode
+    try:
+        roll_history_manager.prepare_for_session(SESSION_MODE)
+    except (ValueError, FileNotFoundError) as e:
+        print(f"Error: {e}")
         return
 
     # Initialize house rules
@@ -54,7 +35,16 @@ def main():
     strategies, player_names = player_lineup.get_active_players(ACTIVE_PLAYERS)
 
     # Run the session
-    stats = run_single_session(house_rules, strategies, player_names=player_names, roll_history_file=roll_history_file)
+    stats = run_single_session(
+        house_rules,
+        strategies,
+        player_names=player_names,
+        roll_history_file=roll_history_manager.roll_history_file if SESSION_MODE == "history" else None
+    )
+
+    # Save the roll history if running in live mode
+    if SESSION_MODE == "live":
+        roll_history_manager.save_roll_history(stats.roll_history)
 
     # Print statistics
     stats.print_statistics()
