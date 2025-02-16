@@ -1,0 +1,652 @@
+[
+    {
+        "roll_number": 1,
+        "dice": [
+            6,
+            4
+        ],
+        "total": 10,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 2,
+        "dice": [
+            2,
+            5
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 10
+    },
+    {
+        "roll_number": 3,
+        "dice": [
+            2,
+            5
+        ],
+        "total": 7,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 4,
+        "dice": [
+            4,
+            4
+        ],
+        "total": 8,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 5,
+        "dice": [
+            5,
+            4
+        ],
+        "total": 9,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 6,
+        "dice": [
+            3,
+            6
+        ],
+        "total": 9,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 7,
+        "dice": [
+            2,
+            4
+        ],
+        "total": 6,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 8,
+        "dice": [
+            4,
+            3
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 9,
+        "dice": [
+            4,
+            4
+        ],
+        "total": 8,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 10,
+        "dice": [
+            3,
+            6
+        ],
+        "total": 9,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 11,
+        "dice": [
+            4,
+            4
+        ],
+        "total": 8,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 12,
+        "dice": [
+            1,
+            1
+        ],
+        "total": 2,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 13,
+        "dice": [
+            1,
+            3
+        ],
+        "total": 4,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 14,
+        "dice": [
+            3,
+            5
+        ],
+        "total": 8,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 15,
+        "dice": [
+            6,
+            3
+        ],
+        "total": 9,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 16,
+        "dice": [
+            5,
+            6
+        ],
+        "total": 11,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 17,
+        "dice": [
+            5,
+            5
+        ],
+        "total": 10,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 18,
+        "dice": [
+            4,
+            4
+        ],
+        "total": 8,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 19,
+        "dice": [
+            6,
+            3
+        ],
+        "total": 9,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 20,
+        "dice": [
+            3,
+            1
+        ],
+        "total": 4,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 21,
+        "dice": [
+            3,
+            2
+        ],
+        "total": 5,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 22,
+        "dice": [
+            4,
+            1
+        ],
+        "total": 5,
+        "phase": "point",
+        "point": 5
+    },
+    {
+        "roll_number": 23,
+        "dice": [
+            6,
+            3
+        ],
+        "total": 9,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 24,
+        "dice": [
+            1,
+            1
+        ],
+        "total": 2,
+        "phase": "point",
+        "point": 9
+    },
+    {
+        "roll_number": 25,
+        "dice": [
+            3,
+            6
+        ],
+        "total": 9,
+        "phase": "point",
+        "point": 9
+    },
+    {
+        "roll_number": 26,
+        "dice": [
+            1,
+            2
+        ],
+        "total": 3,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 27,
+        "dice": [
+            5,
+            6
+        ],
+        "total": 11,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 28,
+        "dice": [
+            3,
+            4
+        ],
+        "total": 7,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 29,
+        "dice": [
+            1,
+            1
+        ],
+        "total": 2,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 30,
+        "dice": [
+            2,
+            6
+        ],
+        "total": 8,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 31,
+        "dice": [
+            1,
+            6
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 32,
+        "dice": [
+            4,
+            3
+        ],
+        "total": 7,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 33,
+        "dice": [
+            3,
+            5
+        ],
+        "total": 8,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 34,
+        "dice": [
+            1,
+            2
+        ],
+        "total": 3,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 35,
+        "dice": [
+            6,
+            2
+        ],
+        "total": 8,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 36,
+        "dice": [
+            2,
+            5
+        ],
+        "total": 7,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 37,
+        "dice": [
+            2,
+            2
+        ],
+        "total": 4,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 38,
+        "dice": [
+            4,
+            3
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 39,
+        "dice": [
+            6,
+            5
+        ],
+        "total": 11,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 40,
+        "dice": [
+            5,
+            1
+        ],
+        "total": 6,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 41,
+        "dice": [
+            4,
+            3
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 6
+    },
+    {
+        "roll_number": 42,
+        "dice": [
+            3,
+            1
+        ],
+        "total": 4,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 43,
+        "dice": [
+            1,
+            6
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 4
+    },
+    {
+        "roll_number": 44,
+        "dice": [
+            1,
+            5
+        ],
+        "total": 6,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 45,
+        "dice": [
+            5,
+            1
+        ],
+        "total": 6,
+        "phase": "point",
+        "point": 6
+    },
+    {
+        "roll_number": 46,
+        "dice": [
+            6,
+            2
+        ],
+        "total": 8,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 47,
+        "dice": [
+            3,
+            5
+        ],
+        "total": 8,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 48,
+        "dice": [
+            5,
+            1
+        ],
+        "total": 6,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 49,
+        "dice": [
+            3,
+            1
+        ],
+        "total": 4,
+        "phase": "point",
+        "point": 6
+    },
+    {
+        "roll_number": 50,
+        "dice": [
+            1,
+            6
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 6
+    },
+    {
+        "roll_number": 51,
+        "dice": [
+            6,
+            1
+        ],
+        "total": 7,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 52,
+        "dice": [
+            6,
+            1
+        ],
+        "total": 7,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 53,
+        "dice": [
+            6,
+            2
+        ],
+        "total": 8,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 54,
+        "dice": [
+            1,
+            2
+        ],
+        "total": 3,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 55,
+        "dice": [
+            1,
+            6
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 56,
+        "dice": [
+            2,
+            6
+        ],
+        "total": 8,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 57,
+        "dice": [
+            2,
+            2
+        ],
+        "total": 4,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 58,
+        "dice": [
+            2,
+            5
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 8
+    },
+    {
+        "roll_number": 59,
+        "dice": [
+            2,
+            3
+        ],
+        "total": 5,
+        "phase": "come-out",
+        "point": null
+    },
+    {
+        "roll_number": 60,
+        "dice": [
+            6,
+            5
+        ],
+        "total": 11,
+        "phase": "point",
+        "point": 5
+    },
+    {
+        "roll_number": 61,
+        "dice": [
+            5,
+            1
+        ],
+        "total": 6,
+        "phase": "point",
+        "point": 5
+    },
+    {
+        "roll_number": 62,
+        "dice": [
+            3,
+            5
+        ],
+        "total": 8,
+        "phase": "point",
+        "point": 5
+    },
+    {
+        "roll_number": 63,
+        "dice": [
+            6,
+            5
+        ],
+        "total": 11,
+        "phase": "point",
+        "point": 5
+    },
+    {
+        "roll_number": 64,
+        "dice": [
+            6,
+            6
+        ],
+        "total": 12,
+        "phase": "point",
+        "point": 5
+    },
+    {
+        "roll_number": 65,
+        "dice": [
+            3,
+            4
+        ],
+        "total": 7,
+        "phase": "point",
+        "point": 5
+    }
+]

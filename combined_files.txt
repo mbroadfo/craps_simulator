@@ -3,10 +3,10 @@
 # File: config.py
 ACTIVE_PLAYERS = {
     "Pass-Line": True,
-    "Pass-Line w/ Odds": False,
-    "$44 Inside": False,
-    "$54 Across": False,
-    "Field": False,
+    "Pass-Line w/ Odds": True,
+    "$44 Inside": True,
+    "$54 Across": True,
+    "Field": True,
     "Iron Cross": True,
 }
 
@@ -37,48 +37,6 @@ output_file = 'combined_files.txt'
 dump_python_files(project_directory, output_file)
 print(f"All Python files have been combined into {output_file}")
 
-# File: .\lineup.py
-
-# File: lineup.py
-from craps.strategies.pass_line import PassLineStrategy
-from craps.strategies.pass_line_odds import PassLineOddsStrategy
-from craps.strategies.place_bet import PlaceBetStrategy
-from craps.strategies.field_bet import FieldBetStrategy
-from craps.strategies.iron_cross import IronCrossStrategy
-
-class PlayerLineup:
-    """Class to manage the lineup of players and their strategies."""
-    def __init__(self, house_rules, table):
-        """
-        Initialize the player lineup.
-        
-        :param house_rules: The HouseRules object for table limits and payouts.
-        :param table: The Table object for placing bets.
-        """
-        self.house_rules = house_rules
-        self.table = table
-
-        # Define all possible strategies and their names
-        self.all_strategies = {
-            "Pass-Line": PassLineStrategy(min_bet=self.house_rules.table_minimum),
-            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, odds_multiple=1),
-            "$44 Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside"),
-            "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across"),
-            "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
-            "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum),
-        }
-
-    def get_active_players(self, active_players_config):
-        """
-        Get the list of active strategies and player names based on the configuration.
-        
-        :param active_players_config: A dictionary specifying which players are active.
-        :return: A tuple of (strategies, player_names).
-        """
-        strategies = [strategy for name, strategy in self.all_strategies.items() if active_players_config.get(name, False)]
-        player_names = [name for name, active in active_players_config.items() if active]
-        return strategies, player_names
-
 # File: .\main.py
 
 # File: main.py
@@ -89,10 +47,18 @@ from craps.house_rules import HouseRules
 from craps.single_session import run_single_session
 from craps.visualizer import Visualizer
 from craps.table import Table
-from lineup import PlayerLineup  # Import the PlayerLineup class
+from craps.view_log import InteractiveLogViewer
+from craps.lineup import PlayerLineup  # Import the PlayerLineup class
+from config import ACTIVE_PLAYERS   # Import the list of active players
+import logging
 
-# Import the configuration
-from config import ACTIVE_PLAYERS
+# Configure logging
+logging.basicConfig(
+    filename='play_by_play.log',
+    level=logging.INFO,
+    format='%(message)s',  # No timestamp, just the message
+    encoding='utf-8'  # Ensure UTF-8 encoding
+)
 
 def main():
     # Initialize house rules
@@ -116,10 +82,14 @@ def main():
     stats.print_statistics()
     stats.print_shooter_report()
 
+    # View the log file interactively
+    log_viewer = InteractiveLogViewer()
+    log_viewer.view('./play_by_play.log')
+    
     # Visualize player bankrolls
     visualizer = Visualizer(stats)
     visualizer.visualize_bankrolls()
-
+    
 if __name__ == "__main__":
     main()
 
@@ -296,7 +266,7 @@ class Dice:
 
 from colorama import Fore, Style
 from craps.puck import Puck
-
+import logging
 class GameState:
     def __init__(self, stats, players):
         """
@@ -316,7 +286,7 @@ class GameState:
         """Set the current shooter and reset their statistics."""
         self.shooter = shooter
         self.shooter.reset_stats()
-        print(f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}")
+        logging.info(f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}")
 
     def update_state(self, dice_outcome):
         """Update the game state based on the dice outcome."""
@@ -343,7 +313,7 @@ class GameState:
                             bet.status = "active"
                             reactivated_bets.append(f"{player.name}'s {bet.bet_type}")
                 if reactivated_bets:
-                    print(f"{', '.join(reactivated_bets)} are now ON.")
+                    logging.info(f"{', '.join(reactivated_bets)} are now ON.")
         else:  # Point phase
             if total == self.puck.point:
                 self.shooter.points_rolled += 1  # Increment points rolled
@@ -395,11 +365,54 @@ class HouseRules:
         self.table_minimum = minimum
         self.table_maximum = maximum
 
+# File: .\craps\lineup.py
+
+# File: lineup.py
+from craps.strategies.pass_line import PassLineStrategy
+from craps.strategies.pass_line_odds import PassLineOddsStrategy
+from craps.strategies.place_bet import PlaceBetStrategy
+from craps.strategies.field_bet import FieldBetStrategy
+from craps.strategies.iron_cross import IronCrossStrategy
+
+class PlayerLineup:
+    """Class to manage the lineup of players and their strategies."""
+    def __init__(self, house_rules, table):
+        """
+        Initialize the player lineup.
+        
+        :param house_rules: The HouseRules object for table limits and payouts.
+        :param table: The Table object for placing bets.
+        """
+        self.house_rules = house_rules
+        self.table = table
+
+        # Define all possible strategies and their names
+        self.all_strategies = {
+            "Pass-Line": PassLineStrategy(min_bet=self.house_rules.table_minimum),
+            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, odds_multiple=1),
+            "$44 Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside"),
+            "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across"),
+            "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
+            "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum),
+        }
+
+    def get_active_players(self, active_players_config):
+        """
+        Get the list of active strategies and player names based on the configuration.
+        
+        :param active_players_config: A dictionary specifying which players are active.
+        :return: A tuple of (strategies, player_names).
+        """
+        strategies = [strategy for name, strategy in self.all_strategies.items() if active_players_config.get(name, False)]
+        player_names = [name for name, active in active_players_config.items() if active]
+        return strategies, player_names
+
 # File: .\craps\player.py
 
 # File: .\craps\player.py
 
 from craps.bet import Bet
+import logging
 
 class Player:
     def __init__(self, name, initial_balance=500, betting_strategy=None):
@@ -425,7 +438,7 @@ class Player:
 
         # Check if the player has sufficient funds
         if total_amount > self.balance:
-            print(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
+            logging.info(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
             return False
 
         # Place each bet and deduct the amount from the player's balance
@@ -439,10 +452,10 @@ class Player:
 
         # Summarize the bets placed
         if len(bets) == 1:
-            print(f"{self.name} placed a ${bets[0].amount} {bets[0].bet_type} bet. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
+            logging.info(f"{self.name} placed a ${bets[0].amount} {bets[0].bet_type} bet. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
         else:
             bet_summary = ", ".join(f"{b.bet_type} ${b.amount}" for b in bets)
-            print(f"{self.name} bet ${total_amount} on {bet_summary}. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
+            logging.info(f"{self.name} bet ${total_amount} on {bet_summary}. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
 
         return True
 
@@ -491,7 +504,7 @@ class Player:
 
         # Print summary of resolved bets
         if won_lost_bets:
-            print(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}. Updated Bankroll: ${self.balance}. Bet: ${sum(b.amount for b in self.active_bets)}")
+            logging.info(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}. Updated Bankroll: ${self.balance}. Bet: ${sum(b.amount for b in self.active_bets)}")
 
         # Summarize bets still on the table for the player (only if bets changed)
         if bets_changed:
@@ -500,9 +513,9 @@ class Player:
                 for bet in self.active_bets
             ]
             if active_bets_summary:
-                print(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
+                logging.info(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
             else:
-                print(f"{self.name} has no active bets.")
+                logging.info(f"{self.name} has no active bets.")
 
     def __str__(self):
         return f"Player: {self.name}, Balance: ${self.balance}"
@@ -521,6 +534,83 @@ class Puck:
     def reset(self):
         self.position = "Off"
         self.point = None
+
+# File: .\craps\replay_single_session.py
+
+import json
+import os
+from craps.table import Table
+from craps.house_rules import HouseRules
+from craps.game_state import GameState
+from craps.statistics import Statistics
+from lineup import PlayerLineup
+from config import ACTIVE_PLAYERS
+
+def replay_single_session(roll_history_file=os.path.join('output', 'single_session_roll_history.json')):
+    """
+    Replay a single craps session using the roll history.
+    """
+    # Load the roll history
+    with open(roll_history_file, 'r', encoding='utf-8') as f:
+        roll_history = json.load(f)
+
+    # Initialize house rules
+    house_rules = HouseRules()
+    house_rules.set_field_bet_payouts((3, 1), (2, 1))  # 3:1 for 2, 2:1 for 12
+    house_rules.set_table_limits(10, 1000)  # Table limits
+
+    # Create the Table object
+    table = Table(house_rules)
+
+    # Initialize the player lineup
+    player_lineup = PlayerLineup(house_rules, table)
+
+    # Get active strategies and player names
+    strategies, player_names = player_lineup.get_active_players(ACTIVE_PLAYERS)
+
+    # Initialize game state and statistics
+    stats = Statistics(house_rules.table_minimum, len(roll_history), len(strategies))
+    game_state = GameState(stats, players=[])
+
+    # Create players with different betting strategies
+    players = [
+        Shooter(player_names[i], initial_balance=500, betting_strategy=strategy)
+        for i, strategy in enumerate(strategies)
+    ]
+    game_state.players = players
+
+    # Initialize bankroll history with the starting bankroll for each player
+    stats.initialize_bankroll_history(players)
+
+    # Replay each roll
+    for roll in roll_history:
+        # Update game state
+        game_state.phase = roll["phase"]
+        game_state.point = roll["point"]
+
+        # Simulate the dice roll
+        outcome = roll["dice"]
+        total = roll["total"]
+
+        # Print the dice roll and total
+        print(f"Roll {roll['roll_number']}: {outcome} (Total: {total}) | Phase: {game_state.phase} | Point: {game_state.point}")
+
+        # Check bets on the table
+        table.check_bets(outcome, game_state.phase, game_state.point)
+
+        # Resolve bets for each player and update their bankroll
+        for player in players:
+            player.resolve_bets(table, stats, outcome, game_state.phase, game_state.point)
+
+        # Update player bankrolls in statistics
+        stats.update_player_bankrolls(players)
+
+    # Print statistics
+    stats.print_statistics()
+    stats.print_shooter_report()
+
+if __name__ == "__main__":
+    replay_single_session()
 
 # File: .\craps\shooter.py
 
@@ -581,22 +671,19 @@ class SimulationManager:
 # File: .\craps\single_session.py
 
 # File: craps/single_session.py
+
 from colorama import init, Fore, Style
 from craps.table import Table
 from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.statistics import Statistics
+import logging
+import json
+import os
 
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10):
     """
-    Run a single session of craps.
-    
-    :param house_rules: The HouseRules object for payout rules and limits.
-    :param strategies: A list of betting strategies to evaluate.
-    :param player_names: A list of names for the players (optional).
-    :param initial_bankroll: The initial bankroll for each player.
-    :param num_shooters: The number of shooters per session.
-    :return: The Statistics object containing session results.
+    Run a single session of craps and log the roll history.
     """
     # Initialize components
     table = Table(house_rules)
@@ -616,6 +703,9 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     # Initialize bankroll history with the starting bankroll for each player
     stats.initialize_bankroll_history(players)
 
+    # Initialize roll history
+    roll_history = []
+
     # Simulate shooters
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
@@ -633,6 +723,15 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             outcome = shooter.roll_dice()
             total = sum(outcome)
             stats.update_rolls()
+
+            # Log the roll to the history
+            roll_history.append({
+                "roll_number": stats.num_rolls,
+                "dice": outcome,
+                "total": total,
+                "phase": game_state.phase,
+                "point": game_state.point
+            })
 
             # Print the dice roll and total
             print(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
@@ -658,11 +757,21 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
                 stats.record_seven_out()
                 break
 
+    # Ensure the output directory exists
+    os.makedirs('output', exist_ok=True)
+
+    # Save the roll history to a file in the output folder
+    roll_history_file = os.path.join('output', 'single_session_roll_history.json')
+    with open(roll_history_file, 'w', encoding='utf-8') as f:
+        json.dump(roll_history, f, indent=4)
+
     return stats
 
 # File: .\craps\statistics.py
 
 ## File: craps/statistics.py
+
+import logging
 class Statistics:
     def __init__(self, table_minimum, num_shooters, num_players):
         self.table_minimum = table_minimum
@@ -790,31 +899,31 @@ class Statistics:
 
     def print_statistics(self):
         """Print the simulation statistics."""
-        print("\n=== Simulation Statistics ===")
-        print(f"Table Minimum: ${self.table_minimum}")
-        print(f"Number of Shooters: {self.num_shooters}")
-        print(f"Number of Players: {self.num_players}")
-        print(f"Number of Rolls: {self.num_rolls}")
-        print(f"Total House Win/Loss: ${self.total_house_win_loss}")
-        print(f"Total Player Win/Loss: ${self.total_player_win_loss}")
-        print(f"Player Bankrolls: {self.player_bankrolls}")
-        print(f"Highest Player Bankroll: ${self.highest_bankroll}")
-        print(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
+        logging.info("\n=== Simulation Statistics ===")
+        logging.info(f"Table Minimum: ${self.table_minimum}")
+        logging.info(f"Number of Shooters: {self.num_shooters}")
+        logging.info(f"Number of Players: {self.num_players}")
+        logging.info(f"Number of Rolls: {self.num_rolls}")
+        logging.info(f"Total House Win/Loss: ${self.total_house_win_loss}")
+        logging.info(f"Total Player Win/Loss: ${self.total_player_win_loss}")
+        logging.info(f"Player Bankrolls: {self.player_bankrolls}")
+        logging.info(f"Highest Player Bankroll: ${self.highest_bankroll}")
+        logging.info(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
 
     def print_shooter_report(self):
         """Print a report summarizing each shooter's performance."""
-        print("\n=== Shooter Performance Report ===")
+        logging.info("\n=== Shooter Performance Report ===")
         for shooter_name, stats in self.shooter_stats.items():
             total_points_rolled = stats["points_rolled"]
             total_rolls = stats["total_rolls"]
             rolls_before_7_out = stats["rolls_before_7_out"]
             avg_rolls_before_7_out = sum(rolls_before_7_out) / len(rolls_before_7_out) if rolls_before_7_out else 0
 
-            print(f"\nShooter: {shooter_name}")
-            print(f"  Total Points Rolled: {total_points_rolled}")
-            print(f"  Total Rolls: {total_rolls}")
-            print(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
-            print(f"  Rolls Before 7-Out: {rolls_before_7_out}")
+            logging.info(f"\nShooter: {shooter_name}")
+            logging.info(f"  Total Points Rolled: {total_points_rolled}")
+            logging.info(f"  Total Rolls: {total_rolls}")
+            logging.info(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
+            logging.info(f"  Rolls Before 7-Out: {rolls_before_7_out}")
 
 # File: .\craps\table.py
 
@@ -856,6 +965,96 @@ class Table:
         else:
             # For other numbers, the minimum bet is the table minimum
             return self.house_rules.table_minimum
+
+# File: .\craps\view_log.py
+
+import subprocess
+from abc import ABC, abstractmethod
+import os
+import sys
+
+class LogViewer(ABC):
+    """
+    Abstract base class for log viewers.
+    """
+
+    @abstractmethod
+    def view(self, log_file: str):
+        """
+        View the log file.
+        
+        :param log_file: Path to the log file.
+        """
+        pass
+
+
+class InteractiveLogViewer(LogViewer):
+    """
+    Concrete class for interactive log viewing.
+    """
+
+    def view(self, log_file: str):
+        """
+        Open the log file interactively.
+        
+        :param log_file: Path to the log file.
+        """
+        # Check if the log file exists
+        if not os.path.exists(log_file):
+            print(f"Log file '{log_file}' not found.")
+            return
+
+        # Handle Windows and Unix-like systems differently
+        if sys.platform == "win32":
+            # Windows: Use Python to print the file contents
+            try:
+                with open(log_file, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        print(line, end='')
+            except Exception as e:
+                print(f"An error occurred while trying to view the log file: {e}")
+        else:
+            # Unix-like systems: Use `less -R`
+            try:
+                subprocess.run(['less', '-R', log_file])
+            except FileNotFoundError:
+                print("'less' command not found. Falling back to plain text viewing.")
+                self._view_plain_text(log_file)
+            except Exception as e:
+                print(f"An error occurred while trying to view the log file: {e}")
+
+    def _view_plain_text(self, log_file: str):
+        """
+        Fallback method to view the log file as plain text.
+        
+        :param log_file: Path to the log file.
+        """
+        try:
+            with open(log_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    print(line, end='')
+        except Exception as e:
+            print(f"An error occurred while trying to view the log file: {e}")
+
+
+class PlainTextLogViewer(LogViewer):
+    """
+    Concrete class for plain text log viewing.
+    """
+
+    def view(self, log_file: str):
+        """
+        Print the log file to the console.
+        
+        :param log_file: Path to the log file.
+        """
+
+        try:
+            with open(log_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    print(line, end='')
+        except Exception as e:
+            print(f"An error occurred while trying to view the log file: {e}")
 
 # File: .\craps\visualizer.py
 

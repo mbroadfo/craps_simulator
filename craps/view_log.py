@@ -29,18 +29,10 @@ class InteractiveLogViewer(LogViewer):
         
         :param log_file: Path to the log file.
         """
-        # Print the current working directory
-        print(f"Current working directory: {os.getcwd()}")
-
-        # Print the log file path
-        print(f"Log file path: {log_file}")
-
         # Check if the log file exists
         if not os.path.exists(log_file):
             print(f"Log file '{log_file}' not found.")
             return
-
-        print("Log file exists.")
 
         # Handle Windows and Unix-like systems differently
         if sys.platform == "win32":
@@ -86,18 +78,6 @@ class PlainTextLogViewer(LogViewer):
         
         :param log_file: Path to the log file.
         """
-        # Print the current working directory
-        print(f"Current working directory: {os.getcwd()}")
-
-        # Print the log file path
-        print(f"Log file path: {log_file}")
-
-        # Check if the log file exists
-        if not os.path.exists(log_file):
-            print(f"Log file '{log_file}' not found.")
-            return
-
-        print("Log file exists.")
 
         try:
             with open(log_file, 'r', encoding='utf-8') as f:

@@ -7,7 +7,7 @@ from craps.single_session import run_single_session
 from craps.visualizer import Visualizer
 from craps.table import Table
 from craps.view_log import InteractiveLogViewer
-from lineup import PlayerLineup  # Import the PlayerLineup class
+from craps.lineup import PlayerLineup  # Import the PlayerLineup class
 from config import ACTIVE_PLAYERS   # Import the list of active players
 import logging
 

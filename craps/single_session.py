@@ -6,17 +6,12 @@ from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.statistics import Statistics
 import logging
+import json
+import os
 
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10):
     """
-    Run a single session of craps.
-    
-    :param house_rules: The HouseRules object for payout rules and limits.
-    :param strategies: A list of betting strategies to evaluate.
-    :param player_names: A list of names for the players (optional).
-    :param initial_bankroll: The initial bankroll for each player.
-    :param num_shooters: The number of shooters per session.
-    :return: The Statistics object containing session results.
+    Run a single session of craps and log the roll history.
     """
     # Initialize components
     table = Table(house_rules)
@@ -36,6 +31,9 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     # Initialize bankroll history with the starting bankroll for each player
     stats.initialize_bankroll_history(players)
 
+    # Initialize roll history
+    roll_history = []
+
     # Simulate shooters
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
@@ -54,8 +52,17 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             total = sum(outcome)
             stats.update_rolls()
 
+            # Log the roll to the history
+            roll_history.append({
+                "roll_number": stats.num_rolls,
+                "dice": outcome,
+                "total": total,
+                "phase": game_state.phase,
+                "point": game_state.point
+            })
+
             # Print the dice roll and total
-            logging.info(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
+            print(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
 
             # Check bets on the table
             table.check_bets(outcome, game_state.phase, game_state.point)
@@ -71,11 +78,19 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             previous_phase = game_state.phase
             message = game_state.update_state(outcome)
             if message:
-                logging.info(message)
+                print(message)
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:
                 stats.record_seven_out()
                 break
+
+    # Ensure the output directory exists
+    os.makedirs('output', exist_ok=True)
+
+    # Save the roll history to a file in the output folder
+    roll_history_file = os.path.join('output', 'single_session_roll_history.json')
+    with open(roll_history_file, 'w', encoding='utf-8') as f:
+        json.dump(roll_history, f, indent=4)
 
     return stats
