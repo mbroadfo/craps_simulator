@@ -12,7 +12,15 @@ ACTIVE_PLAYERS = {
 }
 
 # Add a new configuration entry for session mode
-SESSION_MODE = "history"  # Options: "live" or "history"
+SESSION_MODE = "live"  # Options: "live" or "history"
+
+# House Rules Configuration
+HOUSE_RULES = {
+    "field_bet_payout_2": (2, 1),  # 2:1 payout for 2
+    "field_bet_payout_12": (3, 1),  # 3:1 payout for 12
+    "table_minimum": 10,  # Minimum bet amount
+    "table_maximum": 5000,  # Maximum bet amount
+}
 
 # File: .\dump_py.py
 
@@ -44,10 +52,11 @@ print(f"All Python files have been combined into {output_file}")
 # File: .\main.py
 
 # File: main.py
+
 from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
 
-from config import ACTIVE_PLAYERS, SESSION_MODE
+from config import ACTIVE_PLAYERS, SESSION_MODE, HOUSE_RULES  # Import HOUSE_RULES
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.lineup import PlayerLineup
@@ -65,10 +74,8 @@ def main():
         print(f"Error: {e}")
         return
 
-    # Initialize house rules
-    house_rules = HouseRules()
-    house_rules.set_field_bet_payouts((3, 1), (2, 1))  # 3:1 for 2, 2:1 for 12
-    house_rules.set_table_limits(10, 1000)  # Table limits
+    # Initialize house rules using the configuration from config.py
+    house_rules = HouseRules(HOUSE_RULES)
 
     # Create the Table object
     table = Table(house_rules)
@@ -386,16 +393,19 @@ class GameState:
 # File: .\craps\house_rules.py
 
 # File: craps/house_rules.py
+
 class HouseRules:
     """Class representing house rules for payouts and table limits."""
-    def __init__(self):
-        # Default payout ratios for Field Bet
-        self.field_bet_payout_2 = (2, 1)  # 2:1 payout for 2
-        self.field_bet_payout_12 = (3, 1)  # 3:1 payout for 12
-
-        # Table limits
-        self.table_minimum = 10  # Minimum bet amount
-        self.table_maximum = 5000  # Maximum bet amount
+    def __init__(self, config):
+        """
+        Initialize the HouseRules with configuration from config.py.
+        
+        :param config: A dictionary containing house rules configuration.
+        """
+        self.field_bet_payout_2 = config.get("field_bet_payout_2", (2, 1))  # Default to 2:1 for 2
+        self.field_bet_payout_12 = config.get("field_bet_payout_12", (3, 1))  # Default to 3:1 for 12
+        self.table_minimum = config.get("table_minimum", 10)  # Default to $10
+        self.table_maximum = config.get("table_maximum", 5000)  # Default to $5000
 
     def set_field_bet_payouts(self, payout_2, payout_12):
         """Set the payout ratios for the Field Bet."""

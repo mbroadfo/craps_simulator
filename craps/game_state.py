@@ -1,33 +1,49 @@
 # File: craps/game_state.py
 
-from colorama import Fore, Style
+from typing import List, Optional
 from craps.puck import Puck
+from colorama import Fore, Style
 import logging
+
 class GameState:
-    def __init__(self, stats, players):
+    def __init__(self):
         """
         Initialize the game state.
-        
-        :param stats: The Statistics object to track point number rolls.
-        :param players: The list of players in the game.
         """
-        self.phase = "come-out"
-        self.point = None
-        self.puck = Puck()
-        self.shooter = None
-        self.stats = stats  # Store the stats object
-        self.players = players  # Store the players list
+        self.phase = "come-out"  # Current game phase ("come-out" or "point")
+        self.point = None  # Current point number (if in point phase)
+        self.puck = Puck()  # Puck to indicate the point
+        self.players = []  # List of players in the game (can be set later)
+        self.shooter = None  # Current shooter
+        self.stats = None  # Statistics object (can be set later)
 
-    def set_shooter(self, shooter):
-        """Set the current shooter and reset their statistics."""
+    def set_players(self, players: List) -> None:
+        """
+        Set the list of players in the game.
+
+        :param players: The list of players.
+        """
+        self.players = players
+
+    def set_shooter(self, shooter) -> None:
+        """
+        Set the current shooter and reset their statistics.
+
+        :param shooter: The current shooter.
+        """
         self.shooter = shooter
         self.shooter.reset_stats()
         logging.info(f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}")
 
-    def update_state(self, dice_outcome):
-        """Update the game state based on the dice outcome."""
+    def update_state(self, dice_outcome: List[int]) -> str:
+        """
+        Update the game state based on the dice outcome.
+
+        :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
+        :return: A message describing the state change.
+        """
         total = sum(dice_outcome)
-        message = None
+        message = "No change in game state."  # Default message
 
         if self.phase == "come-out":
             if total in [7, 11]:
@@ -64,7 +80,8 @@ class GameState:
                 self.point = None
                 message = f"{Fore.RED}❌ 7-Out: Pass Line bets lose!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total in [4, 5, 6, 8, 9, 10]:  # Point number rolled during point phase
-                self.stats.record_point_number_roll()  # Record the roll number
+                if self.stats:
+                    self.stats.record_point_number_roll()  # Record the roll number
 
         return message
 

@@ -24,7 +24,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     # Initialize components
     table = Table(house_rules)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
-    game_state = GameState(stats, players=[])
+    game_state = GameState()  # Initialize GameState without players
 
     # Create players with different betting strategies
     if player_names is None:
@@ -34,7 +34,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice)
         for i, strategy in enumerate(strategies)
     ]
-    game_state.players = players
+    game_state.set_players(players)  # Set the players list after initialization
 
     # Initialize bankroll history with the starting bankroll for each player
     stats.initialize_bankroll_history(players)
@@ -46,7 +46,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
         shooter = players[player_index]
-        game_state.set_shooter(shooter)
+        game_state.set_shooter(shooter)  # Set the current shooter
 
         while True:
             # Allow all players to place bets
