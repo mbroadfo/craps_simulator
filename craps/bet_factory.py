@@ -1,35 +1,35 @@
-# File: craps/bet_factory.py
+# File: .\craps\bet_factory.py
 
 from .bets.pass_line import PassLineBet  # Import PassLineBet
 from .bets.place_bet import PlaceBet  # Import PlaceBet
-from .bets.free_odds import FreeOddsBet  # Import PlaceOddsBet
+from .bets.free_odds import FreeOddsBet  # Import FreeOddsBet
 from .bets.field_bet import FieldBet  # Import FieldBet
 
 class BetFactory:
     @staticmethod
     def create_pass_line_bet(amount, owner):
         """Create a Pass Line bet."""
-        return PassLineBet(amount, owner)
+        return PassLineBet(amount, owner)  # Pass the Player object
 
     @staticmethod
     def create_place_bet(amount, owner, number):
         """Create a Place bet."""
-        return PlaceBet(amount, owner, number)
+        return PlaceBet(amount, owner, number)  # Pass the Player object
 
     @staticmethod
     def create_pass_line_odds_bet(amount, owner):
         """Create a Pass Line Odds bet."""
-        return FreeOddsBet("Pass Line Odds", amount, owner)
+        return FreeOddsBet("Pass Line Odds", amount, owner)  # Pass the Player object
 
     @staticmethod
     def create_place_odds_bet(amount, owner, number):
         """Create a Place Odds bet."""
-        return FreeOddsBet("Place Odds", amount, owner, number)
+        return FreeOddsBet("Place Odds", amount, owner, number)  # Pass the Player object
 
     @staticmethod
     def create_field_bet(amount, owner):
         """Create a Field bet."""
-        return FieldBet(amount, owner)
+        return FieldBet(amount, owner)  # Pass the Player object
 
     @staticmethod
     def create_bets(bet_type, amount, owner, number=None):
@@ -38,7 +38,7 @@ class BetFactory:
         
         :param bet_type: The type of bet (e.g., "Pass Line", "Place", "Place Odds", "Field").
         :param amount: The amount of the bet.
-        :param owner: The player who placed the bet.
+        :param owner: The Player object who placed the bet.
         :param number: The number for Place or Place Odds bets (optional).
         :return: A single bet or a list of bets.
         """

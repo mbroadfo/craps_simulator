@@ -10,6 +10,9 @@ class PlaceBet(Bet):
 
     def resolve(self, outcome, phase, point):
         """Resolve the Place bet based on the dice outcome, phase, and point."""
+        if phase not in self.valid_phases:
+            return  # Do not resolve the bet if the phase is invalid
+
         total = sum(outcome)
         
         if phase == "come-out":
@@ -29,3 +32,13 @@ class PlaceBet(Bet):
                 self.status = "lost"  # Place bet loses on 7-out
             else:
                 self.status = "active"  # Bet remains active
+                
+    def payout(self) -> int:
+        """
+        Calculate the payout for the Place bet.
+        """
+        if self.status != "won":
+            return 0
+
+        numerator, denominator = self.payout_ratio
+        return self.amount + (self.amount * numerator // denominator)

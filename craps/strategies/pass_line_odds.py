@@ -1,4 +1,5 @@
-# File: craps/strategies/pass_line_odds.py
+# File: .\craps\strategies\pass_line_odds.py
+
 from craps.bet_factory import BetFactory
 
 class PassLineOddsStrategy:
@@ -15,13 +16,16 @@ class PassLineOddsStrategy:
 
     def get_bet(self, game_state, player):
         """Place a Pass Line or Pass Line Odds bet based on the game state."""
+        if game_state.phase not in ["come-out", "point"]:
+            return None  # Do not place the bet if the phase is invalid
+
         if game_state.phase == "come-out":
             # Check if the player already has an active Pass Line bet
             if any(b.bet_type == "Pass Line" for b in player.active_bets):
                 return None  # No new bet to place
 
             # Use the BetFactory to create a Pass Line bet
-            return BetFactory.create_pass_line_bet(self.table.house_rules.table_minimum, player.name)
+            return BetFactory.create_pass_line_bet(self.table.house_rules.table_minimum, player)
         
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
@@ -31,7 +35,7 @@ class PassLineOddsStrategy:
             # Use the BetFactory to create a Place Odds bet on the point number
             return BetFactory.create_place_odds_bet(
                 self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
-                player.name,  # Owner
+                player,  # Owner
                 game_state.point  # Point number
             )
         

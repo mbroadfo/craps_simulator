@@ -43,6 +43,6 @@ class PlaceBetStrategy:
         bets = []
         for number in numbers:
             min_bet = self.table.get_minimum_bet(number)
-            bets.append(BetFactory.create_place_bet(min_bet, player.name, number))
+            bets.append(BetFactory.create_place_bet(min_bet, player, number))
 
         return bets if bets else None

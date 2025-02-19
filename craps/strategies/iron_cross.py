@@ -18,7 +18,7 @@ class IronCrossStrategy:
         if game_state.phase == "come-out":
             # Place a Pass Line bet during the come-out roll if no active bet exists
             if not any(b.bet_type == "Pass Line" for b in player.active_bets):
-                return BetFactory.create_pass_line_bet(self.min_bet, player.name)
+                return BetFactory.create_pass_line_bet(self.min_bet, player)  # Pass the Player object
         elif game_state.phase == "point":
             # Reactivate inactive Place bets
             for bet in player.active_bets:
@@ -46,11 +46,11 @@ class IronCrossStrategy:
             bets = []
             for number in numbers:
                 min_bet = self.table.get_minimum_bet(number)
-                bets.append(BetFactory.create_place_bet(min_bet, player.name, number))
+                bets.append(BetFactory.create_place_bet(min_bet, player, number))
 
             # Add a Field bet if no active Field bet exists
             if not any(b.bet_type == "Field" for b in player.active_bets):
-                bets.append(BetFactory.create_field_bet(self.min_bet, player.name))
+                bets.append(BetFactory.create_field_bet(self.min_bet, player))
 
             return bets if bets else None
 

@@ -1,4 +1,4 @@
-# File: craps/table.py
+# File: .\craps\table.py
 
 from typing import List, Optional
 from craps.bet import Bet
@@ -14,21 +14,25 @@ class Table:
         """
         self.house_rules = house_rules
         self.bets = []  # Start with no bets on the table
-        self.unit = self.house_rules.table_minimum // 5 # Unit for Place bets
+        self.unit = self.house_rules.table_minimum // 5  # Unit for Place bets
 
-    def place_bet(self, bet: Bet) -> None:
+    def place_bet(self, bet: Bet, phase: str) -> bool:
         """
-        Place a bet on the table.
+        Place a bet on the table after validating it.
 
         :param bet: The bet to place.
-        :raises ValueError: If the bet amount is below the table minimum or above the table maximum.
+        :param phase: The current game phase ("come-out" or "point").
+        :return: True if the bet was placed successfully, False otherwise.
         """
-        if bet.amount < self.house_rules.table_minimum:
-            raise ValueError(f"Bet amount ${bet.amount} is below the table minimum of ${self.house_rules.table_minimum}.")
-        if bet.amount > self.house_rules.table_maximum:
-            raise ValueError(f"Bet amount ${bet.amount} exceeds the table maximum of ${self.house_rules.table_maximum}.")
+        # Validate the bet before placing it
+        if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
+            logging.warning(f"Invalid bet: {bet}")
+            return False
+
+        # Place the bet on the table
         self.bets.append(bet)
         logging.info(f"Bet placed: {bet}")
+        return True
 
     def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
         """
@@ -42,9 +46,13 @@ class Table:
             bet.resolve(dice_outcome, phase, point)
             logging.info(f"Bet resolved: {bet} (Status: {bet.status})")
 
-        # Remove resolved bets (won or lost) from the table
+    def clear_resolved_bets(self) -> None:
+        """
+        Remove all resolved bets (won or lost) from the table.
+        """
+        # Keep only active bets
         self.bets = [bet for bet in self.bets if not bet.is_resolved()]
-        logging.info(f"Active bets after resolution: {len(self.bets)}")
+        logging.info(f"Active bets after clearing resolved bets: {len(self.bets)}")
 
     def get_minimum_bet(self, number: int) -> int:
         """

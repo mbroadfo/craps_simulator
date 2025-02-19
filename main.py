@@ -2,15 +2,21 @@
 
 from colorama import init, Fore, Style
 init()  # Initialize colorama for colored text
-
-from config import ACTIVE_PLAYERS, SESSION_MODE, HOUSE_RULES  # Import HOUSE_RULES
+from config import ACTIVE_PLAYERS, SESSION_MODE, HOUSE_RULES
 from craps.house_rules import HouseRules
+from craps.visualizer import Visualizer
 from craps.table import Table
+from craps.view_log import InteractiveLogViewer
 from craps.lineup import PlayerLineup
 from craps.single_session import run_single_session
-from craps.roll_history_manager import RollHistoryManager  # Import the new class
+from craps.roll_history_manager import RollHistoryManager
+from craps.log_manager import LogManager
 
 def main():
+    # Initialize the LogManager
+    log_manager = LogManager()
+    log_manager.delete_log_file()  # Delete the log file before starting
+    
     # Initialize the RollHistoryManager
     roll_history_manager = RollHistoryManager()
 
@@ -48,6 +54,14 @@ def main():
     # Print statistics
     stats.print_statistics()
     stats.print_shooter_report()
+    
+    # View the log file interactively
+    log_viewer = InteractiveLogViewer()
+    log_viewer.view('./play_by_play.log')
+    
+    # Visualize player bankrolls
+    visualizer = Visualizer(stats)
+    visualizer.visualize_bankrolls()
 
 if __name__ == "__main__":
     main()

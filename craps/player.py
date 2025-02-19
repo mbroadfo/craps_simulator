@@ -1,13 +1,16 @@
 # File: .\craps\player.py
 
+from typing import List, Union
 from craps.bet import Bet
+from craps.table import Table
+from craps.game_state import GameState
 import logging
 
 class Player:
-    def __init__(self, name, initial_balance=500, betting_strategy=None):
+    def __init__(self, name: str, initial_balance: int = 500, betting_strategy=None):
         """
         Initialize a player.
-        
+
         :param name: The name of the player.
         :param initial_balance: The initial bankroll of the player.
         :param betting_strategy: The betting strategy used by the player.
@@ -17,8 +20,15 @@ class Player:
         self.betting_strategy = betting_strategy
         self.active_bets = []  # Track active bets for this player
 
-    def place_bet(self, bet, table):
-        """Place a bet (or multiple bets) on the table and deduct the amount from the player's balance."""
+    def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
+        """
+        Place a bet (or multiple bets) on the table and deduct the amount from the player's balance.
+
+        :param bet: The bet(s) to place.
+        :param table: The table to place the bet on.
+        :param phase: The current game phase ("come-out" or "point").
+        :return: True if the bet(s) were placed successfully, False otherwise.
+        """
         # Convert single bet to a list for uniform handling
         bets = [bet] if not isinstance(bet, list) else bet
 
@@ -27,84 +37,46 @@ class Player:
 
         # Check if the player has sufficient funds
         if total_amount > self.balance:
-            logging.info(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
+            logging.warning(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
             return False
 
-        # Place each bet and deduct the amount from the player's balance
+        # Place each bet on the table
+        successful_bets = []
         for b in bets:
-            self.balance -= b.amount
-            table.place_bet(b)
-            self.active_bets.append(b)
+            if not table.place_bet(b, phase):  # Use the updated place_bet method
+                logging.warning(f"Failed to place {b.bet_type} bet for {self.name}.")
+                return False
 
-        # Calculate the total amount at risk on the table
-        total_at_risk = sum(b.amount for b in self.active_bets)
+            # Deduct the amount from the player's balance
+            self.balance -= b.amount
+            self.active_bets.append(b)
+            successful_bets.append(b)
 
         # Summarize the bets placed
-        if len(bets) == 1:
-            logging.info(f"{self.name} placed a ${bets[0].amount} {bets[0].bet_type} bet. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
+        if len(successful_bets) == 1:
+            logging.info(f"{self.name} placed a ${successful_bets[0].amount} {successful_bets[0].bet_type} bet. Bankroll: ${self.balance}.")
         else:
-            bet_summary = ", ".join(f"{b.bet_type} ${b.amount}" for b in bets)
-            logging.info(f"{self.name} bet ${total_amount} on {bet_summary}. Bankroll: ${self.balance}. Bet: ${total_at_risk}")
+            bet_summary = ", ".join(f"{b.bet_type} ${b.amount}" for b in successful_bets)
+            logging.info(f"{self.name} placed ${total_amount} on {bet_summary}. Bankroll: ${self.balance}.")
 
         return True
+    
+    def clear_resolved_bets(self) -> None:
+        """
+        Remove all resolved bets (won or lost) from the player's active bets.
+        """
+        self.active_bets = [bet for bet in self.active_bets if not bet.is_resolved()]
+        logging.info(f"{self.name} has {len(self.active_bets)} active bets after clearing resolved bets.")
 
-    def resolve_bets(self, table, stats, outcome, phase, point):
-        """Resolve all active bets for the player and update the bankroll."""
-        won_lost_bets = []
-        total_payout = 0
-        bets_changed = False  # Track if any bets were resolved or changed
+    def take_actions_after_roll(self, game_state: GameState, table: Table) -> None:
+        """
+        Take actions after a roll based on the game state and betting strategy.
 
-        # Create a copy of active_bets to avoid modifying the list while iterating
-        active_bets_copy = self.active_bets.copy()
-
-        for bet in active_bets_copy:
-            # Resolve the bet (let the bet class handle the logic)
-            bet.resolve(outcome, phase, point)  # Pass phase and point directly
-
-            if bet.status == "won":
-                # Calculate the payout
-                payout = bet.payout()
-                total_payout += payout
-                won_lost_bets.append(f"{bet.bet_type} bet WON ${payout}")
-                self.balance += payout  # Add the payout to the player's bankroll
-                stats.total_player_win_loss += payout  # Update player win/loss (total payout)
-                stats.total_house_win_loss -= payout  # Update house win/loss (loss of total payout)
-
-                # Remove Pass-Line bets from the table when won
-                if bet.bet_type == "Pass Line":
-                    self.active_bets.remove(bet)
-                    bets_changed = True
-                # Reset the Place bet status to "active" after winning
-                elif bet.bet_type.startswith("Place"):
-                    bet.status = "active"
-                    bets_changed = True
-            elif bet.status == "lost":
-                won_lost_bets.append(f"{bet.bet_type} bet LOST ${bet.amount}")
-                # Do NOT deduct the bet amount again (it was already deducted when the bet was placed)
-                stats.total_player_win_loss -= 0  # No additional loss for the player
-                stats.total_house_win_loss += bet.amount  # House collects the original bet
-
-                # Remove lost bets from the table
-                self.active_bets.remove(bet)
-                bets_changed = True
-            elif bet.status == "inactive":
-                # Do NOT remove inactive bets; they will be reactivated when the puck is turned on
-                pass
-
-        # Print summary of resolved bets
-        if won_lost_bets:
-            logging.info(f"{self.name}'s resolved bets: {', '.join(won_lost_bets)}. Total Payout: ${total_payout}. Updated Bankroll: ${self.balance}. Bet: ${sum(b.amount for b in self.active_bets)}")
-
-        # Summarize bets still on the table for the player (only if bets changed)
-        if bets_changed:
-            active_bets_summary = [
-                f"{bet.bet_type}{' (Off)' if bet.status == 'inactive' else ''}"
-                for bet in self.active_bets
-            ]
-            if active_bets_summary:
-                logging.info(f"{self.name}'s active bets: {', '.join(active_bets_summary)}")
-            else:
-                logging.info(f"{self.name} has no active bets.")
-
-    def __str__(self):
-        return f"Player: {self.name}, Balance: ${self.balance}"
+        :param game_state: The current game state.
+        :param table: The table to interact with.
+        """
+        if self.betting_strategy:
+            # Let the betting strategy decide what actions to take
+            new_bets = self.betting_strategy.get_bet(game_state, self)
+            if new_bets:
+                self.place_bet(new_bets, table, game_state.phase)  # Pass the current phase

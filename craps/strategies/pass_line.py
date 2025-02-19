@@ -12,9 +12,8 @@ class PassLineStrategy:
         if game_state.phase == "come-out":
             # Check if the player already has an active Pass Line bet
             if any(b.bet_type == "Pass Line" for b in player.active_bets):
-                # print(f"{player.name} already has an active Pass Line bet.")
                 return None  # No new bet to place
 
             # Place a new Pass Line bet
-            return PassLineBet(self.min_bet, player.name)  # Use PassLineBet instead of Bet
+            return PassLineBet(self.min_bet, player)  # Pass the Player object
         return None  # No bet to place

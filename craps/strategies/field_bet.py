@@ -18,4 +18,4 @@ class FieldBetStrategy:
             return None  # No new bet to place
 
         # Use the BetFactory to create a Field bet
-        return BetFactory.create_field_bet(self.min_bet, player.name)
+        return BetFactory.create_field_bet(self.min_bet, player)  # Pass the Player object

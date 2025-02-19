@@ -1,5 +1,6 @@
-# File: craps/bets/pass_line.py
-from . import Bet  # Import the base Bet class
+# File: .\craps\bets\pass_line.py
+
+from craps.bet import Bet  # Import the base Bet class from craps.bet
 
 class PassLineBet(Bet):
     """Class representing a Pass Line bet."""
@@ -8,6 +9,9 @@ class PassLineBet(Bet):
 
     def resolve(self, outcome, phase, point):
         """Resolve the Pass Line bet based on the dice outcome, phase, and point."""
+        if phase not in self.valid_phases:
+            return  # Do not resolve the bet if the phase is invalid
+
         total = sum(outcome)
         
         if phase == "come-out":
@@ -24,3 +28,14 @@ class PassLineBet(Bet):
                 self.status = "lost"  # Pass Line bet loses
             else:
                 self.status = "active"  # Bet remains active
+                
+    def payout(self) -> int:
+        """
+        Calculate the payout for the Pass Line bet.
+        """
+        if self.status != "won":
+            return 0
+
+        # Pass Line bets pay 1:1
+        numerator, denominator = self.payout_ratio
+        return self.amount + (self.amount * numerator // denominator)
