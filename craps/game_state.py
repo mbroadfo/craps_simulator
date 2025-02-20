@@ -16,6 +16,7 @@ class GameState:
         self.players = []  # List of players in the game (can be set later)
         self.shooter = None  # Current shooter
         self.stats = None  # Statistics object (can be set later)
+        self.table = None  # Table object (can be set later)
 
     def set_players(self, players: List) -> None:
         """
@@ -24,6 +25,14 @@ class GameState:
         :param players: The list of players.
         """
         self.players = players
+        
+    def set_table(self, table) -> None:
+        """
+        Set the table object.
+
+        :param table: The table object.
+        """
+        self.table = table
 
     def set_shooter(self, shooter) -> None:
         """
@@ -60,8 +69,8 @@ class GameState:
                 # Reactivate inactive Place bets
                 reactivated_bets = []
                 for player in self.players:
-                    for bet in player.active_bets:
-                        if bet.bet_type.startswith("Place") and bet.status == "inactive":
+                    for bet in self.table.bets:
+                        if bet.owner == player and bet.bet_type.startswith("Place") and bet.status == "inactive":
                             bet.status = "active"
                             reactivated_bets.append(f"{player.name}'s {bet.bet_type}")
                 if reactivated_bets:

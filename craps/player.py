@@ -18,7 +18,6 @@ class Player:
         self.name = name
         self.balance = initial_balance
         self.betting_strategy = betting_strategy
-        self.active_bets = []  # Track active bets for this player
 
     def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
         """
@@ -41,7 +40,6 @@ class Player:
             return False
 
         # Place each bet on the table
-        successful_bets = []
         for b in bets:
             if not table.place_bet(b, phase):  # Use the updated place_bet method
                 logging.warning(f"Failed to place {b.bet_type} bet for {self.name}.")
@@ -49,34 +47,25 @@ class Player:
 
             # Deduct the amount from the player's balance
             self.balance -= b.amount
-            self.active_bets.append(b)
-            successful_bets.append(b)
-
-        # Summarize the bets placed
-        if len(successful_bets) == 1:
-            logging.info(f"{self.name} placed a ${successful_bets[0].amount} {successful_bets[0].bet_type} bet. Bankroll: ${self.balance}.")
-        else:
-            bet_summary = ", ".join(f"{b.bet_type} ${b.amount}" for b in successful_bets)
-            logging.info(f"{self.name} placed ${total_amount} on {bet_summary}. Bankroll: ${self.balance}.")
+            logging.info(f"{self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.")
 
         return True
-    
-    def clear_resolved_bets(self) -> None:
-        """
-        Remove all resolved bets (won or lost) from the player's active bets.
-        """
-        self.active_bets = [bet for bet in self.active_bets if not bet.is_resolved()]
-        logging.info(f"{self.name} has {len(self.active_bets)} active bets after clearing resolved bets.")
 
-    def take_actions_after_roll(self, game_state: GameState, table: Table) -> None:
+    def receive_payout(self, payout: int) -> None:
         """
-        Take actions after a roll based on the game state and betting strategy.
+        Add the payout amount to the player's bankroll.
 
-        :param game_state: The current game state.
-        :param table: The table to interact with.
+        :param payout: The payout amount.
         """
-        if self.betting_strategy:
-            # Let the betting strategy decide what actions to take
-            new_bets = self.betting_strategy.get_bet(game_state, self)
-            if new_bets:
-                self.place_bet(new_bets, table, game_state.phase)  # Pass the current phase
+        self.balance += payout
+        logging.info(f"{self.name} received a payout of ${payout}. Bankroll: ${self.balance}.")
+
+    def has_active_bet(self, table: Table, bet_type: str) -> bool:
+        """
+        Check if the player has an active bet of a specific type on the table.
+
+        :param table: The table to check for active bets.
+        :param bet_type: The type of bet to check for (e.g., "Pass Line").
+        :return: True if the player has an active bet of the specified type, False otherwise.
+        """
+        return any(bet.owner == self and bet.bet_type == bet_type for bet in table.bets)

@@ -13,9 +13,25 @@ class Table:
         :param house_rules: The HouseRules object for payout rules and limits.
         """
         self.house_rules = house_rules
-        self.bets = []  # Start with no bets on the table
-        self.unit = self.house_rules.table_minimum // 5  # Unit for Place bets
+        self.bets = []  # All bets on the table
+        self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
 
+    def get_minimum_bet(self, number: int) -> int:
+        """
+        Get the minimum bet amount for a specific number.
+
+        :param number: The number being bet on (e.g., 4, 5, 6, 8, 9, 10).
+        :return: The minimum bet amount for the number.
+        """
+        if number in [6, 8]:
+            # For 6 and 8, the minimum bet is 6 units (e.g., $6 if table minimum is $5)
+            return self.house_rules.table_minimum + self.unit
+        elif number in [4, 5, 9, 10]:
+            # For other numbers, the minimum bet is the table minimum
+            return self.house_rules.table_minimum
+        else:
+            raise ValueError(f"Invalid number for Place Bet: {number}")
+    
     def place_bet(self, bet: Bet, phase: str) -> bool:
         """
         Place a bet on the table after validating it.
@@ -46,24 +62,13 @@ class Table:
             bet.resolve(dice_outcome, phase, point)
             logging.info(f"Bet resolved: {bet} (Status: {bet.status})")
 
-    def clear_resolved_bets(self) -> None:
+    def clear_resolved_bets(self) -> List[Bet]:
         """
-        Remove all resolved bets (won or lost) from the table.
+        Remove all resolved bets (won or lost) from the table and return them.
+
+        :return: A list of resolved bets.
         """
-        # Keep only active bets
+        resolved_bets = [bet for bet in self.bets if bet.is_resolved()]
         self.bets = [bet for bet in self.bets if not bet.is_resolved()]
         logging.info(f"Active bets after clearing resolved bets: {len(self.bets)}")
-
-    def get_minimum_bet(self, number: int) -> int:
-        """
-        Get the minimum bet for a Place bet on a specific number.
-
-        :param number: The number being bet on (4, 5, 6, 8, 9, or 10).
-        :return: The minimum bet amount.
-        """
-        if number in [6, 8]:
-            # For 6 and 8, the minimum bet is table minimum + unit
-            return self.house_rules.table_minimum + self.unit
-        else:
-            # For other numbers, the minimum bet is the table minimum
-            return self.house_rules.table_minimum
+        return resolved_bets

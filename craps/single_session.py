@@ -26,6 +26,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     table = Table(house_rules)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
     game_state = GameState()
+    game_state.set_table(table)
 
     # Create players with different betting strategies
     if player_names is None:
@@ -52,7 +53,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         while True:
             # Allow all players to place bets
             for player in players:
-                bet = player.betting_strategy.get_bet(game_state, player)
+                bet = player.betting_strategy.get_bet(game_state, player, table)
                 if bet:
                     player.place_bet(bet, table, game_state.phase)  # Pass the current phase
 
@@ -74,31 +75,21 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
                 "point": game_state.point
             })
 
-            # Print the dice roll and total
-            logging.info(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
-
             # Check bets on the table
             table.check_bets(outcome, game_state.phase, game_state.point)
 
-            # Resolve bets for each player and update their bankroll
-            for player in players:
-                for bet in player.active_bets:
-                    if bet.is_resolved():
-                        if bet.status == "won":
-                            payout = bet.payout()
-                            player.balance += payout
-                            logging.info(f"{player.name}'s {bet.bet_type} bet WON ${payout}. Bankroll: ${player.balance}.")
-                        elif bet.status == "lost":
-                            logging.info(f"{player.name}'s {bet.bet_type} bet LOST ${bet.amount}. Bankroll: ${player.balance}.")
+            # Clear resolved bets and update player bankrolls
+            resolved_bets = table.clear_resolved_bets()
+            for bet in resolved_bets:
+                if bet.status == "won":
+                    payout = bet.payout()
+                    bet.owner.receive_payout(payout)
+                elif bet.status == "lost":
+                    logging.info(f"{bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.")
 
-            # Clear resolved bets from the table and player's active bets
-            table.clear_resolved_bets()
-            for player in players:
-                player.clear_resolved_bets()
-            
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)
-            
+
             # Update game state
             previous_phase = game_state.phase
             message = game_state.update_state(outcome)

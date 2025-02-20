@@ -1,5 +1,6 @@
-# File: craps/strategies/place_bet.py
-from craps.bet_factory import BetFactory
+# File: .\craps\strategies\place_bet.py
+
+from craps.bet_factory import BetFactory  # Import the BetFactory
 
 class PlaceBetStrategy:
     """Betting strategy for Place Bets."""
@@ -13,7 +14,7 @@ class PlaceBetStrategy:
         self.table = table
         self.numbers_or_strategy = numbers_or_strategy
 
-    def get_bet(self, game_state, player):
+    def get_bet(self, game_state, player, table):
         """Place Place Bets based on the strategy and game state."""
         if game_state.phase != "point":
             return None  # Only place bets after the point is established
@@ -33,9 +34,9 @@ class PlaceBetStrategy:
         numbers = [
             num for num in numbers
             if not any(
-                (b.bet_type == "Pass Line" and b.point == num) or  # Pass Line covers the point
-                (b.bet_type.startswith("Place") and b.number == num)  # Place Bet covers the number
-                for b in player.active_bets
+                (bet.owner == player and bet.bet_type == "Pass Line" and bet.point == num) or  # Pass Line covers the point
+                (bet.owner == player and bet.bet_type.startswith("Place") and bet.number == num)  # Place Bet covers the number
+                for bet in table.bets
             )
         ]
 

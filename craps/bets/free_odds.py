@@ -14,7 +14,7 @@ class FreeOddsBet(Bet):
         :param number: The number being bet on (for Place Odds).
         """
         super().__init__(bet_type, amount, owner, payout_ratio=(1, 1), locked=False)
-        self.number = number  # Only used for Place Odds
+        self.number = number  # The number being bet on (e.g., 4, 5, 6, 8, 9, 10)
 
     def resolve(self, outcome, phase, point):
         """Resolve the Free Odds bet based on the dice outcome, phase, and point."""
@@ -46,7 +46,7 @@ class FreeOddsBet(Bet):
                     elif self.number in [5, 9]:
                         self.payout_ratio = (3, 2)  # 3:2 payout for 5 and 9
                     elif self.number in [6, 8]:
-                        self.payout_ratio = (7, 6)  # 7:6 payout for 6 and 8
+                        self.payout_ratio = (6, 5)  # 6:5 payout for 6 and 8
                     self.status = "won"  # Place Odds bet wins
                 elif total == 7:
                     self.status = "lost"  # Place Odds bet loses
@@ -55,10 +55,10 @@ class FreeOddsBet(Bet):
                     
     def payout(self) -> int:
         """
-        Calculate the payout for the Place bet.
+        Calculate the payout for the Free Odds bet.
         """
         if self.status != "won":
             return 0
 
         numerator, denominator = self.payout_ratio
-        return self.amount + (self.amount * numerator // denominator)    
+        return self.amount + (self.amount * numerator // denominator)

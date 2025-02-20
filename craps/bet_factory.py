@@ -17,14 +17,14 @@ class BetFactory:
         return PlaceBet(amount, owner, number)  # Pass the Player object
 
     @staticmethod
-    def create_pass_line_odds_bet(amount, owner):
+    def create_pass_line_odds_bet(amount, owner, number=None):
         """Create a Pass Line Odds bet."""
-        return FreeOddsBet("Pass Line Odds", amount, owner)  # Pass the Player object
+        return FreeOddsBet("Pass Line Odds", amount, owner, number)  # Pass the Player object and number
 
     @staticmethod
     def create_place_odds_bet(amount, owner, number):
         """Create a Place Odds bet."""
-        return FreeOddsBet("Place Odds", amount, owner, number)  # Pass the Player object
+        return FreeOddsBet("Place Odds", amount, owner, number)  # Pass the Player object and number
 
     @staticmethod
     def create_field_bet(amount, owner):
