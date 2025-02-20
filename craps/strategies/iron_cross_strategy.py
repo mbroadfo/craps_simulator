@@ -1,6 +1,7 @@
 # File: .\craps\strategies\iron_cross.py
 
 from craps.bet_factory import BetFactory
+from craps.log_manager import LogManager
 import logging
 
 class IronCrossStrategy:
@@ -26,7 +27,7 @@ class IronCrossStrategy:
             for bet in table.bets:
                 if bet.owner == player and bet.bet_type.startswith("Place") and bet.status == "inactive":
                     bet.status = "active"
-                    logging.info(f"{player.name}'s {bet.bet_type} bet is now ON.")
+                    logging.info(LogManager.format_log_message(f"{player.name}'s {bet.bet_type} bet is now ON."))
 
             # Place Place bets on 5, 6, and 8 during the point phase (excluding the point number)
             numbers = [5, 6, 8]  # Numbers for the Iron Cross

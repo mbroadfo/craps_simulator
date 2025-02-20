@@ -4,6 +4,7 @@ from typing import List, Union
 from craps.bet import Bet
 from craps.table import Table
 from craps.game_state import GameState
+from craps.log_manager import LogManager
 import logging
 
 class Player:
@@ -47,7 +48,7 @@ class Player:
 
             # Deduct the amount from the player's balance
             self.balance -= b.amount
-            logging.info(f"{self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.")
+            logging.info(LogManager.format_log_message(f"{self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}."))
 
         return True
 
@@ -58,7 +59,7 @@ class Player:
         :param payout: The payout amount.
         """
         self.balance += payout
-        logging.info(f"{self.name} received a payout of ${payout}. Bankroll: ${self.balance}.")
+        logging.info(LogManager.format_log_message(f"{self.name} received a payout of ${payout}. Bankroll: ${self.balance}."))
 
     def has_active_bet(self, table: Table, bet_type: str) -> bool:
         """

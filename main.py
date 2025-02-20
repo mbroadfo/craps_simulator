@@ -44,6 +44,9 @@ def main():
     # Visualize player bankrolls
     visualizer = Visualizer(stats)
     visualizer.visualize_bankrolls()
+    
+    # Close the log file properly
+    log_manager.close_log_file()
 
 if __name__ == "__main__":
     main()

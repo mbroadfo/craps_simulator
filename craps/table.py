@@ -3,6 +3,7 @@
 from typing import List, Optional
 from craps.bet import Bet
 from craps.house_rules import HouseRules
+from craps.log_manager import LogManager
 import logging
 
 class Table:
@@ -47,7 +48,7 @@ class Table:
 
         # Place the bet on the table
         self.bets.append(bet)
-        logging.info(f"Bet placed: {bet}")
+        logging.info(LogManager.format_log_message(f"Bet placed: {bet}"))
         return True
 
     def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
@@ -60,7 +61,7 @@ class Table:
         """
         for bet in self.bets:
             bet.resolve(dice_outcome, phase, point)
-            logging.info(f"Bet resolved: {bet} (Status: {bet.status})")
+            logging.info(LogManager.format_log_message(f"Bet resolved: {bet} (Status: {bet.status})"))
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
@@ -70,5 +71,5 @@ class Table:
         """
         resolved_bets = [bet for bet in self.bets if bet.is_resolved()]
         self.bets = [bet for bet in self.bets if not bet.is_resolved()]
-        logging.info(f"Active bets after clearing resolved bets: {len(self.bets)}")
+        logging.info(LogManager.format_log_message(f"Active bets after clearing resolved bets: {len(self.bets)}"))
         return resolved_bets

@@ -6,7 +6,7 @@ from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
-from craps.visualizer import Visualizer
+from craps.log_manager import LogManager
 import os
 import logging
 
@@ -63,7 +63,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             stats.update_rolls()
 
             # Log the dice roll and total
-            logging.info(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
+            logging.info(LogManager.format_log_message(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}"))
 
             # Log the roll to the history
             roll_history.append({
@@ -85,7 +85,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
                     payout = bet.payout()
                     bet.owner.receive_payout(payout)
                 elif bet.status == "lost":
-                    logging.info(f"{bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.")
+                    logging.info(LogManager.format_log_message(f"{bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}."))
 
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)
@@ -94,7 +94,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             previous_phase = game_state.phase
             message = game_state.update_state(outcome)
             if message:
-                logging.info(message)
+                logging.info(LogManager.format_log_message(message))
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:

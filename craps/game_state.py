@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 from craps.puck import Puck
+from craps.log_manager import LogManager
 from colorama import Fore, Style
 import logging
 
@@ -42,7 +43,7 @@ class GameState:
         """
         self.shooter = shooter
         self.shooter.reset_stats()
-        logging.info(f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}")
+        logging.info(LogManager.format_log_message(f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}"))
 
     def update_state(self, dice_outcome: List[int]) -> str:
         """
@@ -74,7 +75,7 @@ class GameState:
                             bet.status = "active"
                             reactivated_bets.append(f"{player.name}'s {bet.bet_type}")
                 if reactivated_bets:
-                    logging.info(f"{', '.join(reactivated_bets)} are now ON.")
+                    logging.info(LogManager.format_log_message(f"{', '.join(reactivated_bets)} are now ON."))
         else:  # Point phase
             if total == self.puck.point:
                 self.shooter.points_rolled += 1  # Increment points rolled

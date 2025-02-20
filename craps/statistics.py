@@ -1,5 +1,6 @@
 ## File: craps/statistics.py
 
+from craps.log_manager import LogManager
 import logging
 class Statistics:
     def __init__(self, table_minimum, num_shooters, num_players):
@@ -128,28 +129,28 @@ class Statistics:
 
     def print_statistics(self):
         """Print the simulation statistics."""
-        logging.info("\n=== Simulation Statistics ===")
-        logging.info(f"Table Minimum: ${self.table_minimum}")
-        logging.info(f"Number of Shooters: {self.num_shooters}")
-        logging.info(f"Number of Players: {self.num_players}")
-        logging.info(f"Number of Rolls: {self.num_rolls}")
-        logging.info(f"Total House Win/Loss: ${self.total_house_win_loss}")
-        logging.info(f"Total Player Win/Loss: ${self.total_player_win_loss}")
-        logging.info(f"Player Bankrolls: {self.player_bankrolls}")
-        logging.info(f"Highest Player Bankroll: ${self.highest_bankroll}")
-        logging.info(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
+        logging.info(LogManager.format_log_message("\n=== Simulation Statistics ==="))
+        logging.info(LogManager.format_log_message(f"Table Minimum: ${self.table_minimum}"))
+        logging.info(LogManager.format_log_message(f"Number of Shooters: {self.num_shooters}"))
+        logging.info(LogManager.format_log_message(f"Number of Players: {self.num_players}"))
+        logging.info(LogManager.format_log_message(f"Number of Rolls: {self.num_rolls}"))
+        logging.info(LogManager.format_log_message(f"Total House Win/Loss: ${self.total_house_win_loss}"))
+        logging.info(LogManager.format_log_message(f"Total Player Win/Loss: ${self.total_player_win_loss}"))
+        logging.info(LogManager.format_log_message(f"Player Bankrolls: {self.player_bankrolls}"))
+        logging.info(LogManager.format_log_message(f"Highest Player Bankroll: ${self.highest_bankroll}"))
+        logging.info(LogManager.format_log_message(f"Lowest Player Bankroll: ${self.lowest_bankroll}"))
 
     def print_shooter_report(self):
         """Print a report summarizing each shooter's performance."""
-        logging.info("\n=== Shooter Performance Report ===")
+        logging.info(LogManager.format_log_message("\n=== Shooter Performance Report ==="))
         for shooter_name, stats in self.shooter_stats.items():
             total_points_rolled = stats["points_rolled"]
             total_rolls = stats["total_rolls"]
             rolls_before_7_out = stats["rolls_before_7_out"]
             avg_rolls_before_7_out = sum(rolls_before_7_out) / len(rolls_before_7_out) if rolls_before_7_out else 0
 
-            logging.info(f"\nShooter: {shooter_name}")
-            logging.info(f"  Total Points Rolled: {total_points_rolled}")
-            logging.info(f"  Total Rolls: {total_rolls}")
-            logging.info(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
-            logging.info(f"  Rolls Before 7-Out: {rolls_before_7_out}")
+            logging.info(LogManager.format_log_message(f"\nShooter: {shooter_name}"))
+            logging.info(LogManager.format_log_message(f"  Total Points Rolled: {total_points_rolled}"))
+            logging.info(LogManager.format_log_message(f"  Total Rolls: {total_rolls}"))
+            logging.info(LogManager.format_log_message(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}"))
+            logging.info(LogManager.format_log_message(f"  Rolls Before 7-Out: {rolls_before_7_out}"))
