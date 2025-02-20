@@ -1,4 +1,4 @@
-# File: craps/game_state.py
+# File: .\craps\game_state.py
 
 from typing import List, Optional
 from craps.puck import Puck
@@ -6,16 +6,18 @@ from colorama import Fore, Style
 import logging
 
 class GameState:
-    def __init__(self):
+    def __init__(self, stats):
         """
         Initialize the game state.
+
+        :param stats: The Statistics object for recording game data.
         """
         self.phase = "come-out"  # Current game phase ("come-out" or "point")
         self.point = None  # Current point number (if in point phase)
         self.puck = Puck()  # Puck to indicate the point
         self.players = []  # List of players in the game (can be set later)
         self.shooter = None  # Current shooter
-        self.stats = None  # Statistics object (can be set later)
+        self.stats = stats  # Statistics object (required)
         self.table = None  # Table object (can be set later)
 
     def set_players(self, players: List) -> None:
@@ -25,7 +27,7 @@ class GameState:
         :param players: The list of players.
         """
         self.players = players
-        
+
     def set_table(self, table) -> None:
         """
         Set the table object.
@@ -89,8 +91,7 @@ class GameState:
                 self.point = None
                 message = f"{Fore.RED}❌ 7-Out: Pass Line bets lose!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total in [4, 5, 6, 8, 9, 10]:  # Point number rolled during point phase
-                if self.stats:
-                    self.stats.record_point_number_roll()  # Record the roll number
+                self.stats.record_point_number_roll()  # Record the roll number
 
         return message
 

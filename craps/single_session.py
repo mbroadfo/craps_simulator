@@ -1,4 +1,4 @@
-# File: craps/single_session.py
+# File: .\craps\single_session.py
 
 from colorama import init, Fore, Style
 from craps.table import Table
@@ -25,7 +25,9 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     # Initialize components
     table = Table(house_rules)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
-    game_state = GameState()
+    game_state = GameState(stats)  # Pass stats to GameState
+
+    # Set the table in the game state
     game_state.set_table(table)
 
     # Create players with different betting strategies
