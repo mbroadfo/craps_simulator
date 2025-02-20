@@ -13,9 +13,11 @@ def main():
 
     # Initialize the session
     session_initializer = InitializeSession(SESSION_MODE, HOUSE_RULES)
-    house_rules, table, roll_history_manager = session_initializer.prepare_session()
-    if not house_rules:
+    result = session_initializer.prepare_session()
+    if not result:
         return  # Exit if session initialization fails
+
+    house_rules, table, roll_history_manager, log_manager = result
 
     # Set up players
     player_setup = SetupPlayers(house_rules, table, ACTIVE_PLAYERS)
@@ -37,7 +39,7 @@ def main():
     
     # View the log file interactively
     log_viewer = InteractiveLogViewer()
-    log_viewer.view('./play_by_play.log')
+    log_viewer.view(log_manager.log_file)  # Use the correct log file path
     
     # Visualize player bankrolls
     visualizer = Visualizer(stats)

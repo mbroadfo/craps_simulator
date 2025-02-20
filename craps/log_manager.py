@@ -4,9 +4,17 @@ import os
 import logging
 
 class LogManager:
-    def __init__(self, log_file='play_by_play.log'):
-        self.log_file = log_file
+    def __init__(self, output_folder="output", log_file='play_by_play.log'):
+        self.output_folder = output_folder
+        self.log_file = os.path.join(output_folder, log_file)
+        self.ensure_output_folder_exists()
         self.configure_logging()
+
+    def ensure_output_folder_exists(self):
+        """Ensure the output folder exists. Create it if it doesn't."""
+        if not os.path.exists(self.output_folder):
+            os.makedirs(self.output_folder)
+            print(f"Created output folder: {self.output_folder}")
 
     def configure_logging(self):
         """Configure logging to write to the log file."""
