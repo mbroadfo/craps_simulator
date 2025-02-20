@@ -1,9 +1,9 @@
 # File: lineup.py
-from craps.strategies.pass_line import PassLineStrategy
-from craps.strategies.pass_line_odds import PassLineOddsStrategy
-from craps.strategies.place_bet import PlaceBetStrategy
-from craps.strategies.field_bet import FieldBetStrategy
-from craps.strategies.iron_cross import IronCrossStrategy
+from craps.strategies.pass_line_strategy import PassLineStrategy
+from craps.strategies.pass_line_odds_strategy import PassLineOddsStrategy
+from craps.strategies.place_strategy import PlaceBetStrategy
+from craps.strategies.field_strategy import FieldBetStrategy
+from craps.strategies.iron_cross_strategy import IronCrossStrategy
 
 class PlayerLineup:
     """Class to manage the lineup of players and their strategies."""

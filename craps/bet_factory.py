@@ -1,8 +1,8 @@
 # File: .\craps\bet_factory.py
 
-from .bets.pass_line import PassLineBet  # Import PassLineBet
+from .bets.pass_line_bet import PassLineBet  # Import PassLineBet
 from .bets.place_bet import PlaceBet  # Import PlaceBet
-from .bets.free_odds import FreeOddsBet  # Import FreeOddsBet
+from .bets.free_odds_bet import FreeOddsBet  # Import FreeOddsBet
 from .bets.field_bet import FieldBet  # Import FieldBet
 
 class BetFactory:
