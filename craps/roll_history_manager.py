@@ -1,14 +1,10 @@
+# File: .\craps\roll_history_manager.py
+
 import os
 import csv
 
 class RollHistoryManager:
     def __init__(self, output_folder="output", roll_history_file="single_session_roll_history.csv"):
-        """
-        Initialize the RollHistoryManager.
-        
-        :param output_folder: The folder where roll history files are stored.
-        :param roll_history_file: The name of the roll history file.
-        """
         self.output_folder = output_folder
         self.roll_history_file = os.path.join(output_folder, roll_history_file)
 
@@ -30,6 +26,7 @@ class RollHistoryManager:
         
         :param roll_history: A list of dictionaries representing the roll history.
         """
+        self.ensure_output_folder_exists()
         with open(self.roll_history_file, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ["shooter_num", "roll_number", "dice", "total", "phase", "point"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -66,16 +63,6 @@ class RollHistoryManager:
         print(f"Roll history loaded from: {self.roll_history_file}")
         return roll_history
 
-    def validate_session_mode(self, session_mode):
-        """
-        Validate the session mode.
-        
-        :param session_mode: The session mode ("live" or "history").
-        :raises ValueError: If the session mode is invalid.
-        """
-        if session_mode not in ["live", "history"]:
-            raise ValueError(f"Invalid SESSION_MODE '{session_mode}'. Must be 'live' or 'history'.")
-
     def prepare_for_session(self, session_mode):
         """
         Prepare for the session based on the session mode.
@@ -93,3 +80,22 @@ class RollHistoryManager:
             if not os.path.exists(self.roll_history_file):
                 raise FileNotFoundError(f"Roll history file '{self.roll_history_file}' not found. Please run in 'live' mode first.")
             print(f"Running session in 'history' mode using roll history from: {self.roll_history_file}")
+
+    def validate_session_mode(self, session_mode):
+        """
+        Validate the session mode.
+        
+        :param session_mode: The session mode ("live" or "history").
+        :raises ValueError: If the session mode is invalid.
+        """
+        if session_mode not in ["live", "history"]:
+            raise ValueError(f"Invalid SESSION_MODE '{session_mode}'. Must be 'live' or 'history'.")
+
+    def get_roll_history_file(self, session_mode):
+        """
+        Get the roll history file based on the session mode.
+        
+        :param session_mode: The session mode ("live" or "history").
+        :return: The roll history file path if in "history" mode, otherwise None.
+        """
+        return self.roll_history_file if session_mode == "history" else None
