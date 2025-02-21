@@ -2,11 +2,11 @@
 
 from typing import List, Optional
 from craps.bet import Bet
+from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
-import logging
 
 class Table:
-    def __init__(self, house_rules: HouseRules):
+    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay):
         """
         Initialize the table.
 
@@ -15,6 +15,7 @@ class Table:
         self.house_rules = house_rules
         self.bets = []  # All bets on the table
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
+        self.play_by_play = play_by_play
 
     def get_minimum_bet(self, number: int) -> int:
         """
@@ -42,12 +43,14 @@ class Table:
         """
         # Validate the bet before placing it
         if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
-            logging.warning(f"Invalid bet: {bet}")
+            message = f"Invalid bet: {bet}"
+            #self.play_by_play.write(message)
             return False
 
         # Place the bet on the table
         self.bets.append(bet)
-        #logging.info(f"Bet placed: {bet}")
+        message = f"Bet placed: {bet}"
+        #self.play_by_play.write(message)
         return True
 
     def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
@@ -60,7 +63,8 @@ class Table:
         """
         for bet in self.bets:
             bet.resolve(dice_outcome, phase, point)
-            logging.info(f"Bet resolved: {bet} (Status: {bet.status})")
+            message = f"Bet resolved: {bet} (Status: {bet.status})"
+            self.play_by_play.write(message)
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
@@ -70,5 +74,6 @@ class Table:
         """
         resolved_bets = [bet for bet in self.bets if bet.is_resolved()]
         self.bets = [bet for bet in self.bets if not bet.is_resolved()]
-        logging.info(f"Active bets after clearing resolved bets: {len(self.bets)}")
+        message = f"Active bets after clearing resolved bets: {len(self.bets)}"
+        #self.play_by_play.write(message)
         return resolved_bets

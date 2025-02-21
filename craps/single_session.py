@@ -11,14 +11,6 @@ import os
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None, play_by_play=None):
     """
     Run a single session of craps and log the roll history.
-
-    :param house_rules: The house rules for the session.
-    :param strategies: The list of betting strategies.
-    :param player_names: The list of player names.
-    :param initial_bankroll: The initial bankroll for each player.
-    :param num_shooters: The number of shooters to simulate.
-    :param roll_history_file: The file to load roll history from (if in history mode).
-    :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
     """
     init()  # Initialize colorama
 
@@ -28,10 +20,10 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     else:
         dice = Dice()  # Use random rolls
 
-    # Setup the table, statistics, and game state
-    table = Table(house_rules)
+    # Initialize components
+    table = Table(house_rules, play_by_play)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
-    game_state = GameState(stats)  # Pass stats to GameState
+    game_state = GameState(stats, play_by_play=play_by_play)
     game_state.set_table(table)
 
     # Create players with different betting strategies

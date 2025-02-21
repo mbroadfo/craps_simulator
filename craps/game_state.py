@@ -3,14 +3,15 @@
 from typing import List, Optional
 from craps.puck import Puck
 from colorama import Fore, Style
-import logging
+from craps.play_by_play import PlayByPlay  # Import the PlayByPlay class
 
 class GameState:
-    def __init__(self, stats):
+    def __init__(self, stats, play_by_play=None):
         """
         Initialize the game state.
 
         :param stats: The Statistics object for recording game data.
+        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
         """
         self.phase = "come-out"  # Current game phase ("come-out" or "point")
         self.point = None  # Current point number (if in point phase)
@@ -19,6 +20,7 @@ class GameState:
         self.shooter = None  # Current shooter
         self.stats = stats  # Statistics object (required)
         self.table = None  # Table object (can be set later)
+        self.play_by_play = play_by_play  # Store the PlayByPlay instance
 
     def set_players(self, players: List) -> None:
         """
@@ -44,7 +46,8 @@ class GameState:
         """
         self.shooter = shooter
         self.shooter.reset_stats()
-        logging.info(f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}")
+        message = f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}"
+        self.play_by_play.write(message)  # Write the message to the play-by-play file
 
     def update_state(self, dice_outcome: List[int]) -> str:
         """
@@ -76,7 +79,8 @@ class GameState:
                             bet.status = "active"
                             reactivated_bets.append(f"{player.name}'s {bet.bet_type}")
                 if reactivated_bets:
-                    logging.info(f"{', '.join(reactivated_bets)} are now ON.")
+                    reactivated_message = f"{', '.join(reactivated_bets)} are now ON."
+                    self.play_by_play.write(reactivated_message)  # Write the message to the play-by-play file
         else:  # Point phase
             if total == self.puck.point:
                 self.shooter.points_rolled += 1  # Increment points rolled
@@ -92,6 +96,9 @@ class GameState:
                 message = f"{Fore.RED}❌ 7-Out: Pass Line bets lose!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total in [4, 5, 6, 8, 9, 10]:  # Point number rolled during point phase
                 self.stats.record_point_number_roll()  # Record the roll number
+
+        # Write the message to the play-by-play file
+        self.play_by_play.write(message)
 
         return message
 

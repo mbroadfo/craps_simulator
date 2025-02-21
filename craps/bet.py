@@ -1,3 +1,5 @@
+# File: .\craps\bet.py
+
 from typing import List, Optional, Tuple
 import logging
 
@@ -57,16 +59,16 @@ class Bet:
 
         # Check if the bet amount is within table limits
         if self.amount < table_minimum:
-            logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} is below the table minimum of ${table_minimum}.")
+            #logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} is below the table minimum of ${table_minimum}.")
             return False
         if self.amount > table_maximum:
-            logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} exceeds the table maximum of ${table_maximum}.")
+            #logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} exceeds the table maximum of ${table_maximum}.")
             return False
 
         # Check if the bet amount is valid for the bet type
         if self.bet_type in ["Place", "Buy"]:
             if self.amount % self.unit != 0:
-                logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} must be a multiple of ${self.unit}.")
+                #logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} must be a multiple of ${self.unit}.")
                 return False
 
         return True
@@ -91,8 +93,19 @@ class Bet:
 
         :return: The payout amount.
         """
-        raise NotImplementedError("Subclasses must implement this method.")
-    
+        if self.status != "won":
+            return 0
+
+        numerator, denominator = self.payout_ratio
+        profit = self.amount * numerator // denominator
+
+        # Deduct the vig (if applicable)
+        if self.vig > 0:
+            vig_amount = self.amount * self.vig // 100
+            profit -= vig_amount
+
+        return profit if self.bet_type != "Pass Line" else self.amount + profit
+
     def __str__(self):
         """Return a string representation of the bet."""
         if self.number is not None:
