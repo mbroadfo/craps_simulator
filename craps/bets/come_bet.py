@@ -17,10 +17,10 @@ class ComeBet(Bet):
             amount=amount,
             owner=owner,
             payout_ratio=(1, 1),  # Come bets pay 1:1
-            locked=False,  # Come bets can be taken down
-            valid_phases=["come-out"],  # Come bets are placed during the come-out phase
+            locked=True,  # Come bets are contract bets
+            valid_phases=["point"],  # Come bets are placed during the come-out phase
         )
-        self.come_point = None  # The point number for the Come bet (set after moving to the point)
+        self.number = None  # Come bet number set after moving to the point
 
     def resolve(self, outcome: List[int], phase: str, point: Optional[int]):
         """
@@ -32,7 +32,7 @@ class ComeBet(Bet):
         """
         total = sum(outcome)
 
-        if self.come_point is None:
+        if self.number is None:
             # Come bet is still in the come-out phase
             if total in [7, 11]:
                 self.status = "won"  # Come bet wins
@@ -40,12 +40,12 @@ class ComeBet(Bet):
                 self.status = "lost"  # Come bet loses
             else:
                 # Move the Come bet to the point
-                self.come_point = total
+                self.number = total
                 self.valid_phases = ["point"]  # Now only valid during the point phase
                 self.status = "active"  # Bet remains active
         else:
             # Come bet has a point
-            if total == self.come_point:
+            if total == self.number:
                 self.status = "won"  # Come bet wins
             elif total == 7:
                 self.status = "lost"  # Come bet loses
@@ -65,7 +65,7 @@ class ComeBet(Bet):
     
     def __str__(self):
         """Return a string representation of the Come bet."""
-        if self.come_point is None:
+        if self.number is None:
             return f"{self.owner.name}'s ${self.amount} Come bet (Status: {self.status})"
         else:
-            return f"{self.owner.name}'s ${self.amount} Come bet on {self.come_point} (Status: {self.status})"
+            return f"{self.owner.name}'s ${self.amount} Come bet on {self.number} (Status: {self.status})"

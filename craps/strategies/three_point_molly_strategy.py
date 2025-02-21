@@ -25,25 +25,28 @@ class ThreePointMollyStrategy:
         """
         bets = []
 
-        # Place a Pass Line bet if no active Pass Line bet exists
-        if not any(bet.bet_type == "Pass Line" for bet in table.bets if bet.owner == player):
-            bets.append(BetFactory.create_pass_line_bet(self.min_bet, player))
+        # Place a Pass Line bet if no active Pass Line bet exists (only during come-out phase)
+        if game_state.phase == "come-out":
+            if not any(bet.bet_type == "Pass Line" for bet in table.bets if bet.owner == player):
+                bets.append(BetFactory.create_pass_line_bet(self.min_bet, player))
 
-        # Place up to 3 Come bets if fewer than 3 active Come bets exist
-        active_come_bets = [bet for bet in table.bets if bet.bet_type == "Come" and bet.owner == player]
-        if len(active_come_bets) < 3:
-            bets.append(BetFactory.create_come_bet(self.min_bet, player))
+        # Place up to 3 Come bets if fewer than 3 active Come bets exist (only during point phase)
+        if game_state.phase == "point":
+            active_come_bets = [bet for bet in table.bets if bet.bet_type == "Come" and bet.owner == player]
+            if len(active_come_bets) < 3:
+                bets.append(BetFactory.create_come_bet(self.min_bet, player))
 
-        # Place odds on active Pass Line and Come bets
-        for bet in table.bets:
-            if bet.owner == player:
-                if bet.bet_type == "Pass Line" and bet.status == "active":
-                    # Place Pass Line Odds
-                    odds_amount = self.min_bet * self.odds_multiple
-                    bets.append(BetFactory.create_pass_line_odds_bet(odds_amount, player, game_state.point))
-                elif bet.bet_type == "Come" and bet.status == "active" and bet.come_point is not None:
-                    # Place Come Odds
-                    odds_amount = self.min_bet * self.odds_multiple
-                    bets.append(BetFactory.create_pass_line_odds_bet(odds_amount, player, bet.come_point))
+        # Place odds on active Pass Line and Come bets (only during point phase)
+        if game_state.phase == "point":
+            for bet in table.bets:
+                if bet.owner == player:
+                    if bet.bet_type == "Pass Line" and bet.status == "active":
+                        # Place Pass Line Odds
+                        odds_amount = self.min_bet * self.odds_multiple
+                        bets.append(BetFactory.create_pass_line_odds_bet(odds_amount, player, game_state.point))
+                    elif bet.bet_type == "Come" and bet.status == "active" and bet.number is not None:
+                        # Place Come Odds
+                        odds_amount = self.min_bet * self.odds_multiple
+                        bets.append(BetFactory.create_come_odds_bet(odds_amount, player, bet.number))
 
         return bets if bets else None

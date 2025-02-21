@@ -1,41 +1,46 @@
 # File: .\craps\bet_factory.py
 
-from  .bets.pass_line_bet import PassLineBet  # Import PassLineBet
-from .bets.place_bet import PlaceBet  # Import PlaceBet
-from .bets.free_odds_bet import FreeOddsBet  # Import FreeOddsBet
-from .bets.field_bet import FieldBet  # Import FieldBet
-from .bets.come_bet import ComeBet  # Import ComeBet
+from  .bets.pass_line_bet import PassLineBet 
+from .bets.place_bet import PlaceBet 
+from .bets.free_odds_bet import FreeOddsBet
+from .bets.field_bet import FieldBet
+from .bets.come_bet import ComeBet
 
 class BetFactory:
     @staticmethod
     def create_pass_line_bet(amount, owner):
         """Create a Pass Line bet."""
-        return PassLineBet(amount, owner)  # Pass the Player object
+        return PassLineBet(amount, owner) 
+
+    @staticmethod
+    def create_pass_line_odds_bet(amount, owner, number):
+        """Create a Pass Line Odds bet."""
+        return FreeOddsBet("Pass Line Odds", amount, owner, number)
 
     @staticmethod
     def create_place_bet(amount, owner, number):
         """Create a Place bet."""
-        return PlaceBet(amount, owner, number)  # Pass the Player object and number
-
-    @staticmethod
-    def create_pass_line_odds_bet(amount, owner, number=None):
-        """Create a Pass Line Odds bet."""
-        return FreeOddsBet("Pass Line Odds", amount, owner, number)  # Pass the Player object and number
+        return PlaceBet(amount, owner, number) 
 
     @staticmethod
     def create_place_odds_bet(amount, owner, number):
         """Create a Place Odds bet."""
-        return FreeOddsBet("Place Odds", amount, owner, number)  # Pass the Player object and number
-
-    @staticmethod
-    def create_field_bet(amount, owner):
-        """Create a Field bet."""
-        return FieldBet(amount, owner)  # Pass the Player object
+        return FreeOddsBet("Place Odds", amount, owner, number)
 
     @staticmethod
     def create_come_bet(amount, owner):
         """Create a Come bet."""
-        return ComeBet(amount, owner)  # Pass the Player object
+        return ComeBet(amount, owner)
+
+    @staticmethod
+    def create_come_odds_bet(amount, owner, number):
+        """Create a Come Odds bet."""
+        return FreeOddsBet("Come Odds", amount, owner, number)
+
+    @staticmethod
+    def create_field_bet(amount, owner):
+        """Create a Field bet."""
+        return FieldBet(amount, owner)
 
     @staticmethod
     def create_bets(bet_type, amount, owner, number=None):
@@ -50,13 +55,17 @@ class BetFactory:
         """
         if bet_type == "Pass Line":
             return BetFactory.create_pass_line_bet(amount, owner)
+        elif bet_type == "Pass Line Odds":
+            return BetFactory.create_pass_line_bet(amount, owner)
         elif bet_type == "Place":
             return BetFactory.create_place_bet(amount, owner, number)
         elif bet_type == "Place Odds":
             return BetFactory.create_place_odds_bet(amount, owner, number)
-        elif bet_type == "Field":
-            return BetFactory.create_field_bet(amount, owner)
         elif bet_type == "Come":
             return BetFactory.create_come_bet(amount, owner)
+        elif bet_type == "Come Odds":
+            return BetFactory.create_come_bet(amount, owner)
+        elif bet_type == "Field":
+            return BetFactory.create_field_bet(amount, owner)
         else:
             raise ValueError(f"Unknown bet type: {bet_type}")

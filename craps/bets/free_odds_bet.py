@@ -23,6 +23,17 @@ class FreeOddsBet(Bet):
             number=number  # Number associated with the bet (e.g., 6 for Place Odds 6)
         )
 
+    def _calculate_true_odds(self, number):
+        """Calculate the true odds payout ratio based on the number."""
+        if number in [4, 10]:
+            return (2, 1)  # 2:1 payout for 4 and 10
+        elif number in [5, 9]:
+            return (3, 2)  # 3:2 payout for 5 and 9
+        elif number in [6, 8]:
+            return (6, 5)  # 6:5 payout for 6 and 8
+        else:
+            raise ValueError(f"Invalid number for odds bet: {number}")
+    
     def resolve(self, outcome, phase, point):
         """Resolve the Free Odds bet based on the dice outcome, phase, and point."""
         if phase not in self.valid_phases:
@@ -31,32 +42,19 @@ class FreeOddsBet(Bet):
         total = sum(outcome)
         
         if phase == "point":
-            if self.bet_type == "Pass Line Odds":
-                # Pass Line Odds logic
-                if total == point:
-                    if point in [4, 10]:
-                        self.payout_ratio = (2, 1)  # 2:1 payout for 4 and 10
-                    elif point in [5, 9]:
-                        self.payout_ratio = (3, 2)  # 3:2 payout for 5 and 9
-                    elif point in [6, 8]:
-                        self.payout_ratio = (6, 5)  # 6:5 payout for 6 and 8
-                    self.status = "won"  # Pass Line Odds bet wins
-                elif total == 7:
-                    self.status = "lost"  # Pass Line Odds bet loses
+            if self.bet_type in ["Pass Line Odds", "Come Odds", "Place Odds"]:
+                # Determine the number to resolve against
+                if self.bet_type == "Pass Line Odds":
+                    resolve_number = point
                 else:
-                    self.status = "active"  # Bet remains active
-            elif self.bet_type == "Place Odds":
-                # Place Odds logic
-                if total == self.number:
-                    if self.number in [4, 10]:
-                        self.payout_ratio = (2, 1)  # 2:1 payout for 4 and 10
-                    elif self.number in [5, 9]:
-                        self.payout_ratio = (3, 2)  # 3:2 payout for 5 and 9
-                    elif self.number in [6, 8]:
-                        self.payout_ratio = (6, 5)  # 6:5 payout for 6 and 8
-                    self.status = "won"  # Place Odds bet wins
+                    resolve_number = self.number
+
+                # Resolve the bet
+                if total == resolve_number:
+                    self.payout_ratio = self._calculate_true_odds(resolve_number)
+                    self.status = "won"  # Odds bet wins
                 elif total == 7:
-                    self.status = "lost"  # Place Odds bet loses
+                    self.status = "lost"  # Odds bet loses
                 else:
                     self.status = "active"  # Bet remains active
                     
