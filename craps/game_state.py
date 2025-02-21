@@ -38,16 +38,18 @@ class GameState:
         """
         self.table = table
 
-    def set_shooter(self, shooter) -> None:
+    def set_shooter(self, shooter, shooter_num):
         """
         Set the current shooter and reset their statistics.
 
         :param shooter: The current shooter.
+        :param shooter_num: The shooter's turn number.
         """
         self.shooter = shooter
         self.shooter.reset_stats()
+        self.stats.set_shooter(shooter, shooter_num)
         message = f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}"
-        self.play_by_play.write(message)  # Write the message to the play-by-play file
+        self.play_by_play.write(message)
 
     def update_state(self, dice_outcome: List[int]) -> str:
         """

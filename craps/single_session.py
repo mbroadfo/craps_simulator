@@ -46,7 +46,8 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
         shooter = players[player_index]
-        game_state.set_shooter(shooter)
+        game_state.set_shooter(shooter, shooter_num)
+        stats.set_shooter(shooter, shooter_num)
 
         while True:
             # Allow all players to place bets
@@ -59,6 +60,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             outcome = shooter.roll_dice()
             total = sum(outcome)
             stats.update_rolls()
+            stats.update_shooter_stats(shooter)
 
             # Log the dice roll and total
             message = f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}"

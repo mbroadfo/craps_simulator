@@ -13,6 +13,7 @@ class Statistics:
         self.highest_bankroll = 0
         self.lowest_bankroll = float('inf')
         self.shooter_stats = {}
+        self.shooter = None  # Add a shooter attribute
 
         # For visualization
         self.roll_numbers = [0]  # Start with roll 0
@@ -20,6 +21,17 @@ class Statistics:
         self.seven_out_rolls = []  # Track rolls where a 7-out occurs
         self.point_number_rolls = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
         
+    def set_shooter(self, shooter, shooter_num):
+        """Set the current shooter and their turn number."""
+        self.shooter = shooter
+        self.shooter_num = shooter_num  # Track the shooter's turn number
+        if shooter_num not in self.shooter_stats:
+            self.shooter_stats[shooter_num] = {
+                "points_rolled": 0,
+                "rolls_before_7_out": [],
+                "total_rolls": 0,
+            }
+            
     def initialize_bankroll_history(self, players):
         """Initialize bankroll history with the starting bankroll for each player."""
         for player in players:
@@ -75,10 +87,15 @@ class Statistics:
     def record_seven_out(self):
         """Record the roll number where a 7-out occurs."""
         self.seven_out_rolls.append(self.num_rolls)
+        if self.shooter:
+            self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(self.shooter.current_roll_count)
+            self.shooter.current_roll_count = 0  # Reset the roll count after a 7-out
         
     def record_point_number_roll(self):
         """Record the roll number where a point number (4, 5, 6, 8, 9, 10) is rolled."""
         self.point_number_rolls.append(self.num_rolls)
+        if self.shooter:
+            self.shooter_stats[self.shooter_num]["points_rolled"] += 1
 
     def visualize_bankrolls(self):
         """Visualize player bankrolls over time."""
@@ -116,15 +133,16 @@ class Statistics:
 
     def update_shooter_stats(self, shooter):
         """Update shooter statistics."""
-        if shooter.name not in self.shooter_stats:
-            self.shooter_stats[shooter.name] = {
+        if self.shooter_num not in self.shooter_stats:
+            self.shooter_stats[self.shooter_num] = {
                 "points_rolled": 0,
                 "rolls_before_7_out": [],
                 "total_rolls": 0,
             }
-        self.shooter_stats[shooter.name]["points_rolled"] += shooter.points_rolled
-        self.shooter_stats[shooter.name]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
-        self.shooter_stats[shooter.name]["total_rolls"] += shooter.current_roll_count
+        # Update total rolls for the shooter
+        self.shooter_stats[self.shooter_num]["total_rolls"] += shooter.current_roll_count
+        self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
+        self.shooter_stats[self.shooter_num]["total_rolls"] += shooter.current_roll_count
 
     def print_statistics(self):
         """Print the simulation statistics."""
@@ -142,13 +160,13 @@ class Statistics:
     def print_shooter_report(self):
         """Print a report summarizing each shooter's performance."""
         logging.info("\n=== Shooter Performance Report ===")
-        for shooter_name, stats in self.shooter_stats.items():
+        for shooter_num, stats in self.shooter_stats.items():
             total_points_rolled = stats["points_rolled"]
             total_rolls = stats["total_rolls"]
             rolls_before_7_out = stats["rolls_before_7_out"]
             avg_rolls_before_7_out = sum(rolls_before_7_out) / len(rolls_before_7_out) if rolls_before_7_out else 0
 
-            logging.info(f"\nShooter: {shooter_name}")
+            logging.info(f"\nShooter: {shooter_num}")
             logging.info(f"  Total Points Rolled: {total_points_rolled}")
             logging.info(f"  Total Rolls: {total_rolls}")
             logging.info(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
