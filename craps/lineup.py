@@ -1,9 +1,10 @@
 # File: lineup.py
-from craps.strategies.pass_line_strategy import PassLineStrategy
-from craps.strategies.pass_line_odds_strategy import PassLineOddsStrategy
-from craps.strategies.place_strategy import PlaceBetStrategy
-from craps.strategies.field_strategy import FieldBetStrategy
-from craps.strategies.iron_cross_strategy import IronCrossStrategy
+from .strategies.pass_line_strategy import PassLineStrategy
+from .strategies.pass_line_odds_strategy import PassLineOddsStrategy
+from .strategies.place_strategy import PlaceBetStrategy
+from .strategies.field_strategy import FieldBetStrategy
+from .strategies.iron_cross_strategy import IronCrossStrategy
+from .strategies.three_point_molly_strategy import ThreePointMollyStrategy
 
 class PlayerLineup:
     """Class to manage the lineup of players and their strategies."""
@@ -25,6 +26,7 @@ class PlayerLineup:
             "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across"),
             "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
             "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum),
+            "3-Point Molly": ThreePointMollyStrategy(min_bet=self.house_rules.table_minimum, odds_multiple=1),
         }
 
     def get_active_players(self, active_players_config):
