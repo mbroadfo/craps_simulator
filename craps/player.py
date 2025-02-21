@@ -1,11 +1,6 @@
 # File: .\craps\player.py
 
-from typing import List, Union, Optional
-from craps.bet import Bet
-from craps.table import Table
-from craps.game_state import GameState
-from craps.log_manager import LogManager
-import logging
+from colorama import Fore, Style
 
 class Player:
     def __init__(self, name: str, initial_balance: int = 500, betting_strategy=None):
