@@ -1,9 +1,10 @@
 # File: .\craps\player.py
 
-from typing import List, Union
+from typing import List, Union, Optional
 from craps.bet import Bet
 from craps.table import Table
 from craps.game_state import GameState
+from craps.log_manager import LogManager
 import logging
 
 class Player:
@@ -47,7 +48,7 @@ class Player:
 
             # Deduct the amount from the player's balance
             self.balance -= b.amount
-            logging.info(f"{self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.")
+            logging.info(LogManager.format_log_message(f"{self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}."))
 
         return True
 
@@ -58,14 +59,18 @@ class Player:
         :param payout: The payout amount.
         """
         self.balance += payout
-        logging.info(f"{self.name} received a payout of ${payout}. Bankroll: ${self.balance}.")
+        logging.info(LogManager.format_log_message(f"{self.name} received a payout of ${payout}. Bankroll: ${self.balance}."))
 
-    def has_active_bet(self, table: Table, bet_type: str) -> bool:
+    def has_active_bet(self, table: Table, bet_type: str, number: Optional[int] = None) -> bool:
         """
-        Check if the player has an active bet of a specific type on the table.
+        Check if the player has an active bet of a specific type and number on the table.
 
         :param table: The table to check for active bets.
-        :param bet_type: The type of bet to check for (e.g., "Pass Line").
-        :return: True if the player has an active bet of the specified type, False otherwise.
+        :param bet_type: The type of bet to check for (e.g., "Pass Line", "Place").
+        :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :return: True if the player has an active bet of the specified type and number, False otherwise.
         """
-        return any(bet.owner == self and bet.bet_type == bet_type for bet in table.bets)
+        return any(
+            bet.owner == self and bet.bet_type == bet_type and (number is None or bet.number == number)
+            for bet in table.bets
+        )

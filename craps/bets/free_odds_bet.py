@@ -13,8 +13,15 @@ class FreeOddsBet(Bet):
         :param owner: The player who placed the bet.
         :param number: The number being bet on (for Place Odds).
         """
-        super().__init__(bet_type, amount, owner, payout_ratio=(1, 1), locked=False)
-        self.number = number  # The number being bet on (e.g., 4, 5, 6, 8, 9, 10)
+        super().__init__(
+            bet_type=bet_type,
+            amount=amount,
+            owner=owner,
+            payout_ratio=(1, 1),
+            locked=False,
+            valid_phases=["point"],  # Free Odds bets are only valid during the point phase
+            number=number  # Number associated with the bet (e.g., 6 for Place Odds 6)
+        )
 
     def resolve(self, outcome, phase, point):
         """Resolve the Free Odds bet based on the dice outcome, phase, and point."""

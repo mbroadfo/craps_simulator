@@ -15,7 +15,7 @@ class BetFactory:
     @staticmethod
     def create_place_bet(amount, owner, number):
         """Create a Place bet."""
-        return PlaceBet(amount, owner, number)  # Pass the Player object
+        return PlaceBet(amount, owner, number)  # Pass the Player object and number
 
     @staticmethod
     def create_pass_line_odds_bet(amount, owner, number=None):

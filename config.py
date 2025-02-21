@@ -1,11 +1,11 @@
 # File: .\config.py
 
 ACTIVE_PLAYERS = {
-    "Pass-Line": True,
+    "Pass-Line": False,
     "Pass-Line w/ Odds": True,
-    "$44 Inside": True,
-    "$54 Across": True,
-    "Field": True,
+    "$44 Inside": False,
+    "$54 Across": False,
+    "Field": False,
     "Iron Cross": True,
     "3-Point Molly": True,
 }

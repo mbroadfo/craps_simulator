@@ -5,8 +5,14 @@ from . import Bet  # Import the base Bet class from the bets package
 class PlaceBet(Bet):
     """Class representing a Place bet."""
     def __init__(self, amount, owner, number):
-        super().__init__(f"Place {number}", amount, owner, locked=False)
-        self.number = number
+        super().__init__(
+            bet_type="Place",
+            amount=amount,
+            owner=owner,
+            locked=False,
+            valid_phases=["point"],  # Place bets are only valid during the point phase
+            number=number  # Number associated with the bet (e.g., 6 for Place 6)
+        )
 
     def resolve(self, outcome, phase, point):
         """Resolve the Place bet based on the dice outcome, phase, and point."""

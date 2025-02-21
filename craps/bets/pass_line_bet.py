@@ -5,7 +5,14 @@ from craps.bet import Bet  # Import the base Bet class from craps.bet
 class PassLineBet(Bet):
     """Class representing a Pass Line bet."""
     def __init__(self, amount, owner):
-        super().__init__("Pass Line", amount, owner, payout_ratio=(1, 1), locked=True)
+        super().__init__(
+            bet_type="Pass Line",
+            amount=amount,
+            owner=owner,
+            payout_ratio=(1, 1),
+            locked=True,
+            valid_phases=["come-out"]  # Pass Line bets are only valid during the come-out phase
+        )
 
     def resolve(self, outcome, phase, point):
         """Resolve the Pass Line bet based on the dice outcome, phase, and point."""

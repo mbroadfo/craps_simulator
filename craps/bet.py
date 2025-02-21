@@ -1,26 +1,26 @@
-# File: .\craps\bet.py
-
 from typing import List, Optional, Tuple
 import logging
 
 class Bet:
     """Base class for all bet types."""
+    VALID_PHASES = ["come-out", "point"]  # Define valid phases as a class constant
+
     def __init__(
         self,
-        bet_type: str,
+        bet_type: str,  # Type of bet (e.g., "Pass Line", "Place", "Come")
         amount: int,
         owner,  # Reference to the Player object
         payout_ratio: Tuple[int, int] = (1, 1),
         locked: bool = True,
         vig: int = 0,
         unit: int = 1,  # Default unit for Place/Buy bets
-        valid_phases: List[str] = ["come-out", "point"],  # Default valid phases
-        come_point: Optional[int] = None,  # Point number for Come bets
+        valid_phases: List[str] = None,  # Default to None, will be set to VALID_PHASES
+        number: Optional[int] = None,  # Number associated with the bet (e.g., 6 for Place 6)
     ):
         """
         Initialize a bet.
 
-        :param bet_type: The type of bet (e.g., "Pass Line", "Come").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Place").
         :param amount: The amount of the bet.
         :param owner: The Player object who placed the bet.
         :param payout_ratio: The payout ratio as a tuple (numerator, denominator).
@@ -28,6 +28,7 @@ class Bet:
         :param vig: The vig (commission) as a percentage of the bet amount.
         :param unit: The unit for Place/Buy bets (default is 1).
         :param valid_phases: The phases during which the bet can be placed (default is all phases).
+        :param number: The number associated with the bet (e.g., 6 for Place 6).
         """
         self.bet_type = bet_type
         self.amount = amount
@@ -36,9 +37,9 @@ class Bet:
         self.locked = locked
         self.vig = vig
         self.unit = unit
-        self.valid_phases = valid_phases
+        self.valid_phases = valid_phases if valid_phases is not None else self.VALID_PHASES
+        self.number = number  # Number associated with the bet (e.g., 6 for Place 6)
         self.status = "active"  # Can be "active", "won", "lost", or "pushed"
-        self.come_point = come_point  # Point number for Come bets
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
@@ -93,4 +94,8 @@ class Bet:
         raise NotImplementedError("Subclasses must implement this method.")
     
     def __str__(self):
-        return f"{self.owner.name}'s ${self.amount} {self.bet_type} bet (Status: {self.status})"
+        """Return a string representation of the bet."""
+        if self.number is not None:
+            return f"{self.owner.name}'s ${self.amount} {self.bet_type} {self.number} bet (Status: {self.status})"
+        else:
+            return f"{self.owner.name}'s ${self.amount} {self.bet_type} bet (Status: {self.status})"
