@@ -1,19 +1,24 @@
 # File: .\craps\player.py
 
 from colorama import Fore, Style
+from typing import List, Union, Optional
+from craps.bet import Bet
+from craps.table import Table
 
 class Player:
-    def __init__(self, name: str, initial_balance: int = 500, betting_strategy=None):
+    def __init__(self, name: str, initial_balance: int = 500, betting_strategy=None, play_by_play=None):
         """
         Initialize a player.
 
         :param name: The name of the player.
         :param initial_balance: The initial bankroll of the player.
         :param betting_strategy: The betting strategy used by the player.
+        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
         """
         self.name = name
         self.balance = initial_balance
         self.betting_strategy = betting_strategy
+        self.play_by_play = play_by_play 
 
     def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
         """
@@ -32,18 +37,21 @@ class Player:
 
         # Check if the player has sufficient funds
         if total_amount > self.balance:
-            logging.warning(f"{self.name} has insufficient funds to place ${total_amount} in bets.")
+            message = f"{Fore.RED}❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
+            self.play_by_play.write(message)  # Write the message to the play-by-play file
             return False
 
         # Place each bet on the table
         for b in bets:
             if not table.place_bet(b, phase):  # Use the updated place_bet method
-                logging.warning(f"Failed to place {b.bet_type} bet for {self.name}.")
+                message = f"{Fore.RED}❌ Failed to place {b.bet_type} bet for {self.name}.{Style.RESET_ALL}"
+                self.play_by_play.write(message)  # Write the message to the play-by-play file
                 return False
 
             # Deduct the amount from the player's balance
             self.balance -= b.amount
-            logging.info(LogManager.format_log_message(f"{self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}."))
+            message = f"{Fore.GREEN}✅ {self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.{Style.RESET_ALL}"
+            self.play_by_play.write(message)  # Write the message to the play-by-play file
 
         return True
 
@@ -54,7 +62,8 @@ class Player:
         :param payout: The payout amount.
         """
         self.balance += payout
-        logging.info(LogManager.format_log_message(f"{self.name} received a payout of ${payout}. Bankroll: ${self.balance}."))
+        message = f"{Fore.GREEN}✅ {self.name} received a payout of ${payout}. Bankroll: ${self.balance}.{Style.RESET_ALL}"
+        self.play_by_play.write(message)  # Write the message to the play-by-play file
 
     def has_active_bet(self, table: Table, bet_type: str, number: Optional[int] = None) -> bool:
         """

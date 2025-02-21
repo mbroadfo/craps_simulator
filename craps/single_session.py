@@ -6,13 +6,19 @@ from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
-from craps.visualizer import Visualizer
 import os
-import logging
 
-def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None):
+def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None, play_by_play=None):
     """
     Run a single session of craps and log the roll history.
+
+    :param house_rules: The house rules for the session.
+    :param strategies: The list of betting strategies.
+    :param player_names: The list of player names.
+    :param initial_bankroll: The initial bankroll for each player.
+    :param num_shooters: The number of shooters to simulate.
+    :param roll_history_file: The file to load roll history from (if in history mode).
+    :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
     """
     init()  # Initialize colorama
 
@@ -22,12 +28,10 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     else:
         dice = Dice()  # Use random rolls
 
-    # Initialize components
+    # Setup the table, statistics, and game state
     table = Table(house_rules)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
     game_state = GameState(stats)  # Pass stats to GameState
-
-    # Set the table in the game state
     game_state.set_table(table)
 
     # Create players with different betting strategies
@@ -35,7 +39,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         player_names = [f"Player {i+1}" for i in range(len(strategies))]
 
     players = [
-        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice)
+        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice, play_by_play=play_by_play)
         for i, strategy in enumerate(strategies)
     ]
     game_state.set_players(players)
@@ -65,7 +69,8 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             stats.update_rolls()
 
             # Log the dice roll and total
-            logging.info(f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}")
+            message = f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}"
+            play_by_play.write(message)  # Write the message to the play-by-play file
 
             # Log the roll to the history
             roll_history.append({
@@ -87,7 +92,8 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
                     payout = bet.payout()
                     bet.owner.receive_payout(payout)
                 elif bet.status == "lost":
-                    logging.info(f"{bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.")
+                    message = f"{Fore.RED}❌ {bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.{Style.RESET_ALL}"
+                    play_by_play.write(message)  # Write the message to the play-by-play file
 
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)
@@ -96,7 +102,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             previous_phase = game_state.phase
             message = game_state.update_state(outcome)
             if message:
-                logging.info(message)
+                play_by_play.write(message)  # Write the message to the play-by-play file
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:

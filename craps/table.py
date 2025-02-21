@@ -47,7 +47,7 @@ class Table:
 
         # Place the bet on the table
         self.bets.append(bet)
-        logging.info(f"Bet placed: {bet}")
+        #logging.info(f"Bet placed: {bet}")
         return True
 
     def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:

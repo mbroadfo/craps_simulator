@@ -4,7 +4,7 @@ import os
 import logging
 
 class LogManager:
-    def __init__(self, output_folder="output", log_file='play_by_play.log'):
+    def __init__(self, output_folder="output", log_file='general.log'):
         self.output_folder = output_folder
         self.log_file = os.path.join(output_folder, log_file)
         self.ensure_output_folder_exists()

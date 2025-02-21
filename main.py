@@ -17,7 +17,7 @@ def main():
     if not result:
         return  # Exit if session initialization fails
 
-    house_rules, table, roll_history_manager, log_manager = result
+    house_rules, table, roll_history_manager, log_manager, play_by_play = result
 
     # Set up players
     player_setup = SetupPlayers(house_rules, table, ACTIVE_PLAYERS)
@@ -27,7 +27,13 @@ def main():
     roll_history_file = roll_history_manager.get_roll_history_file(SESSION_MODE)
 
     # Run the session
-    stats = run_single_session(house_rules, strategies, player_names=player_names, roll_history_file=roll_history_file)
+    stats = run_single_session(
+        house_rules,
+        strategies,
+        player_names=player_names,
+        roll_history_file=roll_history_file,
+        play_by_play=play_by_play
+    )
 
     # Save the roll history if running in live mode
     if SESSION_MODE == "live":
@@ -39,7 +45,7 @@ def main():
     
     # View the log file interactively
     log_viewer = InteractiveLogViewer()
-    log_viewer.view(log_manager.log_file)  # Use the correct log file path
+    log_viewer.view(log_manager.log_file)
     
     # Visualize player bankrolls
     visualizer = Visualizer(stats)

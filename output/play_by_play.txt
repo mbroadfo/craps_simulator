@@ -1,0 +1,496 @@
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $490.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $490.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $490.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $480.[0m
+[95mPass-Line w/ Odds rolled: [3, 6] (Total: 9) | Roll Count: 1[0m
+[33mPoint Set: 9. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $480.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $480.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $468.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $456.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $446.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [3, 5] (Total: 8) | Roll Count: 2[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $472.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $460.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $450.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [5, 1] (Total: 6) | Roll Count: 3[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $476.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $464.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $454.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [1, 2] (Total: 3) | Roll Count: 4[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $474.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $464.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [1, 4] (Total: 5) | Roll Count: 5[0m
+[32m✅ Iron Cross received a payout of $24. Bankroll: $488.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $478.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $468.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 1] (Total: 3) | Roll Count: 6[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $488.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $478.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [4, 6] (Total: 10) | Roll Count: 7[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $498.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $488.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 1] (Total: 3) | Roll Count: 8[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $508.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $498.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [3, 1] (Total: 4) | Roll Count: 9[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $518.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $508.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [4, 5] (Total: 9) | Roll Count: 10[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $500.[0m
+[32m✅ Pass-Line w/ Odds received a payout of $25. Bankroll: $505.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $528.[0m
+[32m✅ Point Hit: 9. Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $490.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [6, 4] (Total: 10) | Roll Count: 11[0m
+[33mPoint Set: 10. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $495.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $518.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [6, 5] (Total: 11) | Roll Count: 12[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $538.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $528.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 4] (Total: 6) | Roll Count: 13[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $554.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $542.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $532.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [6, 1] (Total: 7) | Roll Count: 14[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $480.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [5, 3] (Total: 8) | Roll Count: 15[0m
+[33mPoint Set: 8. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $485.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $522.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $510.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $500.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [3, 1] (Total: 4) | Roll Count: 16[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $520.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $510.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [6, 3] (Total: 9) | Roll Count: 17[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $530.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $520.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [3, 3] (Total: 6) | Roll Count: 18[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $546.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $534.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $524.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [5, 1] (Total: 6) | Roll Count: 19[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $550.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $538.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $528.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [6, 4] (Total: 10) | Roll Count: 20[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $548.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $538.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [2, 4] (Total: 6) | Roll Count: 21[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $564.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $552.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $542.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [3, 1] (Total: 4) | Roll Count: 22[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $562.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $552.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [5, 2] (Total: 7) | Roll Count: 23[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $470.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [6, 5] (Total: 11) | Roll Count: 24[0m
+[32m✅ Pass-Line w/ Odds received a payout of $20. Bankroll: $505.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $572.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $490.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $510.[0m
+[32m✅ 7-Winner: Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $495.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $562.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $500.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $490.[0m
+[95m3-Point Molly rolled: [6, 3] (Total: 9) | Roll Count: 25[0m
+[33mPoint Set: 9. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $485.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $552.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $540.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $528.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $518.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [2, 2] (Total: 4) | Roll Count: 26[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $538.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $528.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [3, 1] (Total: 4) | Roll Count: 27[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $548.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $538.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [1, 3] (Total: 4) | Roll Count: 28[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $558.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $548.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [5, 2] (Total: 7) | Roll Count: 29[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $480.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [6, 5] (Total: 11) | Roll Count: 30[0m
+[32m✅ Pass-Line w/ Odds received a payout of $20. Bankroll: $505.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $568.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $500.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $520.[0m
+[32m✅ 7-Winner: Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $495.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $558.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $510.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $500.[0m
+[95mPass-Line w/ Odds rolled: [3, 6] (Total: 9) | Roll Count: 31[0m
+[33mPoint Set: 9. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $485.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $548.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $536.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $524.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $514.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 4] (Total: 6) | Roll Count: 32[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $540.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $528.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $518.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 6] (Total: 8) | Roll Count: 33[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $544.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $532.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $522.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 2] (Total: 4) | Roll Count: 34[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $542.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $532.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [5, 5] (Total: 10) | Roll Count: 35[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $552.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $542.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [4, 4] (Total: 8) | Roll Count: 36[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $568.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $556.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $546.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 5] (Total: 7) | Roll Count: 37[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $490.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [3, 1] (Total: 4) | Roll Count: 38[0m
+[33mPoint Set: 4. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $475.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $536.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $524.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $512.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $502.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [5, 1] (Total: 6) | Roll Count: 39[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $528.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $516.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $506.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [1, 6] (Total: 7) | Roll Count: 40[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $480.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [1, 3] (Total: 4) | Roll Count: 41[0m
+[33mPoint Set: 4. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $465.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $496.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $484.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $472.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $462.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [5, 2] (Total: 7) | Roll Count: 42[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $470.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [1, 3] (Total: 4) | Roll Count: 43[0m
+[33mPoint Set: 4. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $455.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $452.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $440.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $428.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $418.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [3, 3] (Total: 6) | Roll Count: 44[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $444.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $432.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $422.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [5, 2] (Total: 7) | Roll Count: 45[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $460.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [5, 6] (Total: 11) | Roll Count: 46[0m
+[32m✅ Pass-Line w/ Odds received a payout of $20. Bankroll: $475.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $442.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $480.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $500.[0m
+[32m✅ 7-Winner: Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $465.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $432.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $490.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $480.[0m
+[95mIron Cross rolled: [6, 4] (Total: 10) | Roll Count: 47[0m
+[33mPoint Set: 10. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $455.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $422.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $410.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $398.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $388.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [6, 4] (Total: 10) | Roll Count: 48[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $500.[0m
+[32m✅ Pass-Line w/ Odds received a payout of $30. Bankroll: $485.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $408.[0m
+[32m✅ Point Hit: 10. Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $490.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [1, 2] (Total: 3) | Roll Count: 49[0m
+[31m❌ Pass-Line w/ Odds's Pass Line bet LOST $10.[0m
+[31m❌ Iron Cross's Pass Line bet LOST $10.[0m
+[31m❌ 3-Point Molly's Pass Line bet LOST $10.[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Craps: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $475.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $398.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $480.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $470.[0m
+[95mIron Cross rolled: [3, 4] (Total: 7) | Roll Count: 50[0m
+[32m✅ Pass-Line w/ Odds received a payout of $20. Bankroll: $495.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $418.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $490.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $510.[0m
+[32m✅ 7-Winner: Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $485.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $408.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $500.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $490.[0m
+[95mIron Cross rolled: [6, 3] (Total: 9) | Roll Count: 51[0m
+[33mPoint Set: 9. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $475.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $398.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [6, 3] (Total: 9) | Roll Count: 52[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $510.[0m
+[32m✅ Pass-Line w/ Odds received a payout of $25. Bankroll: $500.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $418.[0m
+[32m✅ Point Hit: 9. Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $500.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [3, 3] (Total: 6) | Roll Count: 53[0m
+[33mPoint Set: 6. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $490.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $408.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mIron Cross rolled: [5, 2] (Total: 7) | Roll Count: 54[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $490.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [4, 5] (Total: 9) | Roll Count: 55[0m
+[33mPoint Set: 9. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $480.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $398.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $386.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $374.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $364.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [3, 5] (Total: 8) | Roll Count: 56[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $390.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $378.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $368.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [3, 6] (Total: 9) | Roll Count: 57[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $510.[0m
+[32m✅ Pass-Line w/ Odds received a payout of $25. Bankroll: $505.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $388.[0m
+[32m✅ Point Hit: 9. Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $500.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [6, 4] (Total: 10) | Roll Count: 58[0m
+[33mPoint Set: 10. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $495.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $378.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95m3-Point Molly rolled: [2, 5] (Total: 7) | Roll Count: 59[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $490.[0m
+[31m❌ Failed to place Pass Line Odds bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [3, 4] (Total: 7) | Roll Count: 60[0m
+[32m✅ Pass-Line w/ Odds received a payout of $20. Bankroll: $515.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $398.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $510.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $530.[0m
+[32m✅ 7-Winner: Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $505.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $388.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $520.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $510.[0m
+[95mPass-Line w/ Odds rolled: [6, 5] (Total: 11) | Roll Count: 61[0m
+[32m✅ Pass-Line w/ Odds received a payout of $20. Bankroll: $525.[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $408.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $530.[0m
+[32m✅ 3-Point Molly received a payout of $20. Bankroll: $550.[0m
+[32m✅ 7-Winner: Pass Line bets win![33m Puck is OFF.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $515.[0m
+[32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $398.[0m
+[32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $540.[0m
+[32m✅ 3-Point Molly placed a $10 Come bet. Bankroll: $530.[0m
+[95mPass-Line w/ Odds rolled: [4, 2] (Total: 6) | Roll Count: 62[0m
+[33mPoint Set: 6. Puck is ON.[0m
+[32m✅ Pass-Line w/ Odds placed a $10 Pass Line Odds bet. Bankroll: $505.[0m
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $388.[0m
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $376.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $366.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [6, 4] (Total: 10) | Roll Count: 63[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $386.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $376.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [4, 5] (Total: 9) | Roll Count: 64[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $396.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $386.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [2, 6] (Total: 8) | Roll Count: 65[0m
+[32m✅ Iron Cross received a payout of $26. Bankroll: $412.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $12 Place bet. Bankroll: $400.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $390.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [5, 5] (Total: 10) | Roll Count: 66[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $410.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $400.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [3, 2] (Total: 5) | Roll Count: 67[0m
+[32m✅ Iron Cross received a payout of $24. Bankroll: $424.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Place bet. Bankroll: $414.[0m
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $404.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [5, 4] (Total: 9) | Roll Count: 68[0m
+[32m✅ Iron Cross received a payout of $20. Bankroll: $424.[0m
+No change in game state.
+[32m✅ Iron Cross placed a $10 Field bet. Bankroll: $414.[0m
+[31m❌ Failed to place Come bet for 3-Point Molly.[0m
+[95mPass-Line w/ Odds rolled: [5, 2] (Total: 7) | Roll Count: 69[0m
+[31m❌ 3-Point Molly's Come bet LOST $10.[0m
+[31m❌ Pass-Line w/ Odds's Pass Line Odds bet LOST $10.[0m
+[31m❌ Iron Cross's Place bet LOST $12.[0m
+[31m❌ Iron Cross's Place bet LOST $10.[0m
+[31m❌ Iron Cross's Field bet LOST $10.[0m
+[31m❌ 7-Out: Pass Line bets lose![33m Puck is OFF.[0m
