@@ -15,6 +15,7 @@ class Bet:
         vig: int = 0,
         unit: int = 1,  # Default unit for Place/Buy bets
         valid_phases: List[str] = ["come-out", "point"],  # Default valid phases
+        come_point: Optional[int] = None,  # Point number for Come bets
     ):
         """
         Initialize a bet.
@@ -37,6 +38,7 @@ class Bet:
         self.unit = unit
         self.valid_phases = valid_phases
         self.status = "active"  # Can be "active", "won", "lost", or "pushed"
+        self.come_point = come_point  # Point number for Come bets
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
