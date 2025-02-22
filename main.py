@@ -42,6 +42,7 @@ def main():
     # Print statistics
     stats.print_statistics()
     stats.print_shooter_report()
+    stats.print_player_statistics()
     
     # View the log file interactively
     log_viewer = InteractiveLogViewer()
