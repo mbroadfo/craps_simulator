@@ -28,9 +28,9 @@ class BetFactory:
         return FreeOddsBet("Place Odds", amount, owner, number)
 
     @staticmethod
-    def create_come_bet(amount, owner):
+    def create_come_bet(amount, owner, come_odds_working_on_come_out=False):
         """Create a Come bet."""
-        return ComeBet(amount, owner)
+        return ComeBet(amount, owner, come_odds_working_on_come_out)
 
     @staticmethod
     def create_come_odds_bet(amount, owner, number):

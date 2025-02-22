@@ -1,0 +1,90 @@
+
+=== Simulation Statistics ===
+Table Minimum: $10
+Number of Shooters: 10
+Number of Players: 3
+Number of Rolls: 82
+Total House Win/Loss: $-2921
+Total Player Win/Loss: $2921
+Player Bankrolls: [512, 572, 1377]
+Highest Player Bankroll: $1377
+Lowest Player Bankroll: $512
+
+=== Shooter Performance Report ===
+
+Shooter: 1
+  Total Points Rolled: 0
+  Total Rolls: 2
+  Average Rolls Before 7-Out: 0.67
+  Rolls Before 7-Out: [0, 0, 2]
+
+Shooter: 2
+  Total Points Rolled: 0
+  Total Rolls: 3
+  Average Rolls Before 7-Out: 0.75
+  Rolls Before 7-Out: [0, 0, 0, 3]
+
+Shooter: 3
+  Total Points Rolled: 1
+  Total Rolls: 3
+  Average Rolls Before 7-Out: 0.75
+  Rolls Before 7-Out: [0, 0, 0, 3]
+
+Shooter: 4
+  Total Points Rolled: 1
+  Total Rolls: 4
+  Average Rolls Before 7-Out: 0.80
+  Rolls Before 7-Out: [0, 0, 0, 0, 4]
+
+Shooter: 5
+  Total Points Rolled: 0
+  Total Rolls: 2
+  Average Rolls Before 7-Out: 0.67
+  Rolls Before 7-Out: [0, 0, 2]
+
+Shooter: 6
+  Total Points Rolled: 2
+  Total Rolls: 4
+  Average Rolls Before 7-Out: 0.80
+  Rolls Before 7-Out: [0, 0, 0, 0, 4]
+
+Shooter: 7
+  Total Points Rolled: 5
+  Total Rolls: 11
+  Average Rolls Before 7-Out: 0.92
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11]
+
+Shooter: 8
+  Total Points Rolled: 6
+  Total Rolls: 11
+  Average Rolls Before 7-Out: 0.92
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11]
+
+Shooter: 9
+  Total Points Rolled: 3
+  Total Rolls: 8
+  Average Rolls Before 7-Out: 0.89
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 8]
+
+Shooter: 10
+  Total Points Rolled: 16
+  Total Rolls: 34
+  Average Rolls Before 7-Out: 0.97
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34]
+
+=== Player Performance Report ===
+
+Player: Pass-Line w/ Odds
+  Initial Bankroll: $500
+  Final Bankroll: $500
+  Net Win/Loss: $0 (Won)
+
+Player: Iron Cross
+  Initial Bankroll: $500
+  Final Bankroll: $500
+  Net Win/Loss: $0 (Won)
+
+Player: 3-Point Molly
+  Initial Bankroll: $500
+  Final Bankroll: $500
+  Net Win/Loss: $0 (Won)

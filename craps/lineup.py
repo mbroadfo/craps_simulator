@@ -1,4 +1,5 @@
-# File: lineup.py
+# File: .\craps\lineup.py
+
 from .strategies.pass_line_strategy import PassLineStrategy
 from .strategies.pass_line_odds_strategy import PassLineOddsStrategy
 from .strategies.place_strategy import PlaceBetStrategy
@@ -11,7 +12,7 @@ class PlayerLineup:
     def __init__(self, house_rules, table):
         """
         Initialize the player lineup.
-        
+
         :param house_rules: The HouseRules object for table limits and payouts.
         :param table: The Table object for placing bets.
         """
@@ -26,9 +27,8 @@ class PlayerLineup:
             "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across"),
             "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
             "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum),
-            "3-Point Molly": ThreePointMollyStrategy(min_bet=self.house_rules.table_minimum, odds_multiple=1),
+            "3-Point Molly": ThreePointMollyStrategy(min_bet=self.house_rules.table_minimum, odds_multiple=1, come_odds_working_on_come_out=self.house_rules.come_odds_working_on_come_out)
         }
-
     def get_active_players(self, active_players_config):
         """
         Get the list of active strategies and player names based on the configuration.

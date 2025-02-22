@@ -4,15 +4,17 @@ from craps.bet_factory import BetFactory
 
 class ThreePointMollyStrategy:
     """Betting strategy for the 3-Point Molly system."""
-    def __init__(self, min_bet, odds_multiple=1):
+    def __init__(self, min_bet, odds_multiple=1, come_odds_working_on_come_out=False):
         """
         Initialize the 3-Point Molly strategy.
 
         :param min_bet: The minimum bet amount for the table.
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
+        :param come_odds_working_on_come_out: Whether Come odds bets are working during the come-out roll.
         """
         self.min_bet = min_bet
         self.odds_multiple = odds_multiple
+        self.come_odds_working_on_come_out = come_odds_working_on_come_out
 
     def get_bet(self, game_state, player, table):
         """
@@ -34,7 +36,7 @@ class ThreePointMollyStrategy:
         if game_state.phase == "point":
             active_come_bets = [bet for bet in table.bets if bet.bet_type == "Come" and bet.owner == player]
             if len(active_come_bets) < 3:
-                bets.append(BetFactory.create_come_bet(self.min_bet, player))
+                bets.append(BetFactory.create_come_bet(self.min_bet, player, self.come_odds_working_on_come_out))
 
         # Place odds on active Pass Line and Come bets (only during point phase)
         if game_state.phase == "point":

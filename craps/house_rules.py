@@ -1,11 +1,11 @@
-# File: craps/house_rules.py
+# File: .\craps\house_rules.py
 
 class HouseRules:
     """Class representing house rules for payouts and table limits."""
     def __init__(self, config):
         """
         Initialize the HouseRules with configuration from config.py.
-        
+
         :param config: A dictionary containing house rules configuration.
         """
         self.field_bet_payout_2 = config.get("field_bet_payout_2", (2, 1))  # Default to 2:1 for 2

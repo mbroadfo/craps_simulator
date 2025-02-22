@@ -5,12 +5,13 @@ from typing import List, Optional
 
 class ComeBet(Bet):
     """Class representing a Come bet."""
-    def __init__(self, amount: int, owner):
+    def __init__(self, amount: int, owner, come_odds_working_on_come_out=False):
         """
         Initialize a Come bet.
 
         :param amount: The amount of the bet.
         :param owner: The player who placed the bet.
+        :param come_odds_working_on_come_out: Whether Come odds bets are working during the come-out roll.
         """
         super().__init__(
             bet_type="Come",
@@ -21,6 +22,7 @@ class ComeBet(Bet):
             valid_phases=["point"],  # Come bets are placed during the come-out phase
         )
         self.number = None  # Come bet number set after moving to the point
+        self.come_odds_working_on_come_out = come_odds_working_on_come_out
 
     def resolve(self, outcome: List[int], phase: str, point: Optional[int]):
         """
@@ -48,7 +50,11 @@ class ComeBet(Bet):
             if total == self.number:
                 self.status = "won"  # Come bet wins
             elif total == 7:
-                self.status = "lost"  # Come bet loses
+                if phase == "come-out" and not self.come_odds_working_on_come_out:
+                    # Come odds are off during the come-out roll (default behavior)
+                    self.status = "active"  # Bet remains active
+                else:
+                    self.status = "lost"  # Come bet loses
             else:
                 self.status = "active"  # Bet remains active
 

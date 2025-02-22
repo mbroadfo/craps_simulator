@@ -19,4 +19,5 @@ HOUSE_RULES = {
     "field_bet_payout_12": (3, 1),  # 3:1 payout for 12
     "table_minimum": 10,  # Minimum bet amount
     "table_maximum": 5000,  # Maximum bet amount
+    "come_odds_working_on_come_out": False,  # Whether Come odds bets are working during the come-out roll
 }
