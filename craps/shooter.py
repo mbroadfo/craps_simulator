@@ -24,3 +24,4 @@ class Shooter(Player):
         """Reset shooter statistics for a new turn."""
         self.points_rolled = 0
         self.rolls_before_7_out = 0
+        self.current_roll_count = 0

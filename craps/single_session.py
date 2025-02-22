@@ -35,6 +35,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         for i, strategy in enumerate(strategies)
     ]
     game_state.set_players(players)
+    stats.initialize_player_stats(players)
 
     # Initialize bankroll history with the starting bankroll for each player
     stats.initialize_bankroll_history(players)
@@ -88,6 +89,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
                 elif bet.status == "lost":
                     message = f"{Fore.RED}❌ {bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.{Style.RESET_ALL}"
                     play_by_play.write(message)  # Write the message to the play-by-play file
+                stats.update_win_loss(bet)
 
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)

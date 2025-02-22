@@ -13,7 +13,9 @@ class Statistics:
         self.highest_bankroll = 0
         self.lowest_bankroll = float('inf')
         self.shooter_stats = {}
-        self.shooter = None  # Add a shooter attribute
+        self.player_stats = {}
+        self.shooter = None
+        self.shooter_num = None
 
         # For visualization
         self.roll_numbers = [0]  # Start with roll 0
@@ -21,6 +23,35 @@ class Statistics:
         self.seven_out_rolls = []  # Track rolls where a 7-out occurs
         self.point_number_rolls = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
         
+    def initialize_player_stats(self, players):
+        """Initialize player statistics with their starting bankroll."""
+        for player in players:
+            self.player_stats[player.name] = {
+                "initial_bankroll": player.balance,
+                "final_bankroll": player.balance,
+                "net_win_loss": 0,
+            }
+            
+    def update_player_stats(self, players):
+        """Update player statistics at the end of the session."""
+        for player in players:
+            if player.name in self.player_stats:
+                self.player_stats[player.name]["final_bankroll"] = player.balance
+                self.player_stats[player.name]["net_win_loss"] = (
+                    player.balance - self.player_stats[player.name]["initial_bankroll"]
+                )
+                
+    def print_player_statistics(self):
+        """Print player-specific statistics."""
+        logging.info("\n=== Player Performance Report ===")
+        for player_name, stats in self.player_stats.items():
+            net_win_loss = stats["net_win_loss"]
+            result = "Won" if net_win_loss >= 0 else "Lost"
+            logging.info(f"\nPlayer: {player_name}")
+            logging.info(f"  Initial Bankroll: ${stats['initial_bankroll']}")
+            logging.info(f"  Final Bankroll: ${stats['final_bankroll']}")
+            logging.info(f"  Net Win/Loss: ${net_win_loss} ({result})")
+    
     def set_shooter(self, shooter, shooter_num):
         """Set the current shooter and their turn number."""
         self.shooter = shooter
@@ -72,6 +103,22 @@ class Statistics:
         self.num_rolls += 1
         self.roll_numbers.append(self.num_rolls)
 
+    def update_win_loss(self, bet):
+        """
+        Update the house and player win/loss based on the resolved bet.
+
+        :param bet: The resolved bet.
+        """
+        if bet.status == "won":
+            # Player wins: house loses the payout, player gains the payout
+            payout = bet.payout()
+            self.total_house_win_loss -= payout
+            self.total_player_win_loss += payout
+        elif bet.status == "lost":
+            # Player loses: house gains the bet amount, player loses the bet amount
+            self.total_house_win_loss += bet.amount
+            self.total_player_win_loss -= bet.amount
+    
     def update_player_bankrolls(self, players):
         """Update player bankrolls and track highest/lowest bankroll."""
         self.player_bankrolls = [player.balance for player in players]
@@ -140,9 +187,8 @@ class Statistics:
                 "total_rolls": 0,
             }
         # Update total rolls for the shooter
-        self.shooter_stats[self.shooter_num]["total_rolls"] += shooter.current_roll_count
+        self.shooter_stats[self.shooter_num]["total_rolls"] = shooter.current_roll_count
         self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
-        self.shooter_stats[self.shooter_num]["total_rolls"] += shooter.current_roll_count
 
     def print_statistics(self):
         """Print the simulation statistics."""
