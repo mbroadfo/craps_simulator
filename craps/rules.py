@@ -5,7 +5,7 @@
 # ==================================================
 
 BET_BEHAVIOR = {
-    "Pass": {
+    "Pass Line": {
         "come-out": {
             "can_bet": True,
             "can_remove": False,
@@ -13,7 +13,7 @@ BET_BEHAVIOR = {
             "winning": [7, 11],
             "losing": [2, 3, 12],
             "other_action": "Sets the Point",
-            "linked_bet": "Pass Odds",  # Pass Line Odds is linked to Pass Line
+            "linked_bet": "Pass Line Odds",  # Pass Line Odds is linked to Pass Line
         },
         "point": {
             "can_bet": False,
@@ -22,10 +22,10 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Pass Odds",  # Pass Line Odds is linked to Pass Line
+            "linked_bet": "Pass Line Odds",  # Pass Line Odds is linked to Pass Line
         },
     },
-    "Pass Odds": {
+    "Pass Line Odds": {
         "come-out": {
             "can_bet": False,
             "can_remove": "Must Remove",
@@ -172,8 +172,8 @@ BET_BEHAVIOR = {
 # ==================================================
 
 BET_PAYOUT = {
-    "Pass": {"payout_ratio": (1, 1), "vig": False},
-    "Pass Odds": {"payout_ratio": "True Odds", "vig": False},
+    "Pass Line": {"payout_ratio": (1, 1), "vig": False},
+    "Pass Line Odds": {"payout_ratio": "True Odds", "vig": False},
     "Place": {"payout_ratio": "House Odds", "vig": False},
     "Place Odds": {"payout_ratio": "True Odds", "vig": False},
     "Buy": {"payout_ratio": "True Odds", "vig": True},

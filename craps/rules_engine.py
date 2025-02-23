@@ -12,7 +12,7 @@ class RulesEngine:
         """
         Determine if a bet of the given type can be made during the current phase.
 
-        :param bet_type: The type of bet (e.g., "Pass", "Pass Odds", "Place").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet can be made, False otherwise.
         """
@@ -26,7 +26,7 @@ class RulesEngine:
         """
         Determine if a bet of the given type can be removed during the current phase.
 
-        :param bet_type: The type of bet (e.g., "Pass", "Pass Odds", "Place").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet can be removed, False otherwise.
         """
@@ -40,7 +40,7 @@ class RulesEngine:
         """
         Determine if a bet of the given type can be turned on during the current phase.
 
-        :param bet_type: The type of bet (e.g., "Pass", "Pass Odds", "Place").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet can be turned on, False otherwise.
         """
@@ -82,6 +82,7 @@ class RulesEngine:
         if behavior["other_action"] is not None:
             if behavior["other_action"] == "Sets the Point":
                 # Set the point for Pass Line bets
+                bet.status = "active"  # Ensure the bet remains active
                 return total
             elif behavior["other_action"] == "Moves to Number":
                 # Move Come bets to the number rolled
@@ -97,7 +98,7 @@ class RulesEngine:
         """
         Get the payout ratio for a bet based on its type and number.
 
-        :param bet_type: The type of bet (e.g., "Pass", "Pass Odds", "Place").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :param number: The number associated with the bet (e.g., 6 for Place 6).
         :return: A tuple representing the payout ratio (numerator, denominator).
         """
@@ -121,7 +122,7 @@ class RulesEngine:
         """
         Determine if a bet of the given type has a vig (commission).
 
-        :param bet_type: The type of bet (e.g., "Pass", "Pass Odds", "Place").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :return: True if the bet has a vig, False otherwise.
         """
         if bet_type not in BET_PAYOUT:
@@ -134,11 +135,11 @@ class RulesEngine:
         """
         Get the type of bet linked to the given bet type (e.g., Pass Line Odds is linked to Pass Line).
 
-        :param bet_type: The type of bet (e.g., "Pass", "Pass Odds", "Place").
+        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :return: The linked bet type, or None if no linked bet exists.
         """
         linked_bets = {
-            "Pass": "Pass Odds",
+            "Pass Line": "Pass Line Odds",
             "Come": "Come Odds",
             "Place": "Place Odds",
         }
