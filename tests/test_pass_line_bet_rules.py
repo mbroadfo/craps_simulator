@@ -1,5 +1,3 @@
-# File: .\tests\test_pass_line_bet_rules.py
-
 import unittest
 from typing import List
 from craps.rules_engine import RulesEngine
@@ -67,8 +65,38 @@ class TestPassLineBetRules(unittest.TestCase):
         self.rules_engine.resolve_bet(self.pass_line_bet, dice_outcome, "point", point)
         self.assertEqual(self.pass_line_bet.status, "lost", "Pass Line bet should lose on 7")
 
+    def test_can_bet(self):
+        """Test can_bet behavior for Pass Line bets."""
+        # Pass Line bets can be placed during the come-out phase
+        self.assertTrue(self.rules_engine.can_make_bet("Pass Line", "come-out"), "Pass Line bets should be allowed during the come-out phase")
+
+        # Pass Line bets cannot be placed during the point phase
+        self.assertFalse(self.rules_engine.can_make_bet("Pass Line", "point"), "Pass Line bets should not be allowed during the point phase")
+
+    def test_can_remove(self):
+        """Test can_remove behavior for Pass Line bets."""
+        # Pass Line bets cannot be removed during the come-out phase
+        self.assertFalse(self.rules_engine.can_remove_bet("Pass Line", "come-out"), "Pass Line bets should not be removable during the come-out phase")
+
+        # Pass Line bets cannot be removed during the point phase
+        self.assertFalse(self.rules_engine.can_remove_bet("Pass Line", "point"), "Pass Line bets should not be removable during the point phase")
+
+    def test_can_turn_on(self):
+        """Test can_turn_on behavior for Pass Line bets."""
+        # Pass Line bets are always on during the come-out phase
+        self.assertTrue(self.rules_engine.can_turn_on("Pass Line", "come-out"), "Pass Line bets should always be on during the come-out phase")
+
+        # Pass Line bets are always on during the point phase
+        self.assertTrue(self.rules_engine.can_turn_on("Pass Line", "point"), "Pass Line bets should always be on during the point phase")
+
+    def test_linked_bet(self):
+        """Test linked_bet behavior for Pass Line bets."""
+        # Pass Line bets are linked to Pass Line Odds
+        linked_bet_type = self.rules_engine.get_linked_bet_type("Pass Line")
+        self.assertEqual(linked_bet_type, "Pass Line Odds", "Pass Line bets should be linked to Pass Line Odds")
+
     def _get_dice_outcome(self, total: int) -> List[int]:
-        """Helper method to generate a dice oAutcome for a given total."""
+        """Helper method to generate a dice outcome for a given total."""
         if total < 2 or total > 12:
             raise ValueError("Invalid dice total. Must be between 2 and 12.")
         for die1 in range(1, 7):

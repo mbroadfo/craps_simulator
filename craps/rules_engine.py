@@ -1,5 +1,3 @@
-# File: .\craps\rules_engine.py
-
 from typing import List, Optional, Dict, Any, Tuple
 from craps.bet import Bet
 from craps.rules import BET_BEHAVIOR, BET_PAYOUT, ODDS_PAYOUT
@@ -68,7 +66,12 @@ class RulesEngine:
 
         # Check if the bet wins
         if behavior["winning"] is not None:
-            if total in behavior["winning"] or (isinstance(behavior["winning"], list) and "Point" in behavior["winning"] and total == point):
+            if isinstance(behavior["winning"], list) and "Number" in behavior["winning"]:
+                # For Place bets, check if the total matches the bet's number
+                if total == bet.number:
+                    bet.status = "won"
+                    return None
+            elif total in behavior["winning"] or (isinstance(behavior["winning"], list) and "Point" in behavior["winning"] and total == point):
                 bet.status = "won"
                 return None
 

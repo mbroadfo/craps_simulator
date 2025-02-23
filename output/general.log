@@ -3,74 +3,74 @@
 Table Minimum: $10
 Number of Shooters: 10
 Number of Players: 3
-Number of Rolls: 82
-Total House Win/Loss: $-2921
-Total Player Win/Loss: $2921
-Player Bankrolls: [512, 572, 1377]
-Highest Player Bankroll: $1377
-Lowest Player Bankroll: $512
+Number of Rolls: 85
+Total House Win/Loss: $-2923
+Total Player Win/Loss: $2923
+Player Bankrolls: [517, 544, 1348]
+Highest Player Bankroll: $1348
+Lowest Player Bankroll: $517
 
 === Shooter Performance Report ===
 
 Shooter: 1
   Total Points Rolled: 0
-  Total Rolls: 2
-  Average Rolls Before 7-Out: 0.67
-  Rolls Before 7-Out: [0, 0, 2]
+  Total Rolls: 3
+  Average Rolls Before 7-Out: 0.75
+  Rolls Before 7-Out: [0, 0, 0, 3]
 
 Shooter: 2
   Total Points Rolled: 0
-  Total Rolls: 3
-  Average Rolls Before 7-Out: 0.75
-  Rolls Before 7-Out: [0, 0, 0, 3]
+  Total Rolls: 5
+  Average Rolls Before 7-Out: 0.83
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 5]
 
 Shooter: 3
-  Total Points Rolled: 1
-  Total Rolls: 3
-  Average Rolls Before 7-Out: 0.75
-  Rolls Before 7-Out: [0, 0, 0, 3]
-
-Shooter: 4
   Total Points Rolled: 1
   Total Rolls: 4
   Average Rolls Before 7-Out: 0.80
   Rolls Before 7-Out: [0, 0, 0, 0, 4]
 
-Shooter: 5
-  Total Points Rolled: 0
-  Total Rolls: 2
-  Average Rolls Before 7-Out: 0.67
-  Rolls Before 7-Out: [0, 0, 2]
+Shooter: 4
+  Total Points Rolled: 1
+  Total Rolls: 5
+  Average Rolls Before 7-Out: 0.83
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 5]
 
-Shooter: 6
+Shooter: 5
   Total Points Rolled: 2
   Total Rolls: 4
   Average Rolls Before 7-Out: 0.80
   Rolls Before 7-Out: [0, 0, 0, 0, 4]
 
+Shooter: 6
+  Total Points Rolled: 19
+  Total Rolls: 39
+  Average Rolls Before 7-Out: 0.97
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39]
+
 Shooter: 7
-  Total Points Rolled: 5
-  Total Rolls: 11
-  Average Rolls Before 7-Out: 0.92
-  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11]
+  Total Points Rolled: 3
+  Total Rolls: 6
+  Average Rolls Before 7-Out: 0.86
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 6]
 
 Shooter: 8
-  Total Points Rolled: 6
-  Total Rolls: 11
-  Average Rolls Before 7-Out: 0.92
-  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11]
+  Total Points Rolled: 2
+  Total Rolls: 4
+  Average Rolls Before 7-Out: 0.80
+  Rolls Before 7-Out: [0, 0, 0, 0, 4]
 
 Shooter: 9
-  Total Points Rolled: 3
-  Total Rolls: 8
-  Average Rolls Before 7-Out: 0.89
-  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 8]
+  Total Points Rolled: 2
+  Total Rolls: 5
+  Average Rolls Before 7-Out: 0.83
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 5]
 
 Shooter: 10
-  Total Points Rolled: 16
-  Total Rolls: 34
-  Average Rolls Before 7-Out: 0.97
-  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34]
+  Total Points Rolled: 4
+  Total Rolls: 10
+  Average Rolls Before 7-Out: 0.91
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10]
 
 === Player Performance Report ===
 
