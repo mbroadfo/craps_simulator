@@ -68,7 +68,7 @@ class TestPassLineBetRules(unittest.TestCase):
         self.assertEqual(self.pass_line_bet.status, "lost", "Pass Line bet should lose on 7")
 
     def _get_dice_outcome(self, total: int) -> List[int]:
-        """Helper method to generate a dice outcome for a given total."""
+        """Helper method to generate a dice oAutcome for a given total."""
         if total < 2 or total > 12:
             raise ValueError("Invalid dice total. Must be between 2 and 12.")
         for die1 in range(1, 7):

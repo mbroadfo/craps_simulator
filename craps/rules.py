@@ -5,6 +5,7 @@
 # ==================================================
 
 BET_BEHAVIOR = {
+    # Pass Line and Pass Line Odds (already defined)
     "Pass Line": {
         "come-out": {
             "can_bet": True,
@@ -13,7 +14,7 @@ BET_BEHAVIOR = {
             "winning": [7, 11],
             "losing": [2, 3, 12],
             "other_action": "Sets the Point",
-            "linked_bet": "Pass Line Odds",  # Pass Line Odds is linked to Pass Line
+            "linked_bet": "Pass Line Odds",
         },
         "point": {
             "can_bet": False,
@@ -22,7 +23,7 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Pass Line Odds",  # Pass Line Odds is linked to Pass Line
+            "linked_bet": "Pass Line Odds",
         },
     },
     "Pass Line Odds": {
@@ -33,7 +34,7 @@ BET_BEHAVIOR = {
             "winning": None,
             "losing": None,
             "other_action": None,
-            "linked_bet": None,  # No linked bet for Pass Line Odds
+            "linked_bet": None,
         },
         "point": {
             "can_bet": True,
@@ -42,9 +43,11 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,  # No linked bet for Pass Line Odds
+            "linked_bet": None,
         },
     },
+
+    # Place Bet
     "Place": {
         "come-out": {
             "can_bet": False,
@@ -53,7 +56,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Place Odds",  # Place Odds is linked to Place
+            "linked_bet": None,
         },
         "point": {
             "can_bet": True,
@@ -62,107 +65,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Place Odds",  # Place Odds is linked to Place
-        },
-    },
-    "Place Odds": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,  # No linked bet for Place Odds
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,  # No linked bet for Place Odds
-        },
-    },
-    "Buy": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,  # No linked bet for Buy bets
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,  # No linked bet for Buy bets
-        },
-    },
-    "Come": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": False,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "Moves to Number",  # Come bet moves to the number rolled
-            "linked_bet": "Come Odds",  # Come Odds is linked to Come
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": False,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": "Come Odds",  # Come Odds is linked to Come
-        },
-    },
-    "Come Odds": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,  # No linked bet for Come Odds
-        },
-        "point": {
-            "can_bet": "Come Moves",
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,  # No linked bet for Come Odds
-        },
-    },
-    "Field": {
-        "come-out": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": [2, 3, 4, 9, 10, 11, 12],
-            "losing": [5, 6, 7, 8],
-            "other_action": None,
-            "linked_bet": None,  # No linked bet for Field bets
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": [2, 3, 4, 9, 10, 11, 12],
-            "losing": [5, 6, 7, 8],
-            "other_action": None,
-            "linked_bet": None,  # No linked bet for Field bets
+            "linked_bet": None,
         },
     },
 }
@@ -175,11 +78,6 @@ BET_PAYOUT = {
     "Pass Line": {"payout_ratio": (1, 1), "vig": False},
     "Pass Line Odds": {"payout_ratio": "True Odds", "vig": False},
     "Place": {"payout_ratio": "House Odds", "vig": False},
-    "Place Odds": {"payout_ratio": "True Odds", "vig": False},
-    "Buy": {"payout_ratio": "True Odds", "vig": True},
-    "Come": {"payout_ratio": (1, 1), "vig": False},
-    "Come Odds": {"payout_ratio": "True Odds", "vig": False},
-    "Field": {"payout_ratio": (1, 1), "vig": False},
 }
 
 # ==================================================
