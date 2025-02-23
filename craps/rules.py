@@ -1,4 +1,4 @@
-# File: rules.py
+# File: .\craps\rules.py
 
 # ==================================================
 # Table 1: Bet Behavior
@@ -13,6 +13,7 @@ BET_BEHAVIOR = {
             "winning": [7, 11],
             "losing": [2, 3, 12],
             "other_action": "Sets the Point",
+            "linked_bet": "Pass Odds",  # Pass Line Odds is linked to Pass Line
         },
         "point": {
             "can_bet": False,
@@ -21,6 +22,7 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": "Pass Odds",  # Pass Line Odds is linked to Pass Line
         },
     },
     "Pass Odds": {
@@ -31,6 +33,7 @@ BET_BEHAVIOR = {
             "winning": None,
             "losing": None,
             "other_action": None,
+            "linked_bet": None,  # No linked bet for Pass Line Odds
         },
         "point": {
             "can_bet": True,
@@ -39,6 +42,7 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": None,  # No linked bet for Pass Line Odds
         },
     },
     "Place": {
@@ -49,6 +53,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": "Place Odds",  # Place Odds is linked to Place
         },
         "point": {
             "can_bet": True,
@@ -57,6 +62,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": "Place Odds",  # Place Odds is linked to Place
         },
     },
     "Place Odds": {
@@ -67,6 +73,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": None,  # No linked bet for Place Odds
         },
         "point": {
             "can_bet": True,
@@ -75,6 +82,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": None,  # No linked bet for Place Odds
         },
     },
     "Buy": {
@@ -85,6 +93,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": None,  # No linked bet for Buy bets
         },
         "point": {
             "can_bet": True,
@@ -93,6 +102,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": None,  # No linked bet for Buy bets
         },
     },
     "Come": {
@@ -102,7 +112,8 @@ BET_BEHAVIOR = {
             "can_turn_on": "Always On",
             "winning": ["Number"],
             "losing": [7],
-            "other_action": "No Change",
+            "other_action": "Moves to Number",  # Come bet moves to the number rolled
+            "linked_bet": "Come Odds",  # Come Odds is linked to Come
         },
         "point": {
             "can_bet": True,
@@ -111,6 +122,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": "Come Odds",  # Come Odds is linked to Come
         },
     },
     "Come Odds": {
@@ -121,6 +133,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": None,  # No linked bet for Come Odds
         },
         "point": {
             "can_bet": "Come Moves",
@@ -129,6 +142,7 @@ BET_BEHAVIOR = {
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
+            "linked_bet": None,  # No linked bet for Come Odds
         },
     },
     "Field": {
@@ -139,6 +153,7 @@ BET_BEHAVIOR = {
             "winning": [2, 3, 4, 9, 10, 11, 12],
             "losing": [5, 6, 7, 8],
             "other_action": None,
+            "linked_bet": None,  # No linked bet for Field bets
         },
         "point": {
             "can_bet": True,
@@ -147,6 +162,7 @@ BET_BEHAVIOR = {
             "winning": [2, 3, 4, 9, 10, 11, 12],
             "losing": [5, 6, 7, 8],
             "other_action": None,
+            "linked_bet": None,  # No linked bet for Field bets
         },
     },
 }
