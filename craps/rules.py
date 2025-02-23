@@ -1,5 +1,3 @@
-# File: .\craps\rules.py
-
 # ==================================================
 # Table 1: Bet Behavior
 # ==================================================
@@ -46,9 +44,29 @@ BET_BEHAVIOR = {
             "linked_bet": None,
         },
     },
-
     # Place Bet
     "Place": {
+        "come-out": {
+            "can_bet": False,
+            "can_remove": True,
+            "can_turn_on": True,
+            "winning": ["Number"],
+            "losing": [7],
+            "other_action": "No Change",
+            "linked_bet": "Place Odds",
+        },
+        "point": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": ["Number"],
+            "losing": [7],
+            "other_action": "No Change",
+            "linked_bet": "Place Odds",
+        },
+    },
+    # Place Odds
+    "Place Odds": {
         "come-out": {
             "can_bet": False,
             "can_remove": True,
@@ -78,6 +96,7 @@ BET_PAYOUT = {
     "Pass Line": {"payout_ratio": (1, 1), "vig": False},
     "Pass Line Odds": {"payout_ratio": "True Odds", "vig": False},
     "Place": {"payout_ratio": "House Odds", "vig": False},
+    "Place Odds": {"payout_ratio": "True Odds", "vig": False},  # Add this line
 }
 
 # ==================================================
