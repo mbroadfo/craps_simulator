@@ -4,35 +4,23 @@ from typing import List, Optional
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
+from craps.rules_engine import RulesEngine
 
 class Table:
-    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay):
+    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine):
         """
         Initialize the table.
 
         :param house_rules: The HouseRules object for payout rules and limits.
+        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
+        :param rules_engine: The RulesEngine instance for resolving bets.
         """
         self.house_rules = house_rules
         self.bets = []  # All bets on the table
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
         self.play_by_play = play_by_play
+        self.rules_engine = rules_engine
 
-    def get_minimum_bet(self, number: int) -> int:
-        """
-        Get the minimum bet amount for a specific number.
-
-        :param number: The number being bet on (e.g., 4, 5, 6, 8, 9, 10).
-        :return: The minimum bet amount for the number.
-        """
-        if number in [6, 8]:
-            # For 6 and 8, the minimum bet is 6 units (e.g., $6 if table minimum is $5)
-            return self.house_rules.table_minimum + self.unit
-        elif number in [4, 5, 9, 10]:
-            # For other numbers, the minimum bet is the table minimum
-            return self.house_rules.table_minimum
-        else:
-            raise ValueError(f"Invalid number for Place Bet: {number}")
-    
     def place_bet(self, bet: Bet, phase: str) -> bool:
         """
         Place a bet on the table after validating it.
@@ -44,13 +32,13 @@ class Table:
         # Validate the bet before placing it
         if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
             message = f"Invalid bet: {bet}"
-            #self.play_by_play.write(message)
+            self.play_by_play.write(message)
             return False
 
         # Place the bet on the table
         self.bets.append(bet)
         message = f"Bet placed: {bet}"
-        #self.play_by_play.write(message)
+        self.play_by_play.write(message)
         return True
 
     def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
@@ -62,7 +50,7 @@ class Table:
         :param point: The current point number (if in point phase).
         """
         for bet in self.bets:
-            bet.resolve(dice_outcome, phase, point)
+            bet.resolve(self.rules_engine, dice_outcome, phase, point)  # Pass RulesEngine to resolve
             message = f"Bet resolved: {bet} (Status: {bet.status})"
             self.play_by_play.write(message)
 
@@ -76,12 +64,11 @@ class Table:
             if bet.is_resolved():
                 resolved_bets.append(bet)
                 # Also remove any linked odds bets
-                if isinstance(bet, FreeOddsBet):
-                    continue  # Odds bets are handled when their parent is resolved
-                # Find and remove any odds bets linked to this bet
-                odds_bets = [b for b in self.bets 
-                            if isinstance(b, FreeOddsBet) and b.parent_bet == bet]
-                resolved_bets.extend(odds_bets)
+                if bet.parent_bet is not None:  # Check if the bet is an odds bet
+                    resolved_bets.extend(
+                        b for b in self.bets 
+                        if b.parent_bet == bet.parent_bet
+                    )
                 
         self.bets = [b for b in self.bets if b not in resolved_bets]
         return resolved_bets

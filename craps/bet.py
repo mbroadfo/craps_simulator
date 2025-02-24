@@ -61,29 +61,31 @@ class Bet:
 
         # Check if the bet amount is within table limits
         if self.amount < table_minimum:
-            #logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} is below the table minimum of ${table_minimum}.")
+            logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} is below the table minimum of ${table_minimum}.")
             return False
         if self.amount > table_maximum:
-            #logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} exceeds the table maximum of ${table_maximum}.")
+            logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} exceeds the table maximum of ${table_maximum}.")
             return False
 
         # Check if the bet amount is valid for the bet type
         if self.bet_type in ["Place", "Buy"]:
             if self.amount % self.unit != 0:
-                #logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} must be a multiple of ${self.unit}.")
+                logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} must be a multiple of ${self.unit}.")
                 return False
 
         return True
 
-    def resolve(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def resolve(self, rules_engine, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
         """
         Resolve the bet based on the dice outcome, phase, and point.
+        Delegates resolution logic to the RulesEngine.
 
+        :param rules_engine: The RulesEngine instance to use for resolution.
         :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
         """
-        raise NotImplementedError("Subclasses must implement this method.")
+        rules_engine.resolve_bet(self, dice_outcome, phase, point)
 
     def is_resolved(self) -> bool:
         """Check if the bet has been resolved (won, lost, or pushed)."""

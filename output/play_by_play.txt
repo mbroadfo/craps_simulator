@@ -3,7 +3,9 @@
 [32m✅ Pass-Line w/ Odds placed a $10 Pass Line bet. Bankroll: $490.[0m
 [32m✅ Iron Cross placed a $10 Pass Line bet. Bankroll: $490.[0m
 [32m✅ 3-Point Molly placed a $10 Pass Line bet. Bankroll: $490.[0m
-[95mPass-Line w/ Odds rolled: [2, 5] (Total: 7) | Roll Count: 1[0m
-Bet resolved: Pass-Line w/ Odds's $10 Pass Line bet (Status: won) (Status: won)
-Bet resolved: Iron Cross's $10 Pass Line bet (Status: won) (Status: won)
-Bet resolved: 3-Point Molly's $10 Pass Line bet (Status: won) (Status: won)
+[95mPass-Line w/ Odds rolled: [1, 5] (Total: 6) | Roll Count: 1[0m
+Bet resolved: Pass-Line w/ Odds's $10 Pass Line bet (Status: active) (Status: active)
+Bet resolved: Iron Cross's $10 Pass Line bet (Status: active) (Status: active)
+Bet resolved: 3-Point Molly's $10 Pass Line bet (Status: active) (Status: active)
+[33mPoint Set: 6. Puck is ON.[0m
+[33mPoint Set: 6. Puck is ON.[0m

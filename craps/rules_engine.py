@@ -1,12 +1,13 @@
+# File: .\craps\rules_engine.py
+
 from typing import List, Optional, Dict, Any, Tuple
-from craps.bet import Bet
 from craps.rules import BET_BEHAVIOR, BET_PAYOUT, ODDS_PAYOUT
 
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
     @staticmethod
-    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
+    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional['Bet'] = None) -> bool:
         """
         Determine if a bet of the given type can be made during the current phase.
         
@@ -21,11 +22,11 @@ class RulesEngine:
         # Additional checks for odds bets
         if bet_type.endswith("Odds"):
             if parent_bet is None:
-                return False # Parent bet is required for odds bets
+                return False  # Parent bet is required for odds bets
             if not parent_bet.status == "active":
-                return False # Parent bet must be active
+                return False  # Parent bet must be active
             if bet_type == "Come Odds" and parent_bet.number is None:
-                return False # Come bet must have a number set
+                return False  # Come bet must have a number set
                 
         return BET_BEHAVIOR[bet_type][phase]["can_bet"]
 
@@ -71,7 +72,7 @@ class RulesEngine:
         return BET_BEHAVIOR[bet_type][phase]["can_turn_on"]
 
     @staticmethod
-    def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
+    def resolve_bet(bet: 'Bet', dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
         """
         Resolve a bet based on the dice outcome, phase, and point.
 
