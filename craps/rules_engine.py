@@ -6,18 +6,41 @@ class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
     @staticmethod
-    def can_make_bet(bet_type: str, phase: str) -> bool:
+    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
         """
         Determine if a bet of the given type can be made during the current phase.
-
+        
         :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :param phase: The current game phase ("come-out" or "point").
+        :param parent_bet: The parent bet for odds bets.
         :return: True if the bet can be made, False otherwise.
         """
         if bet_type not in BET_BEHAVIOR:
             raise ValueError(f"Unknown bet type: {bet_type}")
-        
+            
+        # Additional checks for odds bets
+        if bet_type.endswith("Odds"):
+            if parent_bet is None:
+                return False # Parent bet is required for odds bets
+            if not parent_bet.status == "active":
+                return False # Parent bet must be active
+            if bet_type == "Come Odds" and parent_bet.number is None:
+                return False # Come bet must have a number set
+                
         return BET_BEHAVIOR[bet_type][phase]["can_bet"]
+
+    @staticmethod
+    def get_linked_bet_type(bet_type: str) -> Optional[str]:
+        """
+        Get the type of bet that can be linked to the given bet type.
+        Now returns the child bet type instead of parent.
+        """
+        linked_bets = {
+            "Pass Line": "Pass Line Odds",
+            "Place": "Place Odds",
+            "Come": "Come Odds",
+        }
+        return linked_bets.get(bet_type)
 
     @staticmethod
     def can_remove_bet(bet_type: str, phase: str) -> bool:

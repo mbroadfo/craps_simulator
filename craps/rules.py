@@ -77,7 +77,7 @@ BET_BEHAVIOR = {
             "linked_bet": None,
         },
         "point": {
-            "can_bet": True,
+            "can_bet": True,  # Allow Place Odds bets during the point phase
             "can_remove": True,
             "can_turn_on": "Always On",
             "winning": ["Number"],

@@ -4,23 +4,27 @@ from . import Bet
 
 class FreeOddsBet(Bet):
     """Class representing a Free Odds bet (for Pass Line Odds or Place Bets)."""
-    def __init__(self, bet_type, amount, owner, number=None):
+    def __init__(self, bet_type, amount, owner, parent_bet):
         """
         Initialize a Free Odds bet.
         
         :param bet_type: The type of bet (e.g., "Pass Line Odds", "Place Odds").
         :param amount: The amount of the bet.
         :param owner: The player who placed the bet.
-        :param number: The number being bet on (for Place Odds).
+        :param parent_bet: The parent bet this odds bet is linked to.
         """
+        if parent_bet is None:
+            raise ValueError("FreeOddsBet requires a parent bet")
+            
         super().__init__(
             bet_type=bet_type,
             amount=amount,
             owner=owner,
             payout_ratio=(1, 1),
             locked=False,
-            valid_phases=["point"],  # Free Odds bets are only valid during the point phase
-            number=number  # Number associated with the bet (e.g., 6 for Place Odds 6)
+            valid_phases=["point"],
+            number=parent_bet.number,  # Inherit number from parent
+            parent_bet=parent_bet
         )
 
     def _calculate_true_odds(self, number):

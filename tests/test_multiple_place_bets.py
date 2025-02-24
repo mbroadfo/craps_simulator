@@ -16,10 +16,10 @@ class TestMultiplePlaceBets(unittest.TestCase):
         self.place_bet_5 = PlaceBet(self.bet_amount, self.player_name, number=5)
 
         # Create Place Odds bets linked to the Place bets
-        self.place_odds_bet_6 = FreeOddsBet("Place Odds", self.bet_amount, self.player_name, number=6)
-        self.place_odds_bet_8 = FreeOddsBet("Place Odds", self.bet_amount, self.player_name, number=8)
-        self.place_odds_bet_5 = FreeOddsBet("Place Odds", self.bet_amount, self.player_name, number=5)
-
+        self.place_odds_bet_6 = FreeOddsBet("Place Odds", self.bet_amount, self.player_name, parent_bet=self.place_bet_6)
+        self.place_odds_bet_8 = FreeOddsBet("Place Odds", self.bet_amount, self.player_name, parent_bet=self.place_bet_8)
+        self.place_odds_bet_5 = FreeOddsBet("Place Odds", self.bet_amount, self.player_name, parent_bet=self.place_bet_5)
+        
     def test_multiple_place_bets_resolution(self):
         """Test resolution of multiple Place bets and their Place Odds bets."""
         # Simulate a roll of 6

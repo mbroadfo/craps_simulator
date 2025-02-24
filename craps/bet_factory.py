@@ -13,19 +13,9 @@ class BetFactory:
         return PassLineBet(amount, owner) 
 
     @staticmethod
-    def create_pass_line_odds_bet(amount, owner, number):
-        """Create a Pass Line Odds bet."""
-        return FreeOddsBet("Pass Line Odds", amount, owner, number)
-
-    @staticmethod
     def create_place_bet(amount, owner, number):
         """Create a Place bet."""
         return PlaceBet(amount, owner, number) 
-
-    @staticmethod
-    def create_place_odds_bet(amount, owner, number):
-        """Create a Place Odds bet."""
-        return FreeOddsBet("Place Odds", amount, owner, number)
 
     @staticmethod
     def create_come_bet(amount, owner, come_odds_working_on_come_out=False):
@@ -33,10 +23,28 @@ class BetFactory:
         return ComeBet(amount, owner, come_odds_working_on_come_out)
 
     @staticmethod
-    def create_come_odds_bet(amount, owner, number):
-        """Create a Come Odds bet."""
-        return FreeOddsBet("Come Odds", amount, owner, number)
+    def create_pass_line_odds_bet(amount, owner, parent_bet):
+        """Create a Pass Line Odds bet linked to a Pass Line bet."""
+        if parent_bet.bet_type != "Pass Line":
+            raise ValueError("Pass Line Odds must be linked to a Pass Line bet")
+        return FreeOddsBet("Pass Line Odds", amount, owner, parent_bet)
 
+    @staticmethod
+    def create_place_odds_bet(amount, owner, parent_bet):
+        """Create a Place Odds bet linked to a Place bet."""
+        if parent_bet.bet_type != "Place":
+            raise ValueError("Place Odds must be linked to a Place bet")
+        return FreeOddsBet("Place Odds", amount, owner, parent_bet)
+
+    @staticmethod
+    def create_come_odds_bet(amount, owner, parent_bet):
+        """Create a Come Odds bet linked to a Come bet."""
+        if parent_bet.bet_type != "Come":
+            raise ValueError("Come Odds must be linked to a Come bet")
+        if parent_bet.number is None:
+            raise ValueError("Come bet must have a number before placing odds")
+        return FreeOddsBet("Come Odds", amount, owner, parent_bet)
+    
     @staticmethod
     def create_field_bet(amount, owner):
         """Create a Field bet."""

@@ -9,7 +9,7 @@ class TestComeBetRules(unittest.TestCase):
         self.player_name = "Alice"
         self.bet_amount = 100
         self.come_bet = ComeBet(self.bet_amount, self.player_name)
-        self.come_odds_bet = FreeOddsBet("Come Odds", self.bet_amount, self.player_name, number=None)
+        self.come_odds_bet = FreeOddsBet("Come Odds", self.bet_amount, self.player_name, parent_bet=self.come_bet)
         self.rules_engine = RulesEngine()
 
     def test_come_bet_resolution(self):

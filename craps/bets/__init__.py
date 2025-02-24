@@ -9,4 +9,4 @@ from .free_odds_bet import FreeOddsBet
 from .field_bet import FieldBet
 
 # Optionally, define __all__ to make it clear which classes are exported
-__all__ = ["Bet", "PassLineBet", "PlaceBet", "FreeOddsBet", "FieldBet"]
+__all__ = ["Bet", "PassLineBet", "PlaceBet", "FreeOddsBet", "FieldBet", "ComeBet"],

@@ -5,6 +5,13 @@ from . import Bet  # Import the base Bet class from the bets package
 class PlaceBet(Bet):
     """Class representing a Place bet."""
     def __init__(self, amount, owner, number):
+        """
+        Initialize a Place bet.
+
+        :param amount: The amount of the bet.
+        :param owner: The player who placed the bet.
+        :param number: The number associated with the bet (e.g., 6 for Place 6).
+        """
         super().__init__(
             bet_type="Place",
             amount=amount,

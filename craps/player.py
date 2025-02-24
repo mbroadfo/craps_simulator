@@ -31,6 +31,14 @@ class Player:
         """
         # Convert single bet to a list for uniform handling
         bets = [bet] if not isinstance(bet, list) else bet
+        
+        # Check if any of the bets are odds bets and validate their parent bets
+        for b in bets:
+            if hasattr(b, 'parent_bet') and b.parent_bet is not None:  # Check if the bet is an odds bet and has a parent
+                if b.parent_bet.owner != self:
+                    raise ValueError("Cannot place odds bet on another player's bet")
+                if not table.has_bet(b.parent_bet):
+                    raise ValueError("Parent bet must be on the table before placing odds")
 
         # Calculate the total amount to be wagered
         total_amount = sum(b.amount for b in bets)

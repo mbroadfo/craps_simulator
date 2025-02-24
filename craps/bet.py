@@ -9,15 +9,16 @@ class Bet:
 
     def __init__(
         self,
-        bet_type: str,  # Type of bet (e.g., "Pass Line", "Place", "Come")
+        bet_type: str,
         amount: int,
-        owner,  # Reference to the Player object
+        owner,
         payout_ratio: Tuple[int, int] = (1, 1),
         locked: bool = True,
         vig: int = 0,
-        unit: int = 1,  # Default unit for Place/Buy bets
-        valid_phases: List[str] = None,  # Default to None, will be set to VALID_PHASES
-        number: Optional[int] = None,  # Number associated with the bet (e.g., 6 for Place 6)
+        unit: int = 1,
+        valid_phases: List[str] = None,
+        number: Optional[int] = None,
+        parent_bet: Optional['Bet'] = None
     ):
         """
         Initialize a bet.
@@ -34,14 +35,15 @@ class Bet:
         """
         self.bet_type = bet_type
         self.amount = amount
-        self.owner = owner  # Store the Player object
+        self.owner = owner
         self.payout_ratio = payout_ratio
         self.locked = locked
         self.vig = vig
         self.unit = unit
         self.valid_phases = valid_phases if valid_phases is not None else self.VALID_PHASES
-        self.number = number  # Number associated with the bet (e.g., 6 for Place 6)
-        self.status = "active"  # Can be "active", "won", "lost", or "pushed"
+        self.number = number
+        self.status = "active"
+        self.parent_bet = parent_bet
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
