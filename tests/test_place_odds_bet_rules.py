@@ -43,5 +43,18 @@ class TestPlaceOddsBetRules(unittest.TestCase):
         payout_ratio = self.rules_engine.get_payout_ratio("Place Odds", number=4)
         self.assertEqual(payout_ratio, (2, 1), "Place Odds bet on 4 should have a payout ratio of 2:1")
 
+    def test_place_odds_linked_to_place_bet(self):
+        """Test that Place Odds bets are linked to Place bets."""
+        linked_bet_type = self.rules_engine.get_linked_bet_type("Place")
+        self.assertEqual(linked_bet_type, "Place Odds", "Place bets should be linked to Place Odds")
+
+    def test_place_odds_cannot_be_placed_during_come_out(self):
+        """Test that Place Odds bets cannot be placed during the come-out phase."""
+        self.assertFalse(self.rules_engine.can_make_bet("Place Odds", "come-out"), "Place Odds bets should not be allowed during the come-out phase")
+
+    def test_place_odds_can_be_placed_during_point_phase(self):
+        """Test that Place Odds bets can be placed during the point phase."""
+        self.assertTrue(self.rules_engine.can_make_bet("Place Odds", "point"), "Place Odds bets should be allowed during the point phase")
+
 if __name__ == "__main__":
     unittest.main()

@@ -38,7 +38,7 @@ class PlaceBet(Bet):
                 self.status = "lost"  # Place bet loses on 7-out
             else:
                 self.status = "active"  # Bet remains active
-                
+
     def payout(self) -> int:
         """
         Calculate the payout for the Place bet.
@@ -47,4 +47,5 @@ class PlaceBet(Bet):
             return 0
 
         numerator, denominator = self.payout_ratio
-        return self.amount + (self.amount * numerator // denominator)
+        profit = (self.amount * numerator) // denominator  # Calculate profit
+        return self.amount + profit  # Return total payout (original bet + profit)
