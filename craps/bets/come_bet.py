@@ -3,6 +3,9 @@
 from craps.bet import Bet
 from typing import List, Optional
 
+from craps.bet import Bet
+from typing import List, Optional
+
 class ComeBet(Bet):
     """Class representing a Come bet."""
     def __init__(self, amount: int, owner, come_odds_working_on_come_out=False):
@@ -19,7 +22,7 @@ class ComeBet(Bet):
             owner=owner,
             payout_ratio=(1, 1),  # Come bets pay 1:1
             locked=True,  # Come bets are contract bets
-            valid_phases=["point"],  # Come bets are placed during the come-out phase
+            valid_phases=["point"],  # Come bets are placed during the point phase
         )
         self.number = None  # Come bet number set after moving to the point
         self.come_odds_working_on_come_out = come_odds_working_on_come_out
@@ -60,18 +63,11 @@ class ComeBet(Bet):
 
     def payout(self) -> int:
         """
-        Calculate the payout for the Pass Line bet.
+        Calculate the payout for the bet.
         """
         if self.status != "won":
             return 0
 
-        # Come bets pay 1:1
         numerator, denominator = self.payout_ratio
-        return self.amount + (self.amount * numerator // denominator)
-    
-    def __str__(self):
-        """Return a string representation of the Come bet."""
-        if self.number is None:
-            return f"{self.owner.name}'s ${self.amount} Come bet (Status: {self.status})"
-        else:
-            return f"{self.owner.name}'s ${self.amount} Come bet on {self.number} (Status: {self.status})"
+        profit = (self.amount * numerator) // denominator  # Calculate profit
+        return self.amount + profit  # Return total payout (original bet + profit)
