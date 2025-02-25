@@ -41,6 +41,15 @@ class Table:
         self.play_by_play.write(message)
         return True
 
+    def has_bet(self, bet: Bet) -> bool:
+        """
+        Check if a specific bet exists on the table.
+
+        :param bet: The bet to check for.
+        :return: True if the bet exists on the table, False otherwise.
+        """
+        return bet in self.bets
+
     def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.

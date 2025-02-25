@@ -1,6 +1,6 @@
-# File: .\craps\strategies\pass_line_odds.py
+# File: .\craps\strategies\pass_line_odds_strategy.py
 
-from craps.bet_factory import BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class PassLineOddsStrategy:
     """Betting strategy for Pass Line with Odds bets."""
@@ -13,6 +13,7 @@ class PassLineOddsStrategy:
         """
         self.table = table
         self.odds_multiple = odds_multiple
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place a Pass Line or Pass Line Odds bet based on the game state."""
@@ -24,8 +25,8 @@ class PassLineOddsStrategy:
             if player.has_active_bet(table, "Pass Line"):
                 return None  # No new bet to place
 
-            # Use the BetFactory to create a Pass Line bet
-            return BetFactory.create_pass_line_bet(self.table.house_rules.table_minimum, player)
+            # Use RulesEngine to create a Pass Line bet
+            return self.rules_engine.create_bet("Pass Line", self.table.house_rules.table_minimum, player)
         
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
@@ -40,11 +41,13 @@ class PassLineOddsStrategy:
             if pass_line_bet is None:
                 return None  # No Pass Line bet found
 
-            # Use the BetFactory to create a Pass Line Odds bet linked to the Pass Line bet
-            return BetFactory.create_pass_line_odds_bet(
+            # Use RulesEngine to create a Pass Line Odds bet linked to the Pass Line bet
+            return self.rules_engine.create_bet(
+                "Pass Line Odds",
                 self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
                 player,  # Owner
-                pass_line_bet  # Parent Pass Line bet
+                number=game_state.point,  # Pass the current point number
+                parent_bet=pass_line_bet  # Parent Pass Line bet
             )
         
         return None  # No bet to place

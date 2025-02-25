@@ -4,7 +4,7 @@ from colorama import Fore, Style
 from typing import List, Union, Optional
 from craps.bet import Bet
 from craps.table import Table
-from craps.bet_factory import BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class Player:
     def __init__(self, name: str, initial_balance: int = 500, betting_strategy=None, play_by_play=None):
@@ -19,7 +19,8 @@ class Player:
         self.name = name
         self.balance = initial_balance
         self.betting_strategy = betting_strategy
-        self.play_by_play = play_by_play 
+        self.play_by_play = play_by_play
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
         """

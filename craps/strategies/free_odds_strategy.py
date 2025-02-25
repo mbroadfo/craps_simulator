@@ -1,4 +1,6 @@
-from craps.bet_factory import BetFactory
+# File: .\craps\strategies\free_odds_strategy.py
+
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class FreeOddsStrategy:
     """Betting strategy for Free Odds on any active bet."""
@@ -11,6 +13,7 @@ class FreeOddsStrategy:
         """
         self.table = table
         self.odds_multiple = odds_multiple
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_odds_amount(self, original_bet_amount):
         """Calculate the odds amount based on the original bet amount and the selected multiple."""
@@ -38,10 +41,21 @@ class FreeOddsStrategy:
                 # Calculate the odds amount based on the original bet amount
                 odds_amount = self.get_odds_amount(active_bet.amount)
 
-                # Create a Free Odds bet
+                # Create a Free Odds bet using RulesEngine
                 if active_bet.bet_type == "Pass Line":
-                    bets.append(BetFactory.create_pass_line_odds_bet(odds_amount, player.name))
+                    bets.append(self.rules_engine.create_bet(
+                        "Pass Line Odds",
+                        odds_amount,
+                        player,
+                        parent_bet=active_bet
+                    ))
                 elif active_bet.bet_type == "Place":
-                    bets.append(BetFactory.create_place_odds_bet(odds_amount, player.name, active_bet.number))
+                    bets.append(self.rules_engine.create_bet(
+                        "Place Odds",
+                        odds_amount,
+                        player,
+                        number=active_bet.number,
+                        parent_bet=active_bet
+                    ))
 
         return bets if bets else None

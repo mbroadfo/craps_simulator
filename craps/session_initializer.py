@@ -5,6 +5,7 @@ from craps.table import Table
 from craps.roll_history_manager import RollHistoryManager
 from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
+from craps.rules_engine import RulesEngine
 
 class InitializeSession:
     def __init__(self, session_mode, house_rules_config):
@@ -19,6 +20,7 @@ class InitializeSession:
         self.roll_history_manager = RollHistoryManager()
         self.log_manager = LogManager()
         self.play_by_play = PlayByPlay()
+        self.rules_engine = RulesEngine()
 
     def prepare_session(self):
         """Prepare the session based on the session mode."""
@@ -31,8 +33,8 @@ class InitializeSession:
         # Initialize house rules
         house_rules = HouseRules(self.house_rules_config)
 
-        # Create the Table object
-        table = Table(house_rules, self.play_by_play)
+        # Create the Table object with the RulesEngine
+        table = Table(house_rules, self.play_by_play, self.rules_engine)
 
         # Delete the existing log file before starting the session
         self.log_manager.delete_log_file()

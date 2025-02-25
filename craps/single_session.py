@@ -6,6 +6,7 @@ from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
+from craps.rules_engine import RulesEngine  # Import the RulesEngine
 import os
 
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None, play_by_play=None):
@@ -21,7 +22,8 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         dice = Dice()  # Use random rolls
 
     # Initialize components
-    table = Table(house_rules, play_by_play)
+    rules_engine = RulesEngine()
+    table = Table(house_rules, play_by_play, rules_engine)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
     game_state = GameState(stats, play_by_play=play_by_play)
     game_state.set_table(table)

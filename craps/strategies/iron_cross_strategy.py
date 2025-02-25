@@ -1,7 +1,6 @@
-# File: .\craps\strategies\iron_cross.py
+# File: .\craps\strategies\iron_cross_strategy.py
 
-from craps.bet_factory import BetFactory
-from craps.play_by_play import PlayByPlay
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class IronCrossStrategy:
     """Betting strategy for Iron Cross."""
@@ -14,13 +13,14 @@ class IronCrossStrategy:
         """
         self.table = table
         self.min_bet = min_bet
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place bets for the Iron Cross strategy."""
         if game_state.phase == "come-out":
             # Place a Pass Line bet during the come-out roll if no active bet exists
             if not any(bet.owner == player and bet.bet_type == "Pass Line" for bet in table.bets):
-                return BetFactory.create_pass_line_bet(self.min_bet, player)
+                return self.rules_engine.create_bet("Pass Line", self.min_bet, player)
         elif game_state.phase == "point":
             # Reactivate inactive Place bets
             for bet in table.bets:
@@ -45,15 +45,15 @@ class IronCrossStrategy:
                 )
             ]
 
-            # Use the BetFactory to create Place bets
+            # Use RulesEngine to create Place bets
             bets = []
             for number in numbers:
-                min_bet = self.table.get_minimum_bet(number)
-                bets.append(BetFactory.create_place_bet(min_bet, player, number))
+                min_bet = self.rules_engine.get_minimum_bet(number)  # Use RulesEngine to get minimum bet
+                bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists
             if not any(bet.owner == player and bet.bet_type == "Field" for bet in table.bets):
-                bets.append(BetFactory.create_field_bet(self.min_bet, player))
+                bets.append(self.rules_engine.create_bet("Field", self.min_bet, player))
 
             return bets if bets else None
 

@@ -1,6 +1,6 @@
-# File: .\craps\strategies\place_bet.py
+# File: .\craps\strategies\place_strategy.py
 
-from craps.bet_factory import BetFactory  # Import the BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class PlaceBetStrategy:
     """Betting strategy for Place Bets."""
@@ -13,6 +13,7 @@ class PlaceBetStrategy:
         """
         self.table = table
         self.numbers_or_strategy = numbers_or_strategy
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place Place Bets based on the strategy and game state."""
@@ -40,10 +41,10 @@ class PlaceBetStrategy:
             )
         ]
 
-        # Use the BetFactory to create Place bets
+        # Use RulesEngine to create Place bets
         bets = []
         for number in numbers:
             min_bet = self.table.get_minimum_bet(number)
-            bets.append(BetFactory.create_place_bet(min_bet, player, number))
+            bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
         return bets if bets else None

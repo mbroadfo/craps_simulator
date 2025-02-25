@@ -2,12 +2,67 @@
 
 from typing import List, Optional, Dict, Any, Tuple
 from craps.rules import BET_BEHAVIOR, BET_PAYOUT, ODDS_PAYOUT
+from craps.bet import Bet  # Import the Bet class
 
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
     @staticmethod
-    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional['Bet'] = None) -> bool:
+    def get_minimum_bet(number: Optional[int] = None) -> int:
+        """
+        Get the minimum bet amount for a specific bet type or number.
+
+        :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :return: The minimum bet amount.
+        """
+        # Default minimum bet for most bets
+        default_min_bet = 10  # Replace with the actual default minimum bet from house rules
+
+        # Adjust minimum bet for specific bet types or numbers
+        if number is not None:
+            # For Place bets, the minimum bet may vary based on the number
+            if number in [4, 5, 6, 8, 9, 10]:
+                return default_min_bet  # Replace with actual logic if needed
+            else:
+                raise ValueError(f"Invalid number for minimum bet: {number}")
+
+        return default_min_bet
+
+    @staticmethod
+    def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
+        """
+        Create a bet based on the bet type.
+
+        :param bet_type: The type of bet (e.g., "Pass Line", "Place").
+        :param amount: The amount of the bet.
+        :param owner: The player who placed the bet.
+        :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :param parent_bet: The parent bet for odds bets.
+        :return: A Bet instance.
+        """
+        # Get the payout ratio and other properties from the RulesEngine
+        payout_ratio = RulesEngine.get_payout_ratio(bet_type, number)
+        vig = RulesEngine.has_vig(bet_type)
+        valid_phases = ["come-out", "point"]  # Default valid phases
+
+        # Create the bet
+        bet = Bet(
+            bet_type=bet_type,
+            amount=amount,
+            owner=owner,
+            payout_ratio=payout_ratio,
+            vig=vig,
+            valid_phases=valid_phases,
+            number=number,
+            parent_bet=parent_bet
+        )
+
+        return bet
+
+    # ... (rest of the RulesEngine class remains unchanged)
+
+    @staticmethod
+    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
         """
         Determine if a bet of the given type can be made during the current phase.
         
@@ -23,8 +78,6 @@ class RulesEngine:
         if bet_type.endswith("Odds"):
             if parent_bet is None:
                 return False  # Parent bet is required for odds bets
-            if not parent_bet.status == "active":
-                return False  # Parent bet must be active
             if bet_type == "Come Odds" and parent_bet.number is None:
                 return False  # Come bet must have a number set
                 
@@ -72,7 +125,7 @@ class RulesEngine:
         return BET_BEHAVIOR[bet_type][phase]["can_turn_on"]
 
     @staticmethod
-    def resolve_bet(bet: 'Bet', dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
+    def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
         """
         Resolve a bet based on the dice outcome, phase, and point.
 

@@ -130,6 +130,27 @@ BET_BEHAVIOR = {
             "linked_bet": None,
         },
     },
+    # Field Bet
+    "Field": {
+        "come-out": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
+            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "other_action": "No Change",
+            "linked_bet": None,
+        },
+        "point": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
+            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "other_action": "No Change",
+            "linked_bet": None,
+        },
+    },
 }
 
 # ==================================================
@@ -143,6 +164,7 @@ BET_PAYOUT = {
     "Place Odds": {"payout_ratio": "True Odds", "vig": False},
     "Come": {"payout_ratio": (1, 1), "vig": False},
     "Come Odds": {"payout_ratio": "True Odds", "vig": False},
+    "Field": {"payout_ratio": (1, 1), "vig": False},  # Add Field bet payout
 }
 
 # ==================================================
