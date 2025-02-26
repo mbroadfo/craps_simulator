@@ -4,12 +4,13 @@ from craps.bet import Bet
 from craps.table import Table
 from craps.house_rules import HouseRules
 from craps.play_by_play import PlayByPlay
+from craps.player import Player
 
 class TestMultiplePlaceBets(unittest.TestCase):
     def setUp(self):
         """Initialize multiple Place bets and the RulesEngine for testing."""
-        self.player_name = "Alice"
-        self.bet_amount = 100
+        # Initialize a player
+        self.player = Player(name="Alice", initial_balance=1000)
 
         # Initialize house rules
         self.house_rules = HouseRules({
@@ -25,9 +26,9 @@ class TestMultiplePlaceBets(unittest.TestCase):
         self.table = Table(self.house_rules, self.play_by_play, self.rules_engine)
 
         # Create Place bets on multiple numbers
-        self.place_bet_6 = self.rules_engine.create_bet("Place", self.bet_amount, self.player_name, number=6)
-        self.place_bet_8 = self.rules_engine.create_bet("Place", self.bet_amount, self.player_name, number=8)
-        self.place_bet_5 = self.rules_engine.create_bet("Place", self.bet_amount, self.player_name, number=5)
+        self.place_bet_6 = self.rules_engine.create_bet("Place", 100, self.player, number=6)
+        self.place_bet_8 = self.rules_engine.create_bet("Place", 100, self.player, number=8)
+        self.place_bet_5 = self.rules_engine.create_bet("Place", 100, self.player, number=5)
 
         # Place the bets on the table
         self.table.place_bet(self.place_bet_6, "point")
