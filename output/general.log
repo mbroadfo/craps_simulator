@@ -1,0 +1,75 @@
+
+=== Simulation Statistics ===
+Table Minimum: $10
+Number of Shooters: 10
+Number of Players: 3
+Number of Rolls: 103
+Total House Win/Loss: $-1704
+Total Player Win/Loss: $1704
+Player Bankrolls: [629, 279, 566]
+Highest Player Bankroll: $629
+Lowest Player Bankroll: $279
+
+=== Shooter Performance Report ===
+
+Shooter: 1
+  Total Points Rolled: 0
+  Total Rolls: 2
+  Average Rolls Before 7-Out: 0.50
+  Rolls Before 7-Out: [0, 0, 2, 0]
+
+Shooter: 2
+  Total Points Rolled: 0
+  Total Rolls: 6
+  Average Rolls Before 7-Out: 0.75
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 6, 0]
+
+Shooter: 3
+  Total Points Rolled: 1
+  Total Rolls: 11
+  Average Rolls Before 7-Out: 0.85
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0]
+
+Shooter: 4
+  Total Points Rolled: 3
+  Total Rolls: 23
+  Average Rolls Before 7-Out: 0.92
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 0]
+
+Shooter: 5
+  Total Points Rolled: 0
+  Total Rolls: 4
+  Average Rolls Before 7-Out: 0.67
+  Rolls Before 7-Out: [0, 0, 0, 0, 4, 0]
+
+Shooter: 6
+  Total Points Rolled: 1
+  Total Rolls: 6
+  Average Rolls Before 7-Out: 0.75
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 6, 0]
+
+Shooter: 7
+  Total Points Rolled: 2
+  Total Rolls: 18
+  Average Rolls Before 7-Out: 0.90
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0]
+
+Shooter: 8
+  Total Points Rolled: 0
+  Total Rolls: 6
+  Average Rolls Before 7-Out: 0.75
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 6, 0]
+
+Shooter: 9
+  Total Points Rolled: 4
+  Total Rolls: 22
+  Average Rolls Before 7-Out: 0.92
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 0]
+
+Shooter: 10
+  Total Points Rolled: 0
+  Total Rolls: 5
+  Average Rolls Before 7-Out: 0.71
+  Rolls Before 7-Out: [0, 0, 0, 0, 0, 5, 0]
+
+=== Player Performance Report ===

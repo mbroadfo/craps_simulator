@@ -18,7 +18,8 @@ class Bet:
         unit: int = 1,
         valid_phases: List[str] = None,
         number: Optional[int] = None,
-        parent_bet: Optional['Bet'] = None
+        parent_bet: Optional['Bet'] = None,
+        is_contract_bet: bool = True,  # New parameter to determine if the bet is a contract bet
     ):
         """
         Initialize a bet.
@@ -32,6 +33,8 @@ class Bet:
         :param unit: The unit for Place/Buy bets (default is 1).
         :param valid_phases: The phases during which the bet can be placed (default is all phases).
         :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :param parent_bet: The parent bet for odds bets.
+        :param is_contract_bet: Whether the bet is a contract bet (default is True).
         """
         self.bet_type = bet_type
         self.amount = amount
@@ -44,6 +47,7 @@ class Bet:
         self.number = number
         self.status = "active"
         self.parent_bet = parent_bet
+        self.is_contract_bet = is_contract_bet  # New field to determine if the bet is a contract bet
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
@@ -101,14 +105,14 @@ class Bet:
             return 0
 
         numerator, denominator = self.payout_ratio
-        profit = self.amount * numerator // denominator
+        profit = (self.amount * numerator) // denominator
 
-        # Deduct the vig (if applicable)
-        if self.vig > 0:
-            vig_amount = self.amount * self.vig // 100
-            profit -= vig_amount
+        # For contract bets, return the original bet amount plus the profit
+        if self.is_contract_bet:
+            return self.amount + profit
 
-        return profit if self.bet_type != "Pass Line" else self.amount + profit
+        # For non-contract bets, return only the profit
+        return profit
 
     def __str__(self):
         """Return a string representation of the bet."""

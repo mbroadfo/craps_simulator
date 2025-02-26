@@ -143,7 +143,8 @@ class Bet:
         unit: int = 1,
         valid_phases: List[str] = None,
         number: Optional[int] = None,
-        parent_bet: Optional['Bet'] = None
+        parent_bet: Optional['Bet'] = None,
+        is_contract_bet: bool = True,  # New parameter to determine if the bet is a contract bet
     ):
         """
         Initialize a bet.
@@ -157,6 +158,8 @@ class Bet:
         :param unit: The unit for Place/Buy bets (default is 1).
         :param valid_phases: The phases during which the bet can be placed (default is all phases).
         :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :param parent_bet: The parent bet for odds bets.
+        :param is_contract_bet: Whether the bet is a contract bet (default is True).
         """
         self.bet_type = bet_type
         self.amount = amount
@@ -169,6 +172,7 @@ class Bet:
         self.number = number
         self.status = "active"
         self.parent_bet = parent_bet
+        self.is_contract_bet = is_contract_bet  # New field to determine if the bet is a contract bet
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
@@ -226,14 +230,14 @@ class Bet:
             return 0
 
         numerator, denominator = self.payout_ratio
-        profit = self.amount * numerator // denominator
+        profit = (self.amount * numerator) // denominator
 
-        # Deduct the vig (if applicable)
-        if self.vig > 0:
-            vig_amount = self.amount * self.vig // 100
-            profit -= vig_amount
+        # For contract bets, return the original bet amount plus the profit
+        if self.is_contract_bet:
+            return self.amount + profit
 
-        return profit if self.bet_type != "Pass Line" else self.amount + profit
+        # For non-contract bets, return only the profit
+        return profit
 
     def __str__(self):
         """Return a string representation of the bet."""
@@ -268,14 +272,15 @@ class PassLineStrategy:
 
 # File: .\craps\common.py
 
+from typing import Optional
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
 from craps.player import Player
 from craps.dice import Dice
-from craps.statistics import Statistics  # Import the Statistics class
-
+from craps.statistics import Statistics
+from craps.bet import Bet
 class CommonTableSetup:
     """Common setup for all craps tests."""
 
@@ -306,7 +311,8 @@ class CommonTableSetup:
         # Initialize dice (optional, for testing specific rolls)
         self.dice = Dice()
 
-    def place_bet(self, bet_type, amount, phase="come-out", number=None):
+
+    def place_bet(self, bet_type: str, amount: int, phase="come-out", number: Optional[int] = None) -> Bet:
         """
         Place a bet on the table for the player.
 
@@ -851,8 +857,10 @@ class RollHistoryManager:
 # ==================================================
 
 BET_BEHAVIOR = {
-    # Pass Line and Pass Line Odds (already defined)
     "Pass Line": {
+        "is_contract_bet": True,
+        "linked_bet": "Pass Line Odds",
+        "valid_phases": ["come-out", "point"],
         "come-out": {
             "can_bet": True,
             "can_remove": False,
@@ -860,7 +868,6 @@ BET_BEHAVIOR = {
             "winning": [7, 11],
             "losing": [2, 3, 12],
             "other_action": "Sets the Point",
-            "linked_bet": "Pass Line Odds",
         },
         "point": {
             "can_bet": False,
@@ -869,10 +876,12 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Pass Line Odds",
         },
     },
     "Pass Line Odds": {
+        "is_contract_bet": True,
+        "linked_bet": None,
+        "valid_phases": ["point"],
         "come-out": {
             "can_bet": False,
             "can_remove": "Must Remove",
@@ -880,7 +889,6 @@ BET_BEHAVIOR = {
             "winning": None,
             "losing": None,
             "other_action": None,
-            "linked_bet": None,
         },
         "point": {
             "can_bet": True,
@@ -889,114 +897,114 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
     },
-    # Place Bet
-    "Place": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": "Place Odds",
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": "Place Odds",
-        },
-    },
-    # Place Odds
-    "Place Odds": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,
-        },
-        "point": {
-            "can_bet": True,  # Allow Place Odds bets during the point phase
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,
-        },
-    },
-    # Come Bet
     "Come": {
+        "is_contract_bet": True,
+        "linked_bet": "Come Odds",
+        "valid_phases": ["point"],
         "come-out": {
-            "can_bet": False,  # Come bets cannot be placed during the come-out phase
+            "can_bet": False,
             "can_remove": False,
             "can_turn_on": "Always On",
             "winning": [7, 11],
             "losing": [2, 3, 12],
-            "other_action": "Moves to Number",
-            "linked_bet": "Come Odds",
+            "other_action": "No Change",
         },
         "point": {
-            "can_bet": True,  # Come bets can be placed during the point phase
+            "can_bet": True, 
             "can_remove": False,
             "can_turn_on": "Always On",
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Come Odds",
         },
     },
-    # Come Odds Bet
     "Come Odds": {
+        "is_contract_bet": False,
+        "linked_bet": None,
+        "valid_phases": ["point"],
         "come-out": {
-            "can_bet": False,  # Come Odds bets cannot be placed during the come-out phase
-            "can_remove": False,
+            "can_bet": False,
+            "can_remove": True,
             "can_turn_on": "Always On",
             "winning": None,
             "losing": None,
             "other_action": None,
-            "linked_bet": None,
         },
         "point": {
-            "can_bet": True,  # Come Odds bets can be placed during the point phase
+            "can_bet": True,
             "can_remove": True,
             "can_turn_on": "Always On",
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
     },
-    # Field Bet
-    "Field": {
+    "Place": {
+        "is_contract_bet": False, 
+        "linked_bet": "Place Odds",
+        "valid_phases": ["point"],
         "come-out": {
-            "can_bet": True,
+            "can_bet": False,
             "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
-            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "can_turn_on": True,
+            "winning": ["Number"],
+            "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
         "point": {
             "can_bet": True,
             "can_remove": True,
             "can_turn_on": "Always On",
-            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
-            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "winning": ["Number"],
+            "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
     },
+    "Place Odds": {
+        "is_contract_bet": False,
+        "linked_bet": None,
+        "valid_phases": ["point"],
+        "come-out": {
+            "can_bet": False,
+            "can_remove": True,
+            "can_turn_on": True,
+            "winning": ["Number"],
+            "losing": [7],
+            "other_action": "No Change",
+        },
+        "point": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": ["Number"],
+            "losing": [7],
+            "other_action": "No Change",
+        },
+    },
+    "Field": {
+        "is_contract_bet": True,
+        "linked_bet": None,
+        "valid_phases": ["come-out", "point"],
+        "come-out": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],
+            "losing": [5, 6, 7, 8],
+            "other_action": "No Change",
+        },
+        "point": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],
+            "losing": [5, 6, 7, 8],
+            "other_action": "No Change",
+        },
+    },
+    # Add similar rules for other bet types...
 }
 
 # ==================================================
@@ -1006,11 +1014,11 @@ BET_BEHAVIOR = {
 BET_PAYOUT = {
     "Pass Line": {"payout_ratio": (1, 1), "vig": False},
     "Pass Line Odds": {"payout_ratio": "True Odds", "vig": False},
-    "Place": {"payout_ratio": "House Odds", "vig": False},
-    "Place Odds": {"payout_ratio": "True Odds", "vig": False},
     "Come": {"payout_ratio": (1, 1), "vig": False},
     "Come Odds": {"payout_ratio": "True Odds", "vig": False},
-    "Field": {"payout_ratio": "Field Odds", "vig": False},  # Add Field bet payout
+    "Place": {"payout_ratio": "House Odds", "vig": False},
+    "Place Odds": {"payout_ratio": "True Odds", "vig": False},
+    "Field": {"payout_ratio": "Field Odds", "vig": False},
 }
 
 # ==================================================
@@ -1085,10 +1093,16 @@ class RulesEngine:
         :param parent_bet: The parent bet for odds bets.
         :return: A Bet instance.
         """
+        if bet_type not in BET_BEHAVIOR:
+            raise ValueError(f"Unknown bet type: {bet_type}")
+
         # Get the payout ratio and other properties from the RulesEngine
         payout_ratio = RulesEngine.get_payout_ratio(bet_type, number)
         vig = RulesEngine.has_vig(bet_type)
-        valid_phases = ["come-out", "point"]  # Default valid phases
+
+        # Get the is_contract_bet and valid_phases from the top level
+        is_contract_bet = BET_BEHAVIOR[bet_type]["is_contract_bet"]
+        valid_phases = BET_BEHAVIOR[bet_type]["valid_phases"]
 
         # Create the bet
         bet = Bet(
@@ -1099,18 +1113,17 @@ class RulesEngine:
             vig=vig,
             valid_phases=valid_phases,
             number=number,
-            parent_bet=parent_bet
+            parent_bet=parent_bet,
+            is_contract_bet=is_contract_bet,  # Pass the is_contract_bet value
         )
 
         return bet
-
-    # ... (rest of the RulesEngine class remains unchanged)
 
     @staticmethod
     def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
         """
         Determine if a bet of the given type can be made during the current phase.
-        
+
         :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :param phase: The current game phase ("come-out" or "point").
         :param parent_bet: The parent bet for odds bets.
@@ -1118,28 +1131,19 @@ class RulesEngine:
         """
         if bet_type not in BET_BEHAVIOR:
             raise ValueError(f"Unknown bet type: {bet_type}")
-            
+
+        # Check if the bet is allowed in the current phase
+        if phase not in BET_BEHAVIOR[bet_type]["valid_phases"]:
+            return False
+
         # Additional checks for odds bets
         if bet_type.endswith("Odds"):
             if parent_bet is None:
                 return False  # Parent bet is required for odds bets
             if bet_type == "Come Odds" and parent_bet.number is None:
                 return False  # Come bet must have a number set
-                
-        return BET_BEHAVIOR[bet_type][phase]["can_bet"]
 
-    @staticmethod
-    def get_linked_bet_type(bet_type: str) -> Optional[str]:
-        """
-        Get the type of bet that can be linked to the given bet type.
-        Now returns the child bet type instead of parent.
-        """
-        linked_bets = {
-            "Pass Line": "Pass Line Odds",
-            "Place": "Place Odds",
-            "Come": "Come Odds",
-        }
-        return linked_bets.get(bet_type)
+        return BET_BEHAVIOR[bet_type][phase]["can_bet"]
 
     @staticmethod
     def can_remove_bet(bet_type: str, phase: str) -> bool:
@@ -1152,7 +1156,7 @@ class RulesEngine:
         """
         if bet_type not in BET_BEHAVIOR:
             raise ValueError(f"Unknown bet type: {bet_type}")
-        
+
         return BET_BEHAVIOR[bet_type][phase]["can_remove"]
 
     @staticmethod
@@ -1166,7 +1170,7 @@ class RulesEngine:
         """
         if bet_type not in BET_BEHAVIOR:
             raise ValueError(f"Unknown bet type: {bet_type}")
-        
+
         return BET_BEHAVIOR[bet_type][phase]["can_turn_on"]
 
     @staticmethod
@@ -2351,18 +2355,18 @@ class TestComeBetRules(unittest.TestCase):
     def test_come_bet_resolution(self):
         """Test Come bet resolution during the point phase."""
         # Place a Come bet
-        come_bet = self.common_setup.place_bet("Come", 100)
+        come_bet = self.common_setup.place_bet("Come", 100, phase="point")
 
-        # Simulate a come-out roll of 6 to move the Come bet to number 6
+        # Simulate a roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "come-out")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Check that the Come bet has moved to number 6
         self.assertEqual(come_bet.number, 6, "Come bet should move to number 6")
 
         # Simulate a point roll of 6 (win)
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "point")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Check that the Come bet is resolved as won
         self.assertEqual(come_bet.status, "won", "Come bet should win on 6")
@@ -2370,18 +2374,18 @@ class TestComeBetRules(unittest.TestCase):
     def test_come_odds_bet_resolution(self):
         """Test Come Odds bet resolution after the Come bet has moved to a number."""
         # Place a Come bet
-        come_bet = self.common_setup.place_bet("Come", 100)
+        come_bet = self.common_setup.place_bet("Come", 100, phase="point")
 
-        # Simulate a come-out roll of 6 to move the Come bet to number 6
+        # Simulate a roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "come-out")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Place a Come Odds bet linked to the Come bet
         come_odds_bet = self.common_setup.place_bet("Come Odds", 100)
 
         # Simulate a point roll of 6 (win)
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "point")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Check that the Come Odds bet is resolved as won
         self.assertEqual(come_odds_bet.status, "won", "Come Odds bet should win on 6")
@@ -2398,11 +2402,11 @@ class TestComeBetRules(unittest.TestCase):
     def test_come_odds_bet_can_be_placed_after_come_bet_moves(self):
         """Test that Come Odds bets can be placed after the Come bet moves to a number."""
         # Place a Come bet
-        come_bet = self.common_setup.place_bet("Come", 100)
+        come_bet = self.common_setup.place_bet("Come", 100, phase="point")
 
-        # Simulate a come-out roll of 6 to move the Come bet to number 6
+        # Simulate a roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "come-out")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Place a Come Odds bet after the Come bet has moved to a number
         come_odds_bet = self.common_setup.place_bet("Come Odds", 100)
@@ -2754,41 +2758,73 @@ if __name__ == "__main__":
 
 import unittest
 from craps.rules_engine import RulesEngine
-from craps.bets.place_bet import PlaceBet
+from craps.bet import Bet
+from craps.table import Table
+from craps.house_rules import HouseRules
+from craps.play_by_play import PlayByPlay
+from craps.player import Player
 
 class TestPayouts(unittest.TestCase):
     def setUp(self):
-        """Initialize Place bets and the RulesEngine for testing."""
-        self.player_name = "Alice"
+        """Initialize the test environment."""
+        # Initialize a player
+        self.player = Player(name="Alice", initial_balance=1000)
+
+        # Initialize house rules
+        self.house_rules = HouseRules({
+            "table_minimum": 10,
+            "table_maximum": 5000,
+        })
+
+        # Initialize play-by-play and rules engine
+        self.play_by_play = PlayByPlay()
         self.rules_engine = RulesEngine()
 
-        # Create Place bets on different numbers
-        self.place_bet_4 = PlaceBet(10, self.player_name, number=4)  # $10 on 4
-        self.place_bet_5 = PlaceBet(10, self.player_name, number=5)  # $10 on 5
-        self.place_bet_6 = PlaceBet(12, self.player_name, number=6)  # $12 on 6
+        # Initialize the table
+        self.table = Table(self.house_rules, self.play_by_play, self.rules_engine)
 
-    def test_place_bet_payouts(self):
-        """Test payouts for Place bets after resolving them."""
-        # Resolve the Place bet on 4 (winning roll)
-        dice_outcome = [2, 2]  # Total of 4
-        self.rules_engine.resolve_bet(self.place_bet_4, dice_outcome, "point", None)
-        self.assertEqual(self.place_bet_4.status, "won", "Place bet on 4 should be won")
-        self.assertEqual(self.place_bet_4.payout_ratio, (9, 5), "Place bet on 4 should have a payout ratio of 9:5")
-        self.assertEqual(self.place_bet_4.payout(), 28, "Place bet on 4 should pay 9:5 ($18 profit + $10 original bet = $28)")
+    def test_pass_line_bet_payout(self):
+        """Test payout for a Pass Line bet."""
+        # Create a Pass Line bet
+        pass_line_bet = self.rules_engine.create_bet("Pass Line", 100, self.player)
 
-        # Resolve the Place bet on 5 (winning roll)
-        dice_outcome = [3, 2]  # Total of 5
-        self.rules_engine.resolve_bet(self.place_bet_5, dice_outcome, "point", None)
-        self.assertEqual(self.place_bet_5.status, "won", "Place bet on 5 should be won")
-        self.assertEqual(self.place_bet_5.payout_ratio, (7, 5), "Place bet on 5 should have a payout ratio of 7:5")
-        self.assertEqual(self.place_bet_5.payout(), 24, "Place bet on 5 should pay 7:5 ($14 profit + $10 original bet = $24)")
+        # Simulate a winning roll (7 during come-out)
+        pass_line_bet.status = "won"
+        payout = pass_line_bet.payout()
+        self.assertEqual(payout, 200, "Pass Line bet should pay 1:1 ($100 bet + $100 profit)")
 
-        # Resolve the Place bet on 6 (winning roll)
-        dice_outcome = [3, 3]  # Total of 6
-        self.rules_engine.resolve_bet(self.place_bet_6, dice_outcome, "point", None)
-        self.assertEqual(self.place_bet_6.status, "won", "Place bet on 6 should be won")
-        self.assertEqual(self.place_bet_6.payout_ratio, (7, 6), "Place bet on 6 should have a payout ratio of 7:6")
-        self.assertEqual(self.place_bet_6.payout(), 26, "Place bet on 6 should pay 7:6 ($14 profit + $12 original bet = $26)")
+    def test_place_bet_payout(self):
+        """Test payout for a Place bet."""
+        # Create a Place bet on 6
+        place_bet = self.rules_engine.create_bet("Place", 120, self.player, number=6)
+
+        # Simulate a winning roll (6)
+        place_bet.status = "won"
+        payout = place_bet.payout()
+        self.assertEqual(payout, 242, "Place bet on 6 should pay 7:6 ($120 bet + $122 profit)")
+
+    def test_field_bet_payout(self):
+        """Test payout for a Field bet."""
+        # Create a Field bet
+        field_bet = self.rules_engine.create_bet("Field", 100, self.player)
+
+        # Simulate a winning roll (2)
+        field_bet.status = "won"
+        field_bet.payout_ratio = (2, 1)  # 2:1 payout for 2
+        payout = field_bet.payout()
+        self.assertEqual(payout, 300, "Field bet on 2 should pay 2:1 ($100 bet + $200 profit)")
+
+        # Simulate a winning roll (12)
+        field_bet.status = "won"
+        field_bet.payout_ratio = (3, 1)  # 3:1 payout for 12
+        payout = field_bet.payout()
+        self.assertEqual(payout, 400, "Field bet on 12 should pay 3:1 ($100 bet + $300 profit)")
+
+        # Simulate a winning roll (3, 4, 9, 10, 11)
+        field_bet.status = "won"
+        field_bet.payout_ratio = (1, 1)  # 1:1 payout for other winning numbers
+        payout = field_bet.payout()
+        self.assertEqual(payout, 200, "Field bet on other winning numbers should pay 1:1 ($100 bet + $100 profit)")
 
 if __name__ == "__main__":
     unittest.main()

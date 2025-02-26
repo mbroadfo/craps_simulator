@@ -5,8 +5,10 @@
 # ==================================================
 
 BET_BEHAVIOR = {
-    # Pass Line and Pass Line Odds (already defined)
     "Pass Line": {
+        "is_contract_bet": True,
+        "linked_bet": "Pass Line Odds",
+        "valid_phases": ["come-out", "point"],
         "come-out": {
             "can_bet": True,
             "can_remove": False,
@@ -14,7 +16,6 @@ BET_BEHAVIOR = {
             "winning": [7, 11],
             "losing": [2, 3, 12],
             "other_action": "Sets the Point",
-            "linked_bet": "Pass Line Odds",
         },
         "point": {
             "can_bet": False,
@@ -23,10 +24,12 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Pass Line Odds",
         },
     },
     "Pass Line Odds": {
+        "is_contract_bet": True,
+        "linked_bet": None,
+        "valid_phases": ["point"],
         "come-out": {
             "can_bet": False,
             "can_remove": "Must Remove",
@@ -34,7 +37,6 @@ BET_BEHAVIOR = {
             "winning": None,
             "losing": None,
             "other_action": None,
-            "linked_bet": None,
         },
         "point": {
             "can_bet": True,
@@ -43,114 +45,114 @@ BET_BEHAVIOR = {
             "winning": ["Point"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
     },
-    # Place Bet
-    "Place": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": "Place Odds",
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": "Place Odds",
-        },
-    },
-    # Place Odds
-    "Place Odds": {
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,
-        },
-        "point": {
-            "can_bet": True,  # Allow Place Odds bets during the point phase
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-            "linked_bet": None,
-        },
-    },
-    # Come Bet
     "Come": {
+        "is_contract_bet": True,
+        "linked_bet": "Come Odds",
+        "valid_phases": ["point"],
         "come-out": {
-            "can_bet": False,  # Come bets cannot be placed during the come-out phase
+            "can_bet": False,
             "can_remove": False,
             "can_turn_on": "Always On",
             "winning": [7, 11],
             "losing": [2, 3, 12],
-            "other_action": "Moves to Number",
-            "linked_bet": "Come Odds",
+            "other_action": "No Change",
         },
         "point": {
-            "can_bet": True,  # Come bets can be placed during the point phase
+            "can_bet": True, 
             "can_remove": False,
             "can_turn_on": "Always On",
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": "Come Odds",
         },
     },
-    # Come Odds Bet
     "Come Odds": {
+        "is_contract_bet": False,
+        "linked_bet": None,
+        "valid_phases": ["point"],
         "come-out": {
-            "can_bet": False,  # Come Odds bets cannot be placed during the come-out phase
-            "can_remove": False,
+            "can_bet": False,
+            "can_remove": True,
             "can_turn_on": "Always On",
             "winning": None,
             "losing": None,
             "other_action": None,
-            "linked_bet": None,
         },
         "point": {
-            "can_bet": True,  # Come Odds bets can be placed during the point phase
+            "can_bet": True,
             "can_remove": True,
             "can_turn_on": "Always On",
             "winning": ["Number"],
             "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
     },
-    # Field Bet
-    "Field": {
+    "Place": {
+        "is_contract_bet": False, 
+        "linked_bet": "Place Odds",
+        "valid_phases": ["point"],
         "come-out": {
-            "can_bet": True,
+            "can_bet": False,
             "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
-            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "can_turn_on": True,
+            "winning": ["Number"],
+            "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
         "point": {
             "can_bet": True,
             "can_remove": True,
             "can_turn_on": "Always On",
-            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
-            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "winning": ["Number"],
+            "losing": [7],
             "other_action": "No Change",
-            "linked_bet": None,
         },
     },
+    "Place Odds": {
+        "is_contract_bet": False,
+        "linked_bet": None,
+        "valid_phases": ["point"],
+        "come-out": {
+            "can_bet": False,
+            "can_remove": True,
+            "can_turn_on": True,
+            "winning": ["Number"],
+            "losing": [7],
+            "other_action": "No Change",
+        },
+        "point": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": ["Number"],
+            "losing": [7],
+            "other_action": "No Change",
+        },
+    },
+    "Field": {
+        "is_contract_bet": True,
+        "linked_bet": None,
+        "valid_phases": ["come-out", "point"],
+        "come-out": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],
+            "losing": [5, 6, 7, 8],
+            "other_action": "No Change",
+        },
+        "point": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],
+            "losing": [5, 6, 7, 8],
+            "other_action": "No Change",
+        },
+    },
+    # Add similar rules for other bet types...
 }
 
 # ==================================================
@@ -160,11 +162,11 @@ BET_BEHAVIOR = {
 BET_PAYOUT = {
     "Pass Line": {"payout_ratio": (1, 1), "vig": False},
     "Pass Line Odds": {"payout_ratio": "True Odds", "vig": False},
-    "Place": {"payout_ratio": "House Odds", "vig": False},
-    "Place Odds": {"payout_ratio": "True Odds", "vig": False},
     "Come": {"payout_ratio": (1, 1), "vig": False},
     "Come Odds": {"payout_ratio": "True Odds", "vig": False},
-    "Field": {"payout_ratio": "Field Odds", "vig": False},  # Add Field bet payout
+    "Place": {"payout_ratio": "House Odds", "vig": False},
+    "Place Odds": {"payout_ratio": "True Odds", "vig": False},
+    "Field": {"payout_ratio": "Field Odds", "vig": False},
 }
 
 # ==================================================

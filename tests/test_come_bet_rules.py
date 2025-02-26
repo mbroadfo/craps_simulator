@@ -11,18 +11,18 @@ class TestComeBetRules(unittest.TestCase):
     def test_come_bet_resolution(self):
         """Test Come bet resolution during the point phase."""
         # Place a Come bet
-        come_bet = self.common_setup.place_bet("Come", 100)
+        come_bet = self.common_setup.place_bet("Come", 100, phase="point")
 
-        # Simulate a come-out roll of 6 to move the Come bet to number 6
+        # Simulate a roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "come-out")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Check that the Come bet has moved to number 6
         self.assertEqual(come_bet.number, 6, "Come bet should move to number 6")
 
         # Simulate a point roll of 6 (win)
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "point")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Check that the Come bet is resolved as won
         self.assertEqual(come_bet.status, "won", "Come bet should win on 6")
@@ -30,18 +30,18 @@ class TestComeBetRules(unittest.TestCase):
     def test_come_odds_bet_resolution(self):
         """Test Come Odds bet resolution after the Come bet has moved to a number."""
         # Place a Come bet
-        come_bet = self.common_setup.place_bet("Come", 100)
+        come_bet = self.common_setup.place_bet("Come", 100, phase="point")
 
-        # Simulate a come-out roll of 6 to move the Come bet to number 6
+        # Simulate a roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "come-out")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Place a Come Odds bet linked to the Come bet
         come_odds_bet = self.common_setup.place_bet("Come Odds", 100)
 
         # Simulate a point roll of 6 (win)
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "point")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Check that the Come Odds bet is resolved as won
         self.assertEqual(come_odds_bet.status, "won", "Come Odds bet should win on 6")
@@ -58,11 +58,11 @@ class TestComeBetRules(unittest.TestCase):
     def test_come_odds_bet_can_be_placed_after_come_bet_moves(self):
         """Test that Come Odds bets can be placed after the Come bet moves to a number."""
         # Place a Come bet
-        come_bet = self.common_setup.place_bet("Come", 100)
+        come_bet = self.common_setup.place_bet("Come", 100, phase="point")
 
-        # Simulate a come-out roll of 6 to move the Come bet to number 6
+        # Simulate a roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.common_setup.simulate_roll(dice_outcome, "come-out")
+        self.common_setup.simulate_roll(dice_outcome, phase="point")
 
         # Place a Come Odds bet after the Come bet has moved to a number
         come_odds_bet = self.common_setup.place_bet("Come Odds", 100)

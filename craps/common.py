@@ -1,13 +1,14 @@
 # File: .\craps\common.py
 
+from typing import Optional
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
 from craps.player import Player
 from craps.dice import Dice
-from craps.statistics import Statistics  # Import the Statistics class
-
+from craps.statistics import Statistics
+from craps.bet import Bet
 class CommonTableSetup:
     """Common setup for all craps tests."""
 
@@ -38,7 +39,8 @@ class CommonTableSetup:
         # Initialize dice (optional, for testing specific rolls)
         self.dice = Dice()
 
-    def place_bet(self, bet_type, amount, phase="come-out", number=None):
+
+    def place_bet(self, bet_type: str, amount: int, phase="come-out", number: Optional[int] = None) -> Bet:
         """
         Place a bet on the table for the player.
 
