@@ -6,7 +6,7 @@ from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
-from craps.rules_engine import RulesEngine  # Import the RulesEngine
+from craps.rules_engine import RulesEngine
 import os
 
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None, play_by_play=None):
@@ -36,8 +36,6 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice, play_by_play=play_by_play)
         for i, strategy in enumerate(strategies)
     ]
-    game_state.set_players(players)
-    stats.initialize_player_stats(players)
 
     # Initialize bankroll history with the starting bankroll for each player
     stats.initialize_bankroll_history(players)
@@ -49,7 +47,6 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
         shooter = players[player_index]
-        game_state.set_shooter(shooter, shooter_num)
         stats.set_shooter(shooter, shooter_num)
 
         while True:

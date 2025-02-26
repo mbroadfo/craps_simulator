@@ -7,7 +7,7 @@ from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
 
 class Table:
-    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine):
+    def __init__(self, house_rules, play_by_play, rules_engine):
         """
         Initialize the table.
 
@@ -20,6 +20,20 @@ class Table:
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine
+
+    def reactivate_inactive_bets(self):
+        """
+        Reactivate inactive Place bets when the point is set.
+        """
+        reactivated_bets = []
+        for bet in self.bets:
+            if bet.bet_type.startswith("Place") and bet.status == "inactive":
+                bet.status = "active"
+                reactivated_bets.append(f"{bet.owner.name}'s {bet.bet_type}")
+
+        if reactivated_bets:
+            message = f"{', '.join(reactivated_bets)} are now ON."
+            self.play_by_play.write(message)
 
     def place_bet(self, bet: Bet, phase: str) -> bool:
         """
@@ -41,15 +55,6 @@ class Table:
         self.play_by_play.write(message)
         return True
 
-    def has_bet(self, bet: Bet) -> bool:
-        """
-        Check if a specific bet exists on the table.
-
-        :param bet: The bet to check for.
-        :return: True if the bet exists on the table, False otherwise.
-        """
-        return bet in self.bets
-
     def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.
@@ -59,25 +64,14 @@ class Table:
         :param point: The current point number (if in point phase).
         """
         for bet in self.bets:
-            bet.resolve(self.rules_engine, dice_outcome, phase, point)  # Pass RulesEngine to resolve
+            bet.resolve(self.rules_engine, dice_outcome, phase, point)
             message = f"Bet resolved: {bet} (Status: {bet.status})"
             self.play_by_play.write(message)
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
         Remove all resolved bets (won or lost) from the table and return them.
-        Also removes any linked odds bets.
         """
-        resolved_bets = []
-        for bet in self.bets:
-            if bet.is_resolved():
-                resolved_bets.append(bet)
-                # Also remove any linked odds bets
-                if bet.parent_bet is not None:  # Check if the bet is an odds bet
-                    resolved_bets.extend(
-                        b for b in self.bets 
-                        if b.parent_bet == bet.parent_bet
-                    )
-                
-        self.bets = [b for b in self.bets if b not in resolved_bets]
+        resolved_bets = [bet for bet in self.bets if bet.is_resolved()]
+        self.bets = [bet for bet in self.bets if not bet.is_resolved()]
         return resolved_bets

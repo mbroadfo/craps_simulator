@@ -141,6 +141,13 @@ class RulesEngine:
         total = sum(dice_outcome)
         behavior = BET_BEHAVIOR[bet.bet_type][phase]
 
+        # Handle Field bet payouts dynamically
+        if bet.bet_type == "Field":
+            if total in ODDS_PAYOUT["Field Odds"]:
+                bet.payout_ratio = ODDS_PAYOUT["Field Odds"][total]  # Set payout ratio for 2 or 12
+            else:
+                bet.payout_ratio = (1, 1)  # Default payout ratio for other winning numbers
+
         # Check if the bet wins
         if behavior["winning"] is not None:
             if isinstance(behavior["winning"], list) and "Number" in behavior["winning"]:
@@ -194,6 +201,10 @@ class RulesEngine:
             if number is None:
                 raise ValueError(f"Number must be provided for House Odds bets.")
             return ODDS_PAYOUT["House Odds"][number]
+        elif payout_info["payout_ratio"] == "Field Odds":
+            if number is None:
+                return (1, 1)  # Default payout for Field bet
+            return ODDS_PAYOUT["Field Odds"].get(number, (1, 1))  # Use special payouts for 2 and 12
         else:
             return payout_info["payout_ratio"]
 

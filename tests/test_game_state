@@ -1,25 +1,113 @@
 import unittest
 from craps.game_state import GameState
+from craps.statistics import Statistics
+from craps.play_by_play import PlayByPlay
+from craps.table import Table
+from craps.rules_engine import RulesEngine
+from craps.house_rules import HouseRules
 
 class TestGameState(unittest.TestCase):
-    def test_game_state(self):
-        game_state = GameState()
-        self.assertEqual(game_state.phase, "come-out")
-        self.assertIsNone(game_state.point)
+    def setUp(self):
+        """Initialize the game state for testing."""
+        self.stats = Statistics(table_minimum=10, num_shooters=10, num_players=1)
+        self.play_by_play = PlayByPlay()
+        self.rules_engine = RulesEngine()
 
-        # Test come-out roll
-        game_state.update_state([3, 4])  # Total = 7
-        self.assertEqual(game_state.phase, "come-out")
-        self.assertIsNone(game_state.point)
+        # Initialize house rules with default values
+        self.house_rules = HouseRules({
+            "table_minimum": 10,
+            "table_maximum": 5000,
+            "field_bet_payout_2": (2, 1),
+            "field_bet_payout_12": (3, 1),
+        })
 
-        game_state.update_state([2, 2])  # Total = 4
-        self.assertEqual(game_state.phase, "point")
-        self.assertEqual(game_state.point, 4)
+        # Initialize the table with valid house rules
+        self.table = Table(house_rules=self.house_rules, play_by_play=self.play_by_play, rules_engine=self.rules_engine)
 
-        # Test point phase
-        game_state.update_state([2, 2])  # Total = 4 (hits point)
-        self.assertEqual(game_state.phase, "come-out")
-        self.assertIsNone(game_state.point)
+        # Initialize the game state
+        self.game_state = GameState(self.stats, self.play_by_play)
+        self.game_state.set_table(self.table)
+
+    def test_initial_state(self):
+        """Test the initial state of the game."""
+        self.assertEqual(self.game_state.phase, "come-out")
+        self.assertIsNone(self.game_state.point)
+        self.assertEqual(self.game_state.puck.position, "Off")
+
+    def test_come_out_phase_win(self):
+        """Test come-out phase with a winning roll (7 or 11)."""
+        # Test winning roll: 7
+        self.game_state.update_state([3, 4])
+        self.assertEqual(self.game_state.phase, "come-out")
+        self.assertIsNone(self.game_state.point)
+        self.assertEqual(self.game_state.puck.position, "Off")
+
+        # Test winning roll: 11
+        self.game_state.update_state([5, 6])
+        self.assertEqual(self.game_state.phase, "come-out")
+        self.assertIsNone(self.game_state.point)
+        self.assertEqual(self.game_state.puck.position, "Off")
+
+    def test_come_out_phase_lose(self):
+        """Test come-out phase with a losing roll (2, 3, or 12)."""
+        # Test losing roll: 2
+        self.game_state.update_state([1, 1])
+        self.assertEqual(self.game_state.phase, "come-out")
+        self.assertIsNone(self.game_state.point)
+        self.assertEqual(self.game_state.puck.position, "Off")
+
+        # Test losing roll: 12
+        self.game_state.update_state([6, 6])
+        self.assertEqual(self.game_state.phase, "come-out")
+        self.assertIsNone(self.game_state.point)
+        self.assertEqual(self.game_state.puck.position, "Off")
+
+    def test_come_out_phase_set_point(self):
+        """Test come-out phase with a point number roll (4, 5, 6, 8, 9, 10)."""
+        # Test point number: 6
+        self.game_state.update_state([3, 3])
+        self.assertEqual(self.game_state.phase, "point")
+        self.assertEqual(self.game_state.point, 6)
+        self.assertEqual(self.game_state.puck.position, "On")
+
+    def test_point_phase_win(self):
+        """Test point phase with a winning roll (point number)."""
+        # Set the point to 6
+        self.game_state.update_state([3, 3])
+        self.assertEqual(self.game_state.phase, "point")
+        self.assertEqual(self.game_state.point, 6)
+
+        # Roll the point number: 6
+        self.game_state.update_state([3, 3])
+        self.assertEqual(self.game_state.phase, "come-out")
+        self.assertIsNone(self.game_state.point)
+        self.assertEqual(self.game_state.puck.position, "Off")
+
+    def test_point_phase_lose(self):
+        """Test point phase with a losing roll (7)."""
+        # Set the point to 6
+        self.game_state.update_state([3, 3])
+        self.assertEqual(self.game_state.phase, "point")
+        self.assertEqual(self.game_state.point, 6)
+
+        # Roll a 7
+        self.game_state.update_state([3, 4])
+        self.assertEqual(self.game_state.phase, "come-out")
+        self.assertIsNone(self.game_state.point)
+        self.assertEqual(self.game_state.puck.position, "Off")
+
+    def test_point_phase_no_change(self):
+        """Test point phase with a non-resolving roll (not point or 7)."""
+        # Set the point to 6
+        self.game_state.update_state([3, 3])
+        self.assertEqual(self.game_state.phase, "point")
+        self.assertEqual(self.game_state.point, 6)
+
+        # Roll a non-resolving number: 8
+        self.game_state.update_state([4, 4])
+        self.assertEqual(self.game_state.phase, "point")
+        self.assertEqual(self.game_state.point, 6)
+        self.assertEqual(self.game_state.puck.position, "On")
 
 if __name__ == "__main__":
     unittest.main()

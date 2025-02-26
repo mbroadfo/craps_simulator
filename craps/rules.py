@@ -164,7 +164,7 @@ BET_PAYOUT = {
     "Place Odds": {"payout_ratio": "True Odds", "vig": False},
     "Come": {"payout_ratio": (1, 1), "vig": False},
     "Come Odds": {"payout_ratio": "True Odds", "vig": False},
-    "Field": {"payout_ratio": (1, 1), "vig": False},  # Add Field bet payout
+    "Field": {"payout_ratio": "Field Odds", "vig": False},  # Add Field bet payout
 }
 
 # ==================================================
@@ -188,4 +188,9 @@ ODDS_PAYOUT = {
         9: (7, 5),
         10: (9, 5),
     },
+    "Field Odds": {
+        2: (2, 1),  # 2:1 payout for 2
+        12: (3, 1),  # 3:1 payout for 12
+        # Other winning numbers (3, 4, 9, 10, 11) default to 1:1
+    }
 }

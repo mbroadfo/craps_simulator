@@ -264,45 +264,87 @@ class PassLineStrategy:
             return BetFactory.create_pass_line_bet(self.min_bet, player.name)
         return None  # No bet to place
 
-# File: .\craps\bet_factory.py
+# File: .\craps\common.py
 
-# File: .\craps\bet_factory.py
+# File: .\craps\common.py
 
-from typing import Optional
-from craps.bet import Bet
+from craps.house_rules import HouseRules
+from craps.table import Table
+from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
+from craps.player import Player
+from craps.dice import Dice
+from craps.statistics import Statistics  # Import the Statistics class
 
-class BetFactory:
-    @staticmethod
-    def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
+class CommonTableSetup:
+    """Common setup for all craps tests."""
+
+    def __init__(self):
+        """Initialize the table, players, and other components for testing."""
+        # Initialize house rules
+        self.house_rules_config = {
+            "field_bet_payout_2": (2, 1),  # 2:1 payout for 2
+            "field_bet_payout_12": (3, 1),  # 3:1 payout for 12
+            "table_minimum": 10,  # Minimum bet amount
+            "table_maximum": 5000,  # Maximum bet amount
+        }
+        self.house_rules = HouseRules(self.house_rules_config)
+
+        # Initialize play-by-play and rules engine
+        self.play_by_play = PlayByPlay()
+        self.rules_engine = RulesEngine()
+
+        # Initialize the table
+        self.table = Table(self.house_rules, self.play_by_play, self.rules_engine)
+
+        # Initialize a player
+        self.player_name = "Alice"
+        self.initial_balance = 1000
+        self.player = Player(self.player_name, self.initial_balance)
+
+        # Initialize statistics
+        self.stats = Statistics(self.house_rules.table_minimum, num_shooters=10, num_players=1)
+
+        # Initialize dice (optional, for testing specific rolls)
+        self.dice = Dice()
+
+    def place_bet(self, bet_type, amount, phase="come-out", number=None):
         """
-        Create a bet based on the bet type.
+        Place a bet on the table for the player.
 
-        :param bet_type: The type of bet (e.g., "Pass Line", "Place").
+        :param bet_type: The type of bet (e.g., "Field", "Pass Line").
         :param amount: The amount of the bet.
-        :param owner: The player who placed the bet.
+        :param phase: The current game phase ("come-out" or "point").
         :param number: The number associated with the bet (e.g., 6 for Place 6).
-        :param parent_bet: The parent bet for odds bets.
-        :return: A Bet instance.
+        :return: The created bet.
         """
-        # Get the payout ratio and other properties from the RulesEngine
-        payout_ratio = RulesEngine.get_payout_ratio(bet_type, number)
-        vig = RulesEngine.has_vig(bet_type)
-        valid_phases = ["come-out", "point"]  # Default valid phases
+        if bet_type == "Come Odds":
+            # Ensure the Come bet has a number before placing the Come Odds bet
+            come_bet = next((bet for bet in self.table.bets if bet.bet_type == "Come" and bet.owner == self.player), None)
+            if come_bet is None or come_bet.number is None:
+                raise ValueError("Cannot place Come Odds bet without an active Come bet with a number.")
+            number = come_bet.number  # Use the number from the Come bet
 
-        # Create the bet
-        bet = Bet(
-            bet_type=bet_type,
-            amount=amount,
-            owner=owner,
-            payout_ratio=payout_ratio,
-            vig=vig,
-            valid_phases=valid_phases,
-            number=number,
-            parent_bet=parent_bet
-        )
-
+        bet = self.rules_engine.create_bet(bet_type, amount, self.player, number=number)
+        self.table.place_bet(bet, phase)
         return bet
+
+    def simulate_roll(self, dice_outcome, phase="come-out", point=None):
+        """
+        Simulate a dice roll and resolve bets on the table.
+
+        :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
+        :param phase: The current game phase ("come-out" or "point").
+        :param point: The current point number (if in point phase).
+        :return: A list of resolved bets.
+        """
+        self.table.check_bets(dice_outcome, phase, point)
+        return self.table.clear_resolved_bets()
+
+    def reset_table(self):
+        """Reset the table and player for a new test."""
+        self.table.bets = []  # Clear all bets
+        self.player.balance = self.initial_balance  # Reset player balance
 
 # File: .\craps\dice.py
 
@@ -355,12 +397,9 @@ class Dice:
 
 # File: .\craps\game_state.py
 
-# File: .\craps\game_state.py
-
-from typing import List, Optional
+from typing import List
 from craps.puck import Puck
 from colorama import Fore, Style
-from craps.play_by_play import PlayByPlay  # Import the PlayByPlay class
 
 class GameState:
     def __init__(self, stats, play_by_play=None):
@@ -373,40 +412,16 @@ class GameState:
         self.phase = "come-out"  # Current game phase ("come-out" or "point")
         self.point = None  # Current point number (if in point phase)
         self.puck = Puck()  # Puck to indicate the point
-        self.players = []  # List of players in the game (can be set later)
-        self.shooter = None  # Current shooter
         self.stats = stats  # Statistics object (required)
-        self.table = None  # Table object (can be set later)
         self.play_by_play = play_by_play  # Store the PlayByPlay instance
 
-    def set_players(self, players: List) -> None:
-        """
-        Set the list of players in the game.
-
-        :param players: The list of players.
-        """
-        self.players = players
-
-    def set_table(self, table) -> None:
+    def set_table(self, table):
         """
         Set the table object.
 
         :param table: The table object.
         """
         self.table = table
-
-    def set_shooter(self, shooter, shooter_num):
-        """
-        Set the current shooter and reset their statistics.
-
-        :param shooter: The current shooter.
-        :param shooter_num: The shooter's turn number.
-        """
-        self.shooter = shooter
-        self.shooter.reset_stats()
-        self.stats.set_shooter(shooter, shooter_num)
-        message = f"\n{Fore.CYAN}New Shooter: {shooter.name}{Fore.YELLOW} Puck is {self.puck.position.upper()}{Style.RESET_ALL}"
-        self.play_by_play.write(message)
 
     def update_state(self, dice_outcome: List[int]) -> str:
         """
@@ -430,45 +445,29 @@ class GameState:
                 self.puck.set_point(total)
                 self.point = total
                 message = f"{Fore.YELLOW}Point Set: {total}. Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
-                # Reactivate inactive Place bets
-                reactivated_bets = []
-                for player in self.players:
-                    for bet in self.table.bets:
-                        if bet.owner == player and bet.bet_type.startswith("Place") and bet.status == "inactive":
-                            bet.status = "active"
-                            reactivated_bets.append(f"{player.name}'s {bet.bet_type}")
-                if reactivated_bets:
-                    reactivated_message = f"{', '.join(reactivated_bets)} are now ON."
-                    self.play_by_play.write(reactivated_message)  # Write the message to the play-by-play file
+                
+                # Notify the table to reactivate inactive bets
+                if self.table:
+                    self.table.reactivate_inactive_bets()
         else:  # Point phase
             if total == self.puck.point:
-                self.shooter.points_rolled += 1  # Increment points rolled
+                self.stats.record_point_number_roll()  # Record point number roll
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
                 message = f"{Fore.GREEN}✅ Point Hit: {total}. Pass Line bets win!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total == 7:
-                self.shooter.rolls_before_7_out = self.shooter.current_roll_count  # Record rolls before 7-out
+                self.stats.record_seven_out()  # Record 7-out
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
-                message = f"{Fore.RED}❌ 7-Out: Pass Line bets lose!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
-            elif total in [4, 5, 6, 8, 9, 10]:  # Point number rolled during point phase
-                self.stats.record_point_number_roll()  # Record the roll number
+                message = f"❌ 7-Out: Pass Line bets lose! Puck is {self.puck.position.upper()}."
 
         # Write the message to the play-by-play file
-        self.play_by_play.write(message)
+        if self.play_by_play:
+            self.play_by_play.write(message)
 
         return message
-
-    def get_puck_state(self):
-        if self.puck.position == "On":
-            return f"Puck is ON (Point: {self.puck.point})"
-        else:
-            return "Puck is OFF (Come-out phase)"
-
-    def __str__(self):
-        return f"Game State: {self.get_puck_state()}"
 
 # File: .\craps\house_rules.py
 
@@ -590,7 +589,7 @@ from colorama import Fore, Style
 from typing import List, Union, Optional
 from craps.bet import Bet
 from craps.table import Table
-from craps.bet_factory import BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class Player:
     def __init__(self, name: str, initial_balance: int = 500, betting_strategy=None, play_by_play=None):
@@ -605,7 +604,8 @@ class Player:
         self.name = name
         self.balance = initial_balance
         self.betting_strategy = betting_strategy
-        self.play_by_play = play_by_play 
+        self.play_by_play = play_by_play
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
         """
@@ -987,6 +987,27 @@ BET_BEHAVIOR = {
             "linked_bet": None,
         },
     },
+    # Field Bet
+    "Field": {
+        "come-out": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
+            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "other_action": "No Change",
+            "linked_bet": None,
+        },
+        "point": {
+            "can_bet": True,
+            "can_remove": True,
+            "can_turn_on": "Always On",
+            "winning": [2, 3, 4, 9, 10, 11, 12],  # Winning numbers for Field bet
+            "losing": [5, 6, 7, 8],  # Losing numbers for Field bet
+            "other_action": "No Change",
+            "linked_bet": None,
+        },
+    },
 }
 
 # ==================================================
@@ -1000,6 +1021,7 @@ BET_PAYOUT = {
     "Place Odds": {"payout_ratio": "True Odds", "vig": False},
     "Come": {"payout_ratio": (1, 1), "vig": False},
     "Come Odds": {"payout_ratio": "True Odds", "vig": False},
+    "Field": {"payout_ratio": "Field Odds", "vig": False},  # Add Field bet payout
 }
 
 # ==================================================
@@ -1023,6 +1045,11 @@ ODDS_PAYOUT = {
         9: (7, 5),
         10: (9, 5),
     },
+    "Field Odds": {
+        2: (2, 1),  # 2:1 payout for 2
+        12: (3, 1),  # 3:1 payout for 12
+        # Other winning numbers (3, 4, 9, 10, 11) default to 1:1
+    }
 }
 
 # File: .\craps\rules_engine.py
@@ -1031,12 +1058,67 @@ ODDS_PAYOUT = {
 
 from typing import List, Optional, Dict, Any, Tuple
 from craps.rules import BET_BEHAVIOR, BET_PAYOUT, ODDS_PAYOUT
+from craps.bet import Bet  # Import the Bet class
 
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
     @staticmethod
-    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional['Bet'] = None) -> bool:
+    def get_minimum_bet(number: Optional[int] = None) -> int:
+        """
+        Get the minimum bet amount for a specific bet type or number.
+
+        :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :return: The minimum bet amount.
+        """
+        # Default minimum bet for most bets
+        default_min_bet = 10  # Replace with the actual default minimum bet from house rules
+
+        # Adjust minimum bet for specific bet types or numbers
+        if number is not None:
+            # For Place bets, the minimum bet may vary based on the number
+            if number in [4, 5, 6, 8, 9, 10]:
+                return default_min_bet  # Replace with actual logic if needed
+            else:
+                raise ValueError(f"Invalid number for minimum bet: {number}")
+
+        return default_min_bet
+
+    @staticmethod
+    def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
+        """
+        Create a bet based on the bet type.
+
+        :param bet_type: The type of bet (e.g., "Pass Line", "Place").
+        :param amount: The amount of the bet.
+        :param owner: The player who placed the bet.
+        :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :param parent_bet: The parent bet for odds bets.
+        :return: A Bet instance.
+        """
+        # Get the payout ratio and other properties from the RulesEngine
+        payout_ratio = RulesEngine.get_payout_ratio(bet_type, number)
+        vig = RulesEngine.has_vig(bet_type)
+        valid_phases = ["come-out", "point"]  # Default valid phases
+
+        # Create the bet
+        bet = Bet(
+            bet_type=bet_type,
+            amount=amount,
+            owner=owner,
+            payout_ratio=payout_ratio,
+            vig=vig,
+            valid_phases=valid_phases,
+            number=number,
+            parent_bet=parent_bet
+        )
+
+        return bet
+
+    # ... (rest of the RulesEngine class remains unchanged)
+
+    @staticmethod
+    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
         """
         Determine if a bet of the given type can be made during the current phase.
         
@@ -1052,8 +1134,6 @@ class RulesEngine:
         if bet_type.endswith("Odds"):
             if parent_bet is None:
                 return False  # Parent bet is required for odds bets
-            if not parent_bet.status == "active":
-                return False  # Parent bet must be active
             if bet_type == "Come Odds" and parent_bet.number is None:
                 return False  # Come bet must have a number set
                 
@@ -1101,7 +1181,7 @@ class RulesEngine:
         return BET_BEHAVIOR[bet_type][phase]["can_turn_on"]
 
     @staticmethod
-    def resolve_bet(bet: 'Bet', dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
+    def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
         """
         Resolve a bet based on the dice outcome, phase, and point.
 
@@ -1116,6 +1196,13 @@ class RulesEngine:
 
         total = sum(dice_outcome)
         behavior = BET_BEHAVIOR[bet.bet_type][phase]
+
+        # Handle Field bet payouts dynamically
+        if bet.bet_type == "Field":
+            if total in ODDS_PAYOUT["Field Odds"]:
+                bet.payout_ratio = ODDS_PAYOUT["Field Odds"][total]  # Set payout ratio for 2 or 12
+            else:
+                bet.payout_ratio = (1, 1)  # Default payout ratio for other winning numbers
 
         # Check if the bet wins
         if behavior["winning"] is not None:
@@ -1170,6 +1257,10 @@ class RulesEngine:
             if number is None:
                 raise ValueError(f"Number must be provided for House Odds bets.")
             return ODDS_PAYOUT["House Odds"][number]
+        elif payout_info["payout_ratio"] == "Field Odds":
+            if number is None:
+                return (1, 1)  # Default payout for Field bet
+            return ODDS_PAYOUT["Field Odds"].get(number, (1, 1))  # Use special payouts for 2 and 12
         else:
             return payout_info["payout_ratio"]
 
@@ -1210,6 +1301,7 @@ from craps.table import Table
 from craps.roll_history_manager import RollHistoryManager
 from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
+from craps.rules_engine import RulesEngine
 
 class InitializeSession:
     def __init__(self, session_mode, house_rules_config):
@@ -1224,6 +1316,7 @@ class InitializeSession:
         self.roll_history_manager = RollHistoryManager()
         self.log_manager = LogManager()
         self.play_by_play = PlayByPlay()
+        self.rules_engine = RulesEngine()
 
     def prepare_session(self):
         """Prepare the session based on the session mode."""
@@ -1236,8 +1329,8 @@ class InitializeSession:
         # Initialize house rules
         house_rules = HouseRules(self.house_rules_config)
 
-        # Create the Table object
-        table = Table(house_rules, self.play_by_play)
+        # Create the Table object with the RulesEngine
+        table = Table(house_rules, self.play_by_play, self.rules_engine)
 
         # Delete the existing log file before starting the session
         self.log_manager.delete_log_file()
@@ -1318,6 +1411,7 @@ from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
+from craps.rules_engine import RulesEngine
 import os
 
 def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None, play_by_play=None):
@@ -1333,7 +1427,8 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         dice = Dice()  # Use random rolls
 
     # Initialize components
-    table = Table(house_rules, play_by_play)
+    rules_engine = RulesEngine()
+    table = Table(house_rules, play_by_play, rules_engine)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
     game_state = GameState(stats, play_by_play=play_by_play)
     game_state.set_table(table)
@@ -1346,8 +1441,6 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
         Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice, play_by_play=play_by_play)
         for i, strategy in enumerate(strategies)
     ]
-    game_state.set_players(players)
-    stats.initialize_player_stats(players)
 
     # Initialize bankroll history with the starting bankroll for each player
     stats.initialize_bankroll_history(players)
@@ -1359,7 +1452,6 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
         shooter = players[player_index]
-        game_state.set_shooter(shooter, shooter_num)
         stats.set_shooter(shooter, shooter_num)
 
         while True:
@@ -1654,7 +1746,7 @@ from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
 
 class Table:
-    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine):
+    def __init__(self, house_rules, play_by_play, rules_engine):
         """
         Initialize the table.
 
@@ -1667,6 +1759,20 @@ class Table:
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine
+
+    def reactivate_inactive_bets(self):
+        """
+        Reactivate inactive Place bets when the point is set.
+        """
+        reactivated_bets = []
+        for bet in self.bets:
+            if bet.bet_type.startswith("Place") and bet.status == "inactive":
+                bet.status = "active"
+                reactivated_bets.append(f"{bet.owner.name}'s {bet.bet_type}")
+
+        if reactivated_bets:
+            message = f"{', '.join(reactivated_bets)} are now ON."
+            self.play_by_play.write(message)
 
     def place_bet(self, bet: Bet, phase: str) -> bool:
         """
@@ -1697,27 +1803,16 @@ class Table:
         :param point: The current point number (if in point phase).
         """
         for bet in self.bets:
-            bet.resolve(self.rules_engine, dice_outcome, phase, point)  # Pass RulesEngine to resolve
+            bet.resolve(self.rules_engine, dice_outcome, phase, point)
             message = f"Bet resolved: {bet} (Status: {bet.status})"
             self.play_by_play.write(message)
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
         Remove all resolved bets (won or lost) from the table and return them.
-        Also removes any linked odds bets.
         """
-        resolved_bets = []
-        for bet in self.bets:
-            if bet.is_resolved():
-                resolved_bets.append(bet)
-                # Also remove any linked odds bets
-                if bet.parent_bet is not None:  # Check if the bet is an odds bet
-                    resolved_bets.extend(
-                        b for b in self.bets 
-                        if b.parent_bet == bet.parent_bet
-                    )
-                
-        self.bets = [b for b in self.bets if b not in resolved_bets]
+        resolved_bets = [bet for bet in self.bets if bet.is_resolved()]
+        self.bets = [bet for bet in self.bets if not bet.is_resolved()]
         return resolved_bets
 
 # File: .\craps\view_log.py
@@ -1879,9 +1974,9 @@ class Visualizer:
 
 # File: .\craps\strategies\field_strategy.py
 
-# File: .\craps\strategies\field_bet.py
+# File: .\craps\strategies\field_strategy.py
 
-from craps.bet_factory import BetFactory  # Import the BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class FieldBetStrategy:
     """Betting strategy for Field bets."""
@@ -1892,6 +1987,7 @@ class FieldBetStrategy:
         :param min_bet: The minimum bet amount for the table.
         """
         self.min_bet = min_bet
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place a Field bet during the point roll if no active bet exists."""
@@ -1902,12 +1998,14 @@ class FieldBetStrategy:
             if player.has_active_bet(table, "Field"):
                 return None  # No new bet to place
 
-        # Use the BetFactory to create a Field bet
-        return BetFactory.create_field_bet(self.min_bet, player)
+        # Use RulesEngine to create a Field bet
+        return self.rules_engine.create_bet("Field", self.min_bet, player)
 
 # File: .\craps\strategies\free_odds_strategy.py
 
-from craps.bet_factory import BetFactory
+# File: .\craps\strategies\free_odds_strategy.py
+
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class FreeOddsStrategy:
     """Betting strategy for Free Odds on any active bet."""
@@ -1920,6 +2018,7 @@ class FreeOddsStrategy:
         """
         self.table = table
         self.odds_multiple = odds_multiple
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_odds_amount(self, original_bet_amount):
         """Calculate the odds amount based on the original bet amount and the selected multiple."""
@@ -1947,20 +2046,30 @@ class FreeOddsStrategy:
                 # Calculate the odds amount based on the original bet amount
                 odds_amount = self.get_odds_amount(active_bet.amount)
 
-                # Create a Free Odds bet
+                # Create a Free Odds bet using RulesEngine
                 if active_bet.bet_type == "Pass Line":
-                    bets.append(BetFactory.create_pass_line_odds_bet(odds_amount, player.name))
+                    bets.append(self.rules_engine.create_bet(
+                        "Pass Line Odds",
+                        odds_amount,
+                        player,
+                        parent_bet=active_bet
+                    ))
                 elif active_bet.bet_type == "Place":
-                    bets.append(BetFactory.create_place_odds_bet(odds_amount, player.name, active_bet.number))
+                    bets.append(self.rules_engine.create_bet(
+                        "Place Odds",
+                        odds_amount,
+                        player,
+                        number=active_bet.number,
+                        parent_bet=active_bet
+                    ))
 
         return bets if bets else None
 
 # File: .\craps\strategies\iron_cross_strategy.py
 
-# File: .\craps\strategies\iron_cross.py
+# File: .\craps\strategies\iron_cross_strategy.py
 
-from craps.bet_factory import BetFactory
-from craps.play_by_play import PlayByPlay
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class IronCrossStrategy:
     """Betting strategy for Iron Cross."""
@@ -1973,13 +2082,14 @@ class IronCrossStrategy:
         """
         self.table = table
         self.min_bet = min_bet
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place bets for the Iron Cross strategy."""
         if game_state.phase == "come-out":
             # Place a Pass Line bet during the come-out roll if no active bet exists
             if not any(bet.owner == player and bet.bet_type == "Pass Line" for bet in table.bets):
-                return BetFactory.create_pass_line_bet(self.min_bet, player)
+                return self.rules_engine.create_bet("Pass Line", self.min_bet, player)
         elif game_state.phase == "point":
             # Reactivate inactive Place bets
             for bet in table.bets:
@@ -2004,15 +2114,15 @@ class IronCrossStrategy:
                 )
             ]
 
-            # Use the BetFactory to create Place bets
+            # Use RulesEngine to create Place bets
             bets = []
             for number in numbers:
-                min_bet = self.table.get_minimum_bet(number)
-                bets.append(BetFactory.create_place_bet(min_bet, player, number))
+                min_bet = self.rules_engine.get_minimum_bet(number)  # Use RulesEngine to get minimum bet
+                bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists
             if not any(bet.owner == player and bet.bet_type == "Field" for bet in table.bets):
-                bets.append(BetFactory.create_field_bet(self.min_bet, player))
+                bets.append(self.rules_engine.create_bet("Field", self.min_bet, player))
 
             return bets if bets else None
 
@@ -2020,9 +2130,9 @@ class IronCrossStrategy:
 
 # File: .\craps\strategies\pass_line_odds_strategy.py
 
-# File: .\craps\strategies\pass_line_odds.py
+# File: .\craps\strategies\pass_line_odds_strategy.py
 
-from craps.bet_factory import BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class PassLineOddsStrategy:
     """Betting strategy for Pass Line with Odds bets."""
@@ -2035,6 +2145,7 @@ class PassLineOddsStrategy:
         """
         self.table = table
         self.odds_multiple = odds_multiple
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place a Pass Line or Pass Line Odds bet based on the game state."""
@@ -2046,8 +2157,8 @@ class PassLineOddsStrategy:
             if player.has_active_bet(table, "Pass Line"):
                 return None  # No new bet to place
 
-            # Use the BetFactory to create a Pass Line bet
-            return BetFactory.create_pass_line_bet(self.table.house_rules.table_minimum, player)
+            # Use RulesEngine to create a Pass Line bet
+            return self.rules_engine.create_bet("Pass Line", self.table.house_rules.table_minimum, player)
         
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
@@ -2062,25 +2173,28 @@ class PassLineOddsStrategy:
             if pass_line_bet is None:
                 return None  # No Pass Line bet found
 
-            # Use the BetFactory to create a Pass Line Odds bet linked to the Pass Line bet
-            return BetFactory.create_pass_line_odds_bet(
+            # Use RulesEngine to create a Pass Line Odds bet linked to the Pass Line bet
+            return self.rules_engine.create_bet(
+                "Pass Line Odds",
                 self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
                 player,  # Owner
-                pass_line_bet  # Parent Pass Line bet
+                number=game_state.point,  # Pass the current point number
+                parent_bet=pass_line_bet  # Parent Pass Line bet
             )
         
         return None  # No bet to place
 
 # File: .\craps\strategies\pass_line_strategy.py
 
-# File: .\craps\strategies\pass_line.py
+# File: .\craps\strategies\pass_line_strategy.py
 
-from craps.bet_factory import BetFactory  # Import the BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class PassLineStrategy:
     """Betting strategy for Pass Line bets."""
     def __init__(self, min_bet):
         self.min_bet = min_bet
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place a Pass Line bet during the come-out roll if no active bet exists."""
@@ -2089,15 +2203,15 @@ class PassLineStrategy:
             if player.has_active_bet(table, "Pass Line"):
                 return None  # No new bet to place
 
-            # Use the BetFactory to create a Pass Line bet
-            return BetFactory.create_pass_line_bet(self.min_bet, player)
+            # Use RulesEngine to create a Pass Line bet
+            return self.rules_engine.create_bet("Pass Line", self.min_bet, player)
         return None  # No bet to place
 
 # File: .\craps\strategies\place_strategy.py
 
-# File: .\craps\strategies\place_bet.py
+# File: .\craps\strategies\place_strategy.py
 
-from craps.bet_factory import BetFactory  # Import the BetFactory
+from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class PlaceBetStrategy:
     """Betting strategy for Place Bets."""
@@ -2110,6 +2224,7 @@ class PlaceBetStrategy:
         """
         self.table = table
         self.numbers_or_strategy = numbers_or_strategy
+        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place Place Bets based on the strategy and game state."""
@@ -2137,11 +2252,11 @@ class PlaceBetStrategy:
             )
         ]
 
-        # Use the BetFactory to create Place bets
+        # Use RulesEngine to create Place bets
         bets = []
         for number in numbers:
             min_bet = self.table.get_minimum_bet(number)
-            bets.append(BetFactory.create_place_bet(min_bet, player, number))
+            bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
         return bets if bets else None
 
@@ -2149,7 +2264,7 @@ class PlaceBetStrategy:
 
 # File: .\craps\strategies\three_point_molly_strategy.py
 
-from craps.bet_factory import BetFactory
+from craps.rules_engine import RulesEngine 
 
 class ThreePointMollyStrategy:
     """Betting strategy for the 3-Point Molly system."""
@@ -2164,6 +2279,7 @@ class ThreePointMollyStrategy:
         self.min_bet = min_bet
         self.odds_multiple = odds_multiple
         self.come_odds_working_on_come_out = come_odds_working_on_come_out
+        self.rules_engine = RulesEngine() 
 
     def get_bet(self, game_state, player, table):
         """
@@ -2179,13 +2295,21 @@ class ThreePointMollyStrategy:
         # Place a Pass Line bet if no active Pass Line bet exists (only during come-out phase)
         if game_state.phase == "come-out":
             if not any(bet.bet_type == "Pass Line" for bet in table.bets if bet.owner == player):
-                bets.append(BetFactory.create_pass_line_bet(self.min_bet, player))
+                bets.append(self.rules_engine.create_bet(
+                    "Pass Line",
+                    self.min_bet,
+                    player
+                ))
 
         # Place up to 3 Come bets if fewer than 3 active Come bets exist (only during point phase)
         if game_state.phase == "point":
             active_come_bets = [bet for bet in table.bets if bet.bet_type == "Come" and bet.owner == player]
             if len(active_come_bets) < 3:
-                bets.append(BetFactory.create_come_bet(self.min_bet, player, self.come_odds_working_on_come_out))
+                bets.append(self.rules_engine.create_bet(
+                    "Come",
+                    self.min_bet,
+                    player
+                ))
 
         # Place odds on active Pass Line and Come bets (only during point phase)
         if game_state.phase == "point":
@@ -2194,71 +2318,99 @@ class ThreePointMollyStrategy:
                     if bet.bet_type == "Pass Line" and bet.status == "active":
                         # Place Pass Line Odds
                         odds_amount = self.min_bet * self.odds_multiple
-                        bets.append(BetFactory.create_pass_line_odds_bet(odds_amount, player, game_state.point))
+                        bets.append(self.rules_engine.create_bet(
+                            "Pass Line Odds",
+                            odds_amount,
+                            player,
+                            number=game_state.point,  # Pass the current point number
+                            parent_bet=bet
+                        ))
                     elif bet.bet_type == "Come" and bet.status == "active" and bet.number is not None:
                         # Place Come Odds
                         odds_amount = self.min_bet * self.odds_multiple
-                        bets.append(BetFactory.create_come_odds_bet(odds_amount, player, bet.number))
+                        bets.append(self.rules_engine.create_bet(
+                            "Come Odds",
+                            odds_amount,
+                            player,
+                            number=bet.number,  # Pass the Come bet's number
+                            parent_bet=bet
+                        ))
 
         return bets if bets else None
 
 # File: .\tests\test_come_bet_rules.py
 
+# File: .\tests\test_come_bet_rules.py
+
 import unittest
-from craps.rules_engine import RulesEngine
-from craps.bets.come_bet import ComeBet
-from craps.bets.free_odds_bet import FreeOddsBet
+from craps.common import CommonTableSetup  # Import the common setup
 
 class TestComeBetRules(unittest.TestCase):
     def setUp(self):
-        """Initialize a Come bet, Come Odds bet, and the RulesEngine for testing."""
-        self.player_name = "Alice"
-        self.bet_amount = 100
-        self.come_bet = ComeBet(self.bet_amount, self.player_name)
-        self.come_odds_bet = FreeOddsBet("Come Odds", self.bet_amount, self.player_name, parent_bet=self.come_bet)
-        self.rules_engine = RulesEngine()
+        """Initialize the common table setup for testing."""
+        self.common_setup = CommonTableSetup()
 
     def test_come_bet_resolution(self):
         """Test Come bet resolution during the point phase."""
-        # Simulate a come-out roll of 6
-        dice_outcome = [3, 3]  # Total of 6
-        self.rules_engine.resolve_bet(self.come_bet, dice_outcome, "point", None)
-        self.assertEqual(self.come_bet.status, "active", "Come bet should remain active on 6")
-        self.assertEqual(self.come_bet.number, 6, "Come bet should move to number 6")
+        # Place a Come bet
+        come_bet = self.common_setup.place_bet("Come", 100)
 
-        # Simulate a point roll of 6
+        # Simulate a come-out roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.rules_engine.resolve_bet(self.come_bet, dice_outcome, "point", None)
-        self.assertEqual(self.come_bet.status, "won", "Come bet should win on 6")
+        self.common_setup.simulate_roll(dice_outcome, "come-out")
+
+        # Check that the Come bet has moved to number 6
+        self.assertEqual(come_bet.number, 6, "Come bet should move to number 6")
+
+        # Simulate a point roll of 6 (win)
+        dice_outcome = [3, 3]  # Total of 6
+        self.common_setup.simulate_roll(dice_outcome, "point")
+
+        # Check that the Come bet is resolved as won
+        self.assertEqual(come_bet.status, "won", "Come bet should win on 6")
 
     def test_come_odds_bet_resolution(self):
         """Test Come Odds bet resolution after the Come bet has moved to a number."""
+        # Place a Come bet
+        come_bet = self.common_setup.place_bet("Come", 100)
+
         # Simulate a come-out roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.rules_engine.resolve_bet(self.come_bet, dice_outcome, "point", None)
-        self.assertEqual(self.come_bet.number, 6, "Come bet should move to number 6")
+        self.common_setup.simulate_roll(dice_outcome, "come-out")
 
-        # Place a Come Odds bet on number 6
-        self.come_odds_bet.number = 6
+        # Place a Come Odds bet linked to the Come bet
+        come_odds_bet = self.common_setup.place_bet("Come Odds", 100)
 
-        # Simulate a point roll of 6
+        # Simulate a point roll of 6 (win)
         dice_outcome = [3, 3]  # Total of 6
-        self.rules_engine.resolve_bet(self.come_odds_bet, dice_outcome, "point", None)
-        self.assertEqual(self.come_odds_bet.status, "won", "Come Odds bet should win on 6")
+        self.common_setup.simulate_roll(dice_outcome, "point")
+
+        # Check that the Come Odds bet is resolved as won
+        self.assertEqual(come_odds_bet.status, "won", "Come Odds bet should win on 6")
 
     def test_come_odds_bet_cannot_be_placed_before_come_bet_moves(self):
         """Test that Come Odds bets cannot be placed before the Come bet moves to a number."""
-        self.assertFalse(self.rules_engine.can_make_bet("Come Odds", "come-out"), "Come Odds bets should not be allowed during the come-out phase")
+        # Place a Come bet
+        come_bet = self.common_setup.place_bet("Come", 100)
+
+        # Attempt to place a Come Odds bet before the Come bet moves to a number
+        with self.assertRaises(ValueError):
+            self.common_setup.place_bet("Come Odds", 100)
 
     def test_come_odds_bet_can_be_placed_after_come_bet_moves(self):
         """Test that Come Odds bets can be placed after the Come bet moves to a number."""
+        # Place a Come bet
+        come_bet = self.common_setup.place_bet("Come", 100)
+
         # Simulate a come-out roll of 6 to move the Come bet to number 6
         dice_outcome = [3, 3]  # Total of 6
-        self.rules_engine.resolve_bet(self.come_bet, dice_outcome, "point", None)
-        self.assertEqual(self.come_bet.number, 6, "Come bet should move to number 6")
+        self.common_setup.simulate_roll(dice_outcome, "come-out")
 
-        # Now, Come Odds bets should be allowed
-        self.assertTrue(self.rules_engine.can_make_bet("Come Odds", "point"), "Come Odds bets should be allowed during the point phase after the Come bet moves to a number")
+        # Place a Come Odds bet after the Come bet has moved to a number
+        come_odds_bet = self.common_setup.place_bet("Come Odds", 100)
+
+        # Check that the Come Odds bet is placed successfully
+        self.assertEqual(come_odds_bet.status, "active", "Come Odds bet should be active")
 
 if __name__ == "__main__":
     unittest.main()
@@ -2368,22 +2520,18 @@ if __name__ == "__main__":
 
 # File: .\tests\test_field_bet.py
 
+# File: .\tests\test_field_bet.py
+
 import unittest
-from craps.bets.field_bet import FieldBet
-from craps.player import Player
-from craps.table import Table
-from craps.house_rules import HouseRules
+from craps.common import CommonTableSetup  # Import the common setup
 
 class TestFieldBet(unittest.TestCase):
+    def setUp(self):
+        """Initialize the common table setup for testing."""
+        self.common_setup = CommonTableSetup()
+
     def test_field_bet_outcomes(self):
-        # Initialize house rules with custom payouts for 2 and 12
-        house_rules = HouseRules()
-        house_rules.set_field_bet_payouts((2, 1), (3, 1))  # 2:1 for 2, 3:1 for 12
-
-        # Initialize player and table
-        player = Player("Alice", 1000)
-        table = Table(house_rules)
-
+        """Test Field bet outcomes for all possible dice totals."""
         # Define all possible dice totals and their expected outcomes
         test_cases = [
             # (dice_total, expected_status, expected_payout)
@@ -2407,20 +2555,16 @@ class TestFieldBet(unittest.TestCase):
 
         # Test each dice total
         for dice_total, expected_status, expected_payout in test_cases:
-            # Create a new Field Bet for each test case
-            field_bet = FieldBet(10, player.name)
-            player.place_bet(field_bet, table)
+            # Place a Field bet
+            field_bet = self.common_setup.place_bet("Field", 10)
 
             # Simulate the dice roll
             dice_outcome = self._get_dice_outcome(dice_total)
-            field_bet.resolve(dice_outcome, "come-out", None)
-
-            # Resolve the bet and calculate the payout
-            player.resolve_bets(table, None, dice_outcome, "come-out", None)
+            resolved_bets = self.common_setup.simulate_roll(dice_outcome)
 
             # Get the actual status and payout
             actual_status = field_bet.status
-            actual_payout = field_bet.payout()
+            actual_payout = field_bet.payout() if field_bet.status == "won" else 0
 
             # Compare expected vs. actual
             status_match = actual_status == expected_status
@@ -2429,6 +2573,9 @@ class TestFieldBet(unittest.TestCase):
 
             # Print the results in a table format
             print(f"{dice_total:<12} {expected_status:<16} ${expected_payout:<15} {actual_status:<16} ${actual_payout:<15} {result}")
+
+            # Reset the table for the next test case
+            self.common_setup.reset_table()
 
     def _get_dice_outcome(self, total):
         """Helper method to generate a dice outcome for a given total."""

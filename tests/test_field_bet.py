@@ -1,19 +1,15 @@
+# File: .\tests\test_field_bet.py
+
 import unittest
-from craps.bets.field_bet import FieldBet
-from craps.player import Player
-from craps.table import Table
-from craps.house_rules import HouseRules
+from craps.common import CommonTableSetup  # Import the common setup
 
 class TestFieldBet(unittest.TestCase):
+    def setUp(self):
+        """Initialize the common table setup for testing."""
+        self.common_setup = CommonTableSetup()
+
     def test_field_bet_outcomes(self):
-        # Initialize house rules with custom payouts for 2 and 12
-        house_rules = HouseRules()
-        house_rules.set_field_bet_payouts((2, 1), (3, 1))  # 2:1 for 2, 3:1 for 12
-
-        # Initialize player and table
-        player = Player("Alice", 1000)
-        table = Table(house_rules)
-
+        """Test Field bet outcomes for all possible dice totals."""
         # Define all possible dice totals and their expected outcomes
         test_cases = [
             # (dice_total, expected_status, expected_payout)
@@ -37,20 +33,16 @@ class TestFieldBet(unittest.TestCase):
 
         # Test each dice total
         for dice_total, expected_status, expected_payout in test_cases:
-            # Create a new Field Bet for each test case
-            field_bet = FieldBet(10, player.name)
-            player.place_bet(field_bet, table)
+            # Place a Field bet
+            field_bet = self.common_setup.place_bet("Field", 10)
 
             # Simulate the dice roll
             dice_outcome = self._get_dice_outcome(dice_total)
-            field_bet.resolve(dice_outcome, "come-out", None)
-
-            # Resolve the bet and calculate the payout
-            player.resolve_bets(table, None, dice_outcome, "come-out", None)
+            resolved_bets = self.common_setup.simulate_roll(dice_outcome)
 
             # Get the actual status and payout
             actual_status = field_bet.status
-            actual_payout = field_bet.payout()
+            actual_payout = field_bet.payout() if field_bet.status == "won" else 0
 
             # Compare expected vs. actual
             status_match = actual_status == expected_status
@@ -59,6 +51,9 @@ class TestFieldBet(unittest.TestCase):
 
             # Print the results in a table format
             print(f"{dice_total:<12} {expected_status:<16} ${expected_payout:<15} {actual_status:<16} ${actual_payout:<15} {result}")
+
+            # Reset the table for the next test case
+            self.common_setup.reset_table()
 
     def _get_dice_outcome(self, total):
         """Helper method to generate a dice outcome for a given total."""
