@@ -21,6 +21,15 @@ class Table:
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine
 
+    def has_bet(self, bet: Bet) -> bool:
+        """
+        Check if a specific bet is on the table.
+
+        :param bet: The bet to check for.
+        :return: True if the bet is on the table, False otherwise.
+        """
+        return bet in self.bets
+
     def reactivate_inactive_bets(self):
         """
         Reactivate inactive Place bets when the point is set.

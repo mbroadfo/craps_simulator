@@ -15,8 +15,6 @@ class CommonTableSetup:
         """Initialize the table, players, and other components for testing."""
         # Initialize house rules
         self.house_rules_config = {
-            "field_bet_payout_2": (2, 1),  # 2:1 payout for 2
-            "field_bet_payout_12": (3, 1),  # 3:1 payout for 12
             "table_minimum": 10,  # Minimum bet amount
             "table_maximum": 5000,  # Maximum bet amount
         }
