@@ -98,21 +98,16 @@ class Bet:
     def payout(self) -> int:
         """
         Calculate the payout for the bet.
-
-        :return: The payout amount.
+        - Contract bets return original bet amount + winnings.
+        - Non-contract bets return only winnings.
         """
         if self.status != "won":
-            return 0
+            return 0  # No payout if the bet was lost
 
         numerator, denominator = self.payout_ratio
         profit = (self.amount * numerator) // denominator
 
-        # For contract bets, return the original bet amount plus the profit
-        if self.is_contract_bet:
-            return self.amount + profit
-
-        # For non-contract bets, return only the profit
-        return profit
+        return self.amount + profit if self.is_contract_bet else profit
 
     def __str__(self):
         """Return a string representation of the bet."""

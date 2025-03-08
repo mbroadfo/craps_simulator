@@ -58,8 +58,6 @@ class Player:
                 self.play_by_play.write(message)  # Write the message to the play-by-play file
                 return False
 
-            # Deduct the amount from the player's balance
-            self.balance -= b.amount
             message = f"{Fore.GREEN}✅ {self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.{Style.RESET_ALL}"
             self.play_by_play.write(message)  # Write the message to the play-by-play file
 

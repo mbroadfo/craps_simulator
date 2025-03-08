@@ -1,5 +1,6 @@
 # File: .\craps\table.py
 
+from colorama import Fore, Style
 from typing import List, Optional
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
@@ -79,8 +80,24 @@ class Table:
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
-        Remove all resolved bets (won or lost) from the table and return them.
+        Remove resolved bets from the table and update player bankrolls accordingly.
         """
-        resolved_bets = [bet for bet in self.bets if bet.is_resolved()]
-        self.bets = [bet for bet in self.bets if not bet.is_resolved()]
+        resolved_bets = []
+        for bet in self.bets:
+            if (bet.is_contract_bet and bet.status in ["won", "lost"]) or \
+            (not bet.is_contract_bet and bet.status == "lost"):
+                resolved_bets.append(bet)
+
+        # Process bankroll updates for each resolved bet
+        for bet in resolved_bets:
+            if bet.status == "won":
+                payout = bet.payout()
+                bet.owner.receive_payout(payout)
+            elif bet.status == "lost":
+                bet.owner.balance -= bet.amount  # Deduct bet amount on loss
+                message = f"{Fore.RED}❌ {bet.owner.name} lost ${bet.amount} on {bet.bet_type}. New Bankroll: ${bet.owner.balance}.{Style.RESET_ALL}"
+                self.play_by_play.write(message)
+
+        # Remove resolved bets from active table bets
+        self.bets = [bet for bet in self.bets if bet not in resolved_bets]
         return resolved_bets
