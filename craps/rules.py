@@ -86,22 +86,6 @@ BET_RULES = {
                 "point_lose": ["number_hit"],
             }
         },
-        "Place Odds": {
-            "valid_phases": ["point"],
-            "payout_ratio": "House Odds",
-            "resolution": {
-                "point_win": ["number_hit"],
-                "point_lose": [7],
-            }
-        },
-        "Don't Place Odds": {
-            "valid_phases": ["point"],
-            "payout_ratio": "Don't House Odds",
-            "resolution": {
-                "point_win": [7],
-                "point_lose": ["number_hit"],
-            }
-        },
     },
     "Place Bets": {
         "is_contract_bet": False,
@@ -136,7 +120,7 @@ BET_RULES = {
         "Lay": {
             "linked_bet": None,
             "valid_phases": ["point"],
-            "payout_ratio": "Don't House Odds",
+            "payout_ratio": "Don't True Odds",
             "has_vig": True,
             "resolution": {
                 "point_win": [7],
@@ -285,14 +269,14 @@ ODDS_PAYOUT = {
     },
     "Hop": {
         4: (15, 1),
-        5: (15, 1),  # 1-4, 4-1
+        5: (15, 1),  
         6: (15, 1),
         7: (15, 1),
         8: (15, 1),
         9: (15, 1),
         10: (15, 1),
         11: (15, 1),
-       12: (15, 1),
+        12: (15, 1),
     }
 }
 

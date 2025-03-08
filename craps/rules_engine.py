@@ -79,28 +79,40 @@ class RulesEngine:
     def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
         """
         Determine if a bet of the given type can be made during the current phase.
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :param phase: The current game phase ("come-out" or "point").
-        :param parent_bet: The parent bet for odds bets.
-        :return: True if the bet can be made, False otherwise.
         """
-        if bet_type not in BET_RULES:
+        bet_info = RulesEngine.find_bet_category(bet_type, BET_RULES)
+
+        if not bet_info:
             raise ValueError(f"Unknown bet type: {bet_type}")
-        return phase in BET_RULES[bet_type]["valid_phases"]
+
+        return phase in bet_info["valid_phases"]
 
     @staticmethod
     def can_remove_bet(bet_type: str, phase: str) -> bool:
         """
         Determine if a bet of the given type can be removed during the current phase.
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :param phase: The current game phase ("come-out" or "point").
-        :return: True if the bet can be removed, False otherwise.
+        Contract bets cannot be removed once placed.
         """
-        if bet_type not in BET_RULES:
+        # Find the bet type inside BET_RULES
+        for category, data in BET_RULES.items():
+            if isinstance(data, dict):
+                if bet_type in data:  # Direct match in category
+                    bet_info = data[bet_type]
+                    category_info = data
+                    break
+                for subcategory, bets in data.items():
+                    if isinstance(bets, dict) and bet_type in bets:  # Found inside a subcategory
+                        bet_info = bets[bet_type]
+                        category_info = data
+                        break
+        else:
             raise ValueError(f"Unknown bet type: {bet_type}")
-        return BET_RULES[bet_type].get("can_remove", False)
+
+        # Check if it's a contract bet at the bet or category level
+        if bet_info.get("is_contract_bet", False) or category_info.get("is_contract_bet", False):
+            return False  # Contract bets cannot be removed
+
+        return True
 
     @staticmethod
     def can_turn_on(bet_type: str, phase: str) -> bool:
@@ -208,11 +220,12 @@ class RulesEngine:
     @staticmethod
     def get_linked_bet_type(bet_type: str) -> Optional[str]:
         """
-        Get the type of bet linked to the given bet type (e.g., Pass Line Odds is linked to Pass Line).
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :return: The linked bet type, or None if no linked bet exists.
+        Get the linked bet type for bets that have associated odds.
         """
-        if bet_type not in BET_RULES:
+        bet_info = RulesEngine.find_bet_category(bet_type, BET_RULES)
+
+        if not bet_info:
             raise ValueError(f"Unknown bet type: {bet_type}")
-        return BET_RULES[bet_type].get("linked_bet")
+
+        return bet_info.get("linked_bet")
+
