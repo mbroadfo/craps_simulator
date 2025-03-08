@@ -46,7 +46,7 @@ def main():
     
     # View the log file interactively
     log_viewer = InteractiveLogViewer()
-    log_viewer.view(log_manager.log_file)
+    log_viewer.view(play_by_play.play_by_play_file)
     
     # Visualize player bankrolls
     visualizer = Visualizer(stats)
