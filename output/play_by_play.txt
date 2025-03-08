@@ -3029,3 +3029,69 @@ Bet resolved: 3-Point Molly's $10 Pass Line Odds 4 bet (Status: active) (Status:
 GameState: Point changed from 4 to None
 [31m❌ 7-Out: Pass Line bets lose! Puck is OFF.[0m
 [31m❌ 7-Out: Pass Line bets lose! Puck is OFF.[0m
+Bet placed: Alice's $100 Come bet (Status: active)
+Bet resolved: Alice's $100 Come bet (Status: active) (Status: active)
+Bet placed: Alice's $100 Come bet (Status: active)
+Bet resolved: Alice's $100 Come bet (Status: active) (Status: active)
+Invalid bet: Alice's $100 Come bet (Status: active)
+Bet placed: Alice's $100 Come bet (Status: active)
+Bet resolved: Alice's $100 Come bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+[31m❌ Craps: Pass Line bets lose! Puck is OFF.[0m
+GameState: Point changed from None to 6
+[33mPoint Set: 6. Puck is ON.[0m
+[32m✅ 7-Winner: Pass Line bets win! Puck is OFF.[0m
+GameState: Point changed from None to 6
+[33mPoint Set: 6. Puck is ON.[0m
+GameState: Point changed from 6 to None
+[31m❌ 7-Out: Pass Line bets lose! Puck is OFF.[0m
+GameState: Point changed from None to 6
+[33mPoint Set: 6. Puck is ON.[0m
+No change in game state.
+GameState: Point changed from None to 6
+[33mPoint Set: 6. Puck is ON.[0m
+GameState: Point changed from 6 to None
+[32m✅ Point Hit: 6. Pass Line bets win! Puck is OFF.[0m
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
+Bet placed: Alice's $10 Field bet (Status: active)
+Bet resolved: Alice's $10 Field bet (Status: active) (Status: active)
