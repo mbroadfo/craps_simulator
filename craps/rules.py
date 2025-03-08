@@ -133,7 +133,7 @@ BET_RULES = {
         "Field": {
             "linked_bet": None,
             "valid_phases": ["come-out", "point"],
-            "payout_ratio": "Field Odds",
+            "payout_ratio": "Field",
             "resolution": {
                 "come_out_win": [2, 3, 4, 9, 10, 11, 12],
                 "come_out_lose": [5, 6, 7, 8],
@@ -217,7 +217,10 @@ BET_RULES = {
 # Payout Ratios (Now a Function)
 # ================================
 
-ODDS_PAYOUT = {
+BET_PAYOUT = {
+    "Even Money": {
+        "default": (1, 1)
+    },
     "True Odds": {
         4: (2, 1),
         5: (3, 2),
@@ -250,8 +253,13 @@ ODDS_PAYOUT = {
         9: (5, 7),
         10: (5, 9),
     },
-    "Field Odds": {
+    "Field": {
         2: (2, 1),
+        3: (1, 1),
+        4: (1, 1),
+        9: (1, 1),
+        10: (1, 1),
+        11: (1, 1),
         12: (3, 1),
     },
     "Proposition": {

@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict, Any, Tuple
-from craps.rules import BET_RULES, ODDS_PAYOUT
+from craps.rules import BET_RULES, BET_PAYOUT
 from craps.bet import Bet
 from craps.house_rules import HouseRules
 
@@ -139,15 +139,21 @@ class RulesEngine:
 
         payout_key = bet_info["payout_ratio"]
 
-        # Handle fixed payout types
-        if payout_key == "Even Money":
-            return (1, 1)  # Standard even-money bets
-        elif payout_key == "Field Odds":
-            return (2, 1) if number == 2 else (3, 1) if number == 12 else (1, 1)
+        # ✅ Lookup payout in ODDS_PAYOUT
+        if payout_key in BET_PAYOUT:
+            # ✅ "Even Money" and other single-value payouts
+            if "default" in BET_PAYOUT[payout_key]:
+                return BET_PAYOUT[payout_key]["default"]
 
-        # Handle odds-based payouts
-        if payout_key in ODDS_PAYOUT and number in ODDS_PAYOUT[payout_key]:
-            return ODDS_PAYOUT[payout_key][number]
+            # ✅ Special Handling for Field Bet (No fixed number, uses roll outcome)
+            if bet_type == "Field":
+                return lambda roll: BET_PAYOUT[payout_key].get(roll, (1, 1))
+
+            # ✅ Number-based payouts (e.g., True Odds, House Odds)
+            if number is not None and number in BET_PAYOUT[payout_key]:
+                return BET_PAYOUT[payout_key][number]
+
+            raise ValueError(f"Invalid number {number} for payout type {payout_key}")
 
         raise ValueError(f"Invalid payout key: {payout_key}")
 
@@ -187,24 +193,29 @@ class RulesEngine:
         elif "number_miss" in resolution_rules.get("point_lose", []) and sorted_dice != (bet.number, bet.number):
             bet.status = "lost"
 
-        payout = RulesEngine.calculate_payout(bet) if bet.status == "won" else 0
+        # ✅ Pass `total` as `roll` into `calculate_payout()`
+        payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0
         return payout
 
     @staticmethod
-    def calculate_payout(bet: Bet) -> int:
+    def calculate_payout(bet: Bet, roll: int) -> int:
         """
         Calculate the payout for a resolved bet.
         """
         if bet.status != "won":
-            return 0
-        
+            return 0  # No payout if the bet didn't win
+
         payout_ratio = RulesEngine.get_payout_ratio(bet.bet_type, bet.number)
+
+        # ✅ If Field Bet, apply payout function
+        if callable(payout_ratio):
+            payout_ratio = payout_ratio(roll)
+
         numerator, denominator = payout_ratio
         profit = (bet.amount * numerator) // denominator
-        
+
         return bet.amount + profit if bet.is_contract_bet else profit
 
-    
     @staticmethod
     def has_vig(bet_type: str) -> bool:
         """
