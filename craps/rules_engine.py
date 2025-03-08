@@ -1,8 +1,6 @@
-# File: .\craps\rules_engine.py
-
-from typing import List, Optional, Dict, Any, Tuple
-from craps.rules import BET_BEHAVIOR, BET_PAYOUT, ODDS_PAYOUT
-from craps.bet import Bet  # Import the Bet class
+from typing import List, Optional, Tuple
+from craps.rules import BET_RULES, get_payout_ratio
+from craps.bet import Bet
 
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
@@ -40,31 +38,27 @@ class RulesEngine:
         :param parent_bet: The parent bet for odds bets.
         :return: A Bet instance.
         """
-        if bet_type not in BET_BEHAVIOR:
+        bet_rules = None
+        for category in BET_RULES.values():
+            if bet_type in category:
+                bet_rules = category[bet_type]
+                break
+
+        if not bet_rules:
             raise ValueError(f"Unknown bet type: {bet_type}")
 
-        # Get the payout ratio and other properties from the RulesEngine
-        payout_ratio = RulesEngine.get_payout_ratio(bet_type, number)
-        vig = RulesEngine.has_vig(bet_type)
+        payout_ratio = get_payout_ratio(bet_type, number)
 
-        # Get the is_contract_bet and valid_phases from the top level
-        is_contract_bet = BET_BEHAVIOR[bet_type]["is_contract_bet"]
-        valid_phases = BET_BEHAVIOR[bet_type]["valid_phases"]
-
-        # Create the bet
-        bet = Bet(
+        return Bet(
             bet_type=bet_type,
             amount=amount,
             owner=owner,
             payout_ratio=payout_ratio,
-            vig=vig,
-            valid_phases=valid_phases,
+            valid_phases=bet_rules["valid_phases"],
             number=number,
             parent_bet=parent_bet,
-            is_contract_bet=is_contract_bet,  # Pass the is_contract_bet value
+            is_contract_bet=bet_rules.get("is_contract_bet", False),
         )
-
-        return bet
 
     @staticmethod
     def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
@@ -76,21 +70,9 @@ class RulesEngine:
         :param parent_bet: The parent bet for odds bets.
         :return: True if the bet can be made, False otherwise.
         """
-        if bet_type not in BET_BEHAVIOR:
+        if bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet_type}")
-
-        # Check if the bet is allowed in the current phase
-        if phase not in BET_BEHAVIOR[bet_type]["valid_phases"]:
-            return False
-
-        # Additional checks for odds bets
-        if bet_type.endswith("Odds"):
-            if parent_bet is None:
-                return False  # Parent bet is required for odds bets
-            if bet_type == "Come Odds" and parent_bet.number is None:
-                return False  # Come bet must have a number set
-
-        return BET_BEHAVIOR[bet_type][phase]["can_bet"]
+        return phase in BET_RULES[bet_type]["valid_phases"]
 
     @staticmethod
     def can_remove_bet(bet_type: str, phase: str) -> bool:
@@ -101,10 +83,9 @@ class RulesEngine:
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet can be removed, False otherwise.
         """
-        if bet_type not in BET_BEHAVIOR:
+        if bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet_type}")
-
-        return BET_BEHAVIOR[bet_type][phase]["can_remove"]
+        return BET_RULES[bet_type].get("can_remove", False)
 
     @staticmethod
     def can_turn_on(bet_type: str, phase: str) -> bool:
@@ -115,10 +96,9 @@ class RulesEngine:
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet can be turned on, False otherwise.
         """
-        if bet_type not in BET_BEHAVIOR:
+        if bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet_type}")
-
-        return BET_BEHAVIOR[bet_type][phase]["can_turn_on"]
+        return BET_RULES[bet_type].get("can_turn_on", False)
 
     @staticmethod
     def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
@@ -131,49 +111,27 @@ class RulesEngine:
         :param point: The current point number (if in point phase).
         :return: The new point number if the bet sets the point, otherwise None.
         """
-        if bet.bet_type not in BET_BEHAVIOR:
+        total = sum(dice_outcome)
+        bet_rules = None
+
+        for category in BET_RULES.values():
+            if bet.bet_type in category:
+                bet_rules = category[bet.bet_type]
+                break
+
+        if not bet_rules:
             raise ValueError(f"Unknown bet type: {bet.bet_type}")
 
-        total = sum(dice_outcome)
-        behavior = BET_BEHAVIOR[bet.bet_type][phase]
+        if total in bet_rules.get("winning", []):
+            bet.status = "won"
+        elif total in bet_rules.get("losing", []):
+            bet.status = "lost"
+        elif bet_rules.get("other_action") == "Moves to Number":
+            bet.number = total
+            bet.valid_phases = ["point"]
+        elif bet_rules.get("other_action") == "Sets the Point":
+            return total
 
-        # Handle Field bet payouts dynamically
-        if bet.bet_type == "Field":
-            if total in ODDS_PAYOUT["Field Odds"]:
-                bet.payout_ratio = ODDS_PAYOUT["Field Odds"][total]  # Set payout ratio for 2 or 12
-            else:
-                bet.payout_ratio = (1, 1)  # Default payout ratio for other winning numbers
-
-        # Check if the bet wins
-        if behavior["winning"] is not None:
-            if isinstance(behavior["winning"], list) and "Number" in behavior["winning"]:
-                # For Place bets, check if the total matches the bet's number
-                if total == bet.number:
-                    bet.status = "won"
-                    return None
-            elif total in behavior["winning"] or (isinstance(behavior["winning"], list) and "Point" in behavior["winning"] and total == point):
-                bet.status = "won"
-                return None
-
-        # Check if the bet loses
-        if behavior["losing"] is not None:
-            if total in behavior["losing"]:
-                bet.status = "lost"
-                return None
-
-        # Handle other actions (e.g., setting the point or moving a Come bet)
-        if behavior["other_action"] is not None:
-            if behavior["other_action"] == "Sets the Point":
-                # Set the point for Pass Line bets
-                bet.status = "active"  # Ensure the bet remains active
-                return total
-            elif behavior["other_action"] == "Moves to Number":
-                # Move Come bets to the number rolled
-                bet.number = total
-                bet.valid_phases = ["point"]  # Now only valid during the point phase
-
-        # If neither, the bet remains active
-        bet.status = "active"
         return None
 
     @staticmethod
@@ -185,25 +143,10 @@ class RulesEngine:
         :param number: The number associated with the bet (e.g., 6 for Place 6).
         :return: A tuple representing the payout ratio (numerator, denominator).
         """
-        if bet_type not in BET_PAYOUT:
+        if bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet_type}")
-
-        payout_info = BET_PAYOUT[bet_type]
-        if payout_info["payout_ratio"] == "True Odds":
-            if number is None:
-                raise ValueError(f"Number must be provided for True Odds bets.")
-            return ODDS_PAYOUT["True Odds"][number]
-        elif payout_info["payout_ratio"] == "House Odds":
-            if number is None:
-                raise ValueError(f"Number must be provided for House Odds bets.")
-            return ODDS_PAYOUT["House Odds"][number]
-        elif payout_info["payout_ratio"] == "Field Odds":
-            if number is None:
-                return (1, 1)  # Default payout for Field bet
-            return ODDS_PAYOUT["Field Odds"].get(number, (1, 1))  # Use special payouts for 2 and 12
-        else:
-            return payout_info["payout_ratio"]
-
+        return get_payout_ratio(bet_type, number)
+    
     @staticmethod
     def has_vig(bet_type: str) -> bool:
         """
@@ -212,11 +155,10 @@ class RulesEngine:
         :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :return: True if the bet has a vig, False otherwise.
         """
-        if bet_type not in BET_PAYOUT:
+        if bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet_type}")
-
-        return BET_PAYOUT[bet_type]["vig"]
-
+        return BET_RULES[bet_type].get("vig", False)
+    
     @staticmethod
     def get_linked_bet_type(bet_type: str) -> Optional[str]:
         """
@@ -225,9 +167,6 @@ class RulesEngine:
         :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
         :return: The linked bet type, or None if no linked bet exists.
         """
-        linked_bets = {
-            "Pass Line": "Pass Line Odds",
-            "Come": "Come Odds",
-            "Place": "Place Odds",
-        }
-        return linked_bets.get(bet_type)
+        if bet_type not in BET_RULES:
+            raise ValueError(f"Unknown bet type: {bet_type}")
+        return BET_RULES[bet_type].get("linked_bet")
