@@ -1,86 +1,46 @@
 # File: .\craps\rules_engine.py
 
 from typing import List, Optional, Dict, Any, Tuple
-from craps.rules import BET_BEHAVIOR, BET_PAYOUT, ODDS_PAYOUT
-from craps.bet import Bet  # Import the Bet class
+from craps.rules import BET_RULES, BET_PAYOUT, ODDS_PAYOUT
+from craps.bet import Bet 
+from craps.house_rules import HouseRules
 
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
+    def __init__(self, house_rules):
+        """
+        Initialize the RulesEngine with house rules.
+        """
+        self.house_rules = house_rules
+        
     @staticmethod
-    def get_minimum_bet(number: Optional[int] = None) -> int:
+    def get_minimum_bet(number: Optional[int] = None, house_rules: Optional[HouseRules] = None) -> int:
         """
         Get the minimum bet amount for a specific bet type or number.
-
-        :param number: The number associated with the bet (e.g., 6 for Place 6).
-        :return: The minimum bet amount.
+        - For Place bets on 6 and 8, the minimum is table minimum + table unit.
+        - For all other bets, it's the table minimum.
         """
-        # Default minimum bet for most bets
-        default_min_bet = 10  # Replace with the actual default minimum bet from house rules
+        if house_rules is None:
+            raise ValueError("HouseRules must be provided to determine minimum bet.")
 
-        # Adjust minimum bet for specific bet types or numbers
-        if number is not None:
-            # For Place bets, the minimum bet may vary based on the number
-            if number in [4, 5, 6, 8, 9, 10]:
-                return default_min_bet  # Replace with actual logic if needed
-            else:
-                raise ValueError(f"Invalid number for minimum bet: {number}")
+        table_minimum = house_rules.table_minimum
+        table_unit = table_minimum // 5  # Typically, the unit is 1/5 of the table minimum
 
-        return default_min_bet
-
-    @staticmethod
-    def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
-        """
-        Create a bet based on the bet type.
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Place").
-        :param amount: The amount of the bet.
-        :param owner: The player who placed the bet.
-        :param number: The number associated with the bet (e.g., 6 for Place 6).
-        :param parent_bet: The parent bet for odds bets.
-        :return: A Bet instance.
-        """
-        if bet_type not in BET_BEHAVIOR:
-            raise ValueError(f"Unknown bet type: {bet_type}")
-
-        # Get the payout ratio and other properties from the RulesEngine
-        payout_ratio = RulesEngine.get_payout_ratio(bet_type, number)
-        vig = RulesEngine.has_vig(bet_type)
-
-        # Get the is_contract_bet and valid_phases from the top level
-        is_contract_bet = BET_BEHAVIOR[bet_type]["is_contract_bet"]
-        valid_phases = BET_BEHAVIOR[bet_type]["valid_phases"]
-
-        # Create the bet
-        bet = Bet(
-            bet_type=bet_type,
-            amount=amount,
-            owner=owner,
-            payout_ratio=payout_ratio,
-            vig=vig,
-            valid_phases=valid_phases,
-            number=number,
-            parent_bet=parent_bet,
-            is_contract_bet=is_contract_bet,  # Pass the is_contract_bet value
-        )
-
-        return bet
+        if number in [6, 8]:
+            return table_minimum + table_unit  # 6 and 8 require an extra unit
+        return table_minimum  # Default to table minimum for all other bets
 
     @staticmethod
     def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
         """
         Determine if a bet of the given type can be made during the current phase.
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :param phase: The current game phase ("come-out" or "point").
-        :param parent_bet: The parent bet for odds bets.
-        :return: True if the bet can be made, False otherwise.
         """
-        if bet_type not in BET_BEHAVIOR:
+        if bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet_type}")
 
         # Check if the bet is allowed in the current phase
-        if phase not in BET_BEHAVIOR[bet_type]["valid_phases"]:
+        if phase not in BET_RULES[bet_type]["valid_phases"]:
             return False
 
         # Additional checks for odds bets
@@ -90,91 +50,99 @@ class RulesEngine:
             if bet_type == "Come Odds" and parent_bet.number is None:
                 return False  # Come bet must have a number set
 
-        return BET_BEHAVIOR[bet_type][phase]["can_bet"]
-
+        return True
+    
     @staticmethod
-    def can_remove_bet(bet_type: str, phase: str) -> bool:
+    def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
         """
-        Determine if a bet of the given type can be removed during the current phase.
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :param phase: The current game phase ("come-out" or "point").
-        :return: True if the bet can be removed, False otherwise.
+        Create a bet based on the bet type.
         """
-        if bet_type not in BET_BEHAVIOR:
+        if bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet_type}")
 
-        return BET_BEHAVIOR[bet_type][phase]["can_remove"]
+        # Validate the bet can be created
+        if not RulesEngine.can_make_bet(bet_type, "come-out" if number is None else "point", parent_bet):
+            raise ValueError(f"Cannot create {bet_type} bet in the current phase or conditions.")
+
+        payout_ratio = RulesEngine.get_payout_ratio(bet_type, number)
+        vig = RulesEngine.has_vig(bet_type)
+        is_contract_bet = BET_RULES[bet_type]["is_contract_bet"]
+        valid_phases = BET_RULES[bet_type]["valid_phases"]
+
+        return Bet(
+            bet_type=bet_type,
+            amount=amount,
+            owner=owner,
+            payout_ratio=payout_ratio,
+            vig=vig,
+            valid_phases=valid_phases,
+            number=number,
+            parent_bet=parent_bet,
+            is_contract_bet=is_contract_bet,
+        )
 
     @staticmethod
-    def can_turn_on(bet_type: str, phase: str) -> bool:
+    def can_remove_bet(bet: Bet) -> bool:
         """
-        Determine if a bet of the given type can be turned on during the current phase.
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :param phase: The current game phase ("come-out" or "point").
-        :return: True if the bet can be turned on, False otherwise.
+        Determine if a bet can be removed.
+        Contract bets cannot be removed. Non-contract bets can be removed.
         """
-        if bet_type not in BET_BEHAVIOR:
-            raise ValueError(f"Unknown bet type: {bet_type}")
-
-        return BET_BEHAVIOR[bet_type][phase]["can_turn_on"]
+        return not bet.is_contract_bet
 
     @staticmethod
-    def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> Optional[int]:
+    def can_turn_on(bet: Bet, puck_position: str) -> bool:
         """
-        Resolve a bet based on the dice outcome, phase, and point.
+        Determine if a bet can be turned on.
+        - Contract bets are always on and cannot be turned on/off.
+        - Non-contract bets can only be turned on when the puck is off.
+        """
+        if bet.is_contract_bet:
+            return False  # Contract bets are always on and cannot be turned on/off
+        return puck_position == "Off"  # Non-contract bets can only be turned on when the puck is off
 
-        :param bet: The bet to resolve.
-        :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
-        :param phase: The current game phase ("come-out" or "point").
-        :param point: The current point number (if in point phase).
-        :return: The new point number if the bet sets the point, otherwise None.
+    @staticmethod
+    def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int], puck_position: str) -> int:
         """
-        if bet.bet_type not in BET_BEHAVIOR:
+        Resolve a bet and return the payout amount.
+        - For contract bets: the bet is cleared if it is won or lost.
+        - For non-contract bets: the bet is cleared only if it is lost.
+        """
+        if bet.bet_type not in BET_RULES:
             raise ValueError(f"Unknown bet type: {bet.bet_type}")
 
         total = sum(dice_outcome)
-        behavior = BET_BEHAVIOR[bet.bet_type][phase]
+        behavior = BET_RULES[bet.bet_type]["after_roll"][phase]
 
-        # Handle Field bet payouts dynamically
-        if bet.bet_type == "Field":
-            if total in ODDS_PAYOUT["Field Odds"]:
-                bet.payout_ratio = ODDS_PAYOUT["Field Odds"][total]  # Set payout ratio for 2 or 12
-            else:
-                bet.payout_ratio = (1, 1)  # Default payout ratio for other winning numbers
+        # Handle Come bet movement to a number
+        if bet.bet_type == "Come" and phase == "point" and total in [4, 5, 6, 8, 9, 10]:
+            bet.number = total
+            bet.valid_phases = ["point"]  # Come bets are always on after moving to a number
+            return 0  # No payout for moving to a number
 
-        # Check if the bet wins
+        # Handle winning conditions
         if behavior["winning"] is not None:
             if isinstance(behavior["winning"], list) and "Number" in behavior["winning"]:
-                # For Place bets, check if the total matches the bet's number
                 if total == bet.number:
                     bet.status = "won"
-                    return None
             elif total in behavior["winning"] or (isinstance(behavior["winning"], list) and "Point" in behavior["winning"] and total == point):
                 bet.status = "won"
-                return None
 
-        # Check if the bet loses
+        # Handle losing conditions
         if behavior["losing"] is not None:
             if total in behavior["losing"]:
                 bet.status = "lost"
-                return None
 
-        # Handle other actions (e.g., setting the point or moving a Come bet)
-        if behavior["other_action"] is not None:
-            if behavior["other_action"] == "Sets the Point":
-                # Set the point for Pass Line bets
-                bet.status = "active"  # Ensure the bet remains active
-                return total
-            elif behavior["other_action"] == "Moves to Number":
-                # Move Come bets to the number rolled
-                bet.number = total
-                bet.valid_phases = ["point"]  # Now only valid during the point phase
+        # Calculate the payout
+        payout = RulesEngine.calculate_payout(bet)
 
-        # If neither, the bet remains active
-        bet.status = "active"
-        return None
+        # Update bet status for non-contract bets
+        if not bet.is_contract_bet and bet.status == "won":
+            if puck_position == "Off":
+                bet.status = "inactive"  # Puck is off, so the bet is inactive
+            else:
+                bet.status = "active"  # Puck is on, so the bet remains active
+
+        return payout
 
     @staticmethod
     def get_payout_ratio(bet_type: str, number: Optional[int] = None) -> Tuple[int, int]:
@@ -217,6 +185,23 @@ class RulesEngine:
 
         return BET_PAYOUT[bet_type]["vig"]
 
+    @staticmethod
+    def calculate_payout(bet: Bet) -> int:
+        """
+        Calculate the payout for a resolved bet.
+        - For contract bets: return the original bet amount + winnings.
+        - For non-contract bets: return only the winnings.
+        """
+        if bet.status != "won":
+            return 0  # No payout if the bet didn't win
+
+        numerator, denominator = bet.payout_ratio
+        profit = (bet.amount * numerator) // denominator
+
+        if bet.is_contract_bet:
+            return bet.amount + profit  # Return original bet + winnings
+        return profit  # Return only winnings for non-contract bets
+    
     @staticmethod
     def get_linked_bet_type(bet_type: str) -> Optional[str]:
         """

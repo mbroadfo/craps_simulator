@@ -13,8 +13,8 @@ class IronCrossStrategy:
         """
         self.table = table
         self.min_bet = min_bet
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
-
+        self.rules_engine = table.rules_engine 
+        
     def get_bet(self, game_state, player, table):
         """Place bets for the Iron Cross strategy."""
         if game_state.phase == "come-out":
@@ -48,7 +48,7 @@ class IronCrossStrategy:
             # Use RulesEngine to create Place bets
             bets = []
             for number in numbers:
-                min_bet = self.rules_engine.get_minimum_bet(number)  # Use RulesEngine to get minimum bet
+                min_bet = self.rules_engine.get_minimum_bet(number, house_rules=self.table.house_rules)  # Pass house_rules
                 bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists

@@ -5,6 +5,7 @@ from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
+from craps.puck import Puck
 
 class Table:
     def __init__(self, house_rules, play_by_play, rules_engine):
@@ -64,7 +65,7 @@ class Table:
         self.play_by_play.write(message)
         return True
 
-    def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int], puck_position: str) -> None:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.
 
@@ -73,14 +74,20 @@ class Table:
         :param point: The current point number (if in point phase).
         """
         for bet in self.bets:
-            bet.resolve(self.rules_engine, dice_outcome, phase, point)
+            bet.resolve(self.rules_engine, dice_outcome, phase, point, puck_position)
             message = f"Bet resolved: {bet} (Status: {bet.status})"
             self.play_by_play.write(message)
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
-        Remove all resolved bets (won or lost) from the table and return them.
+        Remove resolved bets from the table and return them.
+        - Contract bets are cleared if they are won or lost.
+        - Non-contract bets are cleared only if they are lost.
         """
-        resolved_bets = [bet for bet in self.bets if bet.is_resolved()]
-        self.bets = [bet for bet in self.bets if not bet.is_resolved()]
+        resolved_bets = [
+            bet for bet in self.bets
+            if (bet.is_contract_bet and bet.status in ["won", "lost"]) or  # Contract bets
+            (not bet.is_contract_bet and bet.status == "lost")  # Non-contract bets
+        ]
+        self.bets = [bet for bet in self.bets if bet not in resolved_bets]
         return resolved_bets

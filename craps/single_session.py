@@ -77,7 +77,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             })
 
             # Check bets on the table
-            table.check_bets(outcome, game_state.phase, game_state.point)
+            table.check_bets(outcome, game_state.phase, game_state.point, game_state.puck.position)
 
             # Clear resolved bets and update player bankrolls
             resolved_bets = table.clear_resolved_bets()

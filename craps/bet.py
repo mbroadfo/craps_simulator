@@ -79,7 +79,7 @@ class Bet:
 
         return True
 
-    def resolve(self, rules_engine, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def resolve(self, rules_engine, dice_outcome: List[int], phase: str, point: Optional[int], puck_position: str) -> int:
         """
         Resolve the bet based on the dice outcome, phase, and point.
         Delegates resolution logic to the RulesEngine.
@@ -89,30 +89,27 @@ class Bet:
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
         """
-        rules_engine.resolve_bet(self, dice_outcome, phase, point)
+        return rules_engine.resolve_bet(self, dice_outcome, phase, point, puck_position)
 
     def is_resolved(self) -> bool:
-        """Check if the bet has been resolved (won, lost, or pushed)."""
-        return self.status in ["won", "lost", "pushed"]
-
+        """Check if the bet has been resolved (won or lost)."""
+        return self.status in ["won", "lost"]
+    
     def payout(self) -> int:
         """
         Calculate the payout for the bet.
-
-        :return: The payout amount.
+        - For contract bets: return the original bet amount + winnings.
+        - For non-contract bets: return only the winnings.
         """
         if self.status != "won":
-            return 0
+            return 0  # No payout if the bet didn't win
 
         numerator, denominator = self.payout_ratio
         profit = (self.amount * numerator) // denominator
 
-        # For contract bets, return the original bet amount plus the profit
         if self.is_contract_bet:
-            return self.amount + profit
-
-        # For non-contract bets, return only the profit
-        return profit
+            return self.amount + profit  # Return original bet + winnings
+        return profit  # Return only winnings for non-contract bets
 
     def __str__(self):
         """Return a string representation of the bet."""

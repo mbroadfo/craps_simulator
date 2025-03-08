@@ -1,158 +1,71 @@
 # File: .\craps\rules.py
 
 # ==================================================
-# Table 1: Bet Behavior
+# Table 1: Bet Rules
 # ==================================================
 
-BET_BEHAVIOR = {
+BET_RULES = {
     "Pass Line": {
-        "is_contract_bet": True,
         "linked_bet": "Pass Line Odds",
+        "is_contract_bet": True,
         "valid_phases": ["come-out", "point"],
-        "come-out": {
-            "can_bet": True,
-            "can_remove": False,
-            "can_turn_on": "Always On",
-            "winning": [7, 11],
-            "losing": [2, 3, 12],
-            "other_action": "Sets the Point",
-        },
-        "point": {
-            "can_bet": False,
-            "can_remove": False,
-            "can_turn_on": "Always On",
-            "winning": ["Point"],
-            "losing": [7],
-            "other_action": "No Change",
+        "after_roll": {
+            "come-out": {"winning": [7, 11], "losing": [2, 3, 12], "other_action": "Sets the Point"},
+            "point": {"winning": ["Point"], "losing": [7], "other_action": "No Change"},
         },
     },
     "Pass Line Odds": {
-        "is_contract_bet": True,
         "linked_bet": None,
+        "is_contract_bet": False,
         "valid_phases": ["point"],
-        "come-out": {
-            "can_bet": False,
-            "can_remove": "Must Remove",
-            "can_turn_on": "Must Remove",
-            "winning": None,
-            "losing": None,
-            "other_action": None,
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Point"],
-            "losing": [7],
-            "other_action": "No Change",
+        "after_roll": {
+            "point": {"winning": ["Point"], "losing": [7], "other_action": "No Change"},
         },
     },
     "Come": {
-        "is_contract_bet": True,
         "linked_bet": "Come Odds",
+        "is_contract_bet": True,
         "valid_phases": ["point"],
-        "come-out": {
-            "can_bet": False,
-            "can_remove": False,
-            "can_turn_on": "Always On",
-            "winning": [7, 11],
-            "losing": [2, 3, 12],
-            "other_action": "No Change",
-        },
-        "point": {
-            "can_bet": True, 
-            "can_remove": False,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
+        "after_roll": {
+            "come-out": {"winning": [7, 11], "losing": [2, 3, 12], "other_action": "No Change"},
+            "point": {"winning": ["Number"], "losing": [7], "other_action": "No Change"},
         },
     },
     "Come Odds": {
-        "is_contract_bet": False,
         "linked_bet": None,
+        "is_contract_bet": False,
         "valid_phases": ["point"],
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": None,
-            "losing": None,
-            "other_action": None,
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
+        "after_roll": {
+            "point": {"winning": ["Number"], "losing": [7], "other_action": "No Change"},
         },
     },
     "Place": {
-        "is_contract_bet": False, 
         "linked_bet": "Place Odds",
+        "is_contract_bet": False,
         "valid_phases": ["point"],
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
+        "after_roll": {
+            "come-out": {"winning": ["Number"], "losing": [7], "other_action": "No Change"},
+            "point": {"winning": ["Number"], "losing": [7], "other_action": "No Change"},
         },
     },
     "Place Odds": {
-        "is_contract_bet": False,
         "linked_bet": None,
+        "is_contract_bet": False,
         "valid_phases": ["point"],
-        "come-out": {
-            "can_bet": False,
-            "can_remove": True,
-            "can_turn_on": True,
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": ["Number"],
-            "losing": [7],
-            "other_action": "No Change",
+        "after_roll": {
+            "come-out": {"winning": ["Number"], "losing": [7], "other_action": "No Change"},
+            "point": {"winning": ["Number"], "losing": [7], "other_action": "No Change"},
         },
     },
     "Field": {
-        "is_contract_bet": True,
         "linked_bet": None,
+        "is_contract_bet": False,
         "valid_phases": ["come-out", "point"],
-        "come-out": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": [2, 3, 4, 9, 10, 11, 12],
-            "losing": [5, 6, 7, 8],
-            "other_action": "No Change",
-        },
-        "point": {
-            "can_bet": True,
-            "can_remove": True,
-            "can_turn_on": "Always On",
-            "winning": [2, 3, 4, 9, 10, 11, 12],
-            "losing": [5, 6, 7, 8],
-            "other_action": "No Change",
+        "after_roll": {
+            "come-out": {"winning": [2, 3, 4, 9, 10, 11, 12], "losing": [5, 6, 7, 8], "other_action": "No Change"},
+            "point": {"winning": [2, 3, 4, 9, 10, 11, 12], "losing": [5, 6, 7, 8], "other_action": "No Change"},
         },
     },
-    # Add similar rules for other bet types...
 }
 
 # ==================================================

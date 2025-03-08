@@ -9,6 +9,7 @@ from craps.player import Player
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.bet import Bet
+
 class CommonTableSetup:
     """Common setup for all craps tests."""
 
@@ -38,7 +39,6 @@ class CommonTableSetup:
 
         # Initialize dice (optional, for testing specific rolls)
         self.dice = Dice()
-
 
     def place_bet(self, bet_type: str, amount: int, phase="come-out", number: Optional[int] = None) -> Bet:
         """
