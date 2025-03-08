@@ -16,6 +16,7 @@ env/
 .DS_Store
 
 # Ignore local output files
+.output/
 *.txt
 *.log
 *.csv
