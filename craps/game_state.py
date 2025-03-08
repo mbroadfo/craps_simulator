@@ -32,14 +32,17 @@ class GameState:
         :return: A message describing the state change.
         """
         total = sum(dice_outcome)
+        previous_phase = self.phase
         message = "No change in game state."  # Default message
 
         if self.phase == "come-out":
             if total in [7, 11]:
                 self.puck.reset()
+                self.phase = "come-out"
                 message = f"{Fore.GREEN}✅ 7-Winner: Pass Line bets win!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             elif total in [2, 3, 12]:
                 self.puck.reset()
+                self.phase = "come-out"
                 message = f"{Fore.RED}❌ Craps: Pass Line bets lose!{Fore.YELLOW} Puck is {self.puck.position.upper()}.{Style.RESET_ALL}"
             else:
                 self.phase = "point"
@@ -50,9 +53,10 @@ class GameState:
                 # Notify the table to reactivate inactive bets
                 if self.table:
                     self.table.reactivate_inactive_bets()
+
         else:  # Point phase
-            if total == self.puck.point:
-                self.stats.record_point_number_roll()  # Record point number roll
+            if total == self.point:
+                self.stats.record_point_number_roll()
                 self.puck.reset()
                 self.phase = "come-out"
                 self.point = None
@@ -63,6 +67,12 @@ class GameState:
                 self.phase = "come-out"
                 self.point = None
                 message = f"❌ 7-Out: Pass Line bets lose! Puck is {self.puck.position.upper()}."
+
+                # Notify that a shooter transition should happen (handled externally)
+                message += " 🚨🎲 Shooter change required!"
+
+        # Log the phase transition for debugging
+        print(f"[DEBUG] GameState updated: Total={total}, PrevPhase={previous_phase}, NewPhase={self.phase}, Point={self.point}")
 
         # Write the message to the play-by-play file
         if self.play_by_play:
