@@ -7,18 +7,19 @@ class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
     @staticmethod
-    def find_bet_category(bet_type: str, lookup_table: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """
-        Search for a bet type inside a structured lookup table (BET_RULES, etc.).
-        """
-        for category, data in lookup_table.items():
-            if isinstance(data, dict):
-                if bet_type in data:  # Direct match in category
-                    return data[bet_type]
-                for subcategory, bets in data.items():
-                    if isinstance(bets, dict) and bet_type in bets:  # Match inside subcategories
-                        return bets[bet_type]
-        return None
+    def find_bet_category(bet_type, lookup_table=BET_RULES):
+        """Find the category a bet type belongs to."""
+        for category, rules in lookup_table.items():
+            if bet_type in rules:
+                return category
+        raise ValueError(f"Unknown bet type: {bet_type}")
+    
+    @staticmethod
+    def get_linked_bet_type(bet_type):
+        """Retrieve the linked bet type, if applicable (e.g., Pass Line → Pass Line Odds)."""
+        bet_category = RulesEngine.find_bet_category(bet_type)  # ✅ Get category name
+        bet_info = BET_RULES[bet_category][bet_type]  # ✅ Now correctly accessing bet rules
+        return bet_info.get("linked_bet")  # ✅ Safely retrieve linked bet
 
     @staticmethod
     def get_minimum_bet(number: Optional[int] = None) -> int:
@@ -53,7 +54,8 @@ class RulesEngine:
         :param parent_bet: The parent bet for odds bets.
         :return: A Bet instance.
         """
-        bet_rules = RulesEngine.find_bet_category(bet_type, BET_RULES)
+        bet_category = RulesEngine.find_bet_category(bet_type)
+        bet_rules = BET_RULES[bet_category][bet_type]
 
         if not bet_rules:
             raise ValueError(f"Unknown bet type: {bet_type}")
@@ -73,14 +75,10 @@ class RulesEngine:
         )
 
     @staticmethod
-    def can_make_bet(bet_type: str, phase: str, parent_bet: Optional[Bet] = None) -> bool:
-        """
-        Determine if a bet of the given type can be made during the current phase.
-        """
-        bet_info = RulesEngine.find_bet_category(bet_type, BET_RULES)
-
-        if not bet_info:
-            raise ValueError(f"Unknown bet type: {bet_type}")
+    def can_make_bet(bet_type, phase):
+        """Check if a bet type is allowed in the current phase."""
+        bet_category = RulesEngine.find_bet_category(bet_type)  # ✅ Get category name
+        bet_info = BET_RULES[bet_category][bet_type]  # ✅ Now correctly accessing bet rules
 
         return phase in bet_info["valid_phases"]
 
@@ -133,23 +131,16 @@ class RulesEngine:
         :param number: The number associated with the bet (e.g., 6 for Place 6).
         :return: A tuple representing the payout ratio (e.g., (2, 1) for 2:1).
         """
-        bet_info = RulesEngine.find_bet_category(bet_type, BET_RULES)
+        bet_category = RulesEngine.find_bet_category(bet_type)  # ✅ Get category name
+        bet_info = BET_RULES[bet_category][bet_type]  # ✅ Now correctly accessing bet rules
+        payout_key = bet_info["payout_ratio"]  # ✅ Safe lookup
 
-        if not bet_info:
-            raise ValueError(f"Unknown bet type: {bet_type}")
-
-        payout_key = bet_info["payout_ratio"]
-
-         # Handle Even Money and other non-number-based payouts
+        # Now apply the logic for payout lookup
         if payout_key in BET_PAYOUT:
-            if "default" in BET_PAYOUT[payout_key]:  # Case 1: Fixed Payouts (Even Money)
+            if "default" in BET_PAYOUT[payout_key]:
                 return BET_PAYOUT[payout_key]["default"]
-
-            if number is not None and number in BET_PAYOUT[payout_key]:  # Case 2: Bets with a specific number
+            if number is not None and number in BET_PAYOUT[payout_key]:
                 return BET_PAYOUT[payout_key][number]
-
-            if bet_type in BET_PAYOUT[payout_key]:  # Case 3: Lookup by bet type
-                return BET_PAYOUT[payout_key][bet_type]
 
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
@@ -167,39 +158,56 @@ class RulesEngine:
         if not bet_info:
             raise ValueError(f"Unknown bet type: {bet.bet_type}")
 
-        resolution_rules = bet_info["resolution"]
+        result = RulesEngine.find_bet_category(bet.bet_type, BET_RULES)
+        if isinstance(result, tuple) and len(result) == 2:
+            bet_category, bet_rules = result
+        else:
+            raise ValueError(f"Unexpected return value from find_bet_category: {result}")
 
-        ### 🟢 **1. LINE BETS (Pass Line, Don't Pass, Come, Don't Come)**
+        resolution_rules = BET_RULES[bet_category][bet.bet_type]["resolution"]
+
+        # 🎯 **1. LINE BETS (Pass Line, Don't Pass, Come, Don't Come)**
         if bet.bet_type in BET_RULES["Line Bets"]:
+            bet_category, bet_rules = RulesEngine.find_bet_category(bet.bet_type, BET_RULES)  # ✅ Get correct rules
+            resolution_rules = bet_rules["resolution"]  # ✅ Extract win/loss conditions
+
+            # 🔎 **Extract Win/Loss Conditions**
+            winning_numbers = resolution_rules.get(f"{phase}_win", [])
+            losing_numbers = resolution_rules.get(f"{phase}_lose", [])
+
             print(f"DEBUG: Resolving {bet.bet_type} | Phase: {phase} | Total: {total} | Point: {point}")
+            print(f"DEBUG: Expected Winning Numbers: {winning_numbers}")
+            print(f"DEBUG: Expected Losing Numbers: {losing_numbers}")
 
-            # ✅ Check direct win/loss conditions
-            if total in resolution_rules.get(f"{phase}_win", []):
-                print(f"DEBUG: {bet.bet_type} WON - Total {total} is in {phase}_win")
+            # 🏆 **Check if the bet wins**
+            if total in winning_numbers:
                 bet.status = "won"
+                print(f"DEBUG: {bet.bet_type} WON on {total}")
 
-            elif total in resolution_rules.get(f"{phase}_lose", []):
-                print(f"DEBUG: {bet.bet_type} LOST - Total {total} is in {phase}_lose")
+            # ❌ **Check if the bet loses**
+            elif total in losing_numbers:
                 bet.status = "lost"
+                print(f"DEBUG: {bet.bet_type} LOST on {total}")
 
-            # ✅ If moving to the **point phase**, assign a number (only if still active)
-            elif phase == "come-out" and bet.status == "active":  
-                print(f"DEBUG: {bet.bet_type} Moving to Point Phase - Assigning number {total}")
-                bet.number = total  # Assign the rolled number as the bet's number
+            # 🎯 **Handle "point_made" for Pass Line & "number_hit" for Come**
+            elif "point_made" in winning_numbers and total == point:
+                bet.status = "won"
+                print(f"DEBUG: {bet.bet_type} WON - Point {point} Made!")
 
-            # ✅ Handle "point_made" win condition in the **point phase**
-            if phase == "point" and "point_made" in resolution_rules.get(f"{phase}_win", []):
-                if total == point:
-                    print(f"DEBUG: {bet.bet_type} WON - Point made ({total})")
-                    bet.status = "won"
+            elif "number_hit" in winning_numbers and total == bet.number:
+                bet.status = "won"
+                print(f"DEBUG: {bet.bet_type} WON - Number {bet.number} Hit!")
 
-            # ✅ Handle "number_hit" win condition (for bets like Come bets)
-            if "number_hit" in resolution_rules.get(f"{phase}_win", []):
-                if total == bet.number:
-                    print(f"DEBUG: {bet.bet_type} WON - Number hit ({total})")
-                    bet.status = "won"
+            # ❌ **Handle "point_made" for Don't Pass & "number_hit" for Don't Come**
+            elif "point_made" in losing_numbers and total == point:
+                bet.status = "lost"
+                print(f"DEBUG: {bet.bet_type} LOST - Point {point} Made!")
 
-        ### 🟢 **2. FIELD BETS**
+            elif "number_hit" in losing_numbers and total == bet.number:
+                bet.status = "lost"
+                print(f"DEBUG: {bet.bet_type} LOST - Number {bet.number} Hit!")
+                
+        ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
             if "in-field" in resolution_rules.get(f"{phase}_win", []):
                 bet.status = "won"
@@ -207,21 +215,21 @@ class RulesEngine:
             elif "out-field" in resolution_rules.get(f"{phase}_lose", []):
                 bet.status = "lost"
 
-        ### 🟢 **3. PLACE, BUY, LAY BETS**
+        ### 🎯 **3. PLACE, BUY, LAY BETS**
         elif bet.bet_type in BET_RULES["Place Bets"]:
             if total == bet.number and "number_hit" in resolution_rules.get(f"{phase}_win", []):
                 bet.status = "won"
             elif total == 7 and "point_lose" in resolution_rules.get(f"{phase}_lose", []):
                 bet.status = "lost"
 
-        ### 🟢 **4. PROPOSITION BETS**
+        ### 🎯 **4. PROPOSITION BETS**
         elif bet.bet_type == "Proposition":
             if "number_hit" in resolution_rules.get(f"{phase}_win", []):
                 bet.status = "won"
             elif "any_other" in resolution_rules.get(f"{phase}_lose", []):
                 bet.status = "lost"
 
-        ### 🟢 **5. HARDWAYS**
+        ### 🎯 **5. HARDWAYS**
         elif bet.bet_type == "Hardways":
             if "hardway_win" in resolution_rules.get(f"{phase}_win", []):
                 if total == bet.number and is_pair:
@@ -231,7 +239,7 @@ class RulesEngine:
                 if total == 7 or (total == bet.number and not is_pair):  # ✅ Easy way loses
                     bet.status = "lost"
 
-        ### 🟢 **6. HOP BETS**
+        ### 🎯 **6. HOP BETS**
         elif bet.bet_type == "Hop":
             if "hop_win" in resolution_rules.get(f"{phase}_win", []):
                 if sorted_dice == (bet.number, bet.number) or sorted_dice in BET_PAYOUT["Hop"]:
@@ -275,15 +283,3 @@ class RulesEngine:
             raise ValueError(f"Unknown bet type: {bet_type}")
         return BET_RULES[bet_type].get("vig", False)
     
-    @staticmethod
-    def get_linked_bet_type(bet_type: str) -> Optional[str]:
-        """
-        Get the linked bet type for bets that have associated odds.
-        """
-        bet_info = RulesEngine.find_bet_category(bet_type, BET_RULES)
-
-        if not bet_info:
-            raise ValueError(f"Unknown bet type: {bet_type}")
-
-        return bet_info.get("linked_bet")
-
