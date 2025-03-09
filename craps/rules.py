@@ -92,7 +92,7 @@ BET_RULES = {
         "Place": {
             "linked_bet": "Place Odds",
             "valid_phases": ["point"],
-            "payout_ratio": "House Odds",
+            "payout_ratio": "Place Odds",
             "resolution": {
                 "point_win": ["number_hit"],
                 "point_lose": [7],
@@ -101,7 +101,7 @@ BET_RULES = {
         "Don't Place": {
             "linked_bet": "Don't Place Odds",
             "valid_phases": ["point"],
-            "payout_ratio": "Don't House Odds",
+            "payout_ratio": "Don't Place Odds",
             "resolution": {
                 "point_win": [7],
                 "point_lose": ["number_hit"],
@@ -135,81 +135,45 @@ BET_RULES = {
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Field",
             "resolution": {
-                "come_out_win": [2, 3, 4, 9, 10, 11, 12],
-                "come_out_lose": [5, 6, 7, 8],
-                "point_win": [2, 3, 4, 9, 10, 11, 12],
-                "point_lose": [5, 6, 7, 8],
+                "come_out_win": ["in-field"],
+                "come_out_lose": ["out-field"],
+                "point_win": ["in-field"],
+                "point_lose": ["out-field"],
             }
-        }
+        },
     },
-    "Proposition Bets": {
+    "Other Bets": {
         "is_contract_bet": False,
-        "Aces": {
+        "Proposition": {
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Proposition",
             "resolution": {
-                "come_out_win": [2],
-                "come_out_lose": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                "point_win": [2],
-                "point_lose": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            },
-        },
-        "Ace-Deuce": {
-            "valid_phases": ["come-out", "point"],
-            "payout_ratio": "Proposition",
-            "resolution": {
-                "come_out_win": [3],
-                "come_out_lose": [2, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                "point_win": [3],
-                "point_lose": [2, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            },
-        },
-        "Yo (11)": {
-            "valid_phases": ["come-out", "point"],
-            "payout_ratio": "Proposition",
-            "resolution": {
-                "come_out_win": [11],
-                "come_out_lose": [2, 3, 4, 5, 6, 7, 8, 9, 10, 12],
-                "point_win": [11],
-                "point_lose": [2, 3, 4, 5, 6, 7, 8, 9, 10, 12],
-            },
-        },
-        "12": {
-            "valid_phases": ["come-out", "point"],
-            "payout_ratio": "Proposition",
-            "resolution": {
-                "come_out_win": [12],
-                "come_out_lose": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                "point_win": [12],
-                "point_lose": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-            },
-        },
-        "Any Seven": {
-            "valid_phases": ["come-out", "point"],
-            "payout_ratio": "Proposition",
-            "resolution": {
-                "come_out_win": [7],
-                "come_out_lose": [2, 3, 4, 5, 6, 8, 9, 10, 11, 12],
-                "point_win": [7],
-                "point_lose": [2, 3, 4, 5, 6, 8, 9, 10, 11, 12],
+                "come_out_win": ["number_hit"],
+                "come_out_lose": ["any_other"], 
+                "point_win": ["number_hit"],
+                "point_lose": ["any_other"],
             },
         },
         "Hardways": {
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Hardways",
             "resolution": {
-                "point_win": {"hardway-win"},
-                "point_lose": {"hardway-lose"}
+                "come_out_win": ["hardway_win"],
+                "come_out_lose": ["hardway_lose"],
+                "point_win": ["hardway_win"],
+                "point_lose": ["hardway_lose"],
             },
         },
         "Hop": {
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Hop",
             "resolution": {
-                "point_win": {"number_hit"},
-                "point_lose": {"numeber_miss"}
+                "come_out_win": ["hop_win"],
+                "come_out_lose": ["hop_lose"],
+                "point_win": ["hop_win"],
+                "point_lose": ["hop_lose"],
             },
-        },
+        }
     }
 }
 
@@ -229,7 +193,7 @@ BET_PAYOUT = {
         9: (3, 2),
         10: (2, 1),
     },
-    "House Odds": {
+    "Place Odds": {
         4: (9, 5),
         5: (7, 5),
         6: (7, 6),
@@ -245,7 +209,7 @@ BET_PAYOUT = {
         9: (2, 3),
         10: (1, 2),
     },
-    "Don't House Odds": {
+    "Don't Place Odds": {
         4: (5, 9),
         5: (5, 7),
         6: (6, 7),
@@ -270,21 +234,27 @@ BET_PAYOUT = {
         12: (30, 1),
     },
     "Hardways": {
-        4: (30, 1),
-        6: (30, 1),
-        8: (30, 1),
-        10: (30, 1),
+        4: (8, 1),
+        6: (10, 1),
+        8: (10, 1),
+        10: (8, 1),
     },
     "Hop": {
-        4: (15, 1),
-        5: (15, 1),  
-        6: (15, 1),
-        7: (15, 1),
-        8: (15, 1),
-        9: (15, 1),
-        10: (15, 1),
-        11: (15, 1),
-        12: (15, 1),
+        (1, 1): (30, 1),
+        (1, 2): (15, 1),
+        (1, 3): (15, 1),
+        (2, 2): (30, 1),
+        (2, 3): (15, 1),
+        (2, 4): (15, 1),
+        (3, 3): (30, 1),
+        (3, 4): (15, 1),
+        (3, 5): (15, 1),
+        (4, 4): (30, 1),
+        (4, 5): (15, 1),
+        (4, 6): (15, 1),
+        (5, 5): (30, 1),
+        (5, 6): (15, 1),
+        (6, 6): (30, 1),
     }
 }
 
