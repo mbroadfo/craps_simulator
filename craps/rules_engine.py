@@ -163,27 +163,7 @@ class RulesEngine:
             # ❌ **Check if the bet loses**
             elif total in losing_numbers:
                 bet.status = "lost"
-                print(f"DEBUG: {bet.bet_type} LOST on {total}")
 
-            # 🎯 **Handle "point_made" for Pass Line & "number_hit" for Come**
-            elif "point_made" in winning_numbers and total == point:
-                bet.status = "won"
-                print(f"DEBUG: {bet.bet_type} WON - Point {point} Made!")
-
-            elif "number_hit" in winning_numbers and total == bet.number:
-                bet.status = "won"
-                print(f"DEBUG: {bet.bet_type} WON - Number {bet.number} Hit!")
-
-            # ❌ **Handle "point_made" for Don't Pass & "number_hit" for Don't Come**
-            elif "point_made" in losing_numbers and total == point:
-                bet.status = "lost"
-                print(f"DEBUG: {bet.bet_type} LOST - Point {point} Made!")
-
-            elif "number_hit" in losing_numbers and total == bet.number:
-                bet.status = "lost"
-                print(f"DEBUG: {bet.bet_type} LOST - Number {bet.number} Hit!")
-                
-        ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
             if "in-field" in resolution_rules.get(f"{phase}_win", []):
                 bet.status = "won"
