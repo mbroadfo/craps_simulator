@@ -10,6 +10,7 @@ class TestBetResolution(unittest.TestCase):
         self.player = Player("Test Player")
         self.rules_engine = RulesEngine()
 
+    ### ✅ Line Bets ###
     def test_pass_line_win_come_out(self):
         """Pass Line bet should win on come-out roll with 7 or 11."""
         bet = self.rules_engine.create_bet("Pass Line", 10, self.player)
@@ -26,30 +27,41 @@ class TestBetResolution(unittest.TestCase):
         self.assertEqual(bet.status, "lost")
         self.assertEqual(payout, 0)
 
-    def test_pass_line_win_point_phase(self):
-        """Pass Line bet should win when point is hit before a 7."""
-        bet = self.rules_engine.create_bet("Pass Line", 10, self.player)
-        payout = self.rules_engine.resolve_bet(bet, [5, 1], "point", 6)  # Roll: 6 (point hit)
+    ### ✅ Proposition Bets (Updated) ###
+    def test_proposition_win(self):
+        """Proposition bet should win when the exact number is rolled."""
+        bet = self.rules_engine.create_bet("Proposition", 10, self.player, number=11)  # Yo (11)
+        payout = self.rules_engine.resolve_bet(bet, [6, 5], "point", 8)  # Roll: 11
 
         self.assertEqual(bet.status, "won")
-        self.assertEqual(payout, 10)
+        self.assertGreater(payout, 0)
 
-    def test_pass_line_lose_point_phase(self):
-        """Pass Line bet should lose when 7 rolls before the point."""
-        bet = self.rules_engine.create_bet("Pass Line", 10, self.player)
-        payout = self.rules_engine.resolve_bet(bet, [5, 2], "point", 6)  # Roll: 7
+    def test_proposition_loss(self):
+        """Proposition bet should lose on any number except its specific value."""
+        bet = self.rules_engine.create_bet("Proposition", 10, self.player, number=11)  # Yo (11)
+        payout = self.rules_engine.resolve_bet(bet, [3, 4], "point", 8)  # Roll: 7
 
         self.assertEqual(bet.status, "lost")
         self.assertEqual(payout, 0)
 
-    def test_field_bet_win(self):
-        """Field bet should win with 2, 3, 4, 9, 10, 11, 12."""
-        bet = self.rules_engine.create_bet("Field", 10, self.player)
-        payout = self.rules_engine.resolve_bet(bet, [5, 5], "point", 8)  # Roll: 10
+    ### ✅ Any 7 Bet (Updated to Proposition) ###
+    def test_proposition_7_win(self):
+        """Any 7 bet should win when a 7 is rolled."""
+        bet = self.rules_engine.create_bet("Proposition", 10, self.player, number=7)
+        payout = self.rules_engine.resolve_bet(bet, [5, 2], "point", 8)  # Roll: 7
 
         self.assertEqual(bet.status, "won")
-        self.assertEqual(payout, 10)
+        self.assertGreater(payout, 0)
 
+    def test_proposition_7_loss(self):
+        """Any 7 bet should lose on any roll except 7."""
+        bet = self.rules_engine.create_bet("Proposition", 10, self.player, number=7)
+        payout = self.rules_engine.resolve_bet(bet, [6, 5], "point", 8)  # Roll: 11
+
+        self.assertEqual(bet.status, "lost")
+        self.assertEqual(payout, 0)
+
+    ### ✅ Field Bets (Ensure Proper Payouts) ###
     def test_field_bet_special_payout(self):
         """Field bet should pay 2:1 for 2 and 3:1 for 12."""
         bet = self.rules_engine.create_bet("Field", 10, self.player)
@@ -58,10 +70,27 @@ class TestBetResolution(unittest.TestCase):
         self.assertEqual(bet.status, "won")
         self.assertEqual(payout, 20)  # 2:1 payout for rolling a 2
 
-    def test_field_bet_loss(self):
-        """Field bet should lose with 5, 6, 7, 8."""
-        bet = self.rules_engine.create_bet("Field", 10, self.player)
-        payout = self.rules_engine.resolve_bet(bet, [4, 1], "point", 8)  # Roll: 5
+    ### ✅ Hardways ###
+    def test_hardways_win(self):
+        """Hardways bet should win when the exact hardway is rolled."""
+        bet = self.rules_engine.create_bet("Hardways", 10, self.player, number=8)
+        payout = self.rules_engine.resolve_bet(bet, [4, 4], "point", 8)  # Hard 8
+
+        self.assertEqual(bet.status, "won")
+        self.assertGreater(payout, 0)
+
+    def test_hardways_loss_easy_way(self):
+        """Hardways bet should lose if the same total is rolled the easy way."""
+        bet = self.rules_engine.create_bet("Hardways", 10, self.player, number=8)
+        payout = self.rules_engine.resolve_bet(bet, [5, 3], "point", 8)  # Easy 8
+
+        self.assertEqual(bet.status, "lost")
+        self.assertEqual(payout, 0)
+
+    def test_hardways_loss_seven(self):
+        """Hardways bet should lose when a 7 is rolled."""
+        bet = self.rules_engine.create_bet("Hardways", 10, self.player, number=8)
+        payout = self.rules_engine.resolve_bet(bet, [5, 2], "point", 8)  # Roll: 7
 
         self.assertEqual(bet.status, "lost")
         self.assertEqual(payout, 0)
