@@ -7,40 +7,49 @@ class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
     @staticmethod
-    def find_bet_category(bet_type, lookup_table=BET_RULES):
-        """Find the category a bet type belongs to."""
-        for category, rules in lookup_table.items():
-            if bet_type in rules:
-                return category
+    def find_bet_category(bet_type: str) -> tuple:
+        """Find the category and rules for a given bet type."""
+        for category, bets in BET_RULES.items():
+            if bet_type in bets:
+                return category, bets[bet_type]  # ✅ Return both category & rules
+
         raise ValueError(f"Unknown bet type: {bet_type}")
     
     @staticmethod
-    def get_linked_bet_type(bet_type):
-        """Retrieve the linked bet type, if applicable (e.g., Pass Line → Pass Line Odds)."""
-        bet_category = RulesEngine.find_bet_category(bet_type)  # ✅ Get category name
-        bet_info = BET_RULES[bet_category][bet_type]  # ✅ Now correctly accessing bet rules
-        return bet_info.get("linked_bet")  # ✅ Safely retrieve linked bet
+    def get_linked_bet_type(bet_type: str) -> Optional[str]:
+        """Returns the linked bet type, if any (e.g., Pass Line → Pass Line Odds)."""
+        _, bet_info = RulesEngine.find_bet_category(bet_type)  # ✅ Get correct bet rules
+
+        return bet_info.get("linked_bet") if isinstance(bet_info, dict) else None  # ✅ Fix
 
     @staticmethod
-    def get_minimum_bet(number: Optional[int] = None) -> int:
-        """
-        Get the minimum bet amount for a specific bet type or number.
+    def get_minimum_bet(bet_type: str, table_min: int, table_max: int) -> int:
+        """Returns the correct minimum bet amount for a given bet type based on table rules."""
+        bet_category, bet_info = RulesEngine.find_bet_category(bet_type)  # ✅ Get correct bet rules
 
-        :param number: The number associated with the bet (e.g., 6 for Place 6).
-        :return: The minimum bet amount.
-        """
-        # Default minimum bet for most bets
-        default_min_bet = 10  # Replace with the actual default minimum bet from house rules
+        # 🟢 **Base Minimum Bet: All bets must be at least $1**
+        min_bet = 1
 
-        # Adjust minimum bet for specific bet types or numbers
-        if number is not None:
-            # For Place bets, the minimum bet may vary based on the number
-            if number in [4, 5, 6, 8, 9, 10]:
-                return default_min_bet  # Replace with actual logic if needed
-            else:
-                raise ValueError(f"Invalid number for minimum bet: {number}")
+        # 🟢 **Line & Field Bets: Must be within table min & max**
+        if bet_category in ["Line Bets", "Field Bets"]:
+            min_bet = max(table_min, min_bet)  # Ensure at least table minimum
+            return min(table_max, min_bet)  # Ensure it doesn't exceed table max
 
-        return default_min_bet
+        # 🟢 **Prop, Hop, Hardways, Odds Bets: Can be as low as $1**
+        elif bet_category in ["Other Bets", "Odds Bets"]:
+            return min_bet  # No additional constraints
+
+        # 🟢 **Place & Don't Place Bets: Special Case for 6 & 8**
+        elif bet_category == "Place Bets":
+            if bet_type in ["Place", "Don't Place"] and bet_info.get("number") in [6, 8]:
+                return table_min + (table_min // 5)  # Ensure correct payout increments
+            return table_min  # Regular place bets follow the table minimum
+
+        # 🟢 **Odds on 5 & 9: Must be Even for Correct Payouts**
+        elif bet_category == "Odds Bets" and bet_info.get("number") in [5, 9]:
+            return max(2, (table_min // 2) * 2)  # Round up to the nearest even number
+
+        return min_bet  # Default minimum bet
 
     @staticmethod
     def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
@@ -75,74 +84,41 @@ class RulesEngine:
         )
 
     @staticmethod
-    def can_make_bet(bet_type, phase):
+    def can_make_bet(bet_type: str, phase: str) -> bool:
         """Check if a bet type is allowed in the current phase."""
-        bet_category = RulesEngine.find_bet_category(bet_type)  # ✅ Get category name
-        bet_info = BET_RULES[bet_category][bet_type]  # ✅ Now correctly accessing bet rules
-
-        return phase in bet_info["valid_phases"]
+        _, bet_info = RulesEngine.find_bet_category(bet_type)  # ✅ Fetch correct bet rules
+        return phase in bet_info["valid_phases"]  # ✅ Safe lookup
 
     @staticmethod
     def can_remove_bet(bet_type: str, phase: str) -> bool:
-        """
-        Determine if a bet of the given type can be removed during the current phase.
-        Contract bets cannot be removed once placed.
-        """
-        # Find the bet type inside BET_RULES
-        for category, data in BET_RULES.items():
-            if isinstance(data, dict):
-                if bet_type in data:  # Direct match in category
-                    bet_info = data[bet_type]
-                    category_info = data
-                    break
-                for subcategory, bets in data.items():
-                    if isinstance(bets, dict) and bet_type in bets:  # Found inside a subcategory
-                        bet_info = bets[bet_type]
-                        category_info = data
-                        break
-        else:
-            raise ValueError(f"Unknown bet type: {bet_type}")
+        """Determine if a bet can be removed during the current phase."""
+        _, bet_info = RulesEngine.find_bet_category(bet_type)  # ✅ Use standard lookup
 
-        # Check if it's a contract bet at the bet or category level
-        if bet_info.get("is_contract_bet", False) or category_info.get("is_contract_bet", False):
-            return False  # Contract bets cannot be removed
-
-        return True
+        # ✅ Only check `is_contract_bet` at the bet level
+        return not bet_info.get("is_contract_bet", False)
 
     @staticmethod
     def can_turn_on(bet_type: str, phase: str) -> bool:
-        """
-        Determine if a bet of the given type can be turned on during the current phase.
+        """Determine if a bet can be turned on during the current phase."""
+        _, bet_info = RulesEngine.find_bet_category(bet_type)  # ✅ Use standardized lookup
 
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :param phase: The current game phase ("come-out" or "point").
-        :return: True if the bet can be turned on, False otherwise.
-        """
-        if bet_type not in BET_RULES:
-            raise ValueError(f"Unknown bet type: {bet_type}")
-        return BET_RULES[bet_type].get("can_turn_on", False)
+        return bet_info.get("can_turn_on", False)  # ✅ Standardized access
 
     @staticmethod
     def get_payout_ratio(bet_type: str, number: Optional[int] = None) -> Tuple[int, int]:
-        """
-        Get the payout ratio for a bet based on its type and number (if applicable).
+        """Get the payout ratio for a bet."""
+        _, bet_info = RulesEngine.find_bet_category(bet_type)  # ✅ Use standardized lookup
+        payout_key = bet_info["payout_ratio"]  # ✅ Extract payout type
 
-        :param bet_type: The type of bet (e.g., "Pass Line", "Place", "Any Seven").
-        :param number: The number associated with the bet (e.g., 6 for Place 6).
-        :return: A tuple representing the payout ratio (e.g., (2, 1) for 2:1).
-        """
-        bet_category = RulesEngine.find_bet_category(bet_type)  # ✅ Get category name
-        bet_info = BET_RULES[bet_category][bet_type]  # ✅ Now correctly accessing bet rules
-        payout_key = bet_info["payout_ratio"]  # ✅ Safe lookup
-
-        # Now apply the logic for payout lookup
+        # ✅ Lookup payout table
         if payout_key in BET_PAYOUT:
-            if "default" in BET_PAYOUT[payout_key]:
-                return BET_PAYOUT[payout_key]["default"]
-            if number is not None and number in BET_PAYOUT[payout_key]:
-                return BET_PAYOUT[payout_key][number]
+            if "default" in BET_PAYOUT[payout_key]:  
+                return BET_PAYOUT[payout_key]["default"]  # ✅ Case 1: Default payout
+            if number is not None and number in BET_PAYOUT[payout_key]:  
+                return BET_PAYOUT[payout_key][number]  # ✅ Case 2: Number-based payout
 
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
+
 
     @staticmethod
     def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> int:
@@ -273,13 +249,6 @@ class RulesEngine:
 
     @staticmethod
     def has_vig(bet_type: str) -> bool:
-        """
-        Determine if a bet of the given type has a vig (commission).
-
-        :param bet_type: The type of bet (e.g., "Pass Line", "Pass Line Odds", "Place").
-        :return: True if the bet has a vig, False otherwise.
-        """
-        if bet_type not in BET_RULES:
-            raise ValueError(f"Unknown bet type: {bet_type}")
-        return BET_RULES[bet_type].get("vig", False)
-    
+        """Determine if a bet has a vig (commission)."""
+        _, bet_info = RulesEngine.find_bet_category(bet_type)  # ✅ Get correct bet rules
+        return bet_info.get("has_vig", False)  # ✅ Use proper lookup
