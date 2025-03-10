@@ -26,7 +26,7 @@ class TestBetCreationValidation(unittest.TestCase):
     def test_contract_bet_cannot_be_removed(self):
         """Ensure contract bets cannot be removed once placed."""
         bet = RulesEngine.create_bet("Pass Line", 10, self.player)
-        self.assertFalse(RulesEngine.can_remove_bet(bet.bet_type, "point"))
+        self.assertFalse(RulesEngine.can_remove_bet(bet.bet_type))
     
     def test_valid_phases_for_bets(self):
         """Ensure bets are only allowed in correct game phases."""

@@ -7,11 +7,21 @@ class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
     @staticmethod
-    def get_bet_rules(bet_type: str) -> dict:
-        """Retrieve the rules for a given bet type."""
-        for bets in BET_RULES.values():  # Ignore categories, just find the bet
+    def get_bet_rules(bet_type: str) -> Dict[str, Any]:
+        """
+        Retrieve the rules for a given bet type, including category-level attributes.
+
+        :param bet_type: The type of bet (e.g., "Pass Line", "Field", "Hardways").
+        :return: A dictionary containing the rules for the bet.
+        """
+        for category, bets in BET_RULES.items():
             if bet_type in bets:
-                return bets[bet_type]  # ✅ Return only the bet rules
+                bet_rules = bets[bet_type].copy()  # ✅ Get bet-level rules
+                category_rules = {k: v for k, v in bets.items() if not isinstance(v, dict)}  # ✅ Get category-level attributes
+                
+                # 🔄 Merge category attributes with bet rules (bet rules take priority)
+                return {**category_rules, **bet_rules}
+
         raise ValueError(f"Unknown bet type: {bet_type}")
 
     @staticmethod
@@ -31,22 +41,20 @@ class RulesEngine:
         min_bet = 1
 
         # 🟢 **Line & Field Bets: Must be within table min & max**
-        if bet_type in BET_RULES["Line Bets"] or bet_type in BET_RULES["Field Bets"]:
+        if bet_rules.get("is_contract_bet", False) or bet_type == "Field":
             min_bet = max(table_min, min_bet)  # Ensure at least table minimum
             return min(table_max, min_bet)  # Ensure it doesn't exceed table max
 
         # 🟢 **Prop, Hop, Hardways, Odds Bets: Can be as low as $1**
-        elif bet_type in BET_RULES["Other Bets"] or bet_type in BET_RULES["Odds Bets"]:
+        elif bet_rules.get("valid_numbers") is not None and bet_type in ["Proposition", "Hardways", "Hop", "Odds"]:
             return min_bet  # No additional constraints
 
         # 🟢 **Place & Don't Place Bets: Special Case for 6 & 8**
-        elif bet_type in BET_RULES["Place Bets"]:
-            if bet_rules.get("number") in [6, 8]:
-                return table_min + (table_min // 5)  # Ensure correct payout increments
-            return table_min  # Regular place bets follow the table minimum
+        elif bet_type in ["Place", "Don't Place"] and bet_rules.get("valid_numbers") == [6, 8]:
+            return table_min + (table_min // 5)  # Ensure correct payout increments
 
         # 🟢 **Odds on 5 & 9: Must be Even for Correct Payouts**
-        elif bet_type in BET_RULES["Odds Bets"] and bet_rules.get("number") in [5, 9]:
+        elif bet_type in ["Pass Line Odds", "Don't Pass Odds", "Come Odds", "Don't Come Odds"] and bet_rules.get("valid_numbers") == [5, 9]:
             return max(2, (table_min // 2) * 2)  # Round up to the nearest even number
 
         return min_bet  # Default minimum bet
@@ -73,31 +81,35 @@ class RulesEngine:
         )
 
     @staticmethod
-    def can_make_bet(bet_type, phase):
-        """Check if a bet type is allowed in the current phase."""
-        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
-        return phase in bet_rules["valid_phases"]
+    def can_make_bet(bet_type: str, phase: str, number: Optional[int] = None) -> bool:
+        """Check if a bet can be placed in the given phase and with a specific number."""
+        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Get the rules
 
-    @staticmethod
-    def can_remove_bet(bet_type: str, phase: str) -> bool:
-        """Determine if a bet of the given type can be removed during the current phase."""
-        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
+        # ✅ Check valid phases (no change)
+        if phase not in bet_rules["valid_phases"]:
+            return False
 
-        # Check if this specific bet is a contract bet
-        is_contract_bet = bet_rules.get("is_contract_bet", False)
+        # ✅ Only check valid numbers **if the bet type has them defined**
+        valid_numbers = bet_rules.get("valid_numbers")  # Get the valid numbers list
+        if valid_numbers is not None and number is not None and number not in valid_numbers:
+            return False  # ❌ Reject invalid numbers
 
-        # Check if the entire category is marked as contract bets
-        category_contract_bet = BET_RULES.get("Line Bets", {}).get("is_contract_bet", False)
-
-        # If either is True, the bet cannot be removed
-        return not (is_contract_bet or category_contract_bet)
-
+        return True  # ✅ Bet is valid
 
     @staticmethod
     def can_turn_on(bet_type: str, phase: str) -> bool:
         """Determine if a bet of the given type can be turned on during the current phase."""
         bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
         return bet_rules.get("can_turn_on", False)
+    
+    @staticmethod
+    def can_remove_bet(bet_type: str) -> bool:
+        """
+        Determine if a bet of the given type can be removed.
+        Contract bets cannot be removed once placed.
+        """
+        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Fetch all bet rules in one go
+        return not bet_rules.get("is_contract_bet", False)  # ❌ Contract bets cannot be removed
 
     @staticmethod
     def get_payout_ratio(bet_type: str, number: Optional[int] = None) -> Tuple[int, int]:
@@ -124,10 +136,10 @@ class RulesEngine:
         sorted_dice = tuple(sorted(dice_outcome))
         bet_rules = RulesEngine.get_bet_rules(bet.bet_type)  # ✅ Unified retrieval
         resolution_rules = bet_rules["resolution"]
-        phase_key = phase.replace("-", "_")
+        phase_key = phase.replace("-", "_")  # ✅ Normalize phase key
 
         # 🎯 **1. LINE BETS (Pass Line, Don't Pass, Come, Don't Come)**
-        if bet.bet_type in BET_RULES["Line Bets"]:
+        if bet_rules.get("is_contract_bet", False):  # ✅ Line bets use contract logic
             winning_numbers = resolution_rules.get(f"{phase_key}_win", [])
             losing_numbers = resolution_rules.get(f"{phase_key}_lose", [])
 
@@ -139,20 +151,18 @@ class RulesEngine:
 
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
-            if "in-field" in resolution_rules.get(f"{phase}_win", []):
+            if "in-field" in resolution_rules.get(f"{phase_key}_win", []):
                 bet.status = "won"
                 bet.number = total  # ✅ Assign the rolled number
-            elif "out-field" in resolution_rules.get(f"{phase}_lose", []):
+            elif "out-field" in resolution_rules.get(f"{phase_key}_lose", []):
                 bet.status = "lost"
 
         ### 🎯 **3. PLACE, BUY, LAY BETS**
-        elif bet.bet_type == "Field":
-            if "in-field" in resolution_rules.get(f"{phase}_win", []):
+        elif bet_rules.get("valid_numbers") == [4, 5, 6, 8, 9, 10]:  # ✅ Uses category attribute
+            if total == bet.number and "number_hit" in resolution_rules.get(f"{phase_key}_win", []):
                 bet.status = "won"
-                bet.number = total  # ✅ Only set number when the bet wins
-            else:  # ✅ Implicitly handle losing condition without checking "out-field"
+            elif total == 7 and "point_lose" in resolution_rules.get(f"{phase_key}_lose", []):
                 bet.status = "lost"
-
 
         ### 🎯 **4. PROPOSITION BETS**
         elif bet.bet_type == "Proposition":
@@ -163,27 +173,29 @@ class RulesEngine:
 
         ### 🎯 **5. HARDWAYS**
         elif bet.bet_type == "Hardways":
-            if "hardway_win" in resolution_rules.get(f"{phase}_win", []):
+            if "hardway_win" in resolution_rules.get(f"{phase_key}_win", []):
                 if total == bet.number and is_pair:
                     bet.status = "won"
 
-            if "hardway_lose" in resolution_rules.get(f"{phase}_lose", []):
+            if "hardway_lose" in resolution_rules.get(f"{phase_key}_lose", []):
                 if total == 7 or (total == bet.number and not is_pair):  # ✅ Easy way loses
                     bet.status = "lost"
 
         ### 🎯 **6. HOP BETS**
         elif bet.bet_type == "Hop":
-            if "hop_win" in resolution_rules.get(f"{phase}_win", []) and (sorted_dice == (bet.number, bet.number) or sorted_dice in BET_PAYOUT["Hop"]):
+            if "hop_win" in resolution_rules.get(f"{phase_key}_win", []) and (
+                sorted_dice == (bet.number, bet.number) or sorted_dice in BET_PAYOUT["Hop"]
+            ):
                 bet.status = "won"
-            elif "hop_lose" in resolution_rules.get(f"{phase}_lose", []) and (sorted_dice != (bet.number, bet.number) and sorted_dice not in BET_PAYOUT["Hop"]):
+            elif "hop_lose" in resolution_rules.get(f"{phase_key}_lose", []) and (
+                sorted_dice != (bet.number, bet.number) and sorted_dice not in BET_PAYOUT["Hop"]
+            ):
                 bet.status = "lost"
 
         ### 🎯 **Calculate Payout if Won**
         payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0
         return payout
 
-
-    @staticmethod
     @staticmethod
     def calculate_payout(bet: Bet, roll: Optional[int] = None) -> int:
         """
@@ -203,7 +215,7 @@ class RulesEngine:
         numerator, denominator = payout_ratio
         profit = (bet.amount * numerator) // denominator
 
-        return bet.amount + profit if bet.is_contract_bet else profit
+        return profit
 
     @staticmethod
     def has_vig(bet_type: str) -> bool:
