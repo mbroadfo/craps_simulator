@@ -48,7 +48,7 @@ class IronCrossStrategy:
             # Use RulesEngine to create Place bets
             bets = []
             for number in numbers:
-                min_bet = self.rules_engine.get_minimum_bet(number)  # Use RulesEngine to get minimum bet
+                min_bet = self.rules_engine.get_minimum_bet("Place", table)  # ✅ Correct  # Use RulesEngine to get minimum bet
                 bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists

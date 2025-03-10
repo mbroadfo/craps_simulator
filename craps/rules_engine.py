@@ -21,23 +21,35 @@ class RulesEngine:
         return bet_rules.get("linked_bet")
 
     @staticmethod
-    def get_minimum_bet(bet_type: str, table_min: int, table_max: int) -> int:
+    def get_minimum_bet(bet_type: str, table) -> int:
         """Returns the correct minimum bet amount for a given bet type based on table rules."""
-        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
+        table_min = table.house_rules.table_minimum
+        table_max = table.house_rules.table_maximum
+        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified rule retrieval
 
-        min_bet = 1  # All bets must be at least $1
+        # 🟢 **Base Minimum Bet: All bets must be at least $1**
+        min_bet = 1
 
-        if "is_contract_bet" in bet_rules:  # Line & Field Bets
-            min_bet = max(table_min, min_bet)
-            return min(table_max, min_bet)
+        # 🟢 **Line & Field Bets: Must be within table min & max**
+        if bet_type in BET_RULES["Line Bets"] or bet_type in BET_RULES["Field Bets"]:
+            min_bet = max(table_min, min_bet)  # Ensure at least table minimum
+            return min(table_max, min_bet)  # Ensure it doesn't exceed table max
 
-        if bet_type in ["Place", "Don't Place"] and bet_rules.get("number") in [6, 8]:
-            return table_min + (table_min // 5)
+        # 🟢 **Prop, Hop, Hardways, Odds Bets: Can be as low as $1**
+        elif bet_type in BET_RULES["Other Bets"] or bet_type in BET_RULES["Odds Bets"]:
+            return min_bet  # No additional constraints
 
-        if bet_type in ["Pass Line Odds", "Don't Pass Odds", "Come Odds", "Don't Come Odds"]:
-            return max(2, (table_min // 2) * 2)  # Ensure even numbers
+        # 🟢 **Place & Don't Place Bets: Special Case for 6 & 8**
+        elif bet_type in BET_RULES["Place Bets"]:
+            if bet_rules.get("number") in [6, 8]:
+                return table_min + (table_min // 5)  # Ensure correct payout increments
+            return table_min  # Regular place bets follow the table minimum
 
-        return min_bet  # Default minimum
+        # 🟢 **Odds on 5 & 9: Must be Even for Correct Payouts**
+        elif bet_type in BET_RULES["Odds Bets"] and bet_rules.get("number") in [5, 9]:
+            return max(2, (table_min // 2) * 2)  # Round up to the nearest even number
+
+        return min_bet  # Default minimum bet
 
     @staticmethod
     def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
@@ -134,11 +146,13 @@ class RulesEngine:
                 bet.status = "lost"
 
         ### 🎯 **3. PLACE, BUY, LAY BETS**
-        elif bet.bet_type in BET_RULES["Place Bets"]:
-            if total == bet.number and "number_hit" in resolution_rules.get(f"{phase}_win", []):
+        elif bet.bet_type == "Field":
+            if "in-field" in resolution_rules.get(f"{phase}_win", []):
                 bet.status = "won"
-            elif total == 7 and "point_lose" in resolution_rules.get(f"{phase}_lose", []):
+                bet.number = total  # ✅ Only set number when the bet wins
+            else:  # ✅ Implicitly handle losing condition without checking "out-field"
                 bet.status = "lost"
+
 
         ### 🎯 **4. PROPOSITION BETS**
         elif bet.bet_type == "Proposition":
@@ -170,17 +184,20 @@ class RulesEngine:
 
 
     @staticmethod
+    @staticmethod
     def calculate_payout(bet: Bet, roll: Optional[int] = None) -> int:
         """
         Calculate the payout for a resolved bet.
         """
         if bet.status != "won":
-            return 0  # No payout if the bet didn't win
-
-        payout_ratio = RulesEngine.get_payout_ratio(bet.bet_type, bet.number)
+            return 0  # ✅ No payout if the bet didn't win
 
         # Ensure the correct roll value is used for bets that depend on it (e.g., Field)
         number = roll if bet.bet_type == "Field" else bet.number
+
+        # ✅ Field bets should only request payout if they actually won
+        if bet.bet_type == "Field" and number not in BET_PAYOUT["Field"]:
+            return 0  # ✅ If the number isn't a winning Field number, payout is $0
 
         payout_ratio = RulesEngine.get_payout_ratio(bet.bet_type, number)
         numerator, denominator = payout_ratio
