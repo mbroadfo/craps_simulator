@@ -6,6 +6,7 @@ from typing import Tuple, Optional
 BET_RULES = {
     "Line Bets": {
         "is_contract_bet": True,
+        "valid_numbers": None,
         "Pass Line": {
             "linked_bet": "Pass Line Odds",
             "valid_phases": ["come-out"],
@@ -54,6 +55,7 @@ BET_RULES = {
         },    },
     "Odds Bets": {
         "is_contract_bet": False,
+        "valid_numbers": None,
         "Pass Line Odds": {
             "valid_phases": ["point"],
             "payout_ratio": "True Odds",
@@ -89,6 +91,7 @@ BET_RULES = {
     },
     "Place Bets": {
         "is_contract_bet": False,
+        "valid_numbers": [4, 5, 6, 8, 9, 10],
         "Place": {
             "linked_bet": "Place Odds",
             "valid_phases": ["point"],
@@ -130,6 +133,7 @@ BET_RULES = {
     },
     "Field Bets": {
         "is_contract_bet": False,
+        "valid_numbers": None,
         "Field": {
             "linked_bet": None,
             "valid_phases": ["come-out", "point"],
@@ -144,7 +148,9 @@ BET_RULES = {
     },
     "Other Bets": {
         "is_contract_bet": False,
+        "valid_numbers": None,
         "Proposition": {
+            "valid_numbers": [2, 3, 7, 11, 12],
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Proposition",
             "resolution": {
@@ -155,6 +161,7 @@ BET_RULES = {
             },
         },
         "Hardways": {
+            "valid_numbers": [4, 6, 8, 10],
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Hardways",
             "resolution": {
@@ -165,6 +172,7 @@ BET_RULES = {
             },
         },
         "Hop": {
+            "valid_numbers": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Hop",
             "resolution": {
