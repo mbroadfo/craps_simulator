@@ -67,6 +67,13 @@ class RulesEngine:
         if not bet_rules:
             raise ValueError(f"Unknown bet type: {bet_type}")
 
+        # ✅ Check if the number is valid for this bet type
+        valid_numbers = bet_rules.get("valid_numbers")  # Can be None or a list
+        if valid_numbers is None and number is not None:
+            raise ValueError(f"{bet_type} bet should not have a number")
+        if valid_numbers and number not in valid_numbers:
+            raise ValueError(f"Invalid number {number} for bet type {bet_type}")
+
         payout_ratio = None if bet_type == "Field" else RulesEngine.get_payout_ratio(bet_type, number)
 
         return Bet(
