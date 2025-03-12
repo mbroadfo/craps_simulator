@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict, Any, Tuple
+from typing import List, Optional, Dict, Any, Tuple, Union
 from craps.rules import BET_RULES, BET_PAYOUT
 from craps.bet import Bet
 from craps.house_rules import HouseRules
@@ -119,16 +119,23 @@ class RulesEngine:
         return not bet_rules.get("is_contract_bet", False)  # ❌ Contract bets cannot be removed
 
     @staticmethod
-    def get_payout_ratio(bet_type: str, number: Optional[int] = None) -> Tuple[int, int]:
+    def get_payout_ratio(bet_type: str, number: Optional[Union[int, Tuple[int, int]]] = None) -> Tuple[int, int]:
         """Get the payout ratio for a bet based on its type and number (if applicable)."""
-        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
+        bet_rules = RulesEngine.get_bet_rules(bet_type)  
         payout_key = bet_rules["payout_ratio"]
 
         if payout_key in BET_PAYOUT:
-            if "default" in BET_PAYOUT[payout_key]:
-                return BET_PAYOUT[payout_key]["default"]
-            if number is not None and number in BET_PAYOUT[payout_key]:
-                return BET_PAYOUT[payout_key][number]
+            # Case 1: If no number is provided, return the default payout ratio
+            if number is None:
+                return BET_PAYOUT[payout_key].get("default", (1, 1))
+
+            # Case 2: If number is an integer (e.g., True Odds, Place Bets)
+            if isinstance(number, int):
+                return BET_PAYOUT[payout_key].get(number, BET_PAYOUT[payout_key].get("default", (1, 1)))
+
+            # Case 3: If number is a tuple (e.g., Hop bets)
+            if isinstance(number, tuple):
+                return BET_PAYOUT[payout_key].get(number, BET_PAYOUT[payout_key].get("default", (1, 1)))
 
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
@@ -197,6 +204,13 @@ class RulesEngine:
             elif "hop_lose" in resolution_rules.get(f"{phase_key}_lose", []) and (
                 sorted_dice != (bet.number, bet.number) and sorted_dice not in BET_PAYOUT["Hop"]
             ):
+                bet.status = "lost"
+                
+        ### 🎯 **7. ODDS BETS**
+        elif bet.bet_type in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
+            if bet.parent_bet and bet.parent_bet.status == "won":
+                bet.status = "won"
+            elif bet.parent_bet and bet.parent_bet.status == "lost":
                 bet.status = "lost"
 
         ### 🎯 **Calculate Payout if Won**
