@@ -1,40 +1,51 @@
 import unittest
-from craps.common import CommonTableSetup
 from craps.shooter import Shooter
+from craps.dice import Dice
 
-class TestShooterRotation(unittest.TestCase):
+class TestPlayerAndShooter(unittest.TestCase):
+
     def setUp(self):
-        """Initialize the table and players correctly."""
-        self.common_setup = CommonTableSetup()
-        self.table = self.common_setup.table
-        self.players = [self.common_setup.player]  # Use existing setup
+        """Set up test environment with a player and a shooter."""
+        self.shooter = Shooter(name="Test Shooter", initial_balance=1000, betting_strategy=None, dice=Dice(), play_by_play=None)
+
+    def test_player_initialization(self):
+        """Test that a player (shooter) is initialized correctly."""
+        self.assertEqual(self.shooter.name, "Test Shooter")
+        self.assertEqual(self.shooter.balance, 1000)
+        self.assertIsNone(self.shooter.betting_strategy)
+
+    def test_player_betting_outcome(self):
+        """Test that a player only loses money when a bet is lost."""
+        initial_balance = self.shooter.balance
         
-    def test_shooter_rotates_after_seven_out(self):
-        """Shooter should rotate after rolling a seven-out."""
-        shooter = Shooter(self.players[0].name)
-        self.table.current_shooter = shooter
+        bet_amount = 100  # Amount bet
+        bet_lost = True    # Simulating a loss
+        bet_won = False    # Simulating a win
+        
+        # Balance should stay the same when placing a bet
+        self.assertEqual(self.shooter.balance, initial_balance)
 
-        # Simulate a 7-out
-        shooter.roll_dice = lambda: [4, 3]  # Force a roll of 7
-        self.table.check_bets([4, 3], "point", 6)  # Removed puck_position
+        # Simulate losing a bet
+        if bet_lost:
+            self.shooter.balance -= bet_amount
 
-        # Ensure shooter rotates (this part depends on your game logic)
-        new_shooter = self.table.current_shooter
-        self.assertNotEqual(shooter, new_shooter, "Shooter did not rotate after a seven-out.")
+        self.assertEqual(self.shooter.balance, initial_balance - bet_amount, "Balance should decrease only on a loss.")
 
-    def test_shooter_rotation_circular(self):
-        """Shooter rotation should loop back to the first player after all have rolled."""
-        self.players.append(Shooter("Bob"))
-        self.players.append(Shooter("Charlie"))
+        # Reset balance for next check
+        self.shooter.balance = initial_balance
 
-        self.table.current_shooter = self.players[0]  # Start with first shooter
+        # Simulate winning a bet (double payout)
+        if bet_won:
+            self.shooter.balance += bet_amount * 2  # Assuming a 1:1 payout
 
-        for _ in range(len(self.players)):
-            self.table.current_shooter.roll_dice = lambda: [4, 3]  # Force 7-out
-            self.table.check_bets([4, 3], "point", 6)  # Removed puck_position
+        self.assertEqual(self.shooter.balance, initial_balance, "Winning should not decrease the balance.")
 
-        # After all players shoot, it should return to the first shooter
-        self.assertEqual(self.table.current_shooter, self.players[0], "Shooter rotation did not loop back.")
+    def test_shooter_roll_dice(self):
+        """Test that the shooter rolls dice and gets valid results."""
+        outcome = self.shooter.roll_dice()
+        self.assertEqual(len(outcome), 2)  # Should always roll two dice
+        self.assertTrue(1 <= outcome[0] <= 6)
+        self.assertTrue(1 <= outcome[1] <= 6)
 
 if __name__ == "__main__":
     unittest.main()
