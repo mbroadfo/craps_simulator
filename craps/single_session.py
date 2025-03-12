@@ -102,6 +102,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:
                 stats.record_seven_out()
+                shooter_num += 1  # Rotate to next shooter immediately
                 break
 
     # Return stats and roll history

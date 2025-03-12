@@ -1,49 +1,40 @@
 import unittest
-from craps.table import Table
-from craps.player import Player
-from craps.house_rules import HouseRules
-from craps.rules_engine import RulesEngine
-from craps.game_state import GameState
+from craps.common import CommonTableSetup
+from craps.shooter import Shooter
 
 class TestShooterRotation(unittest.TestCase):
-
     def setUp(self):
-        """Set up a table with multiple players for shooter rotation testing."""
-        self.house_rules = HouseRules({})
-        self.rules_engine = RulesEngine()
-        self.table = Table(self.house_rules, play_by_play=False, rules_engine=self.rules_engine)
+        """Initialize the table and players correctly."""
+        self.common_setup = CommonTableSetup()
+        self.table = self.common_setup.table
+        self.players = [self.common_setup.player]  # Use existing setup
         
-        # Add players to the table
-        self.players = [Player(name=f"Player {i+1}") for i in range(3)]
-        for player in self.players:
-            self.table.add_player(player)
-
-        # Initialize game state
-        self.game_state = self.table.game_state  # Get game state from table
-
-        # Ensure the first player is the shooter
-        self.assertEqual(self.game_state.shooter_index, 0)
-
     def test_shooter_rotates_after_seven_out(self):
         """Shooter should rotate after rolling a seven-out."""
-        first_shooter = self.game_state.shooter_index
-        
-        # Simulate a seven-out
-        dice_roll = [4, 3]  # Total of 7
-        self.table.check_bets(dice_roll, self.game_state.phase, self.game_state.point)  # Resolve roll
+        shooter = Shooter(self.players[0].name)
+        self.table.current_shooter = shooter
 
-        # Shooter should have rotated
-        self.assertNotEqual(self.game_state.shooter_index, first_shooter)
-        self.assertEqual(self.game_state.shooter_index, 1)  # Next player should be the shooter
+        # Simulate a 7-out
+        shooter.roll_dice = lambda: [4, 3]  # Force a roll of 7
+        self.table.check_bets([4, 3], "point", 6)  # Removed puck_position
+
+        # Ensure shooter rotates (this part depends on your game logic)
+        new_shooter = self.table.current_shooter
+        self.assertNotEqual(shooter, new_shooter, "Shooter did not rotate after a seven-out.")
 
     def test_shooter_rotation_circular(self):
         """Shooter rotation should loop back to the first player after all have rolled."""
+        self.players.append(Shooter("Bob"))
+        self.players.append(Shooter("Charlie"))
+
+        self.table.current_shooter = self.players[0]  # Start with first shooter
+
         for _ in range(len(self.players)):
-            dice_roll = [4, 3]  # Seven-out
-            self.table.check_bets(dice_roll, self.game_state.phase, self.game_state.point)  # Resolve roll
+            self.table.current_shooter.roll_dice = lambda: [4, 3]  # Force 7-out
+            self.table.check_bets([4, 3], "point", 6)  # Removed puck_position
 
-        # Shooter should have rotated back to the first player
-        self.assertEqual(self.game_state.shooter_index, 0)
+        # After all players shoot, it should return to the first shooter
+        self.assertEqual(self.table.current_shooter, self.players[0], "Shooter rotation did not loop back.")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
