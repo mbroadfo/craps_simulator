@@ -1,6 +1,9 @@
 # File: .\craps\strategies\field_strategy.py
 
-from craps.rules_engine import RulesEngine  # Import RulesEngine
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from craps.rules_engine import RulesEngine  # Prevents circular imports
 
 class FieldBetStrategy:
     """Betting strategy for Field bets."""
@@ -10,8 +13,8 @@ class FieldBetStrategy:
         
         :param min_bet: The minimum bet amount for the table.
         """
-        self.min_bet = min_bet
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
+        self.min_bet : int = min_bet
+        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place a Field bet during the point roll if no active bet exists."""

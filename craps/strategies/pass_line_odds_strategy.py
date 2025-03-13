@@ -1,6 +1,9 @@
-# File: .\craps\strategies\pass_line_odds_strategy.py
+from __future__ import annotations  # Enable forward references for type hints
+from typing import TYPE_CHECKING
 
-from craps.rules_engine import RulesEngine  # Import RulesEngine
+if TYPE_CHECKING:
+    from craps.table import Table  # Prevents circular imports
+    from craps.rules_engine import RulesEngine  
 
 class PassLineOddsStrategy:
     """Betting strategy for Pass Line with Odds bets."""
@@ -11,9 +14,9 @@ class PassLineOddsStrategy:
         :param table: The table object to determine minimum bets.
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
         """
-        self.table = table
-        self.odds_multiple = odds_multiple
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
+        self.table: Table = table
+        self.odds_multiple: str = odds_multiple
+        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place a Pass Line or Pass Line Odds bet based on the game state."""

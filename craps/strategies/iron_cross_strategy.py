@@ -1,6 +1,9 @@
-# File: .\craps\strategies\iron_cross_strategy.py
+from __future__ import annotations  # Enable forward references for type hints
+from typing import TYPE_CHECKING
 
-from craps.rules_engine import RulesEngine  # Import RulesEngine
+if TYPE_CHECKING:
+    from craps.table import Table  # Prevents circular imports
+    from craps.rules_engine import RulesEngine  
 
 class IronCrossStrategy:
     """Betting strategy for Iron Cross."""
@@ -11,9 +14,9 @@ class IronCrossStrategy:
         :param table: The table object to determine minimum bets.
         :param min_bet: The minimum bet amount for the table.
         """
-        self.table = table
-        self.min_bet = min_bet
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
+        self.table: Table = table
+        self.min_bet: str = min_bet
+        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place bets for the Iron Cross strategy."""

@@ -1,12 +1,14 @@
-# File: .\craps\strategies\pass_line_strategy.py
+from __future__ import annotations  # Enable forward references for type hints
+from typing import TYPE_CHECKING
 
-from craps.rules_engine import RulesEngine  # Import RulesEngine
+if TYPE_CHECKING:
+    from craps.rules_engine import RulesEngine  
 
 class PassLineStrategy:
     """Betting strategy for Pass Line bets."""
     def __init__(self, min_bet):
-        self.min_bet = min_bet
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
+        self.min_bet: str = min_bet
+        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state, player, table):
         """Place a Pass Line bet during the come-out roll if no active bet exists."""

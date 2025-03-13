@@ -1,6 +1,9 @@
-# File: .\craps\strategies\three_point_molly_strategy.py
+from __future__ import annotations  # Enable forward references for type hints
+from typing import TYPE_CHECKING
 
-from craps.rules_engine import RulesEngine 
+if TYPE_CHECKING:
+    from craps.table import Table  # Prevents circular imports
+    from craps.rules_engine import RulesEngine  
 
 class ThreePointMollyStrategy:
     """Betting strategy for the 3-Point Molly system."""
@@ -12,10 +15,10 @@ class ThreePointMollyStrategy:
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
         :param come_odds_working_on_come_out: Whether Come odds bets are working during the come-out roll.
         """
-        self.min_bet = min_bet
-        self.odds_multiple = odds_multiple
-        self.come_odds_working_on_come_out = come_odds_working_on_come_out
-        self.rules_engine = RulesEngine() 
+        self.min_bet: str = min_bet
+        self.odds_multiple: str = odds_multiple
+        self.come_odds_working_on_come_out: bool = come_odds_working_on_come_out
+        self.rules_engine: RulesEngine = RulesEngine() 
 
     def get_bet(self, game_state, player, table):
         """

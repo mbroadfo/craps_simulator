@@ -17,7 +17,7 @@ class Table:
         :param rules_engine: The RulesEngine instance for resolving bets.
         """
         self.house_rules = house_rules
-        self.bets = []  # All bets on the table
+        self.bets: List[Bet] = []  # All bets on the table
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine

@@ -1,61 +1,65 @@
-# File: .\craps\strategies\free_odds_strategy.py
+from enum import Enum
+from __future__ import annotations
+from typing import TYPE_CHECKING, List, Optional
 
-from craps.rules_engine import RulesEngine  # Import RulesEngine
+if TYPE_CHECKING:
+    from craps.table import Table
+    from craps.rules_engine import RulesEngine
+    from craps.game_state import GameState
+    from craps.player import Player
+    from craps.bet import Bet
+
+class OddsMultiple(Enum):
+    ONE_X = "1x"
+    TWO_X = "2x"
+    THREE_X = "3x"
+    ONE_TWO_THREE = "1-2-3"
+    THREE_FOUR_FIVE = "3-4-5"
 
 class FreeOddsStrategy:
     """Betting strategy for Free Odds on any active bet."""
-    def __init__(self, table, odds_multiple="1x"):
+
+    def __init__(self, table: Table, odds_multiple: OddsMultiple = OddsMultiple.ONE_X):
         """
         Initialize the Free Odds strategy.
-        
-        :param table: The table object to determine minimum bets.
-        :param odds_multiple: The odds multiple (e.g., "1x", "2x", "3x", "1-2-3", "3-4-5").
-        """
-        self.table = table
-        self.odds_multiple = odds_multiple
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
-    def get_odds_amount(self, original_bet_amount):
+        :param table: The table object to determine minimum bets.
+        :param odds_multiple: Enum representing odds multiple.
+        """
+        self.table: Table = table
+        self.odds_multiple: OddsMultiple = odds_multiple
+        self.rules_engine: RulesEngine = RulesEngine()
+
+    def get_odds_amount(self, original_bet_amount: int) -> int:
         """Calculate the odds amount based on the original bet amount and the selected multiple."""
-        if self.odds_multiple == "1x":
+        if self.odds_multiple == OddsMultiple.ONE_X:
             return original_bet_amount
-        elif self.odds_multiple == "2x":
+        elif self.odds_multiple == OddsMultiple.TWO_X:
             return original_bet_amount * 2
-        elif self.odds_multiple == "3x":
+        elif self.odds_multiple == OddsMultiple.THREE_X:
             return original_bet_amount * 3
-        elif self.odds_multiple == "1-2-3":
-            # 1x on 4/10, 2x on 5/9, 3x on 6/8
+        elif self.odds_multiple == OddsMultiple.ONE_TWO_THREE:
             return original_bet_amount
-        elif self.odds_multiple == "3-4-5":
-            # 3x on 4/10, 4x on 5/9, 5x on 6/8
+        elif self.odds_multiple == OddsMultiple.THREE_FOUR_FIVE:
             return original_bet_amount
         else:
             raise ValueError(f"Invalid odds multiple: {self.odds_multiple}")
 
-    def get_bet(self, game_state, player):
+    def get_bet(self, game_state: GameState, player: Player) -> Optional[List[Bet]]:
         """Place Free Odds bets on any active bets."""
-        bets = []
+        bets: List[Bet] = []
 
         for active_bet in player.active_bets:
             if active_bet.bet_type in ["Pass Line", "Place"]:
-                # Calculate the odds amount based on the original bet amount
                 odds_amount = self.get_odds_amount(active_bet.amount)
 
-                # Create a Free Odds bet using RulesEngine
                 if active_bet.bet_type == "Pass Line":
                     bets.append(self.rules_engine.create_bet(
-                        "Pass Line Odds",
-                        odds_amount,
-                        player,
-                        parent_bet=active_bet
+                        "Pass Line Odds", odds_amount, player, parent_bet=active_bet
                     ))
                 elif active_bet.bet_type == "Place":
                     bets.append(self.rules_engine.create_bet(
-                        "Place Odds",
-                        odds_amount,
-                        player,
-                        number=active_bet.number,
-                        parent_bet=active_bet
+                        "Place Odds", odds_amount, player, number=active_bet.number, parent_bet=active_bet
                     ))
 
         return bets if bets else None

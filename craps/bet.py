@@ -1,53 +1,55 @@
-# File: .\craps\bet.py
-
-from typing import List, Optional, Tuple
+from __future__ import annotations  # Enable forward references for type hints
+from typing import TYPE_CHECKING, List, Optional, Tuple
 import logging
 
+if TYPE_CHECKING:
+    from craps.player import Player  # Prevent circular imports
+
 class Bet:
-    """Base class for all bet types."""
-    VALID_PHASES = ["come-out", "point"]  # Define valid phases as a class constant
+    """Represents a single bet in the game of Craps."""
 
     def __init__(
         self,
         bet_type: str,
         amount: int,
-        owner,
-        payout_ratio: Tuple[int, int] = (1, 1),
-        locked: bool = True,
-        vig: int = 0,
+        owner: Player,
+        payout_ratio: Tuple[int, int],  # Updated to a tuple
+        locked: bool = False,
+        vig: bool = False,  # Updated to a boolean
         unit: int = 1,
-        valid_phases: List[str] = None,
+        valid_phases: Optional[List[str]] = None,
         number: Optional[int] = None,
-        parent_bet: Optional['Bet'] = None,
-        is_contract_bet: bool = True,  # New parameter to determine if the bet is a contract bet
+        parent_bet: Optional[Bet] = None,
+        is_contract_bet: bool = False
     ):
         """
-        Initialize a bet.
+        Initializes a Bet.
 
-        :param bet_type: The type of bet (e.g., "Pass Line", "Place").
-        :param amount: The amount of the bet.
-        :param owner: The Player object who placed the bet.
-        :param payout_ratio: The payout ratio as a tuple (numerator, denominator).
-        :param locked: Whether the bet is locked (cannot be taken down).
-        :param vig: The vig (commission) as a percentage of the bet amount.
-        :param unit: The unit for Place/Buy bets (default is 1).
-        :param valid_phases: The phases during which the bet can be placed (default is all phases).
-        :param number: The number associated with the bet (e.g., 6 for Place 6).
-        :param parent_bet: The parent bet for odds bets.
-        :param is_contract_bet: Whether the bet is a contract bet (default is True).
+        :param bet_type: Type of bet (e.g., "Pass Line", "Come", "Place 6").
+        :param amount: Amount wagered.
+        :param owner: The player who owns the bet.
+        :param payout_ratio: Multiplier for payouts as a tuple (e.g., (3, 2) for 3:2 odds).
+        :param locked: Whether the bet is locked and cannot be removed.
+        :param vig: Whether the bet has a vigorish (commission).
+        :param unit: Minimum bet unit.
+        :param valid_phases: Game phases where this bet is valid.
+        :param number: The number associated with the bet (if applicable).
+        :param parent_bet: Reference to the original bet (for odds bets).
+        :param is_contract_bet: Whether the bet is a contract bet (cannot be removed).
         """
-        self.bet_type = bet_type
-        self.amount = amount
-        self.owner = owner
-        self.payout_ratio = payout_ratio
-        self.locked = locked
-        self.vig = vig
-        self.unit = unit
-        self.valid_phases = valid_phases if valid_phases is not None else self.VALID_PHASES
-        self.number = number
-        self.status = "active"
-        self.parent_bet = parent_bet
-        self.is_contract_bet = is_contract_bet  # New field to determine if the bet is a contract bet
+        self.bet_type: str = bet_type
+        self.amount: int = amount
+        self.owner: Player = owner
+        self.payout_ratio: Tuple[int, int] = payout_ratio  # Ensuring payout is stored as a ratio tuple
+        self.locked: bool = locked
+        self.vig: bool = vig  # Vig is now a boolean
+        self.unit: int = unit
+        self.valid_phases: List[str] = valid_phases if valid_phases is not None else self.VALID_PHASES
+        self.number: Optional[int] = number
+        self.status: str = "active"
+        self.parent_bet: Optional[Bet] = parent_bet
+        self.is_contract_bet: bool = is_contract_bet  # Whether the bet is a contract bet
+
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
