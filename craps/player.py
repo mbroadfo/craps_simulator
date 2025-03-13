@@ -4,7 +4,6 @@ from colorama import Fore, Style
 from typing import List, Union, Optional, Any
 from craps.bet import Bet
 from craps.table import Table
-from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class Player:
     def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Any = None, play_by_play: Any = None) -> None:
@@ -20,46 +19,61 @@ class Player:
         self.balance = initial_balance
         self.betting_strategy = betting_strategy
         self.play_by_play = play_by_play
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
 
-    def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
+    def place_bet(self, bet_type: Union[str, List[str]], amount: Union[int, List[int]], table: Table, phase: str, numbers: List[int] = None) -> bool:
         """
         Place a bet (or multiple bets) on the table and deduct the amount from the player's balance.
 
-        :param bet: The bet(s) to place.
-        :param table: The table to place the bet on.
+        :param bet_type: The type of bet(s) to place.
+        :param amount: The amount(s) to wager.
+        :param table: The Table object where bets are placed.
         :param phase: The current game phase ("come-out" or "point").
-        :return: True if the bet(s) were placed successfully, False otherwise.
+        :param numbers: Optional list of numbers associated with bets (for Place bets, etc.).
+        :return: True if all bets were placed successfully, False otherwise.
         """
-        # Convert single bet to a list for uniform handling
-        bets = [bet] if not isinstance(bet, list) else bet
-        
-        # Check if any of the bets are odds bets and validate their parent bets
-        for b in bets:
-            if hasattr(b, 'parent_bet') and b.parent_bet is not None:  # Check if the bet is an odds bet and has a parent
-                if b.parent_bet.owner != self:
-                    raise ValueError("Cannot place odds bet on another player's bet")
-                if not table.has_bet(b.parent_bet):
-                    raise ValueError("Parent bet must be on the table before placing odds")
+        rules_engine = table.get_rules_engine()  # ✅ Query Table for RulesEngine
 
-        # Calculate the total amount to be wagered
-        total_amount = sum(b.amount for b in bets)
+        # Normalize inputs to lists for uniform handling
+        bet_types = [bet_type] if isinstance(bet_type, str) else bet_type
+        amounts = [amount] if isinstance(amount, int) else amount
+        numbers = numbers or [None] * len(bet_types)
 
-        # Check if the player has sufficient funds
-        if total_amount > self.balance:
-            message = f"{Fore.RED}❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
-            self.play_by_play.write(message)  # Write the message to the play-by-play file
-            return False
+        if len(bet_types) != len(amounts):
+            raise ValueError("bet_type and amount lists must have the same length.")
 
-        # Place each bet on the table
-        for b in bets:
-            if not table.place_bet(b, phase):  # Use the updated place_bet method
-                message = f"{Fore.RED}❌ Failed to place {b.bet_type} bet for {self.name}.{Style.RESET_ALL}"
-                self.play_by_play.write(message)  # Write the message to the play-by-play file
+        # Create bets using RulesEngine
+        bets: List[Bet] = []
+        for bt, amt, num in zip(bet_types, amounts, numbers):
+            bet = rules_engine.create_bet(bt, amt, self, number=num)
+            bets.append(bet)
+
+        # Validate odds bets (must have parent bets already placed)
+        for bet in bets:
+            if bet.parent_bet and not table.has_bet(bet.parent_bet):
+                message = f"{Fore.RED}❌ Cannot place odds bet {bet.bet_type} without a parent bet.{Style.RESET_ALL}"
+                self.play_by_play.write(message)
                 return False
 
-            message = f"{Fore.GREEN}✅ {self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.{Style.RESET_ALL}"
-            self.play_by_play.write(message)  # Write the message to the play-by-play file
+        # Calculate total bet amount
+        total_amount = sum(b.amount for b in bets)
+
+        # Ensure player has sufficient funds
+        if total_amount > self.balance:
+            message = f"{Fore.RED}❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
+            self.play_by_play.write(message)
+            return False
+
+        # Place bets on the table
+        for bet in bets:
+            if not table.place_bet(bet, phase):
+                message = f"{Fore.RED}❌ Failed to place {bet.bet_type} bet for {self.name}.{Style.RESET_ALL}"
+                self.play_by_play.write(message)
+                return False
+
+        # Deduct balance only after successful bet placement
+        self.balance -= total_amount
+        message = f"{Fore.GREEN}✅ {self.name} placed ${total_amount} in bets. New balance: ${self.balance}.{Style.RESET_ALL}"
+        self.play_by_play.write(message)
 
         return True
 
