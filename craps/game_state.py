@@ -1,8 +1,8 @@
-from typing import List, Optional
+from typing import List, Optional, Any
 from colorama import Fore, Style
 
 class GameState:
-    def __init__(self, stats, play_by_play=None):
+    def __init__(self, stats: Any, play_by_play: Optional[Any] = None) -> None:
         """
         Initialize the game state.
 
@@ -14,7 +14,7 @@ class GameState:
         self.stats = stats
         self.play_by_play = play_by_play
 
-    def set_table(self, table):
+    def set_table(self, table: Any) -> None:
         """Set the table reference."""
         self.table = table
 
@@ -24,7 +24,7 @@ class GameState:
         return self._point
 
     @point.setter
-    def point(self, value: Optional[int]):
+    def point(self, value: Optional[int]) -> None:
         """Set the point while tracking the previous point."""
         if self._point != value:
             self.previous_point = self._point  # Store previous point before change

@@ -19,7 +19,7 @@ class OddsMultiple(Enum):
 class FreeOddsStrategy:
     """Betting strategy for Free Odds on any active bet."""
 
-    def __init__(self, table: Table, odds_multiple: OddsMultiple = OddsMultiple.ONE_X):
+    def __init__(self, table: Table, odds_multiple: OddsMultiple = OddsMultiple.ONE_X) -> None:
         """
         Initialize the Free Odds strategy.
 
@@ -46,10 +46,19 @@ class FreeOddsStrategy:
             raise ValueError(f"Invalid odds multiple: {self.odds_multiple}")
 
     def get_bet(self, game_state: GameState, player: Player) -> Optional[List[Bet]]:
-        """Place Free Odds bets on any active bets."""
+        """
+        Place Free Odds bets on any active bets for the player.
+        
+        :param game_state: The current game state.
+        :param player: The player placing the bet.
+        :return: A list of bets to place, or None if no bets are placed.
+        """
         bets: List[Bet] = []
 
-        for active_bet in player.active_bets:
+        # Retrieve active bets belonging to the player from the table
+        active_bets = [bet for bet in self.table.bets if bet.owner == player]
+
+        for active_bet in active_bets:
             if active_bet.bet_type in ["Pass Line", "Place"]:
                 odds_amount = self.get_odds_amount(active_bet.amount)
 

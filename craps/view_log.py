@@ -11,7 +11,7 @@ class LogViewer(ABC):
     """
 
     @abstractmethod
-    def view(self, log_file: str):
+    def view(self, log_file: str) -> None:
         """
         View the log file.
         
@@ -25,7 +25,7 @@ class InteractiveLogViewer(LogViewer):
     Concrete class for interactive log viewing.
     """
 
-    def view(self, log_file: str):
+    def view(self, log_file: str) -> None:
         """
         Open the log file interactively.
         
@@ -55,7 +55,7 @@ class InteractiveLogViewer(LogViewer):
             except Exception as e:
                 print(f"An error occurred while trying to view the log file: {e}")
 
-    def _view_plain_text(self, log_file: str):
+    def _view_plain_text(self, log_file: str) -> None:
         """
         Fallback method to view the log file as plain text.
         
@@ -74,7 +74,7 @@ class PlainTextLogViewer(LogViewer):
     Concrete class for plain text log viewing.
     """
 
-    def view(self, log_file: str):
+    def view(self, log_file: str) -> None:
         """
         Print the log file to the console.
         

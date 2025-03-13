@@ -1,13 +1,13 @@
 # File: .\craps\player.py
 
 from colorama import Fore, Style
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Any
 from craps.bet import Bet
 from craps.table import Table
 from craps.rules_engine import RulesEngine  # Import RulesEngine
 
 class Player:
-    def __init__(self, name: str, initial_balance: int = 500, betting_strategy=None, play_by_play=None):
+    def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Any = None, play_by_play: Any = None) -> None:
         """
         Initialize a player.
 

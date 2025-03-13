@@ -1,12 +1,18 @@
 # File: .\craps\visualizer.py
 
 import matplotlib.pyplot as plt
+from typing import Any
 
 class Visualizer:
-    def __init__(self, stats):
+    def __init__(self, stats: Any) -> None:
+        """
+        Initialize the Visualizer.
+
+        :param stats: The statistics object containing bankroll history and roll numbers.
+        """
         self.stats = stats
 
-    def visualize_bankrolls(self):
+    def visualize_bankrolls(self) -> None:
         """Visualize player bankrolls over time."""
         plt.figure(figsize=(12, 6))
 

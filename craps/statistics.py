@@ -1,29 +1,31 @@
-## File: craps/statistics.py
+# File: craps/statistics.py
 
 import logging
+from typing import List, Dict, Any, Optional
+
 class Statistics:
-    def __init__(self, table_minimum, num_shooters, num_players):
-        self.table_minimum = table_minimum
-        self.num_shooters = num_shooters
-        self.num_players = num_players
-        self.num_rolls = 0
-        self.total_house_win_loss = 0
-        self.total_player_win_loss = 0
-        self.player_bankrolls = []
-        self.highest_bankroll = 0
-        self.lowest_bankroll = float('inf')
-        self.shooter_stats = {}
-        self.player_stats = {}
-        self.shooter = None
-        self.shooter_num = None
+    def __init__(self, table_minimum: int, num_shooters: int, num_players: int) -> None:
+        self.table_minimum: int = table_minimum
+        self.num_shooters: int = num_shooters
+        self.num_players: int = num_players
+        self.num_rolls: int = 0
+        self.total_house_win_loss: int = 0
+        self.total_player_win_loss: int = 0
+        self.player_bankrolls: List[int] = []
+        self.highest_bankroll: int = 0
+        self.lowest_bankroll: float = float('inf')
+        self.shooter_stats: Dict[int, Dict[str, Any]] = {}
+        self.player_stats: Dict[str, Dict[str, Any]] = {}
+        self.shooter: Optional[Any] = None
+        self.shooter_num: Optional[int] = None
 
         # For visualization
-        self.roll_numbers = [0]  # Start with roll 0
-        self.bankroll_history = {}  # Track bankroll history for each player
-        self.seven_out_rolls = []  # Track rolls where a 7-out occurs
-        self.point_number_rolls = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
+        self.roll_numbers: List[int] = [0]  # Start with roll 0
+        self.bankroll_history: Dict[str, List[int]] = {}  # Track bankroll history for each player
+        self.seven_out_rolls: List[int] = []  # Track rolls where a 7-out occurs
+        self.point_number_rolls: List[int] = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
         
-    def initialize_player_stats(self, players):
+    def initialize_player_stats(self, players: List[Any]) -> None:
         """Initialize player statistics with their starting bankroll."""
         for player in players:
             self.player_stats[player.name] = {
@@ -32,7 +34,7 @@ class Statistics:
                 "net_win_loss": 0,
             }
             
-    def update_player_stats(self, players):
+    def update_player_stats(self, players: List[Any]) -> None:
         """Update player statistics at the end of the session."""
         for player in players:
             if player.name in self.player_stats:
@@ -41,7 +43,7 @@ class Statistics:
                     player.balance - self.player_stats[player.name]["initial_bankroll"]
                 )
                 
-    def print_player_statistics(self):
+    def print_player_statistics(self) -> None:
         """Print player-specific statistics."""
         logging.info("\n=== Player Performance Report ===")
         for player_name, stats in self.player_stats.items():
@@ -52,7 +54,7 @@ class Statistics:
             logging.info(f"  Final Bankroll: ${stats['final_bankroll']}")
             logging.info(f"  Net Win/Loss: ${net_win_loss} ({result})")
     
-    def set_shooter(self, shooter, shooter_num):
+    def set_shooter(self, shooter: Any, shooter_num: int) -> None:
         """Set the current shooter and their turn number."""
         self.shooter = shooter
         self.shooter_num = shooter_num  # Track the shooter's turn number
@@ -63,12 +65,12 @@ class Statistics:
                 "total_rolls": 0,
             }
             
-    def initialize_bankroll_history(self, players):
+    def initialize_bankroll_history(self, players: List[Any]) -> None:
         """Initialize bankroll history with the starting bankroll for each player."""
         for player in players:
             self.bankroll_history[player.name] = [player.balance]  # Roll 0: initial bankroll
 
-    def merge(self, other_stats):
+    def merge(self, other_stats: "Statistics") -> None:
         """Merge statistics from another session."""
         self.num_rolls += other_stats.num_rolls
         self.total_house_win_loss += other_stats.total_house_win_loss
@@ -98,87 +100,50 @@ class Statistics:
                 self.bankroll_history[player] = []
             self.bankroll_history[player].extend(bankrolls)
 
-    def update_rolls(self):
+    def update_rolls(self) -> None:
         """Increment the roll count."""
         self.num_rolls += 1
         self.roll_numbers.append(self.num_rolls)
 
-    def update_win_loss(self, bet):
+    def update_win_loss(self, bet: Any) -> None:
         """
         Update the house and player win/loss based on the resolved bet.
 
         :param bet: The resolved bet.
         """
         if bet.status == "won":
-            # Player wins: house loses the payout, player gains the payout
             payout = bet.payout()
             self.total_house_win_loss -= payout
             self.total_player_win_loss += payout
         elif bet.status == "lost":
-            # Player loses: house gains the bet amount, player loses the bet amount
             self.total_house_win_loss += bet.amount
             self.total_player_win_loss -= bet.amount
     
-    def update_player_bankrolls(self, players):
+    def update_player_bankrolls(self, players: List[Any]) -> None:
         """Update player bankrolls and track highest/lowest bankroll."""
         self.player_bankrolls = [player.balance for player in players]
         self.highest_bankroll = max(self.player_bankrolls)
         self.lowest_bankroll = min(self.player_bankrolls)
 
-        # Track bankroll history for visualization
         for player in players:
             if player.name not in self.bankroll_history:
                 self.bankroll_history[player.name] = []
             self.bankroll_history[player.name].append(player.balance)
 
-    def record_seven_out(self):
+    def record_seven_out(self) -> None:
         """Record the roll number where a 7-out occurs."""
         self.seven_out_rolls.append(self.num_rolls)
         if self.shooter:
             self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(self.shooter.current_roll_count)
-            self.shooter.current_roll_count = 0  # Reset the roll count after a 7-out
+            self.shooter.current_roll_count = 0
         
-    def record_point_number_roll(self):
+    def record_point_number_roll(self) -> None:
         """Record the roll number where a point number (4, 5, 6, 8, 9, 10) is rolled."""
         self.point_number_rolls.append(self.num_rolls)
         if self.shooter:
             self.shooter_stats[self.shooter_num]["points_rolled"] += 1
 
-    def visualize_bankrolls(self):
-        """Visualize player bankrolls over time."""
-        import matplotlib.pyplot as plt
-
-        plt.figure(figsize=(12, 6))
-
-        # Plot each player's bankroll
-        for player, bankrolls in self.bankroll_history.items():
-            # Ensure bankrolls and roll_numbers have the same length
-            if len(bankrolls) != len(self.roll_numbers):
-                # Trim the longer list to match the shorter one
-                min_length = min(len(bankrolls), len(self.roll_numbers))
-                bankrolls = bankrolls[:min_length]
-                roll_numbers = self.roll_numbers[:min_length]
-            else:
-                roll_numbers = self.roll_numbers
-            plt.plot(roll_numbers, bankrolls, label=player)
-
-        # Add red vertical lines for 7-out events
-        for roll in self.seven_out_rolls:
-            plt.axvline(x=roll, color='red', linestyle='--', alpha=0.5, label='7-Out' if roll == self.seven_out_rolls[0] else "")
-
-        # Add green dotted lines for point number rolls
-        for roll in self.point_number_rolls:
-            plt.axvline(x=roll, color='green', linestyle=':', alpha=0.5, label='Point Number Rolled' if roll == self.point_number_rolls[0] else "")
-
-        # Add labels and title
-        plt.xlabel("Roll Number")
-        plt.ylabel("Bankroll")
-        plt.title("Player Bankrolls Over Time")
-        plt.legend()
-        plt.grid(True)
-        plt.show()
-
-    def update_shooter_stats(self, shooter):
+    def update_shooter_stats(self, shooter: Any) -> None:
         """Update shooter statistics."""
         if self.shooter_num not in self.shooter_stats:
             self.shooter_stats[self.shooter_num] = {
@@ -186,11 +151,10 @@ class Statistics:
                 "rolls_before_7_out": [],
                 "total_rolls": 0,
             }
-        # Update total rolls for the shooter
         self.shooter_stats[self.shooter_num]["total_rolls"] = shooter.current_roll_count
         self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
 
-    def print_statistics(self):
+    def print_statistics(self) -> None:
         """Print the simulation statistics."""
         logging.info("\n=== Simulation Statistics ===")
         logging.info(f"Table Minimum: ${self.table_minimum}")
@@ -211,9 +175,3 @@ class Statistics:
             total_rolls = stats["total_rolls"]
             rolls_before_7_out = stats["rolls_before_7_out"]
             avg_rolls_before_7_out = sum(rolls_before_7_out) / len(rolls_before_7_out) if rolls_before_7_out else 0
-
-            logging.info(f"\nShooter: {shooter_num}")
-            logging.info(f"  Total Points Rolled: {total_points_rolled}")
-            logging.info(f"  Total Rolls: {total_rolls}")
-            logging.info(f"  Average Rolls Before 7-Out: {avg_rolls_before_7_out:.2f}")
-            logging.info(f"  Rolls Before 7-Out: {rolls_before_7_out}")

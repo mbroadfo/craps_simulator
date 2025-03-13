@@ -1,5 +1,4 @@
-# File: .\craps\session_initializer.py
-
+from typing import Dict, Tuple, Optional
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.roll_history_manager import RollHistoryManager
@@ -8,21 +7,21 @@ from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
 
 class InitializeSession:
-    def __init__(self, session_mode, house_rules_config):
+    def __init__(self, session_mode: str, house_rules_config: Dict[str, int]) -> None:
         """
         Initialize the session.
 
         :param session_mode: The session mode ("live" or "history").
         :param house_rules_config: The house rules configuration.
         """
-        self.session_mode = session_mode
-        self.house_rules_config = house_rules_config
-        self.roll_history_manager = RollHistoryManager()
-        self.log_manager = LogManager()
-        self.play_by_play = PlayByPlay()
-        self.rules_engine = RulesEngine()
+        self.session_mode: str = session_mode
+        self.house_rules_config: Dict[str, int] = house_rules_config
+        self.roll_history_manager: RollHistoryManager = RollHistoryManager()
+        self.log_manager: LogManager = LogManager()
+        self.play_by_play: PlayByPlay = PlayByPlay()
+        self.rules_engine: RulesEngine = RulesEngine()
 
-    def prepare_session(self):
+    def prepare_session(self) -> Optional[Tuple[HouseRules, Table, RollHistoryManager, LogManager, PlayByPlay]]:
         """Prepare the session based on the session mode."""
         try:
             self.roll_history_manager.prepare_for_session(self.session_mode)

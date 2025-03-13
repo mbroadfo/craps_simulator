@@ -1,29 +1,28 @@
-# File: .\craps\roll_history_manager.py
-
 import os
 import csv
+from typing import List, Dict, Any, Optional
 
 class RollHistoryManager:
-    def __init__(self, output_folder="output", roll_history_file="single_session_roll_history.csv"):
-        self.output_folder = output_folder
-        self.roll_history_file = os.path.join(output_folder, roll_history_file)
+    def __init__(self, output_folder: str = "output", roll_history_file: str = "single_session_roll_history.csv") -> None:
+        self.output_folder: str = output_folder
+        self.roll_history_file: str = os.path.join(output_folder, roll_history_file)
 
-    def ensure_output_folder_exists(self):
+    def ensure_output_folder_exists(self) -> None:
         """Ensure the output folder exists. Create it if it doesn't."""
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
             print(f"Created output folder: {self.output_folder}")
 
-    def delete_roll_history_file(self):
+    def delete_roll_history_file(self) -> None:
         """Delete the roll history file if it exists."""
         if os.path.exists(self.roll_history_file):
             os.remove(self.roll_history_file)
             print(f"Deleted existing roll history file: {self.roll_history_file}")
 
-    def save_roll_history(self, roll_history):
+    def save_roll_history(self, roll_history: List[Dict[str, Any]]) -> None:
         """
         Save the roll history to a CSV file.
-        
+
         :param roll_history: A list of dictionaries representing the roll history.
         """
         self.ensure_output_folder_exists()
@@ -40,16 +39,16 @@ class RollHistoryManager:
 
         print(f"Roll history saved to: {self.roll_history_file}")
 
-    def load_roll_history(self):
+    def load_roll_history(self) -> List[Dict[str, Any]]:
         """
         Load the roll history from a CSV file.
-        
+
         :return: A list of dictionaries representing the roll history.
         """
         if not os.path.exists(self.roll_history_file):
             raise FileNotFoundError(f"Roll history file '{self.roll_history_file}' not found.")
 
-        roll_history = []
+        roll_history: List[Dict[str, Any]] = []
         with open(self.roll_history_file, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
@@ -63,10 +62,10 @@ class RollHistoryManager:
         print(f"Roll history loaded from: {self.roll_history_file}")
         return roll_history
 
-    def prepare_for_session(self, session_mode):
+    def prepare_for_session(self, session_mode: str) -> None:
         """
         Prepare for the session based on the session mode.
-        
+
         :param session_mode: The session mode ("live" or "history").
         :raises FileNotFoundError: If the roll history file is missing in history mode.
         """
@@ -81,20 +80,20 @@ class RollHistoryManager:
                 raise FileNotFoundError(f"Roll history file '{self.roll_history_file}' not found. Please run in 'live' mode first.")
             print(f"Running session in 'history' mode using roll history from: {self.roll_history_file}")
 
-    def validate_session_mode(self, session_mode):
+    def validate_session_mode(self, session_mode: str) -> None:
         """
         Validate the session mode.
-        
+
         :param session_mode: The session mode ("live" or "history").
         :raises ValueError: If the session mode is invalid.
         """
         if session_mode not in ["live", "history"]:
             raise ValueError(f"Invalid SESSION_MODE '{session_mode}'. Must be 'live' or 'history'.")
 
-    def get_roll_history_file(self, session_mode):
+    def get_roll_history_file(self, session_mode: str) -> Optional[str]:
         """
         Get the roll history file based on the session mode.
-        
+
         :param session_mode: The session mode ("live" or "history").
         :return: The roll history file path if in "history" mode, otherwise None.
         """

@@ -1,13 +1,17 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
 if TYPE_CHECKING:
     from craps.table import Table  # Prevents circular imports
     from craps.rules_engine import RulesEngine  
+    from craps.game_state import GameState
+    from craps.player import Player
+    from craps.bet import Bet
 
 class ThreePointMollyStrategy:
     """Betting strategy for the 3-Point Molly system."""
-    def __init__(self, min_bet, odds_multiple=1, come_odds_working_on_come_out=False):
+    
+    def __init__(self, min_bet: int, odds_multiple: int = 1, come_odds_working_on_come_out: bool = False) -> None:
         """
         Initialize the 3-Point Molly strategy.
 
@@ -15,21 +19,21 @@ class ThreePointMollyStrategy:
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
         :param come_odds_working_on_come_out: Whether Come odds bets are working during the come-out roll.
         """
-        self.min_bet: str = min_bet
-        self.odds_multiple: str = odds_multiple
+        self.min_bet: int = min_bet
+        self.odds_multiple: int = odds_multiple
         self.come_odds_working_on_come_out: bool = come_odds_working_on_come_out
         self.rules_engine: RulesEngine = RulesEngine() 
 
-    def get_bet(self, game_state, player, table):
+    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """
         Place bets according to the 3-Point Molly strategy.
 
         :param game_state: The current game state.
         :param player: The player placing the bets.
         :param table: The table to place the bets on.
-        :return: A list of bets to place.
+        :return: A list of bets to place, or None if no bets are placed.
         """
-        bets = []
+        bets: List[Bet] = []
 
         # Place a Pass Line bet if no active Pass Line bet exists (only during come-out phase)
         if game_state.phase == "come-out":

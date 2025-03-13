@@ -4,9 +4,12 @@ import logging
 
 if TYPE_CHECKING:
     from craps.player import Player  # Prevent circular imports
+    from craps.rules_engine import RulesEngine  # Ensure correct type hint for resolve method
 
 class Bet:
     """Represents a single bet in the game of Craps."""
+
+    VALID_PHASES: List[str] = ["come-out", "point"]  # Ensures class-level definition
 
     def __init__(
         self,
@@ -21,7 +24,7 @@ class Bet:
         number: Optional[int] = None,
         parent_bet: Optional[Bet] = None,
         is_contract_bet: bool = False
-    ):
+    ) -> None:
         """
         Initializes a Bet.
 
@@ -49,7 +52,6 @@ class Bet:
         self.status: str = "active"
         self.parent_bet: Optional[Bet] = parent_bet
         self.is_contract_bet: bool = is_contract_bet  # Whether the bet is a contract bet
-
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
@@ -81,7 +83,7 @@ class Bet:
 
         return True
 
-    def resolve(self, rules_engine, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def resolve(self, rules_engine: RulesEngine, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
         """
         Resolve the bet based on the dice outcome, phase, and point.
         Delegates resolution logic to the RulesEngine.
@@ -111,7 +113,7 @@ class Bet:
 
         return self.amount + profit if self.is_contract_bet else profit
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the bet."""
         if self.number is not None:
             return f"{self.owner.name}'s ${self.amount} {self.bet_type} {self.number} bet (Status: {self.status})"

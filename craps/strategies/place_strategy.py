@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class PlaceBetStrategy:
     """Betting strategy for Place Bets."""
 
-    def __init__(self, table: Table, numbers_or_strategy: Union[str, list[int]]):
+    def __init__(self, table: Table, numbers_or_strategy: Union[str, list[int]]) -> None:
         """
         Initialize the Place Bet strategy.
 
@@ -42,7 +42,7 @@ class PlaceBetStrategy:
         numbers = [
             num for num in numbers
             if not any(
-                (bet.owner == player and bet.bet_type == "Pass Line" and bet.point == num) or  # Pass Line covers the point
+                (bet.owner == player and bet.bet_type == "Pass Line" and game_state.point == num) or  # Pass Line covers the point
                 (bet.owner == player and bet.bet_type.startswith("Place") and bet.number == num)  # Place Bet covers the number
                 for bet in table.bets
             )
@@ -51,7 +51,7 @@ class PlaceBetStrategy:
         # Use RulesEngine to create Place bets
         bets: List[Bet] = []
         for number in numbers:
-            min_bet = self.table.get_minimum_bet(number)
+            min_bet = self.rules_engine.get_minimum_bet("Place", self.table)
             bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
         return bets if bets else None

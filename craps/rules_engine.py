@@ -10,16 +10,14 @@ class RulesEngine:
     def get_bet_rules(bet_type: str) -> Dict[str, Any]:
         """
         Retrieve the rules for a given bet type, including category-level attributes.
-
+        
         :param bet_type: The type of bet (e.g., "Pass Line", "Field", "Hardways").
         :return: A dictionary containing the rules for the bet.
         """
         for category, bets in BET_RULES.items():
-            if bet_type in bets:
-                bet_rules = bets[bet_type].copy()  # ✅ Get bet-level rules
-                category_rules = {k: v for k, v in bets.items() if not isinstance(v, dict)}  # ✅ Get category-level attributes
-                
-                # 🔄 Merge category attributes with bet rules (bet rules take priority)
+            if isinstance(bets, dict) and bet_type in bets:
+                bet_rules = bets[bet_type].copy() if isinstance(bets[bet_type], dict) else {}
+                category_rules = {k: v for k, v in bets.items() if not isinstance(v, dict)}
                 return {**category_rules, **bet_rules}
 
         raise ValueError(f"Unknown bet type: {bet_type}")
@@ -31,7 +29,7 @@ class RulesEngine:
         return bet_rules.get("linked_bet")
 
     @staticmethod
-    def get_minimum_bet(bet_type: str, table) -> int:
+    def get_minimum_bet(bet_type: str, table: Any) -> int:
         """Returns the correct minimum bet amount for a given bet type based on table rules."""
         table_min = table.house_rules.table_minimum
         table_max = table.house_rules.table_maximum
@@ -60,7 +58,7 @@ class RulesEngine:
         return min_bet  # Default minimum bet
 
     @staticmethod
-    def create_bet(bet_type: str, amount: int, owner, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
+    def create_bet(bet_type: str, amount: int, owner: Any, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
         """Create a bet based on the bet type."""
         bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
 
@@ -74,7 +72,7 @@ class RulesEngine:
         if valid_numbers and number not in valid_numbers:
             raise ValueError(f"Invalid number {number} for bet type {bet_type}")
 
-        payout_ratio = None if bet_type == "Field" else RulesEngine.get_payout_ratio(bet_type, number)
+        payout_ratio: Tuple[int, int] = RulesEngine.get_payout_ratio(bet_type, number) or (1, 1)
 
         return Bet(
             bet_type=bet_type,
@@ -91,7 +89,7 @@ class RulesEngine:
     def can_make_bet(bet_type: str, phase: str, number: Optional[int] = None) -> bool:
         """Check if a bet can be placed in the given phase and with a specific number."""
         bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Get the rules
-
+        
         # ✅ Check valid phases (no change)
         if phase not in bet_rules["valid_phases"]:
             return False
@@ -121,21 +119,24 @@ class RulesEngine:
     @staticmethod
     def get_payout_ratio(bet_type: str, number: Optional[Union[int, Tuple[int, int]]] = None) -> Tuple[int, int]:
         """Get the payout ratio for a bet based on its type and number (if applicable)."""
-        bet_rules = RulesEngine.get_bet_rules(bet_type)  
-        payout_key = bet_rules["payout_ratio"]
+        bet_rules = RulesEngine.get_bet_rules(bet_type)
+        payout_key = bet_rules.get("payout_ratio")
 
+        # Ensure payout_key exists and its value in BET_PAYOUT is a dictionary
         if payout_key in BET_PAYOUT:
-            # Case 1: If no number is provided, return the default payout ratio
-            if number is None:
-                return BET_PAYOUT[payout_key].get("default", (1, 1))
+            payout_data = BET_PAYOUT[payout_key]
+            if isinstance(payout_data, dict):
+                # Case 1: If no number is provided, return the default payout ratio
+                if number is None:
+                    return payout_data.get("default", (1, 1))
 
-            # Case 2: If number is an integer (e.g., True Odds, Place Bets)
-            if isinstance(number, int):
-                return BET_PAYOUT[payout_key].get(number, BET_PAYOUT[payout_key].get("default", (1, 1)))
+                # Case 2: If number is an integer (e.g., True Odds, Place Bets)
+                if isinstance(number, int):
+                    return payout_data.get(number, payout_data.get("default", (1, 1)))
 
-            # Case 3: If number is a tuple (e.g., Hop bets)
-            if isinstance(number, tuple):
-                return BET_PAYOUT[payout_key].get(number, BET_PAYOUT[payout_key].get("default", (1, 1)))
+                # Case 3: If number is a tuple (e.g., Hop bets)
+                if isinstance(number, tuple):
+                    return payout_data.get(number, payout_data.get("default", (1, 1)))
 
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
@@ -197,14 +198,18 @@ class RulesEngine:
 
         ### 🎯 **6. HOP BETS**
         elif bet.bet_type == "Hop":
-            if "hop_win" in resolution_rules.get(f"{phase_key}_win", []) and (
-                sorted_dice == (bet.number, bet.number) or sorted_dice in BET_PAYOUT["Hop"]
-            ):
-                bet.status = "won"
-            elif "hop_lose" in resolution_rules.get(f"{phase_key}_lose", []) and (
-                sorted_dice != (bet.number, bet.number) and sorted_dice not in BET_PAYOUT["Hop"]
-            ):
-                bet.status = "lost"
+            hop_payouts = BET_PAYOUT.get("Hop", {})
+
+            if not isinstance(hop_payouts, (dict, list)):
+                raise TypeError(f"Expected dict or list for Hop payouts, got {type(hop_payouts)}")
+
+            if "hop_win" in resolution_rules.get(f"{phase_key}_win", []):
+                if sorted_dice == (bet.number, bet.number) or sorted_dice in hop_payouts:
+                    bet.status = "won"
+
+            elif "hop_lose" in resolution_rules.get(f"{phase_key}_lose", []):
+                if sorted_dice != (bet.number, bet.number) and sorted_dice not in hop_payouts:
+                    bet.status = "lost"
                 
         ### 🎯 **7. ODDS BETS**
         elif bet.bet_type in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
@@ -229,7 +234,12 @@ class RulesEngine:
         number = roll if bet.bet_type == "Field" else bet.number
 
         # ✅ Field bets should only request payout if they actually won
-        if bet.bet_type == "Field" and number not in BET_PAYOUT["Field"]:
+        field_payouts = BET_PAYOUT.get("Field", {})
+
+        if not isinstance(field_payouts, (dict, list, set)):
+            raise TypeError(f"Expected dict, list, or set for Field payouts, got {type(field_payouts)}")
+
+        if bet.bet_type == "Field" and number not in field_payouts:
             return 0  # ✅ If the number isn't a winning Field number, payout is $0
 
         payout_ratio = RulesEngine.get_payout_ratio(bet.bet_type, number)

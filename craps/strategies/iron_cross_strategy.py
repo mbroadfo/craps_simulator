@@ -1,29 +1,44 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, List
+from craps.bet import Bet
 
 if TYPE_CHECKING:
     from craps.table import Table  # Prevents circular imports
-    from craps.rules_engine import RulesEngine  
+    from craps.rules_engine import RulesEngine
+    from craps.game_state import GameState
+    from craps.player import Player
+    from craps.play_by_play import PlayByPlay
 
 class IronCrossStrategy:
     """Betting strategy for Iron Cross."""
-    def __init__(self, table, min_bet):
+
+    def __init__(self, table: Table, min_bet: int, play_by_play: PlayByPlay) -> None:
         """
         Initialize the Iron Cross strategy.
         
         :param table: The table object to determine minimum bets.
         :param min_bet: The minimum bet amount for the table.
+        :param play_by_play: The play-by-play logging instance.
         """
         self.table: Table = table
-        self.min_bet: str = min_bet
+        self.min_bet: int = min_bet  # Fixed type
         self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
+        self.play_by_play: PlayByPlay = play_by_play  # Ensure logging is available
 
-    def get_bet(self, game_state, player, table):
-        """Place bets for the Iron Cross strategy."""
+    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
+        """
+        Place bets for the Iron Cross strategy.
+
+        :param game_state: The current game state.
+        :param player: The player placing the bet.
+        :param table: The table where the bet will be placed.
+        :return: A list of bets to place, or None if no bets are placed.
+        """
         if game_state.phase == "come-out":
             # Place a Pass Line bet during the come-out roll if no active bet exists
             if not any(bet.owner == player and bet.bet_type == "Pass Line" for bet in table.bets):
-                return self.rules_engine.create_bet("Pass Line", self.min_bet, player)
+                return [self.rules_engine.create_bet("Pass Line", self.min_bet, player)]
+
         elif game_state.phase == "point":
             # Reactivate inactive Place bets
             for bet in table.bets:
@@ -49,9 +64,9 @@ class IronCrossStrategy:
             ]
 
             # Use RulesEngine to create Place bets
-            bets = []
+            bets: List[Bet] = []
             for number in numbers:
-                min_bet = self.rules_engine.get_minimum_bet("Place", table)  # ✅ Correct  # Use RulesEngine to get minimum bet
+                min_bet = self.rules_engine.get_minimum_bet("Place", table)  # ✅ Correct
                 bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists

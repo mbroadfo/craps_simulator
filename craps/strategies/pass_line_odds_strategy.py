@@ -1,13 +1,17 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+from craps.bet import Bet
 
 if TYPE_CHECKING:
     from craps.table import Table  # Prevents circular imports
-    from craps.rules_engine import RulesEngine  
+    from craps.rules_engine import RulesEngine
+    from craps.game_state import GameState
+    from craps.player import Player
 
 class PassLineOddsStrategy:
     """Betting strategy for Pass Line with Odds bets."""
-    def __init__(self, table, odds_multiple=1):
+
+    def __init__(self, table: Table, odds_multiple: int = 1) -> None:
         """
         Initialize the Pass Line Odds strategy.
         
@@ -15,11 +19,18 @@ class PassLineOddsStrategy:
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
         """
         self.table: Table = table
-        self.odds_multiple: str = odds_multiple
+        self.odds_multiple: int = odds_multiple  # Fixed type
         self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
-    def get_bet(self, game_state, player, table):
-        """Place a Pass Line or Pass Line Odds bet based on the game state."""
+    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
+        """
+        Place a Pass Line or Pass Line Odds bet based on the game state.
+
+        :param game_state: The current game state.
+        :param player: The player placing the bet.
+        :param table: The table where the bet will be placed.
+        :return: A Pass Line or Pass Line Odds bet, or None if no bet is placed.
+        """
         if game_state.phase not in ["come-out", "point"]:
             return None  # Do not place the bet if the phase is invalid
 

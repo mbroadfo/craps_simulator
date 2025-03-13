@@ -8,7 +8,7 @@ from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
 
 class Table:
-    def __init__(self, house_rules, play_by_play, rules_engine):
+    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine:RulesEngine) -> None:
         """
         Initialize the table.
 
@@ -31,7 +31,7 @@ class Table:
         """
         return bet in self.bets
 
-    def reactivate_inactive_bets(self):
+    def reactivate_inactive_bets(self) -> None:
         """
         Reactivate inactive Place bets when the point is set.
         """
