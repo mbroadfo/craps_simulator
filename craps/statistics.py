@@ -18,6 +18,7 @@ class Statistics:
         self.player_stats: Dict[str, Dict[str, Any]] = {}
         self.shooter: Optional[Any] = None
         self.shooter_num: Optional[int] = None
+        self.roll_history: List[Dict[str, Any]] = []
 
         # For visualization
         self.roll_numbers: List[int] = [0]  # Start with roll 0
@@ -133,18 +134,33 @@ class Statistics:
     def record_seven_out(self) -> None:
         """Record the roll number where a 7-out occurs."""
         self.seven_out_rolls.append(self.num_rolls)
-        if self.shooter:
+        if self.shooter and self.shooter_num is not None:  # Ensure shooter_num is an int
+            if self.shooter_num not in self.shooter_stats:
+                self.shooter_stats[self.shooter_num] = {
+                    "points_rolled": 0,
+                    "rolls_before_7_out": [],
+                    "total_rolls": 0,
+                }
             self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(self.shooter.current_roll_count)
             self.shooter.current_roll_count = 0
         
     def record_point_number_roll(self) -> None:
         """Record the roll number where a point number (4, 5, 6, 8, 9, 10) is rolled."""
         self.point_number_rolls.append(self.num_rolls)
-        if self.shooter:
+        if self.shooter and self.shooter_num is not None:  # Ensure shooter_num is an int
+            if self.shooter_num not in self.shooter_stats:
+                self.shooter_stats[self.shooter_num] = {
+                    "points_rolled": 0,
+                    "rolls_before_7_out": [],
+                    "total_rolls": 0,
+                }
             self.shooter_stats[self.shooter_num]["points_rolled"] += 1
 
     def update_shooter_stats(self, shooter: Any) -> None:
         """Update shooter statistics."""
+        if self.shooter_num is None:
+            return  # Avoid indexing with None
+
         if self.shooter_num not in self.shooter_stats:
             self.shooter_stats[self.shooter_num] = {
                 "points_rolled": 0,
@@ -153,6 +169,7 @@ class Statistics:
             }
         self.shooter_stats[self.shooter_num]["total_rolls"] = shooter.current_roll_count
         self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
+
 
     def print_statistics(self) -> None:
         """Print the simulation statistics."""
@@ -167,7 +184,7 @@ class Statistics:
         logging.info(f"Highest Player Bankroll: ${self.highest_bankroll}")
         logging.info(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
 
-    def print_shooter_report(self):
+    def print_shooter_report(self) -> None:
         """Print a report summarizing each shooter's performance."""
         logging.info("\n=== Shooter Performance Report ===")
         for shooter_num, stats in self.shooter_stats.items():

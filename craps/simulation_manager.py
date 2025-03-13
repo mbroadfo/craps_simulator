@@ -1,8 +1,11 @@
 # File: craps/simulation_manager.py
+from typing import List
 from craps.single_session import run_single_session
+from craps.house_rules import HouseRules
+from craps.statistics import Statistics
 
 class SimulationManager:
-    def __init__(self, house_rules, num_tables, num_shooters, strategies):
+    def __init__(self, house_rules: HouseRules, num_tables: int, num_shooters: int, strategies: List):
         """
         Initialize the SimulationManager.
         
@@ -17,7 +20,7 @@ class SimulationManager:
         self.strategies = strategies
         self.stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
 
-    def run_simulation(self, num_sessions):
+    def run_simulation(self, num_sessions: int) -> None:
         """Run multiple sessions and collect statistics."""
         for _ in range(num_sessions):
             for _ in range(self.num_tables):

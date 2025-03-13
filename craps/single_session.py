@@ -1,15 +1,24 @@
-# File: .\craps\single_session.py
-
 from colorama import init, Fore, Style
+from typing import List, Optional, Any
 from craps.table import Table
 from craps.game_state import GameState
 from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.rules_engine import RulesEngine
+from craps.play_by_play import PlayByPlay
+from craps.house_rules import HouseRules
 import os
 
-def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None, play_by_play=None):
+def run_single_session(
+    house_rules: HouseRules,
+    strategies: List[Any],
+    player_names: Optional[List[str]] = None, 
+    initial_bankroll: int = 500, 
+    num_shooters: int = 10, 
+    roll_history_file: Optional[str] = None, 
+    play_by_play: PlayByPlay = PlayByPlay()
+) -> Statistics:
     """
     Run a single session of craps and log the roll history.
     """
@@ -25,6 +34,7 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     rules_engine = RulesEngine()
     table = Table(house_rules, play_by_play, rules_engine)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
+    stats.roll_history = []  # Ensure roll_history is initialized
     game_state = GameState(stats, play_by_play=play_by_play)
     game_state.set_table(table)
 
