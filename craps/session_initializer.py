@@ -33,7 +33,7 @@ class InitializeSession:
         house_rules = HouseRules(self.house_rules_config)
 
         # Create the Table object with the RulesEngine
-        table = Table(house_rules, self.play_by_play, self.rules_engine)
+        table = Table(house_rules, self.play_by_play)
 
         # Delete the existing log file before starting the session
         self.log_manager.delete_log_file()

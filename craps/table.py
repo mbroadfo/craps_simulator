@@ -1,7 +1,7 @@
 # File: .\craps\table.py
 
 from colorama import Fore, Style
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
@@ -69,7 +69,7 @@ class Table:
         self.play_by_play.write(message)
         return True
 
-    def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def check_bets(self, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.
 

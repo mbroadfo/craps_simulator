@@ -83,7 +83,7 @@ class Bet:
 
         return True
 
-    def resolve(self, rules_engine: RulesEngine, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def resolve(self, rules_engine: RulesEngine, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:
         """
         Resolve the bet based on the dice outcome, phase, and point.
         Delegates resolution logic to the RulesEngine.

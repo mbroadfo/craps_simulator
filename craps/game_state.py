@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Tuple
 from colorama import Fore, Style
 
 class GameState:
@@ -42,7 +42,7 @@ class GameState:
         """Check if the puck should be 'ON' (point is set)."""
         return self._point is not None
 
-    def update_state(self, dice_outcome: List[int]) -> str:
+    def update_state(self, dice_outcome: Tuple[int, int]) -> str:
         """
         Update the game state based on the dice outcome.
 

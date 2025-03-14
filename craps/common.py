@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.play_by_play import PlayByPlay
@@ -25,7 +25,7 @@ class CommonTableSetup:
         self.rules_engine: RulesEngine = RulesEngine()
 
         # Initialize the table
-        self.table: Table = Table(self.house_rules, self.play_by_play, self.rules_engine)
+        self.table: Table = Table(self.house_rules, self.play_by_play)
 
         # Initialize a player
         self.player_name: str = "Alice"
@@ -61,7 +61,7 @@ class CommonTableSetup:
         self.table.place_bet(bet, phase)
         return bet
 
-    def simulate_roll(self, dice_outcome: List[int], phase: str = "come-out", point: Optional[int] = None) -> List[Bet]:
+    def simulate_roll(self, dice_outcome: Tuple[int, int], phase: str = "come-out", point: Optional[int] = None) -> List[Bet]:
         """
         Simulate a dice roll and resolve bets on the table.
 

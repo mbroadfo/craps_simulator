@@ -32,7 +32,7 @@ def run_single_session(
 
     # Initialize components
     rules_engine = RulesEngine()
-    table = Table(house_rules, play_by_play, rules_engine)
+    table = Table(house_rules, play_by_play)
     stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
     stats.roll_history = []  # Ensure roll_history is initialized
     game_state = GameState(stats, play_by_play=play_by_play)

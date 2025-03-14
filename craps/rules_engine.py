@@ -141,7 +141,7 @@ class RulesEngine:
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
     @staticmethod
-    def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> int:
+    def resolve_bet(bet: Bet, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> int:
         """
         Resolves a bet based on the dice outcome, phase, and point.
         Uses a structured approach based on bet categories.
