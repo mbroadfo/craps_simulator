@@ -96,7 +96,7 @@ class Table:
         for bet in resolved_bets:
             if bet.status == "won":
                 payout = bet.payout()
-                bet.owner.receive_payout(payout)
+                bet.owner.receive_payout(payout, self.play_by_play)
             elif bet.status == "lost":
                 bet.owner.balance -= bet.amount  # Deduct bet amount on loss
                 message = f"{Fore.RED}❌ {bet.owner.name} lost ${bet.amount} on {bet.bet_type}. New Bankroll: ${bet.owner.balance}.{Style.RESET_ALL}"

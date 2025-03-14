@@ -8,6 +8,8 @@ from craps.statistics import Statistics
 from craps.rules_engine import RulesEngine
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
+from craps.log_manager import LogManager
+from craps.session_initializer import InitializeSession
 import os
 
 def run_single_session(
@@ -16,8 +18,7 @@ def run_single_session(
     player_names: Optional[List[str]] = None, 
     initial_bankroll: int = 500, 
     num_shooters: int = 10, 
-    roll_history_file: Optional[str] = None, 
-    play_by_play: PlayByPlay = PlayByPlay()
+    roll_history_file: Optional[str] = None
 ) -> Statistics:
     """
     Run a single session of craps and log the roll history.
@@ -30,20 +31,21 @@ def run_single_session(
     else:
         dice = Dice()  # Use random rolls
 
-    # Initialize components
-    rules_engine = RulesEngine()
-    table = Table(house_rules, play_by_play)
-    stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
-    stats.roll_history = []  # Ensure roll_history is initialized
-    game_state = GameState(stats, play_by_play=play_by_play)
-    game_state.set_table(table)
+    # Initialie Session
+    session_initializer = InitializeSession(session_mode="live", house_rules_config={"table_minimum": house_rules.table_minimum, "table_maximum": house_rules.table_maximum})
+    session_data = session_initializer.prepare_session(num_shooters, len(strategies))
+    
+    if session_data is None:
+        raise RuntimeError("Failed to initialize session.")
+
+    house_rules, table, roll_history_manager, log_manager, play_by_play, stats, game_state = session_data
 
     # Create players with different betting strategies
     if player_names is None:
         player_names = [f"Player {i+1}" for i in range(len(strategies))]
 
     players = [
-        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice, play_by_play=play_by_play)
+        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice)
         for i, strategy in enumerate(strategies)
     ]
 
@@ -64,7 +66,7 @@ def run_single_session(
             for player in players:
                 bet = player.betting_strategy.get_bet(game_state, player, table)
                 if bet:
-                    player.place_bet(bet, table, game_state.phase)  # Pass the current phase
+                    player.place_bet(bet, table, game_state.phase, play_by_play)  # Pass play_by_play
 
             # Roll the dice and resolve bets
             outcome = shooter.roll_dice()
@@ -74,7 +76,7 @@ def run_single_session(
 
             # Log the dice roll and total
             message = f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}"
-            play_by_play.write(message)  # Write the message to the play-by-play file
+            play_by_play.write(message)
 
             # Log the roll to the history
             roll_history.append({
@@ -94,10 +96,10 @@ def run_single_session(
             for bet in resolved_bets:
                 if bet.status == "won":
                     payout = bet.payout()
-                    bet.owner.receive_payout(payout)
+                    bet.owner.receive_payout(payout, play_by_play)
                 elif bet.status == "lost":
                     message = f"{Fore.RED}❌ {bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.{Style.RESET_ALL}"
-                    play_by_play.write(message)  # Write the message to the play-by-play file
+                    play_by_play.write(message)
                 stats.update_win_loss(bet)
 
             # Update player bankrolls in statistics
@@ -107,7 +109,7 @@ def run_single_session(
             previous_phase = game_state.phase
             message = game_state.update_state(outcome)
             if message:
-                play_by_play.write(message)  # Write the message to the play-by-play file
+                play_by_play.write(message)
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:

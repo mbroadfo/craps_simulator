@@ -5,7 +5,7 @@ from craps.table import Table
 from craps.play_by_play import PlayByPlay
 
 class Player:
-    def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Any = None, play_by_play: Optional[PlayByPlay] = None) -> None:
+    def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Optional[Any] = None):
         """
         Initialize a player.
 
@@ -17,15 +17,15 @@ class Player:
         self.name: str = name
         self.balance: int = initial_balance
         self.betting_strategy: Any = betting_strategy
-        self.play_by_play: Optional[PlayByPlay] = play_by_play
 
-    def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
+    def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str, play_by_play: PlayByPlay) -> bool:
         """
         Place a bet (or multiple bets) on the table and deduct the amount from the player's balance.
 
         :param bet: The bet(s) to place.
         :param table: The table to place the bet on.
         :param phase: The current game phase ("come-out" or "point").
+        :param play_by_play: The PlayByPlay instance for logging messages.
         :return: True if the bet(s) were placed successfully, False otherwise.
         """
         bets: List[Bet] = [bet] if not isinstance(bet, list) else bet
@@ -41,24 +41,24 @@ class Player:
 
         if total_amount > self.balance:
             message: str = f"{Fore.RED}❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
-            if self.play_by_play:
-                self.play_by_play.write(message)
+            if play_by_play:
+                play_by_play.write(message)
             return False
 
         for b in bets:
             if not table.place_bet(b, phase):
                 message = f"{Fore.RED}❌ Failed to place {b.bet_type} bet for {self.name}.{Style.RESET_ALL}"
-                if self.play_by_play:
-                    self.play_by_play.write(message)
+                if play_by_play:
+                    play_by_play.write(message)
                 return False
 
             message = f"{Fore.GREEN}✅ {self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.{Style.RESET_ALL}"
-            if self.play_by_play:
-                self.play_by_play.write(message)
+            if play_by_play:
+                play_by_play.write(message)
 
         return True
 
-    def receive_payout(self, payout: int) -> None:
+    def receive_payout(self, payout: int, play_by_play: PlayByPlay) -> None:
         """
         Add the payout amount to the player's bankroll.
 
@@ -66,8 +66,8 @@ class Player:
         """
         self.balance += payout
         message: str = f"{Fore.GREEN}✅ {self.name} received a payout of ${payout}. Bankroll: ${self.balance}.{Style.RESET_ALL}"
-        if self.play_by_play:
-            self.play_by_play.write(message)
+        if play_by_play:
+            play_by_play.write(message)
 
     def has_active_bet(self, table: Table, bet_type: str, number: Optional[int] = None) -> bool:
         """

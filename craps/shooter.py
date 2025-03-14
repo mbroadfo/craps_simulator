@@ -3,14 +3,7 @@ from craps.dice import Dice
 from typing import Optional, List, Tuple, Any
 
 class Shooter(Player):
-    def __init__(
-        self, 
-        name: str, 
-        initial_balance: int = 0, 
-        betting_strategy: Optional[Any] = None, 
-        dice: Optional[Dice] = None, 
-        play_by_play: Optional[Any] = None
-    ) -> None:
+    def __init__(self, name: str, initial_balance: int = 0, betting_strategy: Optional[Any] = None, dice: Optional[Dice] = None) -> None:
         """
         Initialize the shooter.
 
@@ -18,9 +11,8 @@ class Shooter(Player):
         :param initial_balance: The initial bankroll of the shooter.
         :param betting_strategy: The betting strategy used by the shooter.
         :param dice: An optional Dice instance for rolling dice.
-        :param play_by_play: The PlayByPlay instance for logging.
         """
-        super().__init__(name, initial_balance, betting_strategy, play_by_play)
+        super().__init__(name, initial_balance, betting_strategy)
         self.dice: Dice = dice if dice else Dice()  # Ensure Dice instance
         self.points_rolled: int = 0
         self.rolls_before_7_out: List[int] = []  # Explicit type annotation
