@@ -1,5 +1,6 @@
 from typing import List, Optional, Any, Tuple
 from colorama import Fore, Style
+from craps.shooter import Shooter
 
 class GameState:
     def __init__(self, stats: Any, play_by_play: Optional[Any] = None) -> None:
@@ -13,10 +14,22 @@ class GameState:
         self.previous_point: Optional[int] = None  # Track the last point before changes
         self.stats = stats
         self.play_by_play = play_by_play
+        self.shooter: Optional[Shooter] = None  # Store current shooter
 
     def set_table(self, table: Any) -> None:
         """Set the table reference."""
         self.table = table
+
+    def assign_new_shooter(self, shooter: Shooter) -> None:
+        """
+        Assigns a new shooter and resets their stats.
+
+        :param shooter: The new shooter for the game.
+        """
+        self.shooter = shooter
+        self.shooter.reset_shooter()
+        if self.play_by_play:
+            self.play_by_play.write(f"🎲 New shooter: {self.shooter.name} steps up!")
 
     @property
     def point(self) -> Optional[int]:
@@ -46,7 +59,7 @@ class GameState:
         """
         Update the game state based on the dice outcome.
 
-        :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
+        :param dice_outcome: The result of the dice roll (e.g., (3, 4)).
         :return: A message describing the state change.
         """
         total = sum(dice_outcome)

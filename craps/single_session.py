@@ -2,6 +2,7 @@ from colorama import init, Fore, Style
 from typing import List, Optional, Any
 from craps.table import Table
 from craps.game_state import GameState
+from craps.player import Player
 from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
@@ -26,13 +27,13 @@ def run_single_session(
     init()  # Initialize colorama
 
     # Set dice mode
-    if roll_history_file and os.path.exists(roll_history_file):
-        dice = Dice(roll_history_file)
-    else:
-        dice = Dice()  # Use random rolls
+    dice = Dice(roll_history_file) if roll_history_file and os.path.exists(roll_history_file) else Dice()
 
-    # Initialie Session
-    session_initializer = InitializeSession(session_mode="live", house_rules_config={"table_minimum": house_rules.table_minimum, "table_maximum": house_rules.table_maximum})
+    # Initialize session
+    session_initializer = InitializeSession(
+        session_mode="live", 
+        house_rules_config={"table_minimum": house_rules.table_minimum, "table_maximum": house_rules.table_maximum}
+    )
     session_data = session_initializer.prepare_session(num_shooters, len(strategies))
     
     if session_data is None:
@@ -45,7 +46,7 @@ def run_single_session(
         player_names = [f"Player {i+1}" for i in range(len(strategies))]
 
     players = [
-        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice)
+        Player(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy)
         for i, strategy in enumerate(strategies)
     ]
 
@@ -57,9 +58,11 @@ def run_single_session(
 
     # Simulate shooters
     for shooter_num in range(1, num_shooters + 1):
-        player_index = (shooter_num - 1) % len(players)
-        shooter = players[player_index]
-        stats.set_shooter(shooter, shooter_num)
+        player_index = (shooter_num - 1) % len(players)  # Define player_index
+        shooter = Shooter(name=players[player_index].name, dice=dice)  # Create Shooter
+
+        # Assign new shooter through GameState
+        game_state.assign_new_shooter(shooter)
 
         while True:
             # Allow all players to place bets
@@ -114,8 +117,7 @@ def run_single_session(
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:
                 stats.record_seven_out()
-                shooter_num += 1  # Rotate to next shooter immediately
-                break
+                break  # Move to the next shooter
 
     # Return stats and roll history
     stats.roll_history = roll_history

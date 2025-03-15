@@ -1,7 +1,7 @@
 import csv
 import random
 import os
-from typing import Optional, List, Dict, cast
+from typing import Optional, List, Dict, Tuple, cast
 
 class Dice:
     def __init__(self, roll_history_file: Optional[str] = None) -> None:
@@ -10,9 +10,9 @@ class Dice:
         
         :param roll_history_file: Path to a CSV file containing roll history. If None, rolls are random.
         """
-        self.values: List[int] = [1, 1]
+        self.values: Tuple[int, int] = (1, 1)  # Ensure this is a fixed-size tuple
         self.roll_history_file: Optional[str] = roll_history_file
-        self.roll_history: List[Dict[str, int | List[int]]] = []
+        self.roll_history: List[Dict[str, int | Tuple[int, int]]] = []
         self.current_roll_index: int = 0
 
         if self.roll_history_file:
@@ -29,8 +29,12 @@ class Dice:
         with open(self.roll_history_file, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                # Convert dice and total to integers
-                dice: List[int] = [int(die) for die in row["dice"].strip('[]').split(', ')]
+                # Convert dice and total to proper types
+                dice_list = row["dice"].strip('[]').split(', ')
+                if len(dice_list) != 2:
+                    raise ValueError(f"Invalid dice format in roll history: {row['dice']}")
+                
+                dice: Tuple[int, int] = (int(dice_list[0]), int(dice_list[1]))  # Ensure exactly two values
                 total: int = int(row["total"])
                 shooter_num: int = int(row["shooter_num"])
                 self.roll_history.append({
@@ -39,16 +43,20 @@ class Dice:
                     "shooter_num": shooter_num
                 })
 
-    def roll(self) -> List[int]:
+    def roll(self) -> Tuple[int, int]:
         """Roll the dice. If roll history is loaded, use the next roll from the history."""
         if self.roll_history:
             if self.current_roll_index >= len(self.roll_history):
                 raise IndexError("No more rolls in the history.")
             roll = self.roll_history[self.current_roll_index]
-            self.values = cast(List[int], roll["dice"])
+            dice = cast(Tuple[int, int], roll["dice"])
+            if len(dice) != 2:
+                raise ValueError(f"Invalid dice format in roll history: {roll['dice']}")
+
+            self.values = dice  # Ensure it's a valid (int, int) tuple
             self.current_roll_index += 1
-            return self.values
         else:
             # Generate random rolls if no history is loaded
-            self.values = [random.randint(1, 6), random.randint(1, 6)]
-            return self.values
+            self.values = (random.randint(1, 6), random.randint(1, 6))  # Ensure it's a tuple
+        
+        return self.values

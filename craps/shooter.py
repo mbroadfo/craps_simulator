@@ -1,41 +1,36 @@
-from craps.player import Player
+from typing import List, Optional, Tuple
 from craps.dice import Dice
-from typing import Optional, List, Tuple, Any
+from craps.player import Player
 
-class Shooter(Player):
-    def __init__(self, name: str, initial_balance: int = 0, betting_strategy: Optional[Any] = None, dice: Optional[Dice] = None) -> None:
+class Shooter:
+    def __init__(self, name: str, initial_balance: int = 1000, dice: Optional[Dice] = None) -> None:
         """
-        Initialize the shooter.
+        Initialize a Shooter.
 
         :param name: The name of the shooter.
-        :param initial_balance: The initial bankroll of the shooter.
-        :param betting_strategy: The betting strategy used by the shooter.
-        :param dice: An optional Dice instance for rolling dice.
+        :param initial_balance: The shooter's starting balance.
+        :param dice: The Dice instance to use for rolling.
         """
-        super().__init__(name, initial_balance, betting_strategy)
-        self.dice: Dice = dice if dice else Dice()  # Ensure Dice instance
-        self.points_rolled: int = 0
-        self.rolls_before_7_out: List[int] = []  # Explicit type annotation
-        self.current_roll_count: int = 0  # Tracks rolls in the current turn
+        self.name: str = name  # ✅ Ensure the shooter has a name
+        self.balance: int = initial_balance
+        self.dice: Dice = dice if dice else Dice()
+        self.current_roll_count: int = 0
+        self.rolls_before_7_out: List[Tuple[int, int]] = []  # Track rolls before 7-out
 
     def roll_dice(self) -> Tuple[int, int]:
         """
-        Roll the dice and update shooter statistics.
+        Roll the dice and track the outcome.
 
         :return: A tuple representing the dice roll (e.g., (3, 4)).
         """
-        outcome: List[int] = self.dice.roll()
+        outcome = self.dice.roll()
+        self.rolls_before_7_out.append(outcome)
         self.current_roll_count += 1
+        return outcome
 
-        if len(outcome) != 2:
-            raise ValueError(f"Dice roll must return exactly two values, got: {outcome}")
-
-        return outcome[0], outcome[1]  # Ensure exactly (int, int)
-
-    def reset_stats(self) -> None:
+    def reset_shooter(self) -> None:
         """
-        Reset shooter statistics for a new turn.
+        Reset the shooter's roll count for a new round.
         """
-        self.points_rolled = 0
-        self.rolls_before_7_out = []
         self.current_roll_count = 0
+        self.rolls_before_7_out.clear()
