@@ -41,7 +41,8 @@ class TestInvalidBets(unittest.TestCase):
     def test_invalid_hop_bets(self):
         """Test invalid Hop bets (e.g., Hop 7-7 is not possible)."""
         with self.assertRaises(ValueError, msg="Hop 7-7 should be invalid"):
-            RulesEngine.create_bet("Hop", 10, self.player, number=7)
+            RulesEngine.create_bet("Hop", 10, self.player, number=(7, 7))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -58,19 +58,25 @@ class RulesEngine:
         return min_bet  # Default minimum bet
 
     @staticmethod
-    def create_bet(bet_type: str, amount: int, owner: Any, number: Optional[int] = None, parent_bet: Optional[Bet] = None) -> Bet:
+    def create_bet(bet_type: str, amount: int, owner: Any, number: Optional[Union[int, Tuple[int, int]]] = None, parent_bet: Optional[Bet] = None) -> Bet:
         """Create a bet based on the bet type."""
         bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
 
         if not bet_rules:
             raise ValueError(f"Unknown bet type: {bet_type}")
 
-        # ✅ Check if the number is valid for this bet type
-        valid_numbers = bet_rules.get("valid_numbers")  # Can be None or a list
+        # ✅ Check if the number is valid for this bet type (supports both int and tuple)
+        valid_numbers = bet_rules.get("valid_numbers")  # Can be None, a list of ints, or a list of tuples
+
         if valid_numbers is None and number is not None:
             raise ValueError(f"{bet_type} bet should not have a number")
-        if valid_numbers and number not in valid_numbers:
-            raise ValueError(f"Invalid number {number} for bet type {bet_type}")
+
+        if valid_numbers:
+            if isinstance(valid_numbers[0], tuple):  # ✅ If the rule expects tuples (e.g., Hop bets)
+                if not isinstance(number, tuple) or number not in valid_numbers:
+                    raise ValueError(f"Invalid tuple {number} for bet type {bet_type}")
+            elif not isinstance(number, int) or number not in valid_numbers:  # ✅ If the rule expects a single number
+                raise ValueError(f"Invalid number {number} for bet type {bet_type}")
 
         payout_ratio: Tuple[int, int] = RulesEngine.get_payout_ratio(bet_type, number) or (1, 1)
 

@@ -20,7 +20,7 @@ class CommonTableSetup:
         self.play_by_play = PlayByPlay()
 
         session_initializer = InitializeSession(
-            session_mode="test",
+            session_mode="live",
             house_rules_config={"table_minimum": 10, "table_maximum": 5000},
             play_by_play=self.play_by_play,
             rules_engine=self.rules_engine,

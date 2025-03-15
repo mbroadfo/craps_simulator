@@ -208,7 +208,7 @@ class Bet:
 
         return True
 
-    def resolve(self, rules_engine: RulesEngine, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def resolve(self, rules_engine: RulesEngine, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:
         """
         Resolve the bet based on the dice outcome, phase, and point.
         Delegates resolution logic to the RulesEngine.
@@ -248,7 +248,7 @@ class Bet:
 
 # File: .\craps\common.py
 
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.play_by_play import PlayByPlay
@@ -257,36 +257,40 @@ from craps.player import Player
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.bet import Bet
+from craps.session_initializer import InitializeSession
 
 class CommonTableSetup:
-    """Common setup for all craps tests."""
+    """Common setup for all craps tests, now using InitializeSession for consistency."""
 
     def __init__(self) -> None:
         """Initialize the table, players, and other components for testing."""
-        # Initialize house rules
-        self.house_rules_config: dict[str, int] = {
-            "table_minimum": 10,  # Minimum bet amount
-            "table_maximum": 5000,  # Maximum bet amount
-        }
-        self.house_rules: HouseRules = HouseRules(self.house_rules_config)
 
-        # Initialize play-by-play and rules engine
-        self.play_by_play: PlayByPlay = PlayByPlay()
-        self.rules_engine: RulesEngine = RulesEngine()
+        # ✅ InitializeSession 
+        self.rules_engine = RulesEngine()
+        self.play_by_play = PlayByPlay()
 
-        # Initialize the table
-        self.table: Table = Table(self.house_rules, self.play_by_play, self.rules_engine)
+        session_initializer = InitializeSession(
+            session_mode="test",
+            house_rules_config={"table_minimum": 10, "table_maximum": 5000},
+            play_by_play=self.play_by_play,
+            rules_engine=self.rules_engine,
+            log_manager=None  # Tests likely don’t need full logging
+        )
 
-        # Initialize a player
-        self.player_name: str = "Alice"
-        self.initial_balance: int = 1000
-        self.player: Player = Player(self.player_name, self.initial_balance)
+        session_data = session_initializer.prepare_session(num_shooters=10, num_players=1)
 
-        # Initialize statistics
-        self.stats: Statistics = Statistics(self.house_rules.table_minimum, num_shooters=10, num_players=1)
+        if session_data is None:
+            raise RuntimeError("Failed to initialize common test session.")
 
-        # Initialize dice (optional, for testing specific rolls)
-        self.dice: Dice = Dice()
+        self.house_rules, self.table, self.roll_history_manager, _, self.play_by_play, self.stats, self.game_state = session_data
+
+        # ✅ Setup Player
+        self.player_name = "Alice"
+        self.initial_balance = 1000
+        self.player = Player(self.player_name, self.initial_balance)
+
+        # ✅ Setup Gamestate
+        self.game_state.set_table(self.table)
 
     def place_bet(self, bet_type: str, amount: int, phase: str = "come-out", number: Optional[int] = None) -> Bet:
         """
@@ -299,23 +303,22 @@ class CommonTableSetup:
         :return: The created bet.
         """
         if bet_type == "Come Odds":
-            # Ensure the Come bet has a number before placing the Come Odds bet
-            come_bet: Optional[Bet] = next(
+            come_bet = next(
                 (bet for bet in self.table.bets if bet.bet_type == "Come" and bet.owner == self.player), None
             )
             if come_bet is None or come_bet.number is None:
                 raise ValueError("Cannot place Come Odds bet without an active Come bet with a number.")
-            number = come_bet.number  # Use the number from the Come bet
+            number = come_bet.number
 
-        bet: Bet = self.rules_engine.create_bet(bet_type, amount, self.player, number=number)
+        bet = self.rules_engine.create_bet(bet_type, amount, self.player, number=number)
         self.table.place_bet(bet, phase)
         return bet
 
-    def simulate_roll(self, dice_outcome: List[int], phase: str = "come-out", point: Optional[int] = None) -> List[Bet]:
+    def simulate_roll(self, dice_outcome: Tuple[int, int], phase: str = "come-out", point: Optional[int] = None) -> List[Bet]:
         """
         Simulate a dice roll and resolve bets on the table.
 
-        :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
+        :param dice_outcome: The result of the dice roll (e.g., (3, 4)).
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
         :return: A list of resolved bets.
@@ -334,7 +337,7 @@ class CommonTableSetup:
 import csv
 import random
 import os
-from typing import Optional, List, Dict, cast
+from typing import Optional, List, Dict, Tuple, cast
 
 class Dice:
     def __init__(self, roll_history_file: Optional[str] = None) -> None:
@@ -343,9 +346,9 @@ class Dice:
         
         :param roll_history_file: Path to a CSV file containing roll history. If None, rolls are random.
         """
-        self.values: List[int] = [1, 1]
+        self.values: Tuple[int, int] = (1, 1)  # Ensure this is a fixed-size tuple
         self.roll_history_file: Optional[str] = roll_history_file
-        self.roll_history: List[Dict[str, int | List[int]]] = []
+        self.roll_history: List[Dict[str, int | Tuple[int, int]]] = []
         self.current_roll_index: int = 0
 
         if self.roll_history_file:
@@ -362,8 +365,12 @@ class Dice:
         with open(self.roll_history_file, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                # Convert dice and total to integers
-                dice: List[int] = [int(die) for die in row["dice"].strip('[]').split(', ')]
+                # Convert dice and total to proper types
+                dice_list = row["dice"].strip('[]').split(', ')
+                if len(dice_list) != 2:
+                    raise ValueError(f"Invalid dice format in roll history: {row['dice']}")
+                
+                dice: Tuple[int, int] = (int(dice_list[0]), int(dice_list[1]))  # Ensure exactly two values
                 total: int = int(row["total"])
                 shooter_num: int = int(row["shooter_num"])
                 self.roll_history.append({
@@ -372,25 +379,30 @@ class Dice:
                     "shooter_num": shooter_num
                 })
 
-    def roll(self) -> List[int]:
+    def roll(self) -> Tuple[int, int]:
         """Roll the dice. If roll history is loaded, use the next roll from the history."""
         if self.roll_history:
             if self.current_roll_index >= len(self.roll_history):
                 raise IndexError("No more rolls in the history.")
             roll = self.roll_history[self.current_roll_index]
-            self.values = cast(List[int], roll["dice"])
+            dice = cast(Tuple[int, int], roll["dice"])
+            if len(dice) != 2:
+                raise ValueError(f"Invalid dice format in roll history: {roll['dice']}")
+
+            self.values = dice  # Ensure it's a valid (int, int) tuple
             self.current_roll_index += 1
-            return self.values
         else:
             # Generate random rolls if no history is loaded
-            self.values = [random.randint(1, 6), random.randint(1, 6)]
-            return self.values
+            self.values = (random.randint(1, 6), random.randint(1, 6))  # Ensure it's a tuple
+        
+        return self.values
 
 
 # File: .\craps\game_state.py
 
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Tuple
 from colorama import Fore, Style
+from craps.player import Player
 
 class GameState:
     def __init__(self, stats: Any, play_by_play: Optional[Any] = None) -> None:
@@ -404,10 +416,30 @@ class GameState:
         self.previous_point: Optional[int] = None  # Track the last point before changes
         self.stats = stats
         self.play_by_play = play_by_play
+        self.shooter: Optional[Player] = None  # Store current shooter (now a Player)
 
     def set_table(self, table: Any) -> None:
         """Set the table reference."""
         self.table = table
+
+    def assign_new_shooter(self, shooter: Player) -> None:
+        """
+        Assigns a new shooter and resets their stats.
+
+        :param shooter: The new shooter for the game.
+        """
+        self.shooter = shooter
+        self.shooter.is_shooter = True  # Mark player as the shooter
+        if self.play_by_play:
+            self.play_by_play.write(f"🎲 New shooter: {self.shooter.name} steps up!")
+
+    def clear_shooter(self) -> None:
+        """
+        Clears the current shooter when a new shooter is needed.
+        """
+        if self.shooter:
+            self.shooter.is_shooter = False
+        self.shooter = None
 
     @property
     def point(self) -> Optional[int]:
@@ -433,11 +465,11 @@ class GameState:
         """Check if the puck should be 'ON' (point is set)."""
         return self._point is not None
 
-    def update_state(self, dice_outcome: List[int]) -> str:
+    def update_state(self, dice_outcome: Tuple[int, int]) -> str:
         """
         Update the game state based on the dice outcome.
 
-        :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
+        :param dice_outcome: The result of the dice roll (e.g., (3, 4)).
         :return: A message describing the state change.
         """
         total = sum(dice_outcome)
@@ -502,31 +534,38 @@ from .strategies.place_strategy import PlaceBetStrategy
 from .strategies.field_strategy import FieldBetStrategy
 from .strategies.iron_cross_strategy import IronCrossStrategy
 from .strategies.three_point_molly_strategy import ThreePointMollyStrategy
+from .rules_engine import RulesEngine
 
 class PlayerLineup:
     """Class to manage the lineup of players and their strategies."""
     
-    def __init__(self, house_rules: Any, table: Any, play_by_play: Any) -> None:
+    def __init__(self, house_rules: Any, table: Any, play_by_play: Any, rules_engine: RulesEngine) -> None:
         """
         Initialize the player lineup.
 
         :param house_rules: The HouseRules object for table limits and payouts.
         :param table: The Table object for placing bets.
         :param play_by_play: The PlayByPlay instance for logging game actions.
+        :param rules_engine: The RulesEngine instance for bet validation.
         """
         self.house_rules = house_rules
         self.table = table
-        self.play_by_play = play_by_play  # Store the play_by_play instance
+        self.play_by_play = play_by_play
+        self.rules_engine = rules_engine
 
         # Define all possible strategies and their names
         self.all_strategies: Dict[str, Any] = {
-            "Pass-Line": PassLineStrategy(min_bet=self.house_rules.table_minimum),
-            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, odds_multiple=1),
-            "$44 Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside"),
-            "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across"),
-            "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
-            "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play),  # ✅ Fix
-            "3-Point Molly": ThreePointMollyStrategy(min_bet=self.house_rules.table_minimum, odds_multiple=1)
+            "Pass-Line": PassLineStrategy(min_bet=self.house_rules.table_minimum),  # ❌ NO rules_engine
+            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, odds_multiple=1, rules_engine=self.rules_engine),  # ✅
+            "$44 Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside", rules_engine=self.rules_engine),  # ✅
+            "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across", rules_engine=self.rules_engine),  # ✅
+            "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),  # ❌ NO rules_engine
+            "Iron Cross": IronCrossStrategy(
+                table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine
+            ),  # ✅
+            "3-Point Molly": ThreePointMollyStrategy(
+                table=self.table, min_bet=self.house_rules.table_minimum, odds_multiple=1, rules_engine=self.rules_engine
+            )  # ✅
         }
 
     def get_active_players(self, active_players_config: Dict[str, bool]) -> Tuple[List[Any], List[str]]:
@@ -587,80 +626,77 @@ class LogManager:
 
 # File: .\craps\player.py
 
-# File: .\craps\player.py
-
 from colorama import Fore, Style
-from typing import List, Union, Optional, Any
+from typing import List, Union, Optional, Any, Tuple
 from craps.bet import Bet
 from craps.table import Table
-from craps.rules_engine import RulesEngine  # Import RulesEngine
+from craps.play_by_play import PlayByPlay
+import random
 
 class Player:
-    def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Any = None, play_by_play: Any = None) -> None:
+    def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Optional[Any] = None):
         """
         Initialize a player.
 
         :param name: The name of the player.
         :param initial_balance: The initial bankroll of the player.
         :param betting_strategy: The betting strategy used by the player.
-        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
         """
-        self.name = name
-        self.balance = initial_balance
-        self.betting_strategy = betting_strategy
-        self.play_by_play = play_by_play
-        self.rules_engine = RulesEngine()  # Initialize RulesEngine
+        self.name: str = name
+        self.balance: int = initial_balance
+        self.betting_strategy: Any = betting_strategy
+        self.is_shooter: bool = False
 
-    def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str) -> bool:
+    def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str, play_by_play: PlayByPlay) -> bool:
         """
         Place a bet (or multiple bets) on the table and deduct the amount from the player's balance.
 
         :param bet: The bet(s) to place.
         :param table: The table to place the bet on.
         :param phase: The current game phase ("come-out" or "point").
+        :param play_by_play: The PlayByPlay instance for logging messages.
         :return: True if the bet(s) were placed successfully, False otherwise.
         """
-        # Convert single bet to a list for uniform handling
-        bets = [bet] if not isinstance(bet, list) else bet
-        
-        # Check if any of the bets are odds bets and validate their parent bets
+        bets: List[Bet] = [bet] if not isinstance(bet, list) else bet
+
         for b in bets:
-            if hasattr(b, 'parent_bet') and b.parent_bet is not None:  # Check if the bet is an odds bet and has a parent
+            if hasattr(b, 'parent_bet') and b.parent_bet is not None:
                 if b.parent_bet.owner != self:
                     raise ValueError("Cannot place odds bet on another player's bet")
                 if not table.has_bet(b.parent_bet):
                     raise ValueError("Parent bet must be on the table before placing odds")
 
-        # Calculate the total amount to be wagered
-        total_amount = sum(b.amount for b in bets)
+        total_amount: int = sum(b.amount for b in bets)
 
-        # Check if the player has sufficient funds
         if total_amount > self.balance:
-            message = f"{Fore.RED}❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
-            self.play_by_play.write(message)  # Write the message to the play-by-play file
+            message: str = f"{Fore.RED}❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
+            if play_by_play:
+                play_by_play.write(message)
             return False
 
-        # Place each bet on the table
         for b in bets:
-            if not table.place_bet(b, phase):  # Use the updated place_bet method
+            if not table.place_bet(b, phase):
                 message = f"{Fore.RED}❌ Failed to place {b.bet_type} bet for {self.name}.{Style.RESET_ALL}"
-                self.play_by_play.write(message)  # Write the message to the play-by-play file
+                if play_by_play:
+                    play_by_play.write(message)
                 return False
 
             message = f"{Fore.GREEN}✅ {self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.{Style.RESET_ALL}"
-            self.play_by_play.write(message)  # Write the message to the play-by-play file
+            if play_by_play:
+                play_by_play.write(message)
 
         return True
 
-    def receive_payout(self, payout: int) -> None:
+    def receive_payout(self, payout: int, play_by_play: PlayByPlay) -> None:
         """
         Add the payout amount to the player's bankroll.
 
         :param payout: The payout amount.
         """
         self.balance += payout
-        message = f"{Fore.GREEN}✅ {self.name} received a payout of ${payout}. Bankroll: ${self.balance}.{Style.RESET_ALL}"
-        self.play_by_play.write(message)  # Write the message to the play-by-play file
+        message: str = f"{Fore.GREEN}✅ {self.name} received a payout of ${payout}. Bankroll: ${self.balance}.{Style.RESET_ALL}"
+        if play_by_play:
+            play_by_play.write(message)
 
     def has_active_bet(self, table: Table, bet_type: str, number: Optional[int] = None) -> bool:
         """
@@ -676,16 +712,33 @@ class Player:
             for bet in table.bets
         )
 
-# File: .\craps\player_setup.py
+    def roll_dice(self) -> Tuple[int, int]:
+        """
+        Roll the dice if this player is the shooter.
+
+        :return: A tuple representing the dice roll (e.g., (3, 4)).
+        """
+        if self.is_shooter:
+            return random.randint(1, 6), random.randint(1, 6)
+        else:
+            raise ValueError(f"{self.name} is not the shooter and cannot roll dice.")
+
+    def reset_shooter(self) -> None:
+        """
+        Reset the shooter status when a new round begins.
+        """
+        self.is_shooter = False
+
 
 # File: .\craps\player_setup.py
 
 from typing import Tuple, List, Any, Dict
 from craps.lineup import PlayerLineup
-from craps.play_by_play import PlayByPlay  # Ensure this is imported
+from craps.rules_engine import RulesEngine
+from craps.play_by_play import PlayByPlay
 
 class SetupPlayers:
-    def __init__(self, house_rules: Any, table: Any, active_players_config: Dict[str, bool], play_by_play: PlayByPlay) -> None:
+    def __init__(self, house_rules: Any, table: Any, active_players_config: Dict[str, bool], play_by_play: PlayByPlay, rules_engine: RulesEngine) -> None:
         """
         Initialize player setup.
 
@@ -693,11 +746,13 @@ class SetupPlayers:
         :param table: The Table object for placing bets.
         :param active_players_config: A dictionary specifying which players are active.
         :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
+        :param rules_engine: The RulesEngine instance to use for bet creation.
         """
         self.house_rules = house_rules
         self.table = table
         self.active_players_config = active_players_config
-        self.play_by_play = play_by_play  # Store play_by_play instance
+        self.play_by_play = play_by_play
+        self.rules_engine = rules_engine
 
     def setup(self) -> Tuple[List[Any], List[str]]:
         """
@@ -705,7 +760,7 @@ class SetupPlayers:
 
         :return: A tuple of (strategies, player_names).
         """
-        player_lineup = PlayerLineup(self.house_rules, self.table, self.play_by_play)  # ✅ Pass play_by_play
+        player_lineup = PlayerLineup(self.house_rules, self.table, self.play_by_play, self.rules_engine)
         strategies, player_names = player_lineup.get_active_players(self.active_players_config)
         return strategies, player_names
 
@@ -1275,7 +1330,7 @@ class RulesEngine:
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
     @staticmethod
-    def resolve_bet(bet: Bet, dice_outcome: List[int], phase: str, point: Optional[int]) -> int:
+    def resolve_bet(bet: Bet, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> int:
         """
         Resolves a bet based on the dice outcome, phase, and point.
         Uses a structured approach based on bet categories.
@@ -1398,23 +1453,37 @@ from craps.roll_history_manager import RollHistoryManager
 from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
+from craps.statistics import Statistics
+from craps.game_state import GameState
 
 class InitializeSession:
-    def __init__(self, session_mode: str, house_rules_config: Dict[str, int]) -> None:
+    def __init__(
+        self, 
+        session_mode: str, 
+        house_rules_config: Dict[str, int], 
+        play_by_play: PlayByPlay, 
+        rules_engine: RulesEngine, 
+        log_manager: Optional[LogManager] = None
+    ) -> None:
         """
         Initialize the session.
 
         :param session_mode: The session mode ("live" or "history").
         :param house_rules_config: The house rules configuration.
+        :param play_by_play: The PlayByPlay instance for logging messages.
+        :param rules_engine: The RulesEngine instance to use.
+        :param log_manager: The LogManager instance for managing logs.
         """
         self.session_mode: str = session_mode
         self.house_rules_config: Dict[str, int] = house_rules_config
         self.roll_history_manager: RollHistoryManager = RollHistoryManager()
-        self.log_manager: LogManager = LogManager()
-        self.play_by_play: PlayByPlay = PlayByPlay()
-        self.rules_engine: RulesEngine = RulesEngine()
+        self.log_manager = log_manager or LogManager()
+        self.play_by_play: PlayByPlay = play_by_play
+        self.rules_engine: RulesEngine = rules_engine
 
-    def prepare_session(self) -> Optional[Tuple[HouseRules, Table, RollHistoryManager, LogManager, PlayByPlay]]:
+    def prepare_session(
+        self, num_shooters: int, num_players: int
+    ) -> Optional[Tuple[HouseRules, Table, RollHistoryManager, LogManager, PlayByPlay, Statistics, GameState]]:
         """Prepare the session based on the session mode."""
         try:
             self.roll_history_manager.prepare_for_session(self.session_mode)
@@ -1425,8 +1494,13 @@ class InitializeSession:
         # Initialize house rules
         house_rules = HouseRules(self.house_rules_config)
 
-        # Create the Table object with the RulesEngine
+        # ✅ Pass RulesEngine to Table
         table = Table(house_rules, self.play_by_play, self.rules_engine)
+
+        # Initialize Statistics and GameState
+        stats = Statistics(house_rules.table_minimum, num_shooters, num_players)
+        game_state = GameState(stats, play_by_play=self.play_by_play)
+        game_state.set_table(table)
 
         # Delete the existing log file before starting the session
         self.log_manager.delete_log_file()
@@ -1434,57 +1508,19 @@ class InitializeSession:
         # Clear the play-by-play file before starting the session
         self.play_by_play.clear_play_by_play_file()
 
-        return house_rules, table, self.roll_history_manager, self.log_manager, self.play_by_play
+        return house_rules, table, self.roll_history_manager, self.log_manager, self.play_by_play, stats, game_state
 
-
-# File: .\craps\shooter.py
-
-from typing import Optional
-from craps.player import Player
-from craps.dice import Dice
-
-class Shooter(Player):
-    def __init__(self, name: str, initial_balance: int = 0, betting_strategy: Optional[object] = None, 
-                 dice: Optional[Dice] = None, play_by_play: Optional[object] = None) -> None:
-        """
-        Initialize the shooter.
-
-        :param name: The name of the shooter.
-        :param initial_balance: The initial bankroll of the shooter.
-        :param betting_strategy: The betting strategy used by the shooter.
-        :param dice: The dice instance for rolling.
-        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
-        """
-        super().__init__(
-            name,
-            initial_balance=initial_balance,
-            betting_strategy=betting_strategy,
-            play_by_play=play_by_play
-        )
-        self.dice: Dice = dice if dice else Dice()
-        self.points_rolled: int = 0  # Number of times the shooter rolled the point
-        self.rolls_before_7_out: int = 0  # Number of rolls before 7-ing out
-        self.current_roll_count: int = 0  # Tracks rolls in the current turn
-
-    def roll_dice(self) -> list[int]:
-        """Roll the dice and update shooter statistics."""
-        outcome = self.dice.roll()
-        self.current_roll_count += 1
-        return outcome
-
-    def reset_stats(self) -> None:
-        """Reset shooter statistics for a new turn."""
-        self.points_rolled = 0
-        self.rolls_before_7_out = 0
-        self.current_roll_count = 0
 
 # File: .\craps\simulation_manager.py
 
 # File: craps/simulation_manager.py
+from typing import List
 from craps.single_session import run_single_session
+from craps.house_rules import HouseRules
+from craps.statistics import Statistics
 
 class SimulationManager:
-    def __init__(self, house_rules, num_tables, num_shooters, strategies):
+    def __init__(self, house_rules: HouseRules, num_tables: int, num_shooters: int, strategies: List):
         """
         Initialize the SimulationManager.
         
@@ -1499,7 +1535,7 @@ class SimulationManager:
         self.strategies = strategies
         self.stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
 
-    def run_simulation(self, num_sessions):
+    def run_simulation(self, num_sessions: int) -> None:
         """Run multiple sessions and collect statistics."""
         for _ in range(num_sessions):
             for _ in range(self.num_tables):
@@ -1509,44 +1545,66 @@ class SimulationManager:
         self.stats.print_statistics()
         self.stats.print_shooter_report()
 
-# File: .\craps\single_session.py
 
 # File: .\craps\single_session.py
 
 from colorama import init, Fore, Style
+from typing import List, Optional, Any
 from craps.table import Table
 from craps.game_state import GameState
-from craps.shooter import Shooter
+from craps.player import Player
 from craps.dice import Dice
 from craps.statistics import Statistics
+from craps.house_rules import HouseRules
+from craps.log_manager import LogManager
+from craps.session_initializer import InitializeSession
 from craps.rules_engine import RulesEngine
+from craps.log_manager import LogManager
+from craps.play_by_play import PlayByPlay
 import os
 
-def run_single_session(house_rules, strategies, player_names=None, initial_bankroll=500, num_shooters=10, roll_history_file=None, play_by_play=None):
+def run_single_session(
+    house_rules: HouseRules,
+    strategies: List[Any],
+    player_names: Optional[List[str]] = None, 
+    initial_bankroll: int = 500, 
+    num_shooters: int = 10, 
+    roll_history_file: Optional[str] = None
+) -> Statistics:
     """
     Run a single session of craps and log the roll history.
     """
     init()  # Initialize colorama
 
     # Set dice mode
-    if roll_history_file and os.path.exists(roll_history_file):
-        dice = Dice(roll_history_file)
-    else:
-        dice = Dice()  # Use random rolls
+    dice = Dice(roll_history_file) if roll_history_file and os.path.exists(roll_history_file) else Dice()
 
-    # Initialize components
+    # ✅ Initialize session level objects
     rules_engine = RulesEngine()
-    table = Table(house_rules, play_by_play, rules_engine)
-    stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
-    game_state = GameState(stats, play_by_play=play_by_play)
-    game_state.set_table(table)
+    play_by_play = PlayByPlay()
+    log_manager = LogManager()
+
+    # ✅ Pass RulesEngine to InitializeSession
+    session_initializer = InitializeSession(
+        session_mode="live", 
+        house_rules_config={"table_minimum": house_rules.table_minimum, "table_maximum": house_rules.table_maximum},
+        play_by_play=play_by_play,  # ✅ Fix: Now passing PlayByPlay
+        log_manager=log_manager,  # ✅ Fix: Now passing LogManager
+        rules_engine=rules_engine
+    )
+    session_data = session_initializer.prepare_session(num_shooters, len(strategies))
+    
+    if session_data is None:
+        raise RuntimeError("Failed to initialize session.")
+
+    house_rules, table, roll_history_manager, log_manager, play_by_play, stats, game_state = session_data
 
     # Create players with different betting strategies
     if player_names is None:
         player_names = [f"Player {i+1}" for i in range(len(strategies))]
 
     players = [
-        Shooter(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy, dice=dice, play_by_play=play_by_play)
+        Player(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy)
         for i, strategy in enumerate(strategies)
     ]
 
@@ -1560,24 +1618,26 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)
         shooter = players[player_index]
-        stats.set_shooter(shooter, shooter_num)
+
+        # Assign new shooter via GameState
+        game_state.assign_new_shooter(shooter)
 
         while True:
             # Allow all players to place bets
             for player in players:
                 bet = player.betting_strategy.get_bet(game_state, player, table)
                 if bet:
-                    player.place_bet(bet, table, game_state.phase)  # Pass the current phase
+                    player.place_bet(bet, table, game_state.phase, play_by_play)
 
             # Roll the dice and resolve bets
-            outcome = shooter.roll_dice()
+            outcome = (dice.roll())  # Now returns Tuple[int, int]
             total = sum(outcome)
             stats.update_rolls()
             stats.update_shooter_stats(shooter)
 
             # Log the dice roll and total
             message = f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}"
-            play_by_play.write(message)  # Write the message to the play-by-play file
+            play_by_play.write(message)
 
             # Log the roll to the history
             roll_history.append({
@@ -1597,10 +1657,10 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             for bet in resolved_bets:
                 if bet.status == "won":
                     payout = bet.payout()
-                    bet.owner.receive_payout(payout)
+                    bet.owner.receive_payout(payout, play_by_play)
                 elif bet.status == "lost":
                     message = f"{Fore.RED}❌ {bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.{Style.RESET_ALL}"
-                    play_by_play.write(message)  # Write the message to the play-by-play file
+                    play_by_play.write(message)
                 stats.update_win_loss(bet)
 
             # Update player bankrolls in statistics
@@ -1610,17 +1670,18 @@ def run_single_session(house_rules, strategies, player_names=None, initial_bankr
             previous_phase = game_state.phase
             message = game_state.update_state(outcome)
             if message:
-                play_by_play.write(message)  # Write the message to the play-by-play file
+                play_by_play.write(message)
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:
                 stats.record_seven_out()
-                shooter_num += 1  # Rotate to next shooter immediately
-                break
+                game_state.clear_shooter()  # Reset shooter status
+                break  # Move to next shooter
 
     # Return stats and roll history
     stats.roll_history = roll_history
     return stats
+
 
 # File: .\craps\statistics.py
 
@@ -1644,6 +1705,7 @@ class Statistics:
         self.player_stats: Dict[str, Dict[str, Any]] = {}
         self.shooter: Optional[Any] = None
         self.shooter_num: Optional[int] = None
+        self.roll_history: List[Dict[str, Any]] = []
 
         # For visualization
         self.roll_numbers: List[int] = [0]  # Start with roll 0
@@ -1759,18 +1821,33 @@ class Statistics:
     def record_seven_out(self) -> None:
         """Record the roll number where a 7-out occurs."""
         self.seven_out_rolls.append(self.num_rolls)
-        if self.shooter:
+        if self.shooter and self.shooter_num is not None:  # Ensure shooter_num is an int
+            if self.shooter_num not in self.shooter_stats:
+                self.shooter_stats[self.shooter_num] = {
+                    "points_rolled": 0,
+                    "rolls_before_7_out": [],
+                    "total_rolls": 0,
+                }
             self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(self.shooter.current_roll_count)
             self.shooter.current_roll_count = 0
         
     def record_point_number_roll(self) -> None:
         """Record the roll number where a point number (4, 5, 6, 8, 9, 10) is rolled."""
         self.point_number_rolls.append(self.num_rolls)
-        if self.shooter:
+        if self.shooter and self.shooter_num is not None:  # Ensure shooter_num is an int
+            if self.shooter_num not in self.shooter_stats:
+                self.shooter_stats[self.shooter_num] = {
+                    "points_rolled": 0,
+                    "rolls_before_7_out": [],
+                    "total_rolls": 0,
+                }
             self.shooter_stats[self.shooter_num]["points_rolled"] += 1
 
     def update_shooter_stats(self, shooter: Any) -> None:
         """Update shooter statistics."""
+        if self.shooter_num is None:
+            return  # Avoid indexing with None
+
         if self.shooter_num not in self.shooter_stats:
             self.shooter_stats[self.shooter_num] = {
                 "points_rolled": 0,
@@ -1779,6 +1856,7 @@ class Statistics:
             }
         self.shooter_stats[self.shooter_num]["total_rolls"] = shooter.current_roll_count
         self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
+
 
     def print_statistics(self) -> None:
         """Print the simulation statistics."""
@@ -1793,7 +1871,7 @@ class Statistics:
         logging.info(f"Highest Player Bankroll: ${self.highest_bankroll}")
         logging.info(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
 
-    def print_shooter_report(self):
+    def print_shooter_report(self) -> None:
         """Print a report summarizing each shooter's performance."""
         logging.info("\n=== Shooter Performance Report ===")
         for shooter_num, stats in self.shooter_stats.items():
@@ -1808,27 +1886,31 @@ class Statistics:
 # File: .\craps\table.py
 
 from colorama import Fore, Style
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
 
 class Table:
-    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine:RulesEngine) -> None:
+    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine) -> None:
         """
         Initialize the table.
 
         :param house_rules: The HouseRules object for payout rules and limits.
-        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
+        :param play_by_play: The PlayByPlay instance for logging.
         :param rules_engine: The RulesEngine instance for resolving bets.
         """
         self.house_rules = house_rules
+        self.play_by_play = play_by_play
+        self.rules_engine = rules_engine  # Use the passed RulesEngine
         self.bets: List[Bet] = []  # All bets on the table
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
-        self.play_by_play = play_by_play
-        self.rules_engine = rules_engine
 
+    def get_rules_engine(self) -> RulesEngine:
+            """Expose RulesEngine for other classes to query."""
+            return self.rules_engine
+    
     def has_bet(self, bet: Bet) -> bool:
         """
         Check if a specific bet is on the table.
@@ -1872,7 +1954,7 @@ class Table:
         self.play_by_play.write(message)
         return True
 
-    def check_bets(self, dice_outcome: List[int], phase: str, point: Optional[int]) -> None:
+    def check_bets(self, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.
 
@@ -1899,7 +1981,7 @@ class Table:
         for bet in resolved_bets:
             if bet.status == "won":
                 payout = bet.payout()
-                bet.owner.receive_payout(payout)
+                bet.owner.receive_payout(payout, self.play_by_play)
             elif bet.status == "lost":
                 bet.owner.balance -= bet.amount  # Deduct bet amount on loss
                 message = f"{Fore.RED}❌ {bet.owner.name} lost ${bet.amount} on {bet.bet_type}. New Bankroll: ${bet.owner.balance}.{Style.RESET_ALL}"
@@ -2097,7 +2179,6 @@ class FieldBetStrategy:
         :param min_bet: The minimum bet amount for the table.
         """
         self.min_bet: int = min_bet
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
         """
@@ -2116,7 +2197,8 @@ class FieldBetStrategy:
             return None  # No new bet to place
 
         # Use RulesEngine to create a Field bet
-        return self.rules_engine.create_bet("Field", self.min_bet, player)
+        rules_engine = table.get_rules_engine()
+        return rules_engine.create_bet("Field", self.min_bet, player)
 
 
 # File: .\craps\strategies\free_odds_strategy.py
@@ -2151,7 +2233,6 @@ class FreeOddsStrategy:
         """
         self.table: Table = table
         self.odds_multiple: OddsMultiple = odds_multiple
-        self.rules_engine: RulesEngine = RulesEngine()
 
     def get_odds_amount(self, original_bet_amount: int) -> int:
         """Calculate the odds amount based on the original bet amount and the selected multiple."""
@@ -2177,6 +2258,7 @@ class FreeOddsStrategy:
         :return: A list of bets to place, or None if no bets are placed.
         """
         bets: List[Bet] = []
+        rules_engine = self.table.get_rules_engine()
 
         # Retrieve active bets belonging to the player from the table
         active_bets = [bet for bet in self.table.bets if bet.owner == player]
@@ -2186,15 +2268,15 @@ class FreeOddsStrategy:
                 odds_amount = self.get_odds_amount(active_bet.amount)
 
                 if active_bet.bet_type == "Pass Line":
-                    bets.append(self.rules_engine.create_bet(
+                    bets.append(rules_engine.create_bet(
                         "Pass Line Odds", odds_amount, player, parent_bet=active_bet
                     ))
                 elif active_bet.bet_type == "Place":
-                    bets.append(self.rules_engine.create_bet(
+                    bets.append(rules_engine.create_bet(
                         "Place Odds", odds_amount, player, number=active_bet.number, parent_bet=active_bet
                     ))
 
-        return bets if bets else None
+        return bets if bets else None  # Return bets if any were created
 
 
 # File: .\craps\strategies\iron_cross_strategy.py
@@ -2213,18 +2295,19 @@ if TYPE_CHECKING:
 class IronCrossStrategy:
     """Betting strategy for Iron Cross."""
 
-    def __init__(self, table: Table, min_bet: int, play_by_play: PlayByPlay) -> None:
+    def __init__(self, table: Table, rules_engine: RulesEngine, min_bet: int, play_by_play: PlayByPlay) -> None:
         """
         Initialize the Iron Cross strategy.
-        
+
         :param table: The table object to determine minimum bets.
+        :param rules_engine: The RulesEngine instance from the table.
         :param min_bet: The minimum bet amount for the table.
         :param play_by_play: The play-by-play logging instance.
         """
         self.table: Table = table
-        self.min_bet: int = min_bet  # Fixed type
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
-        self.play_by_play: PlayByPlay = play_by_play  # Ensure logging is available
+        self.rules_engine: RulesEngine = rules_engine
+        self.min_bet: int = min_bet
+        self.play_by_play: PlayByPlay = play_by_play
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """
@@ -2235,10 +2318,13 @@ class IronCrossStrategy:
         :param table: The table where the bet will be placed.
         :return: A list of bets to place, or None if no bets are placed.
         """
+        
+        rules_engine = self.rules_engine
+
         if game_state.phase == "come-out":
             # Place a Pass Line bet during the come-out roll if no active bet exists
             if not any(bet.owner == player and bet.bet_type == "Pass Line" for bet in table.bets):
-                return [self.rules_engine.create_bet("Pass Line", self.min_bet, player)]
+                return [rules_engine.create_bet("Pass Line", self.min_bet, player)]
 
         elif game_state.phase == "point":
             # Reactivate inactive Place bets
@@ -2267,12 +2353,12 @@ class IronCrossStrategy:
             # Use RulesEngine to create Place bets
             bets: List[Bet] = []
             for number in numbers:
-                min_bet = self.rules_engine.get_minimum_bet("Place", table)  # ✅ Correct
-                bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
+                min_bet = rules_engine.get_minimum_bet("Place", table)  # ✅ Correct
+                bets.append(rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists
             if not any(bet.owner == player and bet.bet_type == "Field" for bet in table.bets):
-                bets.append(self.rules_engine.create_bet("Field", self.min_bet, player))
+                bets.append(rules_engine.create_bet("Field", self.min_bet, player))
 
             return bets if bets else None
 
@@ -2294,16 +2380,18 @@ if TYPE_CHECKING:
 class PassLineOddsStrategy:
     """Betting strategy for Pass Line with Odds bets."""
 
-    def __init__(self, table: Table, odds_multiple: int = 1) -> None:
+    def __init__(self, table: Table, rules_engine: RulesEngine, odds_multiple: int = 1) -> None:
         """
         Initialize the Pass Line Odds strategy.
-        
+
         :param table: The table object to determine minimum bets.
+        :param rules_engine: The RulesEngine instance from the table.
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
         """
         self.table: Table = table
-        self.odds_multiple: int = odds_multiple  # Fixed type
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
+        self.rules_engine: RulesEngine = rules_engine
+        self.odds_multiple: int = odds_multiple
+
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
         """
@@ -2314,6 +2402,8 @@ class PassLineOddsStrategy:
         :param table: The table where the bet will be placed.
         :return: A Pass Line or Pass Line Odds bet, or None if no bet is placed.
         """
+        rules_engine = self.rules_engine  # Use the passed RulesEngine
+
         if game_state.phase not in ["come-out", "point"]:
             return None  # Do not place the bet if the phase is invalid
 
@@ -2323,8 +2413,8 @@ class PassLineOddsStrategy:
                 return None  # No new bet to place
 
             # Use RulesEngine to create a Pass Line bet
-            return self.rules_engine.create_bet("Pass Line", self.table.house_rules.table_minimum, player)
-        
+            return rules_engine.create_bet("Pass Line", self.table.house_rules.table_minimum, player)
+
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
             if player.has_active_bet(table, "Pass Line Odds"):
@@ -2339,14 +2429,14 @@ class PassLineOddsStrategy:
                 return None  # No Pass Line bet found
 
             # Use RulesEngine to create a Pass Line Odds bet linked to the Pass Line bet
-            return self.rules_engine.create_bet(
+            return rules_engine.create_bet(
                 "Pass Line Odds",
                 self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
                 player,  # Owner
                 number=game_state.point,  # Pass the current point number
                 parent_bet=pass_line_bet  # Parent Pass Line bet
             )
-        
+
         return None  # No bet to place
 
 # File: .\craps\strategies\pass_line_strategy.py
@@ -2371,7 +2461,6 @@ class PassLineStrategy:
         :param min_bet: Minimum bet required for Pass Line.
         """
         self.min_bet: int = min_bet  # Fixed type
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
         """
@@ -2387,10 +2476,12 @@ class PassLineStrategy:
             if player.has_active_bet(table, "Pass Line"):
                 return None  # No new bet to place
 
-            # Use RulesEngine to create a Pass Line bet
-            return self.rules_engine.create_bet("Pass Line", self.min_bet, player)
+            # Get RulesEngine from the table to create the bet
+            rules_engine = table.get_rules_engine()
+            return rules_engine.create_bet("Pass Line", self.min_bet, player)
         
         return None  # No bet to place
+
 
 # File: .\craps\strategies\place_strategy.py
 
@@ -2407,21 +2498,24 @@ if TYPE_CHECKING:
 class PlaceBetStrategy:
     """Betting strategy for Place Bets."""
 
-    def __init__(self, table: Table, numbers_or_strategy: Union[str, list[int]]) -> None:
+    def __init__(self, table: Table, rules_engine: RulesEngine, numbers_or_strategy: Union[str, list[int]]) -> None:
         """
         Initialize the Place Bet strategy.
 
         :param table: The table object to determine minimum bets.
+        :param rules_engine: The RulesEngine instance from the table.
         :param numbers_or_strategy: A list of numbers (e.g., [5, 6, 8, 9]) or a strategy ("inside", "across").
         """
         self.table: Table = table
+        self.rules_engine: RulesEngine = rules_engine  # Use the existing RulesEngine
         self.numbers_or_strategy: Union[str, list[int]] = numbers_or_strategy
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """Place Place Bets based on the strategy and game state."""
         if game_state.phase != "point":
             return None  # Only place bets after the point is established
+
+        rules_engine = table.get_rules_engine()
 
         # Determine which numbers to bet on
         if isinstance(self.numbers_or_strategy, str):
@@ -2444,14 +2538,13 @@ class PlaceBetStrategy:
             )
         ]
 
-        # Use RulesEngine to create Place bets
+        # Use Table's RulesEngine to create Place bets
         bets: List[Bet] = []
         for number in numbers:
-            min_bet = self.rules_engine.get_minimum_bet("Place", self.table)
-            bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
+            min_bet = rules_engine.get_minimum_bet("Place", table)  # Use correct RulesEngine reference
+            bets.append(rules_engine.create_bet("Place", min_bet, player, number=number))
 
-        return bets if bets else None
-
+        return bets if bets else None  # Return bets if any were created
 
 # File: .\craps\strategies\three_point_molly_strategy.py
 
@@ -2468,18 +2561,21 @@ if TYPE_CHECKING:
 class ThreePointMollyStrategy:
     """Betting strategy for the 3-Point Molly system."""
     
-    def __init__(self, min_bet: int, odds_multiple: int = 1, come_odds_working_on_come_out: bool = False) -> None:
+    def __init__(self, table: Table, rules_engine: RulesEngine, min_bet: int, odds_multiple: int = 1, come_odds_working_on_come_out: bool = False) -> None:
         """
         Initialize the 3-Point Molly strategy.
 
+        :param table: The table object to determine minimum bets.
+        :param rules_engine: The RulesEngine instance from the table.
         :param min_bet: The minimum bet amount for the table.
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
         :param come_odds_working_on_come_out: Whether Come odds bets are working during the come-out roll.
         """
+        self.table: Table = table
+        self.rules_engine: RulesEngine = rules_engine  # Use existing RulesEngine, do not create a new one
         self.min_bet: int = min_bet
         self.odds_multiple: int = odds_multiple
         self.come_odds_working_on_come_out: bool = come_odds_working_on_come_out
-        self.rules_engine: RulesEngine = RulesEngine() 
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """
@@ -2490,12 +2586,13 @@ class ThreePointMollyStrategy:
         :param table: The table to place the bets on.
         :return: A list of bets to place, or None if no bets are placed.
         """
+        rules_engine = self.rules_engine  # Use the passed RulesEngine
         bets: List[Bet] = []
 
         # Place a Pass Line bet if no active Pass Line bet exists (only during come-out phase)
         if game_state.phase == "come-out":
             if not any(bet.bet_type == "Pass Line" for bet in table.bets if bet.owner == player):
-                bets.append(self.rules_engine.create_bet(
+                bets.append(rules_engine.create_bet(
                     "Pass Line",
                     self.min_bet,
                     player
@@ -2505,7 +2602,7 @@ class ThreePointMollyStrategy:
         if game_state.phase == "point":
             active_come_bets = [bet for bet in table.bets if bet.bet_type == "Come" and bet.owner == player]
             if len(active_come_bets) < 3:
-                bets.append(self.rules_engine.create_bet(
+                bets.append(rules_engine.create_bet(
                     "Come",
                     self.min_bet,
                     player
@@ -2518,7 +2615,7 @@ class ThreePointMollyStrategy:
                     if bet.bet_type == "Pass Line" and bet.status == "active":
                         # Place Pass Line Odds
                         odds_amount = self.min_bet * self.odds_multiple
-                        bets.append(self.rules_engine.create_bet(
+                        bets.append(rules_engine.create_bet(
                             "Pass Line Odds",
                             odds_amount,
                             player,
@@ -2528,7 +2625,7 @@ class ThreePointMollyStrategy:
                     elif bet.bet_type == "Come" and bet.status == "active" and bet.number is not None:
                         # Place Come Odds
                         odds_amount = self.min_bet * self.odds_multiple
-                        bets.append(self.rules_engine.create_bet(
+                        bets.append(rules_engine.create_bet(
                             "Come Odds",
                             odds_amount,
                             player,
