@@ -195,13 +195,23 @@ class RulesEngine:
             elif "out-field" in resolution_rules.get(f"{phase_key}_lose", []):
                 bet.status = "lost"
 
-        ### 🎯 **3. PLACE, BUY, LAY BETS**
-        elif bet_rules.get("valid_numbers") == [4, 5, 6, 8, 9, 10]:  # ✅ Uses category attribute
-            if total == bet.number and "number_hit" in resolution_rules.get(f"{phase_key}_win", []):
-                bet.status = "won"
-            elif total == 7 and "point_lose" in resolution_rules.get(f"{phase_key}_lose", []):
-                bet.status = "lost"
+        ### 🎯 **3. PLACE, BUY, LAY BETS (Follow Rule Definitions)**
+        elif bet.bet_type in ("Place", "Buy", "Lay"):
+            winning_numbers = resolution_rules.get(f"{phase_key}_win", [])
+            losing_numbers = resolution_rules.get(f"{phase_key}_lose", [])
 
+            # ✅ Win if the rolled total matches the "number_hit" or is in "point_win"
+            if "number_hit" in winning_numbers and total == bet.number:
+                bet.status = "won"
+            elif total in winning_numbers:  # ✅ Fully respects rules, includes Lay bet
+                bet.status = "won"
+
+            # ✅ Lose if total is in "point_lose"
+            elif "point_lose" in losing_numbers and total == 7:
+                bet.status = "lost"
+            elif total in losing_numbers:
+                bet.status = "lost"
+                
         ### 🎯 **4. PROPOSITION BETS**
         elif bet.bet_type == "Proposition":
             if "number_hit" in resolution_rules.get(f"{phase_key}_win", []) and total == bet.number:
