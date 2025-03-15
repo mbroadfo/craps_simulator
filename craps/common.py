@@ -7,38 +7,40 @@ from craps.player import Player
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.bet import Bet
+from craps.session_initializer import InitializeSession
 
 class CommonTableSetup:
-    """Common setup for all craps tests."""
+    """Common setup for all craps tests, now using InitializeSession for consistency."""
 
     def __init__(self) -> None:
         """Initialize the table, players, and other components for testing."""
-        # Initialize house rules
-        self.house_rules_config: dict[str, int] = {
-            "table_minimum": 10,  # Minimum bet amount
-            "table_maximum": 5000,  # Maximum bet amount
-        }
-        self.house_rules: HouseRules = HouseRules(self.house_rules_config)
 
-        # ✅ Initialize RulesEngine
-        self.rules_engine: RulesEngine = RulesEngine()
+        # ✅ InitializeSession 
+        self.rules_engine = RulesEngine()
+        self.play_by_play = PlayByPlay()
 
-        # Initialize play-by-play
-        self.play_by_play: PlayByPlay = PlayByPlay()
+        session_initializer = InitializeSession(
+            session_mode="test",
+            house_rules_config={"table_minimum": 10, "table_maximum": 5000},
+            play_by_play=self.play_by_play,
+            rules_engine=self.rules_engine,
+            log_manager=None  # Tests likely don’t need full logging
+        )
 
-        # ✅ Pass RulesEngine to Table
-        self.table: Table = Table(self.house_rules, self.play_by_play, self.rules_engine)
+        session_data = session_initializer.prepare_session(num_shooters=10, num_players=1)
 
-        # Initialize a player
-        self.player_name: str = "Alice"
-        self.initial_balance: int = 1000
-        self.player: Player = Player(self.player_name, self.initial_balance)
+        if session_data is None:
+            raise RuntimeError("Failed to initialize common test session.")
 
-        # Initialize statistics
-        self.stats: Statistics = Statistics(self.house_rules.table_minimum, num_shooters=10, num_players=1)
+        self.house_rules, self.table, self.roll_history_manager, _, self.play_by_play, self.stats, self.game_state = session_data
 
-        # Initialize dice (optional, for testing specific rolls)
-        self.dice: Dice = Dice()
+        # ✅ Setup Player
+        self.player_name = "Alice"
+        self.initial_balance = 1000
+        self.player = Player(self.player_name, self.initial_balance)
+
+        # ✅ Setup Gamestate
+        self.game_state.set_table(self.table)
 
     def place_bet(self, bet_type: str, amount: int, phase: str = "come-out", number: Optional[int] = None) -> Bet:
         """
@@ -51,16 +53,14 @@ class CommonTableSetup:
         :return: The created bet.
         """
         if bet_type == "Come Odds":
-            # Ensure the Come bet has a number before placing the Come Odds bet
-            come_bet: Optional[Bet] = next(
+            come_bet = next(
                 (bet for bet in self.table.bets if bet.bet_type == "Come" and bet.owner == self.player), None
             )
             if come_bet is None or come_bet.number is None:
                 raise ValueError("Cannot place Come Odds bet without an active Come bet with a number.")
-            number = come_bet.number  # Use the number from the Come bet
+            number = come_bet.number
 
-        # ✅ Use the correctly initialized RulesEngine
-        bet: Bet = self.rules_engine.create_bet(bet_type, amount, self.player, number=number)
+        bet = self.rules_engine.create_bet(bet_type, amount, self.player, number=number)
         self.table.place_bet(bet, phase)
         return bet
 
@@ -68,7 +68,7 @@ class CommonTableSetup:
         """
         Simulate a dice roll and resolve bets on the table.
 
-        :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
+        :param dice_outcome: The result of the dice roll (e.g., (3, 4)).
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
         :return: A list of resolved bets.

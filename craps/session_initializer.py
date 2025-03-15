@@ -15,7 +15,7 @@ class InitializeSession:
         house_rules_config: Dict[str, int], 
         play_by_play: PlayByPlay, 
         rules_engine: RulesEngine, 
-        log_manager: LogManager
+        log_manager: Optional[LogManager] = None
     ) -> None:
         """
         Initialize the session.
@@ -29,9 +29,9 @@ class InitializeSession:
         self.session_mode: str = session_mode
         self.house_rules_config: Dict[str, int] = house_rules_config
         self.roll_history_manager: RollHistoryManager = RollHistoryManager()
-        self.log_manager: LogManager = log_manager
+        self.log_manager = log_manager or LogManager()
         self.play_by_play: PlayByPlay = play_by_play
-        self.rules_engine: RulesEngine = rules_engine  # ✅ Store RulesEngine
+        self.rules_engine: RulesEngine = rules_engine
 
     def prepare_session(
         self, num_shooters: int, num_players: int
