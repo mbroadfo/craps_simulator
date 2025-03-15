@@ -11,13 +11,13 @@ class TestPlayer(unittest.TestCase):
             "table_maximum": 5000
         }
         self.house_rules = HouseRules(house_rules_config)
-        self.play_by_play = PlayByPlay()  # Create a PlayByPlay instance
-        self.player = Player(name="Test Player", initial_balance=1000, play_by_play=self.play_by_play)  # Pass it to Player
+        self.play_by_play = PlayByPlay()
+        self.player = Player(name="Test Player", initial_balance=1000)
     
     def test_player_bankroll_persistence(self):
         """Test that a player's bankroll persists across rounds."""
         initial_balance = self.player.balance
-        self.player.receive_payout(100)
+        self.player.receive_payout(100, self.play_by_play)
         self.assertEqual(self.player.balance, initial_balance + 100)
     
     def test_player_can_place_bet(self):
@@ -68,7 +68,7 @@ class TestPlayer(unittest.TestCase):
         self.house_rules = HouseRules(house_rules_config)
         initial_balance = self.player.balance
         win_amount = 150
-        self.player.receive_payout(win_amount)
+        self.player.receive_payout(win_amount, self.play_by_play)
         self.assertEqual(self.player.balance, initial_balance + win_amount)
     
 if __name__ == "__main__":
