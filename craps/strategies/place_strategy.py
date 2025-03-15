@@ -11,21 +11,24 @@ if TYPE_CHECKING:
 class PlaceBetStrategy:
     """Betting strategy for Place Bets."""
 
-    def __init__(self, table: Table, numbers_or_strategy: Union[str, list[int]]) -> None:
+    def __init__(self, table: Table, rules_engine: RulesEngine, numbers_or_strategy: Union[str, list[int]]) -> None:
         """
         Initialize the Place Bet strategy.
 
         :param table: The table object to determine minimum bets.
+        :param rules_engine: The RulesEngine instance from the table.
         :param numbers_or_strategy: A list of numbers (e.g., [5, 6, 8, 9]) or a strategy ("inside", "across").
         """
         self.table: Table = table
+        self.rules_engine: RulesEngine = rules_engine  # Use the existing RulesEngine
         self.numbers_or_strategy: Union[str, list[int]] = numbers_or_strategy
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """Place Place Bets based on the strategy and game state."""
         if game_state.phase != "point":
             return None  # Only place bets after the point is established
+
+        rules_engine = table.get_rules_engine()
 
         # Determine which numbers to bet on
         if isinstance(self.numbers_or_strategy, str):
@@ -48,10 +51,10 @@ class PlaceBetStrategy:
             )
         ]
 
-        # Use RulesEngine to create Place bets
+        # Use Table's RulesEngine to create Place bets
         bets: List[Bet] = []
         for number in numbers:
-            min_bet = self.rules_engine.get_minimum_bet("Place", self.table)
-            bets.append(self.rules_engine.create_bet("Place", min_bet, player, number=number))
+            min_bet = rules_engine.get_minimum_bet("Place", table)  # Use correct RulesEngine reference
+            bets.append(rules_engine.create_bet("Place", min_bet, player, number=number))
 
-        return bets if bets else None
+        return bets if bets else None  # Return bets if any were created

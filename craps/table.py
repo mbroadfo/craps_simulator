@@ -8,19 +8,19 @@ from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
 
 class Table:
-    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay) -> None:
+    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine) -> None:
         """
         Initialize the table.
 
         :param house_rules: The HouseRules object for payout rules and limits.
-        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
+        :param play_by_play: The PlayByPlay instance for logging.
         :param rules_engine: The RulesEngine instance for resolving bets.
         """
         self.house_rules = house_rules
+        self.play_by_play = play_by_play
+        self.rules_engine = rules_engine  # Use the passed RulesEngine
         self.bets: List[Bet] = []  # All bets on the table
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
-        self.play_by_play = play_by_play
-        self.rules_engine = RulesEngine()
 
     def get_rules_engine(self) -> RulesEngine:
             """Expose RulesEngine for other classes to query."""

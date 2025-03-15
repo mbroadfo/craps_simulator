@@ -8,6 +8,9 @@ from craps.statistics import Statistics
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
 from craps.session_initializer import InitializeSession
+from craps.rules_engine import RulesEngine
+from craps.log_manager import LogManager
+from craps.play_by_play import PlayByPlay
 import os
 
 def run_single_session(
@@ -26,10 +29,18 @@ def run_single_session(
     # Set dice mode
     dice = Dice(roll_history_file) if roll_history_file and os.path.exists(roll_history_file) else Dice()
 
-    # Initialize session
+    # ✅ Initialize session level objects
+    rules_engine = RulesEngine()
+    play_by_play = PlayByPlay()
+    log_manager = LogManager()
+
+    # ✅ Pass RulesEngine to InitializeSession
     session_initializer = InitializeSession(
         session_mode="live", 
-        house_rules_config={"table_minimum": house_rules.table_minimum, "table_maximum": house_rules.table_maximum}
+        house_rules_config={"table_minimum": house_rules.table_minimum, "table_maximum": house_rules.table_maximum},
+        play_by_play=play_by_play,  # ✅ Fix: Now passing PlayByPlay
+        log_manager=log_manager,  # ✅ Fix: Now passing LogManager
+        rules_engine=rules_engine
     )
     session_data = session_initializer.prepare_session(num_shooters, len(strategies))
     

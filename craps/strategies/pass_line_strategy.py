@@ -18,7 +18,6 @@ class PassLineStrategy:
         :param min_bet: Minimum bet required for Pass Line.
         """
         self.min_bet: int = min_bet  # Fixed type
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
         """
@@ -34,7 +33,8 @@ class PassLineStrategy:
             if player.has_active_bet(table, "Pass Line"):
                 return None  # No new bet to place
 
-            # Use RulesEngine to create a Pass Line bet
-            return self.rules_engine.create_bet("Pass Line", self.min_bet, player)
+            # Get RulesEngine from the table to create the bet
+            rules_engine = table.get_rules_engine()
+            return rules_engine.create_bet("Pass Line", self.min_bet, player)
         
         return None  # No bet to place

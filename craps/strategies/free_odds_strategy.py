@@ -28,7 +28,6 @@ class FreeOddsStrategy:
         """
         self.table: Table = table
         self.odds_multiple: OddsMultiple = odds_multiple
-        self.rules_engine: RulesEngine = RulesEngine()
 
     def get_odds_amount(self, original_bet_amount: int) -> int:
         """Calculate the odds amount based on the original bet amount and the selected multiple."""
@@ -54,6 +53,7 @@ class FreeOddsStrategy:
         :return: A list of bets to place, or None if no bets are placed.
         """
         bets: List[Bet] = []
+        rules_engine = self.table.get_rules_engine()
 
         # Retrieve active bets belonging to the player from the table
         active_bets = [bet for bet in self.table.bets if bet.owner == player]
@@ -63,12 +63,12 @@ class FreeOddsStrategy:
                 odds_amount = self.get_odds_amount(active_bet.amount)
 
                 if active_bet.bet_type == "Pass Line":
-                    bets.append(self.rules_engine.create_bet(
+                    bets.append(rules_engine.create_bet(
                         "Pass Line Odds", odds_amount, player, parent_bet=active_bet
                     ))
                 elif active_bet.bet_type == "Place":
-                    bets.append(self.rules_engine.create_bet(
+                    bets.append(rules_engine.create_bet(
                         "Place Odds", odds_amount, player, number=active_bet.number, parent_bet=active_bet
                     ))
 
-        return bets if bets else None
+        return bets if bets else None  # Return bets if any were created

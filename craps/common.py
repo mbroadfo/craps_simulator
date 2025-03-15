@@ -20,12 +20,14 @@ class CommonTableSetup:
         }
         self.house_rules: HouseRules = HouseRules(self.house_rules_config)
 
-        # Initialize play-by-play and rules engine
-        self.play_by_play: PlayByPlay = PlayByPlay()
+        # ✅ Initialize RulesEngine
         self.rules_engine: RulesEngine = RulesEngine()
 
-        # Initialize the table
-        self.table: Table = Table(self.house_rules, self.play_by_play)
+        # Initialize play-by-play
+        self.play_by_play: PlayByPlay = PlayByPlay()
+
+        # ✅ Pass RulesEngine to Table
+        self.table: Table = Table(self.house_rules, self.play_by_play, self.rules_engine)
 
         # Initialize a player
         self.player_name: str = "Alice"
@@ -57,6 +59,7 @@ class CommonTableSetup:
                 raise ValueError("Cannot place Come Odds bet without an active Come bet with a number.")
             number = come_bet.number  # Use the number from the Come bet
 
+        # ✅ Use the correctly initialized RulesEngine
         bet: Bet = self.rules_engine.create_bet(bet_type, amount, self.player, number=number)
         self.table.place_bet(bet, phase)
         return bet

@@ -19,7 +19,6 @@ class FieldBetStrategy:
         :param min_bet: The minimum bet amount for the table.
         """
         self.min_bet: int = min_bet
-        self.rules_engine: RulesEngine = RulesEngine()  # Initialize RulesEngine
 
     def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
         """
@@ -38,4 +37,5 @@ class FieldBetStrategy:
             return None  # No new bet to place
 
         # Use RulesEngine to create a Field bet
-        return self.rules_engine.create_bet("Field", self.min_bet, player)
+        rules_engine = table.get_rules_engine()
+        return rules_engine.create_bet("Field", self.min_bet, player)
