@@ -1,4 +1,4 @@
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Union
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.play_by_play import PlayByPlay
@@ -42,14 +42,14 @@ class CommonTableSetup:
         # ✅ Setup Gamestate
         self.game_state.set_table(self.table)
 
-    def place_bet(self, bet_type: str, amount: int, phase: str = "come-out", number: Optional[int] = None) -> Bet:
+    def place_bet(self, bet_type: str, amount: int, phase: str = "come-out", number: Optional[Union[int, Tuple[int, int]]] = None) -> Bet:
         """
         Place a bet on the table for the player.
 
         :param bet_type: The type of bet (e.g., "Field", "Pass Line").
         :param amount: The amount of the bet.
         :param phase: The current game phase ("come-out" or "point").
-        :param number: The number associated with the bet (e.g., 6 for Place 6).
+        :param number: The number associated with the bet (e.g., 6 for Place 6 or (2,5) for Hop bets).
         :return: The created bet.
         """
         if bet_type == "Come Odds":

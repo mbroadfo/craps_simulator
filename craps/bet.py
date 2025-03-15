@@ -1,5 +1,5 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 import logging
 
 if TYPE_CHECKING:
@@ -21,24 +21,14 @@ class Bet:
         vig: bool = False,  # Updated to a boolean
         unit: int = 1,
         valid_phases: Optional[List[str]] = None,
-        number: Optional[int] = None,
+        number: Optional[Union[int, Tuple[int, int]]] = None,  # ✅ Now supports tuples for Hop bets
         parent_bet: Optional[Bet] = None,
         is_contract_bet: bool = False
     ) -> None:
         """
         Initializes a Bet.
 
-        :param bet_type: Type of bet (e.g., "Pass Line", "Come", "Place 6").
-        :param amount: Amount wagered.
-        :param owner: The player who owns the bet.
-        :param payout_ratio: Multiplier for payouts as a tuple (e.g., (3, 2) for 3:2 odds).
-        :param locked: Whether the bet is locked and cannot be removed.
-        :param vig: Whether the bet has a vigorish (commission).
-        :param unit: Minimum bet unit.
-        :param valid_phases: Game phases where this bet is valid.
-        :param number: The number associated with the bet (if applicable).
-        :param parent_bet: Reference to the original bet (for odds bets).
-        :param is_contract_bet: Whether the bet is a contract bet (cannot be removed).
+        :param number: The number associated with the bet (e.g., 6 for Place 6 or (2,5) for Hop bets).
         """
         self.bet_type: str = bet_type
         self.amount: int = amount
@@ -48,7 +38,7 @@ class Bet:
         self.vig: bool = vig  # Vig is now a boolean
         self.unit: int = unit
         self.valid_phases: List[str] = valid_phases if valid_phases is not None else self.VALID_PHASES
-        self.number: Optional[int] = number
+        self.number: Optional[Union[int, Tuple[int, int]]] = number  # ✅ Now supports both int and tuple
         self.status: str = "active"
         self.parent_bet: Optional[Bet] = parent_bet
         self.is_contract_bet: bool = is_contract_bet  # Whether the bet is a contract bet
