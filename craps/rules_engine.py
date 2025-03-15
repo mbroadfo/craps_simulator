@@ -68,8 +68,10 @@ class RulesEngine:
         # ✅ Check if the number is valid for this bet type (supports both int and tuple)
         valid_numbers = bet_rules.get("valid_numbers")  # Can be None, a list of ints, or a list of tuples
 
-        if valid_numbers is None and number is not None:
+        if valid_numbers is None and number is not None and bet_type not in ["Come Odds", "Don't Come Odds"]:
             raise ValueError(f"{bet_type} bet should not have a number")
+        if valid_numbers and number not in valid_numbers:
+            raise ValueError(f"Invalid number {number} for bet type {bet_type}")
 
         if valid_numbers:
             if isinstance(valid_numbers[0], tuple):  # ✅ If the rule expects tuples (e.g., Hop bets)
@@ -164,8 +166,23 @@ class RulesEngine:
             winning_numbers = resolution_rules.get(f"{phase_key}_win", [])
             losing_numbers = resolution_rules.get(f"{phase_key}_lose", [])
 
-            # 🏆 **Check if the bet wins**
-            if total in winning_numbers:
+            # 🏆 **Come/Don't Come Special Case - Handle First Roll**
+            if bet.bet_type in ["Come", "Don't Come"]:
+                if bet.number is None:  # ✅ First roll for Come/Don't Come
+                    if total in resolution_rules["come_out_win"]:
+                        bet.status = "won"
+                    elif total in resolution_rules["come_out_lose"]:
+                        bet.status = "lost"
+                    else:
+                        bet.number = total  # ✅ Move the bet to a number
+                else:  # ✅ Subsequent rolls after moving to a number
+                    if total == bet.number:
+                        bet.status = "won"
+                    elif total == 7:
+                        bet.status = "lost"
+            
+            # 🏆 **Regular Pass Line / Don't Pass Logic**
+            elif total in winning_numbers:
                 bet.status = "won"
             elif total in losing_numbers:
                 bet.status = "lost"
@@ -206,17 +223,19 @@ class RulesEngine:
         elif bet.bet_type == "Hop":
             hop_payouts = BET_PAYOUT.get("Hop", {})
 
-            if not isinstance(hop_payouts, (dict, list)):
-                raise TypeError(f"Expected dict or list for Hop payouts, got {type(hop_payouts)}")
+            if not isinstance(hop_payouts, dict):
+                raise TypeError(f"Expected dict for Hop payouts, got {type(hop_payouts)}")
 
-            if "hop_win" in resolution_rules.get(f"{phase_key}_win", []):
-                if sorted_dice == (bet.number, bet.number) or sorted_dice in hop_payouts:
+            # Normalize dice order for lookup
+            sorted_dice = tuple(sorted(dice_outcome))
+
+            # Ensure bet.number is a tuple and check both (X, Y) and (Y, X)
+            if isinstance(bet.number, tuple):
+                if sorted_dice == tuple(sorted(bet.number)):
                     bet.status = "won"
-
-            elif "hop_lose" in resolution_rules.get(f"{phase_key}_lose", []):
-                if sorted_dice != (bet.number, bet.number) and sorted_dice not in hop_payouts:
+                else:
                     bet.status = "lost"
-                
+
         ### 🎯 **7. ODDS BETS**
         elif bet.bet_type in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
             if bet.parent_bet and bet.parent_bet.status == "won":
