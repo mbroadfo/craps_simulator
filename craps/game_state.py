@@ -1,6 +1,6 @@
 from typing import List, Optional, Any, Tuple
 from colorama import Fore, Style
-from craps.shooter import Shooter
+from craps.player import Player
 
 class GameState:
     def __init__(self, stats: Any, play_by_play: Optional[Any] = None) -> None:
@@ -14,22 +14,30 @@ class GameState:
         self.previous_point: Optional[int] = None  # Track the last point before changes
         self.stats = stats
         self.play_by_play = play_by_play
-        self.shooter: Optional[Shooter] = None  # Store current shooter
+        self.shooter: Optional[Player] = None  # Store current shooter (now a Player)
 
     def set_table(self, table: Any) -> None:
         """Set the table reference."""
         self.table = table
 
-    def assign_new_shooter(self, shooter: Shooter) -> None:
+    def assign_new_shooter(self, shooter: Player) -> None:
         """
         Assigns a new shooter and resets their stats.
 
         :param shooter: The new shooter for the game.
         """
         self.shooter = shooter
-        self.shooter.reset_shooter()
+        self.shooter.is_shooter = True  # Mark player as the shooter
         if self.play_by_play:
             self.play_by_play.write(f"🎲 New shooter: {self.shooter.name} steps up!")
+
+    def clear_shooter(self) -> None:
+        """
+        Clears the current shooter when a new shooter is needed.
+        """
+        if self.shooter:
+            self.shooter.is_shooter = False
+        self.shooter = None
 
     @property
     def point(self) -> Optional[int]:

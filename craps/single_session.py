@@ -3,11 +3,8 @@ from typing import List, Optional, Any
 from craps.table import Table
 from craps.game_state import GameState
 from craps.player import Player
-from craps.shooter import Shooter
 from craps.dice import Dice
 from craps.statistics import Statistics
-from craps.rules_engine import RulesEngine
-from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
 from craps.session_initializer import InitializeSession
@@ -58,10 +55,10 @@ def run_single_session(
 
     # Simulate shooters
     for shooter_num in range(1, num_shooters + 1):
-        player_index = (shooter_num - 1) % len(players)  # Define player_index
-        shooter = Shooter(name=players[player_index].name, dice=dice)  # Create Shooter
+        player_index = (shooter_num - 1) % len(players)
+        shooter = players[player_index]
 
-        # Assign new shooter through GameState
+        # Assign new shooter via GameState
         game_state.assign_new_shooter(shooter)
 
         while True:
@@ -69,10 +66,10 @@ def run_single_session(
             for player in players:
                 bet = player.betting_strategy.get_bet(game_state, player, table)
                 if bet:
-                    player.place_bet(bet, table, game_state.phase, play_by_play)  # Pass play_by_play
+                    player.place_bet(bet, table, game_state.phase, play_by_play)
 
             # Roll the dice and resolve bets
-            outcome = shooter.roll_dice()
+            outcome = (dice.roll())  # Now returns Tuple[int, int]
             total = sum(outcome)
             stats.update_rolls()
             stats.update_shooter_stats(shooter)
@@ -117,7 +114,8 @@ def run_single_session(
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:
                 stats.record_seven_out()
-                break  # Move to the next shooter
+                game_state.clear_shooter()  # Reset shooter status
+                break  # Move to next shooter
 
     # Return stats and roll history
     stats.roll_history = roll_history

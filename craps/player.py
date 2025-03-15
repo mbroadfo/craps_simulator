@@ -1,8 +1,9 @@
 from colorama import Fore, Style
-from typing import List, Union, Optional, Any
+from typing import List, Union, Optional, Any, Tuple
 from craps.bet import Bet
 from craps.table import Table
 from craps.play_by_play import PlayByPlay
+import random
 
 class Player:
     def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Optional[Any] = None):
@@ -12,11 +13,11 @@ class Player:
         :param name: The name of the player.
         :param initial_balance: The initial bankroll of the player.
         :param betting_strategy: The betting strategy used by the player.
-        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
         """
         self.name: str = name
         self.balance: int = initial_balance
         self.betting_strategy: Any = betting_strategy
+        self.is_shooter: bool = False
 
     def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str, play_by_play: PlayByPlay) -> bool:
         """
@@ -82,3 +83,20 @@ class Player:
             bet.owner == self and bet.bet_type == bet_type and (number is None or bet.number == number)
             for bet in table.bets
         )
+
+    def roll_dice(self) -> Tuple[int, int]:
+        """
+        Roll the dice if this player is the shooter.
+
+        :return: A tuple representing the dice roll (e.g., (3, 4)).
+        """
+        if self.is_shooter:
+            return random.randint(1, 6), random.randint(1, 6)
+        else:
+            raise ValueError(f"{self.name} is not the shooter and cannot roll dice.")
+
+    def reset_shooter(self) -> None:
+        """
+        Reset the shooter status when a new round begins.
+        """
+        self.is_shooter = False
