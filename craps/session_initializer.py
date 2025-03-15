@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Optional
+from typing import Tuple, Optional
 from craps.house_rules import HouseRules
 from craps.table import Table
 from craps.roll_history_manager import RollHistoryManager
@@ -12,7 +12,7 @@ class InitializeSession:
     def __init__(
         self, 
         session_mode: str, 
-        house_rules_config: Dict[str, int], 
+        house_rules: HouseRules,
         play_by_play: PlayByPlay, 
         rules_engine: RulesEngine, 
         log_manager: Optional[LogManager] = None
@@ -21,13 +21,13 @@ class InitializeSession:
         Initialize the session.
 
         :param session_mode: The session mode ("live" or "history").
-        :param house_rules_config: The house rules configuration.
-        :param play_by_play: The PlayByPlay instance for logging messages.
-        :param rules_engine: The RulesEngine instance to use.
-        :param log_manager: The LogManager instance for managing logs.
+        :param house_rules: The HouseRules instance of the session.
+        :param play_by_play: The PlayByPlay instance for logging session messages.
+        :param rules_engine: The RulesEngine instance to use for the session.
+        :param log_manager: The LogManager instance for managing session logs.
         """
         self.session_mode: str = session_mode
-        self.house_rules_config: Dict[str, int] = house_rules_config
+        self.house_rules: HouseRules = house_rules
         self.roll_history_manager: RollHistoryManager = RollHistoryManager()
         self.log_manager = log_manager or LogManager()
         self.play_by_play: PlayByPlay = play_by_play
@@ -43,14 +43,10 @@ class InitializeSession:
             print(f"Error: {e}")
             return None
 
-        # Initialize house rules
-        house_rules = HouseRules(self.house_rules_config)
-
-        # ✅ Pass RulesEngine to Table
-        table = Table(house_rules, self.play_by_play, self.rules_engine)
+        table = Table(self.house_rules, self.play_by_play, self.rules_engine)
 
         # Initialize Statistics and GameState
-        stats = Statistics(house_rules.table_minimum, num_shooters, num_players)
+        stats = Statistics(self.house_rules.table_minimum, num_shooters, num_players)
         game_state = GameState(stats, play_by_play=self.play_by_play)
         game_state.set_table(table)
 
@@ -60,4 +56,4 @@ class InitializeSession:
         # Clear the play-by-play file before starting the session
         self.play_by_play.clear_play_by_play_file()
 
-        return house_rules, table, self.roll_history_manager, self.log_manager, self.play_by_play, stats, game_state
+        return self.house_rules, table, self.roll_history_manager, self.log_manager, self.play_by_play, stats, game_state

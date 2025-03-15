@@ -1,7 +1,5 @@
 from colorama import init, Fore, Style
 from typing import List, Optional, Any
-from craps.table import Table
-from craps.game_state import GameState
 from craps.player import Player
 from craps.dice import Dice
 from craps.statistics import Statistics
@@ -9,64 +7,77 @@ from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
 from craps.session_initializer import InitializeSession
 from craps.rules_engine import RulesEngine
-from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
+from config import HOUSE_RULES
 import os
 
 def run_single_session(
-    house_rules: HouseRules,
-    strategies: List[Any],
+    house_rules: Optional[HouseRules] = None,  # ✅ Default to None, fix later
+    strategies: Optional[List[Any]] = None,
     player_names: Optional[List[str]] = None, 
-    initial_bankroll: int = 500, 
-    num_shooters: int = 10, 
+    initial_bankroll: Optional[int] = 500, 
+    num_shooters: Optional[int] = 10, 
     roll_history_file: Optional[str] = None
 ) -> Statistics:
     """
     Run a single session of craps and log the roll history.
     """
     init()  # Initialize colorama
+    
+    # ✅ Ensure house_rules is an object, not a dict
+    if house_rules is None:
+        house_rules = HouseRules(HOUSE_RULES)  # ✅ Convert from dict if needed
 
     # Set dice mode
     dice = Dice(roll_history_file) if roll_history_file and os.path.exists(roll_history_file) else Dice()
 
-    # ✅ Initialize session level objects
+    # ✅ Initialize session-level objects
     rules_engine = RulesEngine()
     play_by_play = PlayByPlay()
     log_manager = LogManager()
 
-    # ✅ Pass RulesEngine to InitializeSession
     session_initializer = InitializeSession(
-        session_mode="live", 
-        house_rules_config={"table_minimum": house_rules.table_minimum, "table_maximum": house_rules.table_maximum},
-        play_by_play=play_by_play,  # ✅ Fix: Now passing PlayByPlay
-        log_manager=log_manager,  # ✅ Fix: Now passing LogManager
+        session_mode="live",
+        house_rules=house_rules,  # ✅ Now guaranteed to be a HouseRules object
+        play_by_play=play_by_play,
+        log_manager=log_manager,
         rules_engine=rules_engine
     )
-    session_data = session_initializer.prepare_session(num_shooters, len(strategies))
-    
+    session_data = session_initializer.prepare_session(
+        num_shooters or 10,  # ✅ Default if None
+        len(strategies or [])  # ✅ Safe check for None
+    )
+
     if session_data is None:
         raise RuntimeError("Failed to initialize session.")
 
     house_rules, table, roll_history_manager, log_manager, play_by_play, stats, game_state = session_data
 
-    # Create players with different betting strategies
+    # ✅ Ensure player names are assigned
     if player_names is None:
-        player_names = [f"Player {i+1}" for i in range(len(strategies))]
+        player_names = [f"Player {i+1}" for i in range(len(strategies or []))]
 
+    # ✅ Ensure initial bankroll is an int
     players = [
-        Player(player_names[i], initial_balance=initial_bankroll, betting_strategy=strategy)
-        for i, strategy in enumerate(strategies)
+        Player(player_names[i], initial_balance=initial_bankroll or 500, betting_strategy=strategy)
+        for i, strategy in enumerate(strategies or [])
     ]
 
-    # Initialize bankroll history with the starting bankroll for each player
+    # ✅ Initialize bankroll history with the starting bankroll for each player
     stats.initialize_bankroll_history(players)
 
-    # Initialize roll history
+    # ✅ Ensure players is always valid
+    if not players:
+        raise RuntimeError("No players found. Cannot start session.")
+
+    # ✅ Initialize roll history
     roll_history = []
 
-    # Simulate shooters
+    # ✅ Simulate shooters
+    if num_shooters is None: num_shooters = 10
+
     for shooter_num in range(1, num_shooters + 1):
-        player_index = (shooter_num - 1) % len(players)
+        player_index = (shooter_num - 1) % len(players)  # ✅ Safe calculation
         shooter = players[player_index]
 
         # Assign new shooter via GameState
@@ -80,7 +91,7 @@ def run_single_session(
                     player.place_bet(bet, table, game_state.phase, play_by_play)
 
             # Roll the dice and resolve bets
-            outcome = (dice.roll())  # Now returns Tuple[int, int]
+            outcome = dice.roll()  # Now returns Tuple[int, int]
             total = sum(outcome)
             stats.update_rolls()
             stats.update_shooter_stats(shooter)
@@ -128,6 +139,6 @@ def run_single_session(
                 game_state.clear_shooter()  # Reset shooter status
                 break  # Move to next shooter
 
-    # Return stats and roll history
+    # ✅ Return stats and roll history
     stats.roll_history = roll_history
     return stats

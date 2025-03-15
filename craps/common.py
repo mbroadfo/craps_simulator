@@ -1,11 +1,10 @@
 from typing import Optional, List, Tuple, Union
+from config import HOUSE_RULES
 from craps.house_rules import HouseRules
-from craps.table import Table
+from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
 from craps.player import Player
-from craps.dice import Dice
-from craps.statistics import Statistics
 from craps.bet import Bet
 from craps.session_initializer import InitializeSession
 
@@ -15,17 +14,20 @@ class CommonTableSetup:
     def __init__(self) -> None:
         """Initialize the table, players, and other components for testing."""
 
-        # ✅ InitializeSession 
-        self.rules_engine = RulesEngine()
-        self.play_by_play = PlayByPlay()
+        # ✅ Create instances for required objects
+        house_rules = HouseRules(HOUSE_RULES)
+        play_by_play = PlayByPlay()
+        log_manager = LogManager()
+        rules_engine = RulesEngine()
 
+        # ✅ Use these in InitializeSession
         session_initializer = InitializeSession(
             session_mode="live",
-            house_rules_config={"table_minimum": 10, "table_maximum": 5000},
-            play_by_play=self.play_by_play,
-            rules_engine=self.rules_engine,
-            log_manager=None  # Tests likely don’t need full logging
-        )
+            house_rules=house_rules,
+            play_by_play=play_by_play,
+            log_manager=log_manager,
+            rules_engine=rules_engine
+)
 
         session_data = session_initializer.prepare_session(num_shooters=10, num_players=1)
 
@@ -37,6 +39,7 @@ class CommonTableSetup:
         # ✅ Setup Player
         self.player_name = "Alice"
         self.initial_balance = 1000
+        self.rules_engine = RulesEngine()
         self.player = Player(self.player_name, self.initial_balance)
 
         # ✅ Setup Gamestate

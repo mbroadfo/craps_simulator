@@ -1,53 +1,25 @@
-# File: .\main.py
+# File: main.py
 
-from colorama import init, Fore, Style
-from config import ACTIVE_PLAYERS, SESSION_MODE, HOUSE_RULES
-from craps.session_initializer import InitializeSession
-from craps.player_setup import SetupPlayers
+from colorama import init
 from craps.single_session import run_single_session
-from craps.visualizer import Visualizer
 from craps.view_log import InteractiveLogViewer
+from craps.visualizer import Visualizer
 
 def main():
     init()  # Initialize colorama for colored text
 
-    # Initialize the session
-    session_initializer = InitializeSession(SESSION_MODE, HOUSE_RULES)
-    result = session_initializer.prepare_session()
-    if not result:
-        return  # Exit if session initialization fails
+    # Run the single session and get the statistics
+    stats = run_single_session()
 
-    house_rules, table, roll_history_manager, log_manager, play_by_play = result
-
-    # Set up players
-    player_setup = SetupPlayers(house_rules, table, ACTIVE_PLAYERS)
-    strategies, player_names = player_setup.setup()
-
-    # Get the roll history file based on the session mode
-    roll_history_file = roll_history_manager.get_roll_history_file(SESSION_MODE)
-
-    # Run the session
-    stats = run_single_session(
-        house_rules,
-        strategies,
-        player_names=player_names,
-        roll_history_file=roll_history_file,
-        play_by_play=play_by_play
-    )
-
-    # Save the roll history if running in live mode
-    if SESSION_MODE == "live":
-        roll_history_manager.save_roll_history(stats.roll_history)
-
-    # Print statistics
+    # Display statistics
     stats.print_statistics()
     stats.print_shooter_report()
     stats.print_player_statistics()
-    
-    # View the log file interactively
+
+    # View the play-by-play log
     log_viewer = InteractiveLogViewer()
-    log_viewer.view(play_by_play.play_by_play_file)
-    
+    log_viewer.view(stats.play_by_play_file)
+
     # Visualize player bankrolls
     visualizer = Visualizer(stats)
     visualizer.visualize_bankrolls()
