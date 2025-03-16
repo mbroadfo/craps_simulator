@@ -54,8 +54,7 @@ def run_single_session(
 
     # ✅ Initialize players via SetupPlayers
     strategies = strategies or []
-    player_setup = SetupPlayers(house_rules, table, strategies)
-    players = player_setup.setup()
+    players = SetupPlayers().setup()
 
     # ✅ Validate players exist
     if not players:
