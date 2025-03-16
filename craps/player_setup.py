@@ -1,31 +1,49 @@
-from typing import Tuple, List, Any, Dict
-from craps.lineup import PlayerLineup
-from craps.rules_engine import RulesEngine
-from craps.play_by_play import PlayByPlay
+from typing import List, Any
+from config import ACTIVE_PLAYERS
+from craps.player import Player
+from craps.house_rules import HouseRules
+from craps.table import Table
 
 class SetupPlayers:
-    def __init__(self, house_rules: Any, table: Any, active_players_config: Dict[str, bool], play_by_play: PlayByPlay, rules_engine: RulesEngine) -> None:
+    """
+    Responsible for setting up players with names, bankroll, and strategies.
+    This was previously handled in SingleSession.
+    """
+
+    def __init__(self, house_rules: HouseRules, table: Table, strategies: List[Any], initial_bankroll: int = 500):
         """
         Initialize player setup.
 
-        :param house_rules: The HouseRules object for table limits and payouts.
-        :param table: The Table object for placing bets.
-        :param active_players_config: A dictionary specifying which players are active.
-        :param play_by_play: The PlayByPlay instance for writing play-by-play messages.
-        :param rules_engine: The RulesEngine instance to use for bet creation.
+        :param house_rules: The HouseRules instance to enforce table limits.
+        :param table: The game table where players will place bets.
+        :param strategies: List of betting strategies, one per player.
+        :param initial_bankroll: Starting bankroll for each player.
         """
         self.house_rules = house_rules
         self.table = table
-        self.active_players_config = active_players_config
-        self.play_by_play = play_by_play
-        self.rules_engine = rules_engine
+        self.strategies = strategies or []  # ✅ Ensure it's never None
+        self.initial_bankroll = initial_bankroll
 
-    def setup(self) -> Tuple[List[Any], List[str]]:
+    def setup(self) -> List[Player]:
         """
-        Set up the players and their strategies.
+        Create players and assign betting strategies.
 
-        :return: A tuple of (strategies, player_names).
+        :return: A list of Player objects.
         """
-        player_lineup = PlayerLineup(self.house_rules, self.table, self.play_by_play, self.rules_engine)
-        strategies, player_names = player_lineup.get_active_players(self.active_players_config)
-        return strategies, player_names
+        if not self.strategies:
+            raise ValueError("No betting strategies provided. Cannot create players.")
+
+        # ✅ Ensure player names align with strategy count
+        num_players = len(self.strategies)
+        if isinstance(ACTIVE_PLAYERS, list) and len(ACTIVE_PLAYERS) >= num_players:
+            player_names = ACTIVE_PLAYERS[:num_players]
+        else:
+            player_names = [f"Player {i+1}" for i in range(num_players)]
+
+        # ✅ Create Player instances
+        players = [
+            Player(name=player_names[i], initial_balance=self.initial_bankroll, betting_strategy=strategy)
+            for i, strategy in enumerate(self.strategies)
+        ]
+
+        return players  # ✅ Now returns only the list of players

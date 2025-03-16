@@ -1,6 +1,5 @@
 from colorama import init, Fore, Style
 from typing import List, Optional, Any
-from craps.player import Player
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.house_rules import HouseRules
@@ -8,13 +7,13 @@ from craps.log_manager import LogManager
 from craps.session_initializer import InitializeSession
 from craps.rules_engine import RulesEngine
 from craps.play_by_play import PlayByPlay
+from craps.player_setup import SetupPlayers
 from config import HOUSE_RULES
 import os
 
 def run_single_session(
-    house_rules: Optional[HouseRules] = None,  # ✅ Default to None, fix later
+    house_rules: Optional[HouseRules] = None,
     strategies: Optional[List[Any]] = None,
-    player_names: Optional[List[str]] = None, 
     initial_bankroll: Optional[int] = 500, 
     num_shooters: Optional[int] = 10, 
     roll_history_file: Optional[str] = None
@@ -26,7 +25,7 @@ def run_single_session(
     
     # ✅ Ensure house_rules is an object, not a dict
     if house_rules is None:
-        house_rules = HouseRules(HOUSE_RULES)  # ✅ Convert from dict if needed
+        house_rules = HouseRules(HOUSE_RULES)
 
     # Set dice mode
     dice = Dice(roll_history_file) if roll_history_file and os.path.exists(roll_history_file) else Dice()
@@ -53,28 +52,24 @@ def run_single_session(
 
     house_rules, table, roll_history_manager, log_manager, play_by_play, stats, game_state = session_data
 
-    # ✅ Ensure player names are assigned
-    if player_names is None:
-        player_names = [f"Player {i+1}" for i in range(len(strategies or []))]
+    # ✅ Initialize players via SetupPlayers
+    strategies = strategies or []
+    player_setup = SetupPlayers(house_rules, table, strategies)
+    players = player_setup.setup()
 
-    # ✅ Ensure initial bankroll is an int
-    players = [
-        Player(player_names[i], initial_balance=initial_bankroll or 500, betting_strategy=strategy)
-        for i, strategy in enumerate(strategies or [])
-    ]
-
-    # ✅ Initialize bankroll history with the starting bankroll for each player
-    stats.initialize_bankroll_history(players)
-
-    # ✅ Ensure players is always valid
+    # ✅ Validate players exist
     if not players:
         raise RuntimeError("No players found. Cannot start session.")
+
+    # ✅ Initialize bankroll history
+    stats.initialize_bankroll_history(players)
 
     # ✅ Initialize roll history
     roll_history = []
 
     # ✅ Simulate shooters
-    if num_shooters is None: num_shooters = 10
+    if num_shooters is None:
+        num_shooters = 10
 
     for shooter_num in range(1, num_shooters + 1):
         player_index = (shooter_num - 1) % len(players)  # ✅ Safe calculation
