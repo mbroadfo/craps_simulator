@@ -62,26 +62,13 @@ class Table:
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet was placed successfully, False otherwise.
         """
-        # Validate the base bet if this is an odds bet
-        linked_bet_type = self.rules_engine.get_linked_bet_type(bet.bet_type)
-        
-        if linked_bet_type:
-            base_bet = next((b for b in self.bets if b.bet_type == linked_bet_type and b.owner == bet.owner), None)
+        # ✅ Fetch player's preferred bet amount
+        bet_amount = self.player_lineup.get_bet_amount(bet.owner)
 
-            if not base_bet:
-                message = f"❌ Invalid bet: {bet.owner.name} cannot place {bet.bet_type} without an active {linked_bet_type} bet."
-                self.play_by_play.write(message)
-                return False
-
-            # Validate odds bet amount against allowed multiplier
-            multiplier = self.rules_engine.get_odds_multiplier(bet.bet_type.replace(" Odds", ""), base_bet.number if isinstance(base_bet.number, int) else None)
-
-            max_odds_amount = base_bet.amount * multiplier if multiplier else 0
-
-            if bet.amount > max_odds_amount:
-                message = f"❌ Invalid bet: {bet.owner.name} attempted to bet ${bet.amount} on {bet.bet_type}, exceeding allowed max of ${max_odds_amount}."
-                self.play_by_play.write(message)
-                return False
+        if bet.amount != bet_amount:
+            message = f"🔄 Adjusting {bet.owner.name}'s bet from ${bet.amount} to ${bet_amount} (preferred setting)."
+            self.play_by_play.write(message)
+            bet.amount = bet_amount  # ✅ Apply new amount
 
         # Validate the bet before placing it
         if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
@@ -137,9 +124,10 @@ class Table:
         return self.player_lineup.get_active_players_list()
 
     def notify_players_of_point_hit(self) -> None:
-        """Notifies each player that the point was hit and asks if they want their Come Odds working."""
-        for player in self.get_active_players():
-            strategy = self.player_lineup.get_strategy_for_player(player)
-            if player.has_odds_bets(self) and strategy:
-                should_work = strategy.should_come_odds_be_working()
+        """
+        Notifies each player that the point was hit and asks if they want their Come/Place/Lay Odds working on the next come-out roll.
+        """
+        for player in self.player_lineup.get_active_players_list():
+            if player.has_odds_bets(self):
+                should_work = self.player_lineup.should_odds_be_working(player)
                 player.update_come_odds_status(self, should_work)
