@@ -288,3 +288,17 @@ class RulesEngine:
         """Determine if a bet of the given type has a vig (commission)."""
         bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
         return bet_rules.get("vig", False)
+
+    @staticmethod
+    def get_odds_multiplier(odds_type: str, point: Optional[int] = None) -> Optional[int]:
+        """Retrieve the odds multiplier from the rules based on the specified odds type and point number."""
+        from craps.rules import ODDS_MULTIPLIERS  # Ensure we're always using the latest rules
+        
+        if odds_type not in ODDS_MULTIPLIERS:
+            raise ValueError(f"Unknown odds type: {odds_type}")
+
+        multiplier_data = ODDS_MULTIPLIERS[odds_type]
+
+        if isinstance(multiplier_data, dict):
+            return multiplier_data.get(point) if point is not None else None
+        return multiplier_data  # Return the multiplier directly if it's a flat value

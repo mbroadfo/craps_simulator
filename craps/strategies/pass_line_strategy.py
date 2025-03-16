@@ -1,40 +1,38 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 from craps.bet import Bet
+from craps.base_strategy import BaseStrategy
+from craps.strategies.free_odds_strategy import FreeOddsStrategy
 
 if TYPE_CHECKING:
-    from craps.rules_engine import RulesEngine  
     from craps.game_state import GameState
     from craps.player import Player
     from craps.table import Table
 
-class PassLineStrategy:
-    """Betting strategy for Pass Line bets."""
-    
-    def __init__(self, min_bet: int) -> None:
-        """
-        Initialize the Pass Line Strategy.
+class PassLineStrategy(BaseStrategy):
+    """Pass Line betting strategy with optional odds."""
 
-        :param min_bet: Minimum bet required for Pass Line.
+    def __init__(self, bet_amount: int, table: Table, odds_type: Optional[str] = None):
         """
-        self.min_bet: int = min_bet  # Fixed type
+        Initialize the Pass Line strategy.
 
-    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
+        :param bet_amount: The base amount to bet on the Pass Line.
+        :param table: The Table instance for placing bets.
+        :param odds_type: Optional string specifying the odds type (e.g., "3x-4x-5x").
         """
-        Place a Pass Line bet during the come-out roll if no active bet exists.
+        super().__init__("Pass Line")
+        self.bet_amount = bet_amount
+        self.table = table
+        self.odds_strategy = FreeOddsStrategy(table, odds_type) if odds_type else None
 
-        :param game_state: The current game state.
-        :param player: The player placing the bet.
-        :param table: The table where the bet will be placed.
-        :return: A Pass Line bet or None if no bet is placed.
-        """
-        if game_state.phase == "come-out":
-            # Check if the player already has an active Pass Line bet
-            if player.has_active_bet(table, "Pass Line"):
-                return None  # No new bet to place
+    def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
+        """Place a Pass Line bet at the start of the come-out roll."""
+        if game_state.phase == "come-out" and not player.has_active_bet(table, "Pass Line"):
+            return [table.rules_engine.create_bet("Pass Line", self.bet_amount, player)]
+        return []
 
-            # Get RulesEngine from the table to create the bet
-            rules_engine = table.get_rules_engine()
-            return rules_engine.create_bet("Pass Line", self.min_bet, player)
-        
-        return None  # No bet to place
+    def adjust_bets(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
+        """If an odds strategy is set, place odds bets when a point is established."""
+        if self.odds_strategy and game_state.phase == "point":
+            return self.odds_strategy.get_bet(game_state, player)  # Delegate odds betting to FreeOddsStrategy
+        return None

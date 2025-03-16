@@ -57,15 +57,36 @@ class Table:
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet was placed successfully, False otherwise.
         """
+        # Validate the base bet if this is an odds bet
+        linked_bet_type = self.rules_engine.get_linked_bet_type(bet.bet_type)
+        
+        if linked_bet_type:
+            base_bet = next((b for b in self.bets if b.bet_type == linked_bet_type and b.owner == bet.owner), None)
+
+            if not base_bet:
+                message = f"❌ Invalid bet: {bet.owner.name} cannot place {bet.bet_type} without an active {linked_bet_type} bet."
+                self.play_by_play.write(message)
+                return False
+
+            # Validate odds bet amount against allowed multiplier
+            multiplier = self.rules_engine.get_odds_multiplier(bet.bet_type.replace(" Odds", ""), base_bet.number if isinstance(base_bet.number, int) else None)
+
+            max_odds_amount = base_bet.amount * multiplier if multiplier else 0
+
+            if bet.amount > max_odds_amount:
+                message = f"❌ Invalid bet: {bet.owner.name} attempted to bet ${bet.amount} on {bet.bet_type}, exceeding allowed max of ${max_odds_amount}."
+                self.play_by_play.write(message)
+                return False
+
         # Validate the bet before placing it
         if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
-            message = f"Invalid bet: {bet}"
+            message = f"❌ Invalid bet: {bet}"
             self.play_by_play.write(message)
             return False
 
         # Place the bet on the table
         self.bets.append(bet)
-        message = f"Bet placed: {bet}"
+        message = f"✅ Bet placed: {bet}"
         self.play_by_play.write(message)
         return True
 

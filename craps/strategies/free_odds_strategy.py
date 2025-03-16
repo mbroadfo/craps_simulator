@@ -1,74 +1,58 @@
-from enum import Enum
-from __future__ import annotations
+from __future__ import annotations  # Enable forward references for type hints
 from typing import TYPE_CHECKING, List, Optional
+from craps.bet import Bet
 
 if TYPE_CHECKING:
-    from craps.table import Table
-    from craps.rules_engine import RulesEngine
     from craps.game_state import GameState
     from craps.player import Player
-    from craps.bet import Bet
-
-class OddsMultiple(Enum):
-    ONE_X = "1x"
-    TWO_X = "2x"
-    THREE_X = "3x"
-    ONE_TWO_THREE = "1-2-3"
-    THREE_FOUR_FIVE = "3-4-5"
+    from craps.table import Table
 
 class FreeOddsStrategy:
     """Betting strategy for Free Odds on any active bet."""
 
-    def __init__(self, table: Table, odds_multiple: OddsMultiple = OddsMultiple.ONE_X) -> None:
+    def __init__(self, table: Table, odds_type: Optional[str] = None) -> None:
         """
         Initialize the Free Odds strategy.
 
-        :param table: The table object to determine minimum bets.
-        :param odds_multiple: Enum representing odds multiple.
+        :param table: The table instance to use for rules validation.
+        :param odds_type: The type of odds to use (e.g., "3x-4x-5x").
         """
-        self.table: Table = table
-        self.odds_multiple: OddsMultiple = odds_multiple
-
-    def get_odds_amount(self, original_bet_amount: int) -> int:
-        """Calculate the odds amount based on the original bet amount and the selected multiple."""
-        if self.odds_multiple == OddsMultiple.ONE_X:
-            return original_bet_amount
-        elif self.odds_multiple == OddsMultiple.TWO_X:
-            return original_bet_amount * 2
-        elif self.odds_multiple == OddsMultiple.THREE_X:
-            return original_bet_amount * 3
-        elif self.odds_multiple == OddsMultiple.ONE_TWO_THREE:
-            return original_bet_amount
-        elif self.odds_multiple == OddsMultiple.THREE_FOUR_FIVE:
-            return original_bet_amount
-        else:
-            raise ValueError(f"Invalid odds multiple: {self.odds_multiple}")
+        self.table = table
+        self.odds_type = odds_type
 
     def get_bet(self, game_state: GameState, player: Player) -> Optional[List[Bet]]:
         """
         Place Free Odds bets on any active bets for the player.
-        
+
         :param game_state: The current game state.
         :param player: The player placing the bet.
-        :return: A list of bets to place, or None if no bets are placed.
+        :return: A list of odds bets to place, or None if no bets are placed.
         """
-        bets: List[Bet] = []
-        rules_engine = self.table.get_rules_engine()
+        if game_state.phase != "point" or not self.odds_type:
+            return None  # No odds bets if there's no point or no odds strategy
 
-        # Retrieve active bets belonging to the player from the table
+        bets = []
+        rules_engine = self.table.rules_engine
+
+        # Retrieve active Pass Line or Come bets belonging to the player
         active_bets = [bet for bet in self.table.bets if bet.owner == player]
 
         for active_bet in active_bets:
-            if active_bet.bet_type in ["Pass Line", "Place"]:
-                odds_amount = self.get_odds_amount(active_bet.amount)
+            if active_bet.bet_type in ["Pass Line", "Come"]:
+                multiplier = rules_engine.get_odds_multiplier(self.odds_type, active_bet.number if isinstance(active_bet.number, int) else None)
 
-                if active_bet.bet_type == "Pass Line":
-                    bets.append(rules_engine.create_bet(
-                        "Pass Line Odds", odds_amount, player, parent_bet=active_bet
-                    ))
-                elif active_bet.bet_type == "Place":
-                    bets.append(rules_engine.create_bet(
-                        "Place Odds", odds_amount, player, number=active_bet.number, parent_bet=active_bet
-                    ))
+                if multiplier is None:
+                    continue  # Skip if no valid multiplier
 
-        return bets if bets else None  # Return bets if any were created
+                # Determine the correct odds bet amount
+                odds_amount = min(active_bet.amount * multiplier, player.balance)
+
+                # Create the odds bet using the Rules Engine
+                bets.append(rules_engine.create_bet(
+                    f"{active_bet.bet_type} Odds",
+                    odds_amount,
+                    player,
+                    parent_bet=active_bet
+                ))
+
+        return bets if bets else None

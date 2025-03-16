@@ -1,8 +1,5 @@
-# File: .\craps\lineup.py
-
 from typing import Dict, Tuple, List, Any
 from .strategies.pass_line_strategy import PassLineStrategy
-from .strategies.pass_line_odds_strategy import PassLineOddsStrategy
 from .strategies.place_strategy import PlaceBetStrategy
 from .strategies.field_strategy import FieldBetStrategy
 from .strategies.iron_cross_strategy import IronCrossStrategy
@@ -28,17 +25,21 @@ class PlayerLineup:
 
         # Define all possible strategies and their names
         self.all_strategies: Dict[str, Any] = {
-            "Pass-Line": PassLineStrategy(min_bet=self.house_rules.table_minimum),  # ❌ NO rules_engine
-            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, odds_multiple=1, rules_engine=self.rules_engine),  # ✅
-            "$44 Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside", rules_engine=self.rules_engine),  # ✅
-            "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across", rules_engine=self.rules_engine),  # ✅
-            "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),  # ❌ NO rules_engine
+            "Pass-Line": PassLineStrategy(bet_amount=self.house_rules.table_minimum, table=self.table),
+            "Pass-Line w/ Odds": PassLineStrategy(
+                bet_amount=self.house_rules.table_minimum,
+                table=self.table,
+                odds_type="3x-4x-5x"  # Defaulting to 3x-4x-5x odds
+            ),
+            "$44 Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside", rules_engine=self.rules_engine),
+            "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across", rules_engine=self.rules_engine),
+            "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
             "Iron Cross": IronCrossStrategy(
                 table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine
-            ),  # ✅
+            ),
             "3-Point Molly": ThreePointMollyStrategy(
                 table=self.table, min_bet=self.house_rules.table_minimum, odds_multiple=1, rules_engine=self.rules_engine
-            )  # ✅
+            )
         }
 
     def get_active_players(self, active_players_config: Dict[str, bool]) -> Tuple[List[Any], List[str]]:
