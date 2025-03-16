@@ -26,8 +26,8 @@ class PlayerLineup:
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine
 
-        # ✅ Store actual Player instances and their configurations
-        self.players: Dict["Player", Dict[str, Any]] = {}
+        # ✅ Store actual Player instances
+        self.players: List["Player"] = []
 
         # Define all supported strategies
         self.all_strategies: Dict[str, Any] = {
@@ -44,35 +44,39 @@ class PlayerLineup:
                 table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine
             ),
             "3-Point Molly": ThreePointMollyStrategy(
-                table=self.table, min_bet=self.house_rules.table_minimum, odds_type="3x-4x-5x", rules_engine=self.rules_engine
-            )
+                table=self.table,  # ✅ Pass `table` first
+                bet_amount=self.house_rules.table_minimum,  # ✅ Correct order
+                odds_type="3x-4x-5x"
+            ),
         }
 
-    def add_player(self, player: "Player", bet_amount: Optional[int] = None, odds_working_on_come_out: bool = False) -> None:
-        """
-        Adds a Player instance to the lineup with custom bet settings.
-
-        :param player: The Player instance to add.
-        :param bet_amount: Custom bet amount (default: None = table minimum).
-        :param odds_working_on_come_out: Whether Come/Place/Lay Odds stay ON during come-out.
-        """
-        self.players[player] = {
-            "bet_amount": bet_amount or self.house_rules.table_minimum,  # Default to table min
-            "odds_working_on_come_out": odds_working_on_come_out
-        }
+    def add_player(self, player: "Player") -> None:
+        """Adds a Player instance to the lineup."""
+        self.players.append(player)
 
     def get_active_players_list(self) -> List["Player"]:
         """Retrieve a list of active player objects."""
-        return list(self.players.keys())  # ✅ Return actual Player instances
+        return self.players  # ✅ Return actual Player instances
     
     def get_strategy_for_player(self, player: "Player") -> Optional[Any]:
         """Retrieve the strategy for a given player."""
         return player.betting_strategy if player in self.players else None
-    
-    def get_bet_amount(self, player: "Player") -> int:
-        """Retrieve the bet amount for a given player."""
-        return self.players.get(player, {}).get("bet_amount", self.house_rules.table_minimum)
 
     def should_odds_be_working(self, player: "Player") -> bool:
-        """Check if this player's odds bets should stay ON during the come-out roll."""
-        return self.players.get(player, {}).get("odds_working_on_come_out", False)
+        """
+        Determine if the player's strategy wants Come/Place/Lay odds working on a come-out roll.
+        """
+        strategy = self.get_strategy_for_player(player)
+        if strategy and hasattr(strategy, "should_come_odds_be_working"):
+            return strategy.should_come_odds_be_working()
+        return False
+
+    def get_bet_amount(self, player: "Player") -> int:
+        """
+        Retrieve the bet amount for a given player.
+        Defaults to the house table minimum if not explicitly set.
+        """
+        strategy = self.get_strategy_for_player(player)
+        if strategy and hasattr(strategy, "bet_amount"):
+            return strategy.bet_amount
+        return self.house_rules.table_minimum  # ✅ Default to table min
