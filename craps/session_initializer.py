@@ -7,6 +7,7 @@ from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
 from craps.statistics import Statistics
 from craps.game_state import GameState
+from craps.lineup import PlayerLineup
 
 class InitializeSession:
     def __init__(
@@ -15,6 +16,7 @@ class InitializeSession:
         house_rules: HouseRules,
         play_by_play: PlayByPlay, 
         rules_engine: RulesEngine, 
+        player_lineup: PlayerLineup,
         log_manager: Optional[LogManager] = None
     ) -> None:
         """
@@ -32,6 +34,7 @@ class InitializeSession:
         self.log_manager = log_manager or LogManager()
         self.play_by_play: PlayByPlay = play_by_play
         self.rules_engine: RulesEngine = rules_engine
+        self.player_lineup: PlayerLineup = player_lineup
 
     def prepare_session(
         self, num_shooters: int, num_players: int
@@ -43,7 +46,7 @@ class InitializeSession:
             print(f"Error: {e}")
             return None
 
-        table = Table(self.house_rules, self.play_by_play, self.rules_engine)
+        table = Table(self.house_rules, self.play_by_play, self.rules_engine, self.player_lineup)
 
         # Initialize Statistics and GameState
         stats = Statistics(self.house_rules.table_minimum, num_shooters, num_players)

@@ -8,6 +8,7 @@ from craps.session_initializer import InitializeSession
 from craps.rules_engine import RulesEngine
 from craps.play_by_play import PlayByPlay
 from craps.player_setup import SetupPlayers
+from craps.lineup import PlayerLineup
 from config import HOUSE_RULES
 import os
 
@@ -34,14 +35,17 @@ def run_single_session(
     rules_engine = RulesEngine()
     play_by_play = PlayByPlay()
     log_manager = LogManager()
+    player_lineup = PlayerLineup(house_rules, None, play_by_play, rules_engine)  # ✅ Added PlayerLineup
 
     session_initializer = InitializeSession(
         session_mode="live",
         house_rules=house_rules,  # ✅ Now guaranteed to be a HouseRules object
         play_by_play=play_by_play,
         log_manager=log_manager,
-        rules_engine=rules_engine
+        rules_engine=rules_engine,
+        player_lineup=player_lineup
     )
+    
     session_data = session_initializer.prepare_session(
         num_shooters or 10,  # ✅ Default if None
         len(strategies or [])  # ✅ Safe check for None

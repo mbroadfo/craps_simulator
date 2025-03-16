@@ -1,14 +1,15 @@
-from typing import Dict, Tuple, List, Any
-from .strategies.pass_line_strategy import PassLineStrategy
-from .strategies.place_strategy import PlaceBetStrategy
-from .strategies.field_strategy import FieldBetStrategy
-from .strategies.iron_cross_strategy import IronCrossStrategy
-from .strategies.three_point_molly_strategy import ThreePointMollyStrategy
-from .rules_engine import RulesEngine
+from typing import Dict, Optional, List, Any
+from craps.strategies.pass_line_strategy import PassLineStrategy
+from craps.strategies.place_strategy import PlaceBetStrategy
+from craps.strategies.field_strategy import FieldBetStrategy
+from craps.strategies.iron_cross_strategy import IronCrossStrategy
+from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
+from craps.rules_engine import RulesEngine
+from craps.player import Player
 
 class PlayerLineup:
     """Class to manage the lineup of players and their strategies."""
-    
+
     def __init__(self, house_rules: Any, table: Any, play_by_play: Any, rules_engine: RulesEngine) -> None:
         """
         Initialize the player lineup.
@@ -23,13 +24,16 @@ class PlayerLineup:
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine
 
-        # Define all possible strategies and their names
+        # ✅ Store actual Player instances
+        self.players: List[Player] = []
+
+        # Define all supported strategies
         self.all_strategies: Dict[str, Any] = {
             "Pass-Line": PassLineStrategy(bet_amount=self.house_rules.table_minimum, table=self.table),
             "Pass-Line w/ Odds": PassLineStrategy(
                 bet_amount=self.house_rules.table_minimum,
                 table=self.table,
-                odds_type="3x-4x-5x"  # Defaulting to 3x-4x-5x odds
+                odds_type="3x-4x-5x"
             ),
             "$44 Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside", rules_engine=self.rules_engine),
             "$54 Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across", rules_engine=self.rules_engine),
@@ -38,21 +42,19 @@ class PlayerLineup:
                 table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine
             ),
             "3-Point Molly": ThreePointMollyStrategy(
-                table=self.table, min_bet=self.house_rules.table_minimum, odds_multiple=1, rules_engine=self.rules_engine
+                table=self.table, min_bet=self.house_rules.table_minimum, odds_type="3x-4x-5x", rules_engine=self.rules_engine
             )
         }
 
-    def get_active_players(self, active_players_config: Dict[str, bool]) -> Tuple[List[Any], List[str]]:
-        """
-        Get the list of active strategies and player names based on the configuration.
-        
-        :param active_players_config: A dictionary specifying which players are active.
-        :return: A tuple of (strategies, player_names).
-        """
-        strategies: List[Any] = [
-            strategy for name, strategy in self.all_strategies.items() if active_players_config.get(name, False)
-        ]
-        player_names: List[str] = [
-            name for name, active in active_players_config.items() if active
-        ]
-        return strategies, player_names
+    def add_player(self, player: Player) -> None:
+        """Adds a Player instance to the lineup."""
+        self.players.append(player)
+
+    def get_active_players_list(self) -> List[Player]:
+        """Retrieve a list of active player objects."""
+        return self.players  # ✅ Return actual Player instances
+    
+    def get_strategy_for_player(self, player: Player) -> Optional[Any]:
+        """Retrieve the strategy for a given player."""
+        return player.betting_strategy if player in self.players else None
+    

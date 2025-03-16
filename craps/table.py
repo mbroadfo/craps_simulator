@@ -6,9 +6,10 @@ from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
-
+from craps.player import Player
+from craps.lineup import PlayerLineup
 class Table:
-    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine) -> None:
+    def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine, player_lineup: PlayerLineup) -> None:
         """
         Initialize the table.
 
@@ -19,6 +20,7 @@ class Table:
         self.house_rules = house_rules
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine  # Use the passed RulesEngine
+        self.player_lineup = player_lineup
         self.bets: List[Bet] = []  # All bets on the table
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
 
@@ -126,3 +128,15 @@ class Table:
         # Remove resolved bets from active table bets
         self.bets = [bet for bet in self.bets if bet not in resolved_bets]
         return resolved_bets
+    
+    def get_active_players(self) -> List[Player]:
+        """Retrieve all active players at the table."""
+        return self.player_lineup.get_active_players_list()
+
+    def notify_players_of_point_hit(self) -> None:
+        """Notifies each player that the point was hit and asks if they want their Come Odds working."""
+        for player in self.get_active_players():
+            strategy = self.player_lineup.get_strategy_for_player(player)
+            if player.has_odds_bets(self) and strategy:
+                should_work = strategy.should_come_odds_be_working()
+                player.update_come_odds_status(self, should_work)

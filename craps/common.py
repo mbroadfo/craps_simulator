@@ -11,6 +11,7 @@ from craps.rules_engine import RulesEngine
 from craps.player import Player
 from craps.bet import Bet
 from craps.session_initializer import InitializeSession
+from craps.lineup import PlayerLineup
 
 class CommonTableSetup:
     """Common setup for all craps tests, now using InitializeSession for consistency."""
@@ -23,6 +24,7 @@ class CommonTableSetup:
         play_by_play = PlayByPlay()
         log_manager = LogManager()
         rules_engine = RulesEngine()
+        player_lineup = PlayerLineup(house_rules, None, play_by_play, rules_engine)
 
         # ✅ Use these in InitializeSession
         session_initializer = InitializeSession(
@@ -30,8 +32,9 @@ class CommonTableSetup:
             house_rules=house_rules,
             play_by_play=play_by_play,
             log_manager=log_manager,
-            rules_engine=rules_engine
-)
+            rules_engine=rules_engine,
+            player_lineup=player_lineup
+        )
 
         session_data = session_initializer.prepare_session(num_shooters=10, num_players=1)
 
