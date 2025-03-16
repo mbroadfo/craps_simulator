@@ -1,10 +1,12 @@
 from colorama import Fore, Style
-from typing import List, Union, Optional, Any, Tuple
+from typing import List, Union, Optional, Any, Tuple, TYPE_CHECKING
 from craps.bet import Bet
-from craps.table import Table
 from craps.play_by_play import PlayByPlay
 import random
 
+if TYPE_CHECKING:
+    from craps.table import Table
+    
 class Player:
     def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Optional[Any] = None):
         """
@@ -19,7 +21,7 @@ class Player:
         self.betting_strategy: Any = betting_strategy
         self.is_shooter: bool = False
 
-    def place_bet(self, bet: Union[Bet, List[Bet]], table: Table, phase: str, play_by_play: PlayByPlay) -> bool:
+    def place_bet(self, bet: Union[Bet, List[Bet]], table: "Table", phase: str, play_by_play: PlayByPlay) -> bool:
         """
         Place a bet (or multiple bets) on the table and deduct the amount from the player's balance.
 
@@ -70,7 +72,7 @@ class Player:
         if play_by_play:
             play_by_play.write(message)
 
-    def has_active_bet(self, table: Table, bet_type: str, number: Optional[int] = None) -> bool:
+    def has_active_bet(self, table: "Table", bet_type: str, number: Optional[int] = None) -> bool:
         """
         Check if the player has an active bet of a specific type and number on the table.
 
@@ -101,11 +103,11 @@ class Player:
         """
         self.is_shooter = False
 
-    def has_odds_bets(self, table: Table) -> bool:
+    def has_odds_bets(self, table: "Table") -> bool:
         """Check if the player has any active Come Odds bets."""
         return any(bet.bet_type == "Come Odds" and bet.status == "active" for bet in table.bets if bet.owner == self)
 
-    def update_come_odds_status(self, table: Table, should_work: bool) -> None:
+    def update_come_odds_status(self, table: "Table", should_work: bool) -> None:
         """Update the status of the player's Come Odds bets based on strategy preference."""
         for bet in table.bets:
             if bet.owner == self and bet.bet_type == "Come Odds":

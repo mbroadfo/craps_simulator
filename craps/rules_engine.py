@@ -1,7 +1,6 @@
 from typing import List, Optional, Dict, Any, Tuple, Union
 from craps.rules import BET_RULES, BET_PAYOUT
 from craps.bet import Bet
-from craps.house_rules import HouseRules
 
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""

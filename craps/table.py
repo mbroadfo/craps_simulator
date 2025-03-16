@@ -1,13 +1,16 @@
 # File: .\craps\table.py
 
 from colorama import Fore, Style
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, TYPE_CHECKING
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
-from craps.player import Player
 from craps.lineup import PlayerLineup
+
+if TYPE_CHECKING:
+    from craps.player import Player
+    
 class Table:
     def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine, player_lineup: PlayerLineup) -> None:
         """
@@ -129,7 +132,7 @@ class Table:
         self.bets = [bet for bet in self.bets if bet not in resolved_bets]
         return resolved_bets
     
-    def get_active_players(self) -> List[Player]:
+    def get_active_players(self) -> List["Player"]:
         """Retrieve all active players at the table."""
         return self.player_lineup.get_active_players_list()
 
