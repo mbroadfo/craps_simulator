@@ -1,6 +1,7 @@
 # Ignore Python cache files
 __pycache__/
-*.pyc
+**/__pycache__/
+*.py[cod]
 *.pyo
 *.pyd
 
@@ -14,9 +15,10 @@ env/
 
 # Ignore system files
 .DS_Store
+Thumbs.db
 
 # Ignore local output files
-.output/
+output/
 *.txt
 *.log
 *.csv
