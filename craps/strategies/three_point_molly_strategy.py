@@ -54,7 +54,7 @@ class ThreePointMollyStrategy:
 
         # Place odds on active Pass Line and Come bets using FreeOddsStrategy
         if self.odds_strategy and game_state.phase == "point":
-            odds_bets = self.odds_strategy.get_bet(game_state, player)
+            odds_bets = self.odds_strategy.get_odds_bet(game_state, player)
             if odds_bets:
                 bets.extend(odds_bets)
 

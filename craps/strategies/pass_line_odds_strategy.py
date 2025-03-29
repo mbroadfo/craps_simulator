@@ -1,6 +1,7 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List
 from craps.bet import Bet
+from craps.base_strategy import BaseStrategy
 
 if TYPE_CHECKING:
     from craps.table import Table  # Prevents circular imports
@@ -8,7 +9,7 @@ if TYPE_CHECKING:
     from craps.game_state import GameState
     from craps.player import Player
 
-class PassLineOddsStrategy:
+class PassLineOddsStrategy(BaseStrategy):
     """Betting strategy for Pass Line with Odds bets."""
 
     def __init__(self, table: Table, rules_engine: RulesEngine, odds_multiple: int = 1) -> None:
@@ -19,12 +20,13 @@ class PassLineOddsStrategy:
         :param rules_engine: The RulesEngine instance from the table.
         :param odds_multiple: The multiple of the minimum bet to use for odds (e.g., 1x, 2x).
         """
+        super().__init__("Pass Line Odds")
         self.table: Table = table
         self.rules_engine: RulesEngine = rules_engine
         self.odds_multiple: int = odds_multiple
 
 
-    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
+    def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """
         Place a Pass Line or Pass Line Odds bet based on the game state.
 
@@ -36,20 +38,20 @@ class PassLineOddsStrategy:
         rules_engine = self.rules_engine  # Use the passed RulesEngine
 
         if game_state.phase not in ["come-out", "point"]:
-            return None  # Do not place the bet if the phase is invalid
+            return []  # Do not place the bet if the phase is invalid
 
         if game_state.phase == "come-out":
             # Check if the player already has an active Pass Line bet
             if player.has_active_bet(table, "Pass Line"):
-                return None  # No new bet to place
+                return []  # No new bet to place
 
             # Use RulesEngine to create a Pass Line bet
-            return rules_engine.create_bet("Pass Line", self.table.house_rules.table_minimum, player)
+            return [rules_engine.create_bet("Pass Line", self.table.house_rules.table_minimum, player)]
 
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
             if player.has_active_bet(table, "Pass Line Odds"):
-                return None  # No new bet to place
+                return []  # No new bet to place
 
             # Find the player's active Pass Line bet
             pass_line_bet = next(
@@ -57,15 +59,15 @@ class PassLineOddsStrategy:
                 None
             )
             if pass_line_bet is None:
-                return None  # No Pass Line bet found
+                return []  # No Pass Line bet found
 
             # Use RulesEngine to create a Pass Line Odds bet linked to the Pass Line bet
-            return rules_engine.create_bet(
+            return [rules_engine.create_bet(
                 "Pass Line Odds",
                 self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
                 player,  # Owner
                 number=game_state.point,  # Pass the current point number
                 parent_bet=pass_line_bet  # Parent Pass Line bet
-            )
+            )]
 
-        return None  # No bet to place
+        return []  # No bet to place

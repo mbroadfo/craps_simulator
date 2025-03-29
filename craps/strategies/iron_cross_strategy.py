@@ -1,6 +1,7 @@
 from __future__ import annotations  # Enable forward references for type hints
 from typing import TYPE_CHECKING, Optional, List
 from craps.bet import Bet
+from craps.base_strategy import BaseStrategy
 
 if TYPE_CHECKING:
     from craps.table import Table  # Prevents circular imports
@@ -8,8 +9,8 @@ if TYPE_CHECKING:
     from craps.game_state import GameState
     from craps.player import Player
     from craps.play_by_play import PlayByPlay
-
-class IronCrossStrategy:
+    from craps.base_strategy import BaseStrategy
+class IronCrossStrategy(BaseStrategy):
     """Betting strategy for Iron Cross."""
 
     def __init__(self, table: Table, rules_engine: RulesEngine, min_bet: int, play_by_play: PlayByPlay) -> None:
@@ -21,12 +22,13 @@ class IronCrossStrategy:
         :param min_bet: The minimum bet amount for the table.
         :param play_by_play: The play-by-play logging instance.
         """
+        super().__init__("Iron Cross")
         self.table: Table = table
         self.rules_engine: RulesEngine = rules_engine
         self.min_bet: int = min_bet
         self.play_by_play: PlayByPlay = play_by_play
 
-    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
+    def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """
         Place bets for the Iron Cross strategy.
 
@@ -77,6 +79,6 @@ class IronCrossStrategy:
             if not any(bet.owner == player and bet.bet_type == "Field" for bet in table.bets):
                 bets.append(rules_engine.create_bet("Field", self.min_bet, player))
 
-            return bets if bets else None
+            return bets if bets else []
 
-        return None  # No bet to place
+        return []  # No bet to place

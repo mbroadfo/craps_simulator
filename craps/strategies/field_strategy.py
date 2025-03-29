@@ -1,7 +1,7 @@
-# File: .\craps\strategies\field_strategy.py
-
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List
+from craps.base_strategy import BaseStrategy
+
 if TYPE_CHECKING:
     from craps.rules_engine import RulesEngine  # Prevents circular imports
     from craps.game_state import GameState
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from craps.table import Table
     from craps.bet import Bet
 
-class FieldBetStrategy:
+class FieldBetStrategy(BaseStrategy):
     """Betting strategy for Field bets."""
     
     def __init__(self, min_bet: int) -> None:
@@ -18,9 +18,10 @@ class FieldBetStrategy:
         
         :param min_bet: The minimum bet amount for the table.
         """
+        super().__init__("Field")
         self.min_bet: int = min_bet
 
-    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[Bet]:
+    def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """
         Place a Field bet during the point roll if no active bet exists.
 
@@ -30,12 +31,12 @@ class FieldBetStrategy:
         :return: A Field bet if one does not already exist, otherwise None.
         """
         if game_state.phase != "point":
-            return None  # Only place bets after the point is established
+            return []  # Only place bets after the point is established
         
         # Check if the player already has an active Field bet
         if player.has_active_bet(table, "Field"):
-            return None  # No new bet to place
+            return []  # No new bet to place
 
         # Use RulesEngine to create a Field bet
         rules_engine = table.get_rules_engine()
-        return rules_engine.create_bet("Field", self.min_bet, player)
+        return [rules_engine.create_bet("Field", self.min_bet, player)]

@@ -20,7 +20,7 @@ class FreeOddsStrategy:
         self.table = table
         self.odds_type = odds_type
 
-    def get_bet(self, game_state: GameState, player: Player) -> Optional[List[Bet]]:
+    def get_odds_bet(self, game_state: GameState, player: Player) -> Optional[List[Bet]]:
         """
         Place Free Odds bets on any active bets for the player.
 

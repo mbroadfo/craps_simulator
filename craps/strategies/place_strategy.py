@@ -1,5 +1,6 @@
 from __future__ import annotations  # Enable forward references for type hints
 from typing import Union, TYPE_CHECKING, Optional, List
+from craps.base_strategy import BaseStrategy
 
 if TYPE_CHECKING:
     from craps.table import Table  # Prevents circular imports
@@ -8,7 +9,7 @@ if TYPE_CHECKING:
     from craps.player import Player
     from craps.bet import Bet
 
-class PlaceBetStrategy:
+class PlaceBetStrategy(BaseStrategy):
     """Betting strategy for Place Bets."""
 
     def __init__(self, table: Table, rules_engine: RulesEngine, numbers_or_strategy: Union[str, list[int]]) -> None:
@@ -19,14 +20,15 @@ class PlaceBetStrategy:
         :param rules_engine: The RulesEngine instance from the table.
         :param numbers_or_strategy: A list of numbers (e.g., [5, 6, 8, 9]) or a strategy ("inside", "across").
         """
+        super().__init__("Place")
         self.table: Table = table
         self.rules_engine: RulesEngine = rules_engine  # Use the existing RulesEngine
         self.numbers_or_strategy: Union[str, list[int]] = numbers_or_strategy
 
-    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
+    def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """Place Place Bets based on the strategy and game state."""
         if game_state.phase != "point":
-            return None  # Only place bets after the point is established
+            return []  # Only place bets after the point is established
 
         rules_engine = table.get_rules_engine()
 
@@ -57,4 +59,4 @@ class PlaceBetStrategy:
             min_bet = rules_engine.get_minimum_bet("Place", table)  # Use correct RulesEngine reference
             bets.append(rules_engine.create_bet("Place", min_bet, player, number=number))
 
-        return bets if bets else None  # Return bets if any were created
+        return bets if bets else []  # Return bets if any were created
