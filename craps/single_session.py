@@ -18,7 +18,7 @@ def run_single_session(
     initial_bankroll: Optional[int] = 500, 
     num_shooters: Optional[int] = 10, 
     roll_history_file: Optional[str] = None
-) -> Statistics:
+) -> tuple[Statistics, PlayByPlay]:
     """
     Run a single session of craps and log the roll history.
     """
@@ -140,4 +140,4 @@ def run_single_session(
 
     # ✅ Return stats and roll history
     stats.roll_history = roll_history
-    return stats
+    return stats, play_by_play

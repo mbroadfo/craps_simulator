@@ -34,5 +34,5 @@ class PassLineStrategy(BaseStrategy):
     def adjust_bets(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """If an odds strategy is set, place odds bets when a point is established."""
         if self.odds_strategy and game_state.phase == "point":
-            return self.odds_strategy.get_odds_bet(game_state, player)  # Delegate odds betting to FreeOddsStrategy
+            return self.odds_strategy.get_odds_bet(game_state, player, table)  # Delegate odds betting to FreeOddsStrategy
         return None

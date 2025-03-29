@@ -98,7 +98,7 @@ class TestStrategies(unittest.TestCase):
         self.game_state.point = None
 
         # 2) Strategy places Pass Line bet
-        bets = strategy.get_bet(self.game_state, self.player, self.table)
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
         
         assert_contains_bet(bets, "Pass Line", self.player)
 
@@ -109,7 +109,7 @@ class TestStrategies(unittest.TestCase):
         self.game_state.point = 6
 
         # 4) Strategy should place first Come bet
-        bets = strategy.get_bet(self.game_state, self.player, self.table)
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
         assert_contains_bet(bets, "Come", self.player)
 
         come_bet_1 = next(b for b in bets if b.bet_type == "Come" and b.owner == self.player)
@@ -120,7 +120,7 @@ class TestStrategies(unittest.TestCase):
         come_bet_1.number = 4
 
         # 6) Strategy should place second Come bet
-        bets = strategy.get_bet(self.game_state, self.player, self.table)
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
         assert_contains_bet(bets, "Come", self.player)
 
         come_bet_2 = next(b for b in bets if b.bet_type == "Come" and b.owner == self.player)
@@ -131,7 +131,7 @@ class TestStrategies(unittest.TestCase):
         come_bet_2.number = 9
 
         # 8) Strategy should return no more bets (already has 3)
-        bets = strategy.get_bet(self.game_state, self.player, self.table)
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
         base_bets = [b for b in bets if b.bet_type in {"Pass Line", "Come"}]
         self.assertEqual(len(base_bets), 0, "Strategy should not place more than 3 base bets")
 

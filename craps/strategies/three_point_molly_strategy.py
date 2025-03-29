@@ -26,7 +26,7 @@ class ThreePointMollyStrategy:
         self.odds_strategy = FreeOddsStrategy(table, odds_type) if odds_type else None
         self.come_odds_working_on_come_out = come_odds_working_on_come_out
 
-    def get_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
+    def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """
         Place bets according to the 3-Point Molly strategy.
 
@@ -54,11 +54,11 @@ class ThreePointMollyStrategy:
 
         # Place odds on active Pass Line and Come bets using FreeOddsStrategy
         if self.odds_strategy and game_state.phase == "point":
-            odds_bets = self.odds_strategy.get_odds_bet(game_state, player)
+            odds_bets = self.odds_strategy.get_odds_bet(game_state, player, table)
             if odds_bets:
                 bets.extend(odds_bets)
 
-        return bets if bets else None
+        return bets if bets else []
 
     def should_come_odds_be_working(self) -> bool:
         """Return whether the strategy wants Come Odds to be working during the next come-out roll."""

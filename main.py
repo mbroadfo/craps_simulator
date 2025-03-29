@@ -1,5 +1,3 @@
-# File: main.py
-
 from colorama import init
 from craps.single_session import run_single_session
 from craps.view_log import InteractiveLogViewer
@@ -9,7 +7,7 @@ def main():
     init()  # Initialize colorama for colored text
 
     # Run the single session and get the statistics
-    stats = run_single_session()
+    stats, play_by_play = run_single_session()
 
     # Display statistics
     stats.print_statistics()
@@ -18,7 +16,7 @@ def main():
 
     # View the play-by-play log
     log_viewer = InteractiveLogViewer()
-    log_viewer.view(stats.play_by_play_file)
+    log_viewer.view(play_by_play)
 
     # Visualize player bankrolls
     visualizer = Visualizer(stats)
