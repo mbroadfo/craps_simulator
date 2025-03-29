@@ -37,6 +37,18 @@ class TestStrategies(unittest.TestCase):
         self.assertEqual(bets[0].bet_type, "Pass Line")
         self.assertEqual(bets[0].amount, 10)
 
+        base_bet = bets[0]
+        self.table.place_bet(base_bet, self.game_state.phase)
+        self.player.balance -= base_bet.amount
+
+        # Simulate point being established
+        self.game_state.point = 6
+        base_bet.number = 6
+
+        # Strategy should not place more bets
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        self.assertFalse(bets, "Expected no bets after point is established")
+
     def test_pass_line_with_odds(self):
         """Test placing a Pass Line bet with different odds types."""
         odds_types = ["1x", "2x", "3x-4x-5x", "10x"]
@@ -73,6 +85,10 @@ class TestStrategies(unittest.TestCase):
                 multiplier = self.rules_engine.get_odds_multiplier(odds_type, self.game_state.point)
                 expected_odds_amount = 10 * multiplier
                 self.assertEqual(odds_bets[0].amount, expected_odds_amount)
+
+                # Strategy should not place more bets
+                bets = strategy.place_bets(self.game_state, self.player, self.table)
+                self.assertFalse(bets, "Expected no bets after point is established")
 
     def test_three_point_molly(self):
         """Test Three-Point Molly strategy placing exactly 3 bets and then stopping."""
