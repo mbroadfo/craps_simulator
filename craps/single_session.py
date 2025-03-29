@@ -96,7 +96,7 @@ def run_single_session(
             stats.update_shooter_stats(shooter)
 
             # Log the dice roll and total
-            message = f"{Fore.LIGHTMAGENTA_EX}{shooter.name} rolled: {outcome} (Total: {total}) | Roll Count: {stats.num_rolls}{Style.RESET_ALL}"
+            message = f"  🎲 Roll #{stats.num_rolls} → {outcome} = {total}"
             play_by_play.write(message)
 
             # Log the roll to the history
@@ -119,8 +119,7 @@ def run_single_session(
                     payout = bet.payout()
                     bet.owner.receive_payout(payout, play_by_play)
                 elif bet.status == "lost":
-                    message = f"{Fore.RED}❌ {bet.owner.name}'s {bet.bet_type} bet LOST ${bet.amount}.{Style.RESET_ALL}"
-                    play_by_play.write(message)
+                    bet.owner.balance -= bet.amount
                 stats.update_win_loss(bet)
 
             # Update player bankrolls in statistics
@@ -128,9 +127,6 @@ def run_single_session(
 
             # Update game state
             previous_phase = game_state.phase
-            message = game_state.update_state(outcome)
-            if message:
-                play_by_play.write(message)
 
             # Check if the shooter 7-outs
             if previous_phase == "point" and total == 7:

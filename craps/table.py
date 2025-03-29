@@ -1,6 +1,3 @@
-# File: .\craps\table.py
-
-from colorama import Fore, Style
 from typing import List, Optional, Tuple, TYPE_CHECKING
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
@@ -66,20 +63,18 @@ class Table:
         bet_amount = self.player_lineup.get_bet_amount(bet.owner)
 
         if bet.amount != bet_amount:
-            message = f"🔄 Adjusting {bet.owner.name}'s bet from ${bet.amount} to ${bet_amount} (preferred setting)."
+            message = f"  🔄 Adjusting {bet.owner.name}'s bet from ${bet.amount} to ${bet_amount} (preferred setting)."
             self.play_by_play.write(message)
             bet.amount = bet_amount  # ✅ Apply new amount
 
         # Validate the bet before placing it
         if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
-            message = f"❌ Invalid bet: {bet}"
+            message = f"  ❌ Invalid bet: {bet}"
             self.play_by_play.write(message)
             return False
 
         # Place the bet on the table
         self.bets.append(bet)
-        message = f"✅ Bet placed: {bet}"
-        self.play_by_play.write(message)
         return True
 
     def check_bets(self, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:
@@ -92,8 +87,6 @@ class Table:
         """
         for bet in self.bets:
             bet.resolve(self.rules_engine, dice_outcome, phase, point)
-            message = f"Bet resolved: {bet} (Status: {bet.status})"
-            self.play_by_play.write(message)
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
@@ -110,10 +103,10 @@ class Table:
             if bet.status == "won":
                 payout = bet.payout()
                 bet.owner.receive_payout(payout, self.play_by_play)
+                self.play_by_play.write(f"  ✅ {bet.owner.name}'s {bet.bet_type} bet WON ${payout}! New Bankroll: ${bet.owner.balance}")
             elif bet.status == "lost":
                 bet.owner.balance -= bet.amount  # Deduct bet amount on loss
-                message = f"{Fore.RED}❌ {bet.owner.name} lost ${bet.amount} on {bet.bet_type}. New Bankroll: ${bet.owner.balance}.{Style.RESET_ALL}"
-                self.play_by_play.write(message)
+                self.play_by_play.write(f"  ❌ {bet.owner.name}'s {bet.bet_type} bet lost ${bet.amount}. New Bankroll: ${bet.owner.balance}")
 
         # Remove resolved bets from active table bets
         self.bets = [bet for bet in self.bets if bet not in resolved_bets]

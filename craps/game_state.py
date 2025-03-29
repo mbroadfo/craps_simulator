@@ -30,8 +30,8 @@ class GameState:
         self.shooter_num = shooter_num
         self.shooter.is_shooter = True  # Mark player as the shooter
         if self.play_by_play:
-            self.play_by_play.write("")
-            self.play_by_play.write(f"🎲 Shooter #{shooter_num}: {self.shooter.name} steps up!")
+            self.play_by_play.write("==============================================================================")
+            self.play_by_play.write(f"🎲🎲 Shooter #{shooter_num}: {self.shooter.name} steps up!")
 
     def clear_shooter(self) -> None:
         """
@@ -52,8 +52,6 @@ class GameState:
         if self._point != value:
             self.previous_point = self._point  # Store previous point before change
             self._point = value  # Update point
-            if self.play_by_play:
-                self.play_by_play.write(f"GameState: Point changed from {self.previous_point} to {self._point}")
 
     @property
     def phase(self) -> str:
@@ -78,22 +76,22 @@ class GameState:
         if self.phase == "come-out":
             if total in [7, 11]:  # Natural win
                 self.point = None  # Reset to come-out phase
-                message = f"{Fore.GREEN}✅ 7-Winner: Pass Line bets win! Puck is OFF.{Style.RESET_ALL}"
+                message = f"  ✅ 7-Winner: Pass Line bets win! Puck is OFF."
             elif total in [2, 3, 12]:  # Craps loss
                 self.point = None  # Stay in come-out phase
-                message = f"{Fore.RED}❌ Craps: Pass Line bets lose! Puck is OFF.{Style.RESET_ALL}"
+                message = f"  ❌ Craps: Pass Line bets lose! Puck is OFF."
             else:  # Set the point
                 self.point = total
-                message = f"{Fore.YELLOW}Point Set: {total}. Puck is ON.{Style.RESET_ALL}"
+                message = f"  🎯 Point Set: {total}. Puck is ON."
         else:  # Point phase
             if total == self.point:  # Point hit, pass line wins
                 self.stats.record_point_number_roll()
-                self.point = None  # Reset back to come-out
-                message = f"{Fore.GREEN}✅ Point Hit: {total}. Pass Line bets win! Puck is OFF.{Style.RESET_ALL}"
+                self.point = None  # Reset b ck to come-out
+                message = f"  ✅ Point Hit: {total}. Pass Line bets win! Puck is OFF."
             elif total == 7:  # Seven out, pass line loses
                 self.stats.record_seven_out()
                 self.point = None  # Reset back to come-out
-                message = f"{Fore.RED}❌ 7-Out: Pass Line bets lose! Puck is OFF.{Style.RESET_ALL}"
+                message = f"  ❌ 7-Out: Pass Line bets lose! Puck is OFF."
 
         if self.play_by_play:
             self.play_by_play.write(message)

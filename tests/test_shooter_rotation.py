@@ -22,7 +22,7 @@ class TestShooterRotation(unittest.TestCase):
         for round_num in range(1, 4):  # Test rotation for 3 shooters
             player_index = (round_num - 1) % len(self.players)
             shooter = self.players[player_index]  # 🔄 Assign shooter
-            self.game_state.assign_new_shooter(shooter)  # ✅ Set current shooter
+            self.game_state.assign_new_shooter(shooter, round_num)  # ✅ Set current shooter
 
             print(f"🎯 Round {round_num}: {shooter.name} is shooting...")
 
@@ -41,7 +41,7 @@ class TestShooterRotation(unittest.TestCase):
             # ✅ **Manually assign next shooter (Single Session does this)**
             new_shooter_index = round_num % len(self.players)
             new_shooter = self.players[new_shooter_index]
-            self.game_state.assign_new_shooter(new_shooter)  # ✅ Assign next shooter
+            self.game_state.assign_new_shooter(new_shooter, round_num)  # ✅ Assign next shooter
 
             print(f"❌ {previous_shooter.name} 7-outs! Passing dice to {new_shooter.name}...")
 

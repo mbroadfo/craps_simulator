@@ -43,21 +43,25 @@ class Player:
         total_amount: int = sum(b.amount for b in bets)
 
         if total_amount > self.balance:
-            message: str = f"{Fore.RED}❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
+            message: str = f"  ❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
             if play_by_play:
                 play_by_play.write(message)
             return False
 
         for b in bets:
             if not table.place_bet(b, phase):
-                message = f"{Fore.RED}❌ Failed to place {b.bet_type} bet for {self.name}.{Style.RESET_ALL}"
+                message = f"  ❌ Failed to place {b.bet_type} bet for {self.name}.{Style.RESET_ALL}"
                 if play_by_play:
                     play_by_play.write(message)
                 return False
 
-            message = f"{Fore.GREEN}✅ {self.name} placed a ${b.amount} {b.bet_type} bet. Bankroll: ${self.balance}.{Style.RESET_ALL}"
             if play_by_play:
+                message = (
+                    f"  ✅ Bet placed: {self.name}'s ${b.amount} {b.bet_type} bet "
+                    f"(Status: {b.status}). Bankroll: ${self.balance}"
+                )
                 play_by_play.write(message)
+
 
         return True
 
@@ -68,9 +72,6 @@ class Player:
         :param payout: The payout amount.
         """
         self.balance += payout
-        message: str = f"{Fore.GREEN}✅ {self.name} received a payout of ${payout}. Bankroll: ${self.balance}.{Style.RESET_ALL}"
-        if play_by_play:
-            play_by_play.write(message)
 
     def has_active_bet(self, table: "Table", bet_type: str, number: Optional[int] = None) -> bool:
         """
