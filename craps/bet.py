@@ -99,9 +99,7 @@ class Bet:
             return 0  # No payout if the bet was lost
 
         numerator, denominator = self.payout_ratio
-        profit = (self.amount * numerator) // denominator
-
-        return self.amount + profit if self.is_contract_bet else profit
+        return (self.amount * numerator) // denominator
 
     def __str__(self) -> str:
         """Return a string representation of the bet."""
