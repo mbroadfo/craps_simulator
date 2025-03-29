@@ -36,18 +36,21 @@ class ThreePointMollyStrategy:
         :return: A list of bets to place, or None if no bets are placed.
         """
         bets: List[Bet] = []
-        rules_engine = table.rules_engine  # ✅ Fix: Access `rules_engine` via table
+        rules_engine = table.rules_engine
 
         # Place a Pass Line bet if no active Pass Line bet exists (only during come-out phase)
         if game_state.phase == "come-out":
-            if not player.has_active_bet(table, "Pass Line"):  # ✅ Fix: Pass table
-                bets.append(rules_engine.create_bet("Pass Line", self.bet_amount, player))  # ✅ Use bet_amount
+            if not player.has_active_bet(table, "Pass Line"):
+                bets.append(rules_engine.create_bet("Pass Line", self.bet_amount, player))
 
-        # Place up to 3 Come bets if fewer than 3 active Come bets exist (only during point phase)
+        # Place up to 2 Come bets if fewer than 2 active Come bets (with a number) exist (only during point phase)
         if game_state.phase == "point":
-            active_come_bets = [bet for bet in table.bets if bet.bet_type == "Come" and bet.owner == player]
-            if len(active_come_bets) < 3:
-                bets.append(rules_engine.create_bet("Come", self.bet_amount, player))  # ✅ Use bet_amount
+            active_come_bets = [
+                bet for bet in table.bets
+                if bet.bet_type == "Come" and bet.owner == player and bet.number is not None
+            ]
+            if len(active_come_bets) < 2:
+                bets.append(rules_engine.create_bet("Come", self.bet_amount, player))
 
         # Place odds on active Pass Line and Come bets using FreeOddsStrategy
         if self.odds_strategy and game_state.phase == "point":
@@ -59,4 +62,4 @@ class ThreePointMollyStrategy:
 
     def should_come_odds_be_working(self) -> bool:
         """Return whether the strategy wants Come Odds to be working during the next come-out roll."""
-        return self.come_odds_working_on_come_out  # Player-defined setting
+        return self.come_odds_working_on_come_out

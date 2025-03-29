@@ -57,6 +57,7 @@ class TestStrategies(unittest.TestCase):
 
                 # ✅ Now establish the point
                 self.game_state.point = 6
+                base_bet.number = self.game_state.point
 
                 # Confirm Pass Line bet is on the table
                 matching_bet = next((b for b in self.table.bets if b.bet_type == "Pass Line" and b.owner == self.player), None)
@@ -69,7 +70,7 @@ class TestStrategies(unittest.TestCase):
                 self.assertEqual(len(odds_bets), 1)
                 self.assertEqual(odds_bets[0].bet_type, "Pass Line Odds")
 
-                multiplier = self.rules_engine.get_odds_multiplier("Pass Line", self.game_state.point)
+                multiplier = self.rules_engine.get_odds_multiplier(odds_type, self.game_state.point)
                 expected_odds_amount = 10 * multiplier
                 self.assertEqual(odds_bets[0].amount, expected_odds_amount)
 
@@ -113,13 +114,11 @@ class TestStrategies(unittest.TestCase):
         # 7) Simulate number roll → Come bet resolves to 9
         come_bet_2.number = 9
 
-        print("Final bets on table:")
-        for b in self.table.bets:
-            print(f"Type: {b.bet_type}, Number: {b.number}, Owner: {getattr(b.owner, 'name', '??')}")
-
         # 8) Strategy should return no more bets (already has 3)
         bets = strategy.get_bet(self.game_state, self.player, self.table)
-        self.assertEqual(len(bets), 0, "Strategy should not place more than 3 bets")
+        base_bets = [b for b in bets if b.bet_type in {"Pass Line", "Come"}]
+        self.assertEqual(len(base_bets), 0, "Strategy should not place more than 3 base bets")
+
 
     def test_come_odds_working_toggle(self):
         """Test that the strategy correctly toggles come odds working state."""
