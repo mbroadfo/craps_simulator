@@ -115,11 +115,6 @@ def run_single_session(
             # Clear resolved bets and update player bankrolls
             resolved_bets = table.clear_resolved_bets()
             for bet in resolved_bets:
-                if bet.status == "won":
-                    payout = bet.payout()
-                    bet.owner.receive_payout(payout, play_by_play)
-                elif bet.status == "lost":
-                    bet.owner.balance -= bet.amount
                 stats.update_win_loss(bet)
 
             # Update player bankrolls in statistics

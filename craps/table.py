@@ -101,12 +101,9 @@ class Table:
         # Process bankroll updates for each resolved bet
         for bet in resolved_bets:
             if bet.status == "won":
-                payout = bet.payout()
-                bet.owner.receive_payout(payout, self.play_by_play)
-                self.play_by_play.write(f"  ✅ {bet.owner.name}'s {bet.bet_type} bet WON ${payout}! New Bankroll: ${bet.owner.balance}")
+                bet.owner.win_bet(bet, self.play_by_play)
             elif bet.status == "lost":
-                bet.owner.balance -= bet.amount  # Deduct bet amount on loss
-                self.play_by_play.write(f"  ❌ {bet.owner.name}'s {bet.bet_type} bet lost ${bet.amount}. New Bankroll: ${bet.owner.balance}")
+                bet.owner.lose_bet(bet, self.play_by_play)
 
         # Remove resolved bets from active table bets
         self.bets = [bet for bet in self.bets if bet not in resolved_bets]

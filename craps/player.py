@@ -56,9 +56,10 @@ class Player:
                 return False
 
             if play_by_play:
+                risk = self.get_total_at_risk(table)
                 message = (
                     f"  ✅ Bet placed: {self.name}'s ${b.amount} {b.bet_type} bet "
-                    f"(Status: {b.status}). Bankroll: ${self.balance}"
+                    f"(Status: {b.status}). Bankroll: ${self.balance} (w/ ${risk} on the table)"
                 )
                 play_by_play.write(message)
 
@@ -113,3 +114,20 @@ class Player:
         for bet in table.bets:
             if bet.owner == self and bet.bet_type == "Come Odds":
                 bet.status = "active" if should_work else "inactive"
+
+    def get_total_at_risk(self, table: "Table") -> int:
+        """Return the total amount this player has at risk on the table."""
+        return sum(bet.amount for bet in table.bets if bet.owner == self)
+    
+    def win_bet(self, bet: Bet, play_by_play: PlayByPlay) -> None:
+        winnings = bet.payout()
+        self.balance += winnings
+        play_by_play.write(
+            f"  ✅ {self.name}'s {bet.bet_type} bet WON ${winnings}! New Bankroll: ${self.balance}"
+        )
+
+    def lose_bet(self, bet: Bet, play_by_play: PlayByPlay) -> None:
+        self.balance -= bet.amount
+        play_by_play.write(
+            f"  ❌ {self.name}'s {bet.bet_type} bet LOST ${bet.amount}. New Bankroll: ${self.balance}"
+        )
