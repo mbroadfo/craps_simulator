@@ -158,13 +158,16 @@ class RulesEngine:
         sorted_dice = tuple(sorted(dice_outcome))
         bet_rules = RulesEngine.get_bet_rules(bet.bet_type)  # ✅ Unified retrieval
         resolution_rules = bet_rules["resolution"]
-        phase_key = phase.replace("-", "_")  # ✅ Normalize phase key
+        phase_key = phase.replace("-", "_")
+        winning_numbers = resolution_rules.get(f"{phase_key}_win", [])
+        losing_numbers = resolution_rules.get(f"{phase_key}_lose", [])
 
+        # ✅ Only resolve ACTIVE bets
+        if bet.status != "active":
+            return 0
+        
         # 🎯 **1. LINE BETS (Pass Line, Don't Pass, Come, Don't Come)**
         if bet_rules.get("is_contract_bet", False):  # ✅ Line bets use contract logic
-            winning_numbers = resolution_rules.get(f"{phase_key}_win", [])
-            losing_numbers = resolution_rules.get(f"{phase_key}_lose", [])
-
             # 🏆 **Come/Don't Come Special Case - Handle First Roll**
             if bet.bet_type in ["Come", "Don't Come"]:
                 if bet.number is None:  # ✅ First roll for Come/Don't Come
@@ -180,11 +183,14 @@ class RulesEngine:
                     elif total == 7:
                         bet.status = "lost"
             
-            # 🏆 **Regular Pass Line / Don't Pass Logic**
-            elif total in winning_numbers:
-                bet.status = "won"
-            elif total in losing_numbers:
-                bet.status = "lost"
+            # 🏆 **Pass Line / Don't Pass Logic**
+            else:
+                if "point_made" in winning_numbers and point is not None and total == point:
+                    bet.status = "won"
+                elif total in winning_numbers:
+                    bet.status = "won"
+                elif total in losing_numbers:
+                    bet.status = "lost"
 
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":

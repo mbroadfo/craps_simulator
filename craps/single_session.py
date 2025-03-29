@@ -95,9 +95,21 @@ def run_single_session(
             stats.update_rolls()
             stats.update_shooter_stats(shooter)
 
-            # Log the dice roll and total
-            message = f"  🎲 Roll #{stats.num_rolls} → {outcome} = {total}"
-            play_by_play.write(message)
+            # Update game state first so we know the new point/puck state
+            state_message = game_state.update_state(outcome)
+
+            # Now log roll with accurate puck status
+            if game_state.point:
+                puck_status = f"Puck: ON (Point: {game_state.point})"
+            else:
+                puck_status = "Puck: OFF (Come-out)"
+
+            roll_message = f"  🎲 Roll #{stats.num_rolls} → {outcome} = {total} | {puck_status}"
+            play_by_play.write(roll_message)
+
+            # Also write any state change message (e.g., "Point is set")
+            if state_message:
+                play_by_play.write(state_message)
 
             # Log the roll to the history
             roll_history.append({
