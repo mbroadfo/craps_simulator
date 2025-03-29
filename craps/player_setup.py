@@ -10,7 +10,7 @@ class SetupPlayers:
     def setup(self) -> List[Player]:  # ✅ Now fully type hinted
         """Create and return a list of active players based on ACTIVE_PLAYERS settings."""
         players: List[Player] = [
-            Player(name=strategy, initial_balance=500, betting_strategy=strategy)
+            Player(name=strategy, initial_balance=500)
             for strategy, enabled in self.active_players.items() if enabled  # ✅ Only include enabled strategies
         ]
 

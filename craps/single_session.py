@@ -59,6 +59,7 @@ def run_single_session(
     # ✅ Initialize players via SetupPlayers
     strategies = strategies or []
     players = SetupPlayers().setup()
+    player_lineup.assign_strategies(players)
 
     # ✅ Validate players exist
     if not players:
@@ -84,9 +85,9 @@ def run_single_session(
         while True:
             # Allow all players to place bets
             for player in players:
-                bet = player.betting_strategy.get_bet(game_state, player, table)
-                if bet:
-                    player.place_bet(bet, table, game_state.phase, play_by_play)
+                bets = player.betting_strategy.place_bets(game_state, player, table)
+                if bets:
+                    player.place_bet(bets, table, game_state.phase, play_by_play)
 
             # Roll the dice and resolve bets
             outcome = dice.roll()  # Now returns Tuple[int, int]

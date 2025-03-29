@@ -80,3 +80,14 @@ class PlayerLineup:
         if strategy and hasattr(strategy, "bet_amount"):
             return strategy.bet_amount
         return self.house_rules.table_minimum  # ✅ Default to table min
+
+    def assign_strategies(self, players: List["Player"]) -> None:
+        """
+        Assigns betting strategies to players based on their name and adds them to the lineup.
+        """
+        for player in players:
+            if player.name in self.all_strategies:
+                player.betting_strategy = self.all_strategies[player.name]
+                self.add_player(player)
+            else:
+                raise ValueError(f"No strategy found for player '{player.name}'")
