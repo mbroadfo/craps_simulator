@@ -80,7 +80,7 @@ def run_single_session(
         shooter = players[player_index]
 
         # Assign new shooter via GameState
-        game_state.assign_new_shooter(shooter)
+        game_state.assign_new_shooter(shooter, shooter_num)
 
         while True:
             # Allow all players to place bets

@@ -11,7 +11,6 @@ class FreeOddsStrategy:
     """Betting strategy for Free Odds on any active bet."""
 
     def __init__(self, table: Table, odds_type: Optional[str] = None) -> None:
-        print(f"[DEBUG] FreeOddsStrategy initializing. Table: {table}, Rules Engine: {getattr(table, 'rules_engine', None)}")
         """
         Initialize the Free Odds strategy.
 

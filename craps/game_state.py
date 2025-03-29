@@ -20,16 +20,18 @@ class GameState:
         """Set the table reference."""
         self.table = table
 
-    def assign_new_shooter(self, shooter: Player) -> None:
+    def assign_new_shooter(self, shooter: Player, shooter_num: int) -> None:
         """
         Assigns a new shooter and resets their stats.
 
         :param shooter: The new shooter for the game.
         """
         self.shooter = shooter
+        self.shooter_num = shooter_num
         self.shooter.is_shooter = True  # Mark player as the shooter
         if self.play_by_play:
-            self.play_by_play.write(f"🎲 New shooter: {self.shooter.name} steps up!")
+            self.play_by_play.write("")
+            self.play_by_play.write(f"🎲 Shooter #{shooter_num}: {self.shooter.name} steps up!")
 
     def clear_shooter(self) -> None:
         """
