@@ -58,7 +58,7 @@ class Player:
             if play_by_play:
                 risk = self.get_total_at_risk(table)
                 message = (
-                    f"  ✅ Bet placed: {self.name}'s ${b.amount} {b.bet_type} bet "
+                    f"  💰 Bet placed: {self.name}'s ${b.amount} {b.bet_type} bet "
                     f"(Status: {b.status}). Bankroll: ${self.balance} (w/ ${risk} on the table)"
                 )
                 play_by_play.write(message)
