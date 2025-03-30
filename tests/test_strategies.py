@@ -8,6 +8,7 @@ from craps.player import Player
 from craps.game_state import GameState
 from craps.strategies.pass_line_strategy import PassLineStrategy
 from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
+from craps.strategies.iron_cross_strategy import IronCrossStrategy
 from craps.statistics import Statistics
 from tests.test_utils import assert_contains_bet
 
@@ -146,6 +147,41 @@ class TestStrategies(unittest.TestCase):
         strategy.come_odds_working_on_come_out = True
 
         self.assertTrue(strategy.should_come_odds_be_working())
+
+    def test_iron_cross_strategy(self):
+        """Test Iron Cross strategy behavior before and after point is set."""
+        strategy = IronCrossStrategy(
+            table=self.table,
+            rules_engine=self.rules_engine,
+            min_bet=self.house_rules.table_minimum,
+            play_by_play=self.play_by_play
+        )
+
+        # Come-out: should place Pass Line bet only
+        self.game_state.point = None
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        assert_contains_bet(bets, "Pass Line", self.player)
+        base_bet = bets[0]
+        self.table.place_bet(base_bet, self.game_state.phase)
+        self.player.balance -= base_bet.amount
+
+        # Simulate point set
+        self.game_state.point = 6
+        base_bet.number = 6
+
+        # Place Iron Cross setup bets
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        bet_types = [b.bet_type for b in bets]
+        self.assertIn("Place", bet_types)
+        self.assertIn("Field", bet_types)
+
+        for b in bets:
+            self.table.place_bet(b, self.game_state.phase)
+            self.player.balance -= b.amount
+
+        # Retry — should return no additional bets
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        self.assertFalse(bets, "Expected no additional bets once Iron Cross is established")
 
 if __name__ == "__main__":
     unittest.main()
