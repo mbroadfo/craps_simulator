@@ -1,5 +1,6 @@
 from typing import Dict, Optional, List, Any, TYPE_CHECKING
 from craps.strategies.pass_line_strategy import PassLineStrategy
+from craps.strategies.pass_line_odds_strategy import PassLineOddsStrategy
 from craps.strategies.place_strategy import PlaceBetStrategy
 from craps.strategies.field_strategy import FieldBetStrategy
 from craps.strategies.iron_cross_strategy import IronCrossStrategy
@@ -32,10 +33,10 @@ class PlayerLineup:
         # Define all supported strategies
         self.all_strategies: Dict[str, Any] = {
             "Pass-Line": PassLineStrategy(bet_amount=self.house_rules.table_minimum, table=self.table),
-            "Pass-Line w/ Odds": PassLineStrategy(
-                bet_amount=self.house_rules.table_minimum,
+            "Pass-Line w/ Odds": PassLineOddsStrategy(
                 table=self.table,
-                odds_type="3x-4x-5x"
+                rules_engine=self.rules_engine,
+                odds_multiple=3  # or 2, 5, etc. — whatever multiple you want for odds
             ),
             "Place Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside", rules_engine=self.rules_engine),
             "Place Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across", rules_engine=self.rules_engine),

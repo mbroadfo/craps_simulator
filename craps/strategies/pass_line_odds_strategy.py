@@ -46,7 +46,7 @@ class PassLineOddsStrategy(BaseStrategy):
                 return []  # No new bet to place
 
             # Use RulesEngine to create a Pass Line bet
-            return [rules_engine.create_bet("Pass Line", self.table.house_rules.table_minimum, player)]
+            return [rules_engine.create_bet("Pass Line", table.house_rules.table_minimum, player)]
 
         elif game_state.phase == "point":
             # Check if the player already has an active Pass Line Odds bet
@@ -64,10 +64,9 @@ class PassLineOddsStrategy(BaseStrategy):
             # Use RulesEngine to create a Pass Line Odds bet linked to the Pass Line bet
             return [rules_engine.create_bet(
                 "Pass Line Odds",
-                self.table.house_rules.table_minimum * self.odds_multiple,  # Bet amount
-                player,  # Owner
-                number=game_state.point,  # Pass the current point number
-                parent_bet=pass_line_bet  # Parent Pass Line bet
+                table.house_rules.table_minimum * self.odds_multiple,
+                player,
+                parent_bet=pass_line_bet
             )]
 
         return []  # No bet to place

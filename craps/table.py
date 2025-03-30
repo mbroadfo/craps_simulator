@@ -60,12 +60,12 @@ class Table:
         :return: True if the bet was placed successfully, False otherwise.
         """
         # ✅ Fetch player's preferred bet amount
-        bet_amount = self.player_lineup.get_bet_amount(bet.owner)
-
-        if bet.amount != bet_amount:
-            message = f"  🔄 Adjusting {bet.owner.name}'s bet from ${bet.amount} to ${bet_amount} (preferred setting)."
-            self.play_by_play.write(message)
-            bet.amount = bet_amount  # ✅ Apply new amount
+        if bet.bet_type in ["Pass Line", "Come", "Field", "Don't Pass", "Don't Come", "Place", "Buy"]:
+            bet_amount = self.player_lineup.get_bet_amount(bet.owner)
+            if bet.amount != bet_amount:
+                message = f"  🔄 Adjusting {bet.owner.name}'s bet from ${bet.amount} to ${bet_amount} (preferred setting)."
+                self.play_by_play.write(message)
+                bet.amount = bet_amount  # ✅ Apply new amount
 
         # Validate the bet before placing it
         if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
@@ -86,28 +86,54 @@ class Table:
         :param point: The current point number (if in point phase).
         """
         for bet in self.bets:
+            if bet.bet_type.endswith("Odds"):
+                continue  # Skip odds bets for now — resolve after parent
+
             bet.resolve(self.rules_engine, dice_outcome, phase, point)
+            if self.play_by_play:
+                self.play_by_play.write(f"  🧮 Resolved {bet.owner.name}'s {bet.bet_type} bet → {bet.status}")
+
+            # Resolve any linked odds bet
+            for linked_bet in self.bets:
+                if linked_bet.bet_type.endswith("Odds") and linked_bet.parent_bet is bet:
+                    linked_bet.status = bet.status
+                    if self.play_by_play:
+                        self.play_by_play.write(
+                            f"    🔁 Linked {linked_bet.bet_type} bet for {linked_bet.owner.name} now {linked_bet.status} (from parent)"
+                        )
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
         Remove resolved bets from the table and update player bankrolls accordingly.
+        Contract bets are removed when resolved (win or loss).
+        Non-contract bets are only removed on loss.
         """
         resolved_bets = []
+
         for bet in self.bets:
-            if (bet.is_contract_bet and bet.status in ["won", "lost"]) or \
-            (not bet.is_contract_bet and bet.status == "lost"):
+            # Contract bets: always resolve if won or lost
+            if (bet.status in ["won", "lost"] and (bet.is_contract_bet or bet.bet_type.endswith("Odds"))) or \
+               (not bet.is_contract_bet and bet.status == "lost"):
                 resolved_bets.append(bet)
 
-        # Process bankroll updates for each resolved bet
+            # Non-contract bets: only resolve if they lost
+            elif not bet.is_contract_bet and bet.status == "lost":
+                resolved_bets.append(bet)
+
+            # 🟡 Non-contract winning bets stay up and continue working
+
+        # Update bankrolls
         for bet in resolved_bets:
             if bet.status == "won":
                 bet.owner.win_bet(bet, self.play_by_play)
             elif bet.status == "lost":
                 bet.owner.lose_bet(bet, self.play_by_play)
 
-        # Remove resolved bets from active table bets
+        # Remove only the resolved bets from the table
         self.bets = [bet for bet in self.bets if bet not in resolved_bets]
+
         return resolved_bets
+
     
     def get_active_players(self) -> List["Player"]:
         """Retrieve all active players at the table."""
