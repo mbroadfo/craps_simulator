@@ -121,3 +121,9 @@ class Table:
             if player.has_odds_bets(self):
                 should_work = self.player_lineup.should_odds_be_working(player)
                 player.update_come_odds_status(self, should_work)
+
+    def has_odds_bet(self, linked_bet: Bet) -> bool:
+        return any(
+            b for b in self.bets
+            if b.bet_type.endswith("Odds") and b.linked_bet == linked_bet
+        )

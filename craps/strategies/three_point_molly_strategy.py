@@ -56,7 +56,9 @@ class ThreePointMollyStrategy:
         if self.odds_strategy and game_state.phase == "point":
             odds_bets = self.odds_strategy.get_odds_bet(game_state, player, table)
             if odds_bets:
-                bets.extend(odds_bets)
+                for odds_bet in odds_bets:
+                    if odds_bet.linked_bet and not table.has_odds_bet(odds_bet.linked_bet):
+                        bets.append(odds_bet)
 
         return bets if bets else []
 

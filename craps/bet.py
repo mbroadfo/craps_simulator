@@ -23,6 +23,7 @@ class Bet:
         valid_phases: Optional[List[str]] = None,
         number: Optional[Union[int, Tuple[int, int]]] = None,  # ✅ Now supports tuples for Hop bets
         parent_bet: Optional[Bet] = None,
+        linked_bet: Optional["Bet"] = None,
         is_contract_bet: bool = False
     ) -> None:
         """
@@ -42,6 +43,7 @@ class Bet:
         self.status: str = "active"
         self.parent_bet: Optional[Bet] = parent_bet
         self.is_contract_bet: bool = is_contract_bet  # Whether the bet is a contract bet
+        self.linked_bet: Optional[Bet] = linked_bet
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """

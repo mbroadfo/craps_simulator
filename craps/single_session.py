@@ -1,4 +1,3 @@
-from colorama import init, Fore, Style
 from typing import List, Optional, Any
 from craps.dice import Dice
 from craps.statistics import Statistics
@@ -22,8 +21,6 @@ def run_single_session(
     """
     Run a single session of craps and log the roll history.
     """
-    init()  # Initialize colorama
-    
     # ✅ Ensure house_rules is an object, not a dict
     if house_rules is None:
         house_rules = HouseRules(HOUSE_RULES)
@@ -95,21 +92,9 @@ def run_single_session(
             stats.update_rolls()
             stats.update_shooter_stats(shooter)
 
-            # Update game state first so we know the new point/puck state
-            state_message = game_state.update_state(outcome)
-
-            # Now log roll with accurate puck status
-            if game_state.point:
-                puck_status = f"Puck: ON (Point: {game_state.point})"
-            else:
-                puck_status = "Puck: OFF (Come-out)"
-
-            roll_message = f"  🎲 Roll #{stats.num_rolls} → {outcome} = {total} | {puck_status}"
+            # Log the roll
+            roll_message = f"  🎲 Roll #{stats.num_rolls} → {outcome} = {total}"
             play_by_play.write(roll_message)
-
-            # Also write any state change message (e.g., "Point is set")
-            if state_message:
-                play_by_play.write(state_message)
 
             # Log the roll to the history
             roll_history.append({
@@ -124,22 +109,29 @@ def run_single_session(
             # Check bets on the table
             table.check_bets(outcome, game_state.phase, game_state.point)
 
-            # Clear resolved bets and update player bankrolls
+            # Clear resolved bets
             resolved_bets = table.clear_resolved_bets()
             for bet in resolved_bets:
                 stats.update_win_loss(bet)
 
+            # Update the game state
+            previous_phase = game_state.phase
+            state_message = game_state.update_state(outcome)
+            play_by_play.write(state_message)
+            
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)
 
-            # Update game state
-            previous_phase = game_state.phase
+            # ✅ Handle "Point Made" (shooter stays)
+            if previous_phase == "point" and total == game_state.point:
+                game_state.clear_point()
+                continue  # Shooter keeps shooting
 
-            # Check if the shooter 7-outs
+            # ✅ Handle 7-Out (shooter ends)
             if previous_phase == "point" and total == 7:
                 stats.record_seven_out()
                 game_state.clear_shooter()  # Reset shooter status
-                break  # Move to next shooter
+                break  # Next shooter
 
     # ✅ Return stats and roll history
     stats.roll_history = roll_history

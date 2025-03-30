@@ -1,6 +1,7 @@
 from typing import List, Optional, Dict, Any, Tuple, Union
 from craps.rules import BET_RULES, BET_PAYOUT
 from craps.bet import Bet
+from craps.game_state import GameState
 
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
@@ -187,10 +188,11 @@ class RulesEngine:
             else:
                 if "point_made" in winning_numbers and point is not None and total == point:
                     bet.status = "won"
-                elif total in winning_numbers:
+                elif phase == "come-out" and total in winning_numbers:
                     bet.status = "won"
                 elif total in losing_numbers:
                     bet.status = "lost"
+
 
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
@@ -307,3 +309,19 @@ class RulesEngine:
         if isinstance(multiplier_data, dict):
             return multiplier_data.get(point) if point is not None else None
         return multiplier_data  # Return the multiplier directly if it's a flat value
+
+    @staticmethod
+    def is_odds_eligible(bet: Bet, game_state: GameState) -> bool:
+        if not bet.linked_bet:
+            return False
+
+        base_type = bet.linked_bet.bet_type
+        if base_type == "Pass Line":
+            return game_state.phase == "point"
+        if base_type == "Come":
+            return game_state.phase == "point" and bet.linked_bet.number is not None
+        if base_type == "Don't Pass":
+            return game_state.phase == "point"
+        if base_type == "Don't Come":
+            return game_state.phase == "point" and bet.linked_bet.number is not None
+        return False
