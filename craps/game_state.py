@@ -71,7 +71,7 @@ class GameState:
         :return: A message describing the state change.
         """
         total = sum(dice_outcome)
-        message = "No change in game state."
+        message = "  No change in game state."
 
         if self.phase == "come-out":
             if total in [7, 11]:  # Natural win
