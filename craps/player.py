@@ -122,9 +122,8 @@ class Player:
     def win_bet(self, bet: Bet, play_by_play: PlayByPlay) -> None:
         winnings = bet.payout()
         self.balance += winnings
-        play_by_play.write(
-            f"  ✅ {self.name}'s {bet.bet_type} bet WON ${winnings}! New Bankroll: ${self.balance}"
-        )
+        label = f"{bet.bet_type} {bet.number}" if bet.number is not None else bet.bet_type
+        play_by_play.write(f"  ✅ {self.name}'s {label} bet WON ${winnings}!...")  # same for LOST
 
     def lose_bet(self, bet: Bet, play_by_play: PlayByPlay) -> None:
         self.balance -= bet.amount
