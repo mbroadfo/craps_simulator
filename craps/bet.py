@@ -44,6 +44,7 @@ class Bet:
         self.parent_bet: Optional[Bet] = parent_bet
         self.is_contract_bet: bool = is_contract_bet  # Whether the bet is a contract bet
         self.linked_bet: Optional[Bet] = linked_bet
+        self.resolved_payout: int = 0
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
@@ -85,7 +86,7 @@ class Bet:
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
         """
-        rules_engine.resolve_bet(self, dice_outcome, phase, point)
+        self.resolved_payout = rules_engine.resolve_bet(self, dice_outcome, phase, point)
 
     def is_resolved(self) -> bool:
         """Check if the bet has been resolved (won, lost, or pushed)."""
@@ -100,6 +101,8 @@ class Bet:
         if self.status != "won":
             return 0  # No payout if the bet was lost
 
+        if self.resolved_payout:
+            return self.resolved_payout
         numerator, denominator = self.payout_ratio
         return (self.amount * numerator) // denominator
 

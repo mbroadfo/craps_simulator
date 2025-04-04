@@ -257,6 +257,14 @@ class RulesEngine:
         elif bet.bet_type in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
             if bet.parent_bet and bet.parent_bet.status == "won":
                 bet.status = "won"
+
+                # 🧠 Assign number based on parent for correct payout ratio
+                if bet.number is None:
+                    if bet.parent_bet.bet_type == "Pass Line":
+                        bet.number = point  # Set to the current point
+                    elif bet.parent_bet.bet_type == "Come":
+                        bet.number = bet.parent_bet.number  # Set to the come number
+
             elif bet.parent_bet and bet.parent_bet.status == "lost":
                 bet.status = "lost"
 

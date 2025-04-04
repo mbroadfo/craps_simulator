@@ -93,7 +93,7 @@ BET_RULES = {
         "is_contract_bet": False,
         "valid_numbers": [4, 5, 6, 8, 9, 10],
         "Place": {
-            "linked_bet": "Place Odds",
+            "linked_bet": None,
             "valid_phases": ["point"],
             "payout_ratio": "Place Odds",
             "resolution": {
@@ -102,7 +102,7 @@ BET_RULES = {
             }
         },
         "Don't Place": {
-            "linked_bet": "Don't Place Odds",
+            "linked_bet": None,
             "valid_phases": ["point"],
             "payout_ratio": "Don't Place Odds",
             "resolution": {

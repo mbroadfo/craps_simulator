@@ -74,6 +74,7 @@ class Table:
             return False
 
         # Place the bet on the table
+        bet.resolved_payout = 0  # Reset in case reused
         self.bets.append(bet)
         return True
 
@@ -86,21 +87,7 @@ class Table:
         :param point: The current point number (if in point phase).
         """
         for bet in self.bets:
-            if bet.bet_type.endswith("Odds"):
-                continue  # Skip odds bets for now — resolve after parent
-
             bet.resolve(self.rules_engine, dice_outcome, phase, point)
-            if self.play_by_play:
-                self.play_by_play.write(f"  🧮 Resolved {bet.owner.name}'s {bet.bet_type} bet → {bet.status}")
-
-            # Resolve any linked odds bet
-            for linked_bet in self.bets:
-                if linked_bet.bet_type.endswith("Odds") and linked_bet.parent_bet is bet:
-                    linked_bet.status = bet.status
-                    if self.play_by_play:
-                        self.play_by_play.write(
-                            f"    🔁 Linked {linked_bet.bet_type} bet for {linked_bet.owner.name} now {linked_bet.status} (from parent)"
-                        )
 
     def clear_resolved_bets(self) -> List[Bet]:
         """
