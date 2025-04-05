@@ -109,8 +109,8 @@ def run_single_session(
             # Check bets on the table
             table.check_bets(outcome, game_state.phase, game_state.point)
 
-            # Clear resolved bets
-            resolved_bets = table.clear_resolved_bets()
+            # Settle resolved bets
+            resolved_bets = table.settle_resolved_bets()
             for bet in resolved_bets:
                 stats.update_win_loss(bet)
 

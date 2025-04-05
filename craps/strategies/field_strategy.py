@@ -30,9 +30,6 @@ class FieldBetStrategy(BaseStrategy):
         :param table: The table where bets are placed.
         :return: A Field bet if one does not already exist, otherwise None.
         """
-        if game_state.phase != "point":
-            return []  # Only place bets after the point is established
-        
         # Check if the player already has an active Field bet
         if player.has_active_bet(table, "Field"):
             return []  # No new bet to place

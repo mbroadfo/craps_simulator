@@ -119,14 +119,20 @@ class Player:
         """Return the total amount this player has at risk on the table."""
         return sum(bet.amount for bet in table.bets if bet.owner == self)
     
-    def win_bet(self, bet: Bet, play_by_play: PlayByPlay) -> None:
+    def win_bet(self, bet: Bet, play_by_play: Optional[Any] = None) -> None:
+        """Handle a winning bet: update bankroll and optionally log result."""
         winnings = bet.payout()
-        self.balance += winnings
-        label = f"{bet.bet_type} {bet.number}" if bet.number is not None else bet.bet_type
-        play_by_play.write(f"  ✅ {self.name}'s {label} bet WON ${winnings}!...")  # same for LOST
+        total_return = winnings + (bet.amount if bet.is_contract_bet else 0)
+        self.balance += total_return
 
-    def lose_bet(self, bet: Bet, play_by_play: PlayByPlay) -> None:
-        self.balance -= bet.amount
-        play_by_play.write(
-            f"  ❌ {self.name}'s {bet.bet_type} bet LOST ${bet.amount}. New Bankroll: ${self.balance}"
-        )
+        if play_by_play:
+            play_by_play.write(
+                f"  ✅ {bet} WON ${winnings}! New Bankroll: ${self.balance}" 
+            )
+
+    def lose_bet(self, bet: Bet, play_by_play: Optional[Any] = None) -> None:
+        self.balance -= bet.amount  # This line was missing!
+        if play_by_play:
+            play_by_play.write(
+                f"  ❌ {bet} LOST ${bet.amount}. New Bankroll: ${self.balance}"
+            )

@@ -133,16 +133,17 @@ BET_RULES = {
     },
     "Field Bets": {
         "is_contract_bet": False,
+        "always_working": True,
         "valid_numbers": None,
         "Field": {
             "linked_bet": None,
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Field",
             "resolution": {
-                "come_out_win": ["in-field"],
-                "come_out_lose": ["out-field"],
-                "point_win": ["in-field"],
-                "point_lose": ["out-field"],
+                "come_out_win": [2, 3, 4, 9, 10, 11, 12],
+                "come_out_lose": [5, 6, 7, 8],
+                "point_win": [2, 3, 4, 9, 10, 11, 12],
+                "point_lose": [5, 6, 7, 8],
             }
         },
     },

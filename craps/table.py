@@ -89,39 +89,47 @@ class Table:
         for bet in self.bets:
             bet.resolve(self.rules_engine, dice_outcome, phase, point)
 
-    def clear_resolved_bets(self) -> List[Bet]:
+    def settle_resolved_bets(self) -> List[Bet]:
         """
-        Remove resolved bets from the table and update player bankrolls accordingly.
-        Contract bets are removed when resolved (win or loss).
-        Non-contract bets are only removed on loss.
+        Settle resolved bets by paying winners, removing losers, and resetting status.
+        - Winning bets are paid and Player bankroll increased by winnings.
+        - Losing bets are removed & Player bankroll reduced by bet amount.
+        - Contract bets are returned to the player if they win and removed if they lose
+        - Whether bets should stay working and/or to lave winning bets up controlled by HOUSE RULES
         """
-        resolved_bets = []
+        settled_bets: List[Bet] = []
 
-        for bet in self.bets:
-            # Contract bets: always resolve if won or lost
-            if (bet.status in ["won", "lost"] and (bet.is_contract_bet or bet.bet_type.endswith("Odds"))) or \
-               (not bet.is_contract_bet and bet.status == "lost"):
-                resolved_bets.append(bet)
-
-            # Non-contract bets: only resolve if they lost
-            elif not bet.is_contract_bet and bet.status == "lost":
-                resolved_bets.append(bet)
-
-            # 🟡 Non-contract winning bets stay up and continue working
-
-        # Update bankrolls
-        for bet in resolved_bets:
-            if bet.status == "won":
-                bet.owner.win_bet(bet, self.play_by_play)
-            elif bet.status == "lost":
+        for bet in list(self.bets):
+            # ✅ Handle Lost Bets — always remove, pay loss
+            if bet.status == "lost":
                 bet.owner.lose_bet(bet, self.play_by_play)
+                self.bets.remove(bet)
+                settled_bets.append(bet)
 
-        # Remove only the resolved bets from the table
-        self.bets = [bet for bet in self.bets if bet not in resolved_bets]
+            # ✅ Handle Winning Bets
+            elif bet.status == "won":
+                bet.owner.win_bet(bet, self.play_by_play)
 
-        return resolved_bets
+                # 🎯 Contract bets: return to player (e.g., Pass Line, Come)
+                if bet.is_contract_bet:
+                    self.bets.remove(bet)
+                    settled_bets.append(bet)
 
-    
+                # 🎯 Non-contract bets: possibly stay on table
+                else:
+                    bet_rules = self.rules_engine.get_bet_rules(bet.bet_type)
+                    always_working = bet_rules.get("always_working", False)
+
+                    if not self.house_rules.leave_winning_bets_up:
+                        self.bets.remove(bet)
+                        settled_bets.append(bet)
+                    elif always_working or self.house_rules.leave_bets_working:
+                        bet.status = "active"
+                    else:
+                        bet.status = "inactive"
+
+        return settled_bets
+
     def get_active_players(self) -> List["Player"]:
         """Retrieve all active players at the table."""
         return self.player_lineup.get_active_players_list()

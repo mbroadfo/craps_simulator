@@ -1,13 +1,13 @@
 # File: .\config.py
 
 ACTIVE_PLAYERS = {
-    "Pass-Line": True,
-    "Pass-Line w/ Odds": True,
+    "Pass-Line": False,
+    "Pass-Line w/ Odds": False,
     "$44 Inside": False,
     "$54 Across": False,
     "Field": True,
-    "Iron Cross": True,
-    "3-Point Molly": True,
+    "Iron Cross": False,
+    "3-Point Molly": False,
 }
 
 # Add a new configuration entry for session mode
@@ -20,4 +20,6 @@ HOUSE_RULES = {
     "table_minimum": 10,  # Minimum bet amount
     "table_maximum": 5000,  # Maximum bet amount
     "come_odds_working_on_come_out": False,  # Whether Come odds bets are working during the come-out roll
+    "leave_bets_working": False,  # Non-contract bets follow the puck
+    "leave_winning_bets_up": True,  # If it pays, it stays
 }

@@ -193,13 +193,15 @@ class RulesEngine:
                 elif total in losing_numbers:
                     bet.status = "lost"
 
-
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
-            if "in-field" in resolution_rules.get(f"{phase_key}_win", []):
+            print(f"[DEBUG] Field bet → total: {total}, phase: {phase_key}, "
+                f"win_numbers: {winning_numbers}, lose_numbers: {losing_numbers}")
+
+            if total in winning_numbers:
                 bet.status = "won"
-                bet.number = total  # ✅ Assign the rolled number
-            elif "out-field" in resolution_rules.get(f"{phase_key}_lose", []):
+                bet.number = total  # ✅ Required for payout calculation
+            elif total in losing_numbers:
                 bet.status = "lost"
 
         ### 🎯 **3. PLACE, BUY, LAY BETS (Follow Rule Definitions)**

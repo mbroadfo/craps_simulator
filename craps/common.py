@@ -84,7 +84,7 @@ class CommonTableSetup:
         :return: A list of resolved bets.
         """
         self.table.check_bets(dice_outcome, phase, point)
-        return self.table.clear_resolved_bets()
+        return self.table.settle_resolved_bets()
 
     def reset_table(self) -> None:
         """Reset the table and player for a new test."""
