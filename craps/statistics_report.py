@@ -23,6 +23,7 @@ class StatisticsReport:
         self.write(f"🎲 Session Rolls: {stats.session_rolls}")
         self.write(f"🧮 Rolls per Shooter: {stats.session_rolls / stats.num_shooters:.2f}")
         self.write(f"⏱️ Estimated Session Time: {stats.get_estimated_session_time()}")
+        self.write(f"📉 Max Table Risk: ${stats.max_table_risk}")
         self.write(f"💸 Total Amount Bet: ${stats.total_amount_bet}")
         self.write(f"💰 Total Amount Won: ${stats.total_amount_won}")
         self.write(f"❌ Total Amount Lost: ${stats.total_amount_lost}")
@@ -30,6 +31,8 @@ class StatisticsReport:
         house_edge = ((stats.total_amount_lost - stats.total_amount_won) / stats.total_amount_bet * 100
                     if stats.total_amount_bet else 0.0)
         self.write(f"🎲 House Edge: {house_edge:.2f}%")
+        self.write(f"😈 Total 7s Rolled: {stats.total_sevens}")
+        self.write(f"🎯 7-Roll Ratio (SRR): {stats.seven_roll_ratio():.2f}")
         self.write(f"🔺 Highest Bankroll During Session: ${stats.session_highest_bankroll}")
         self.write(f"🔻 Lowest Bankroll During Session: ${stats.session_lowest_bankroll}")
         

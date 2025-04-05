@@ -105,7 +105,7 @@ def run_single_session(
             # Roll the dice and resolve bets
             outcome = dice.roll()  # Now returns Tuple[int, int]
             total = sum(outcome)
-            stats.update_rolls()
+            stats.update_rolls(total=total, table_risk=table.total_risk())
             stats.update_shooter_stats(shooter)
 
             # Log the roll

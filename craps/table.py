@@ -166,3 +166,7 @@ class Table:
             b for b in self.bets
             if b.bet_type.endswith("Odds") and b.linked_bet == linked_bet
         )
+
+    def total_risk(self) -> int:
+        """Calculate total amount risked on the table for the current roll."""
+        return sum(bet.amount for bet in self.bets)

@@ -13,12 +13,14 @@ class Statistics:
         self.total_amount_won: int = 0
         self.total_amount_lost: int = 0
         self.session_highest_bankroll: int = 0
-        self.session_lowest_bankroll: int = 1_000_000  # Arbitrary high value
+        self.session_lowest_bankroll: int = 1_000_000
         self.total_house_win_loss: int = 0
         self.total_player_win_loss: int = 0
         self.player_bankrolls: List[int] = []
         self.highest_bankroll: int = 0
-        self.lowest_bankroll: float = float('inf')
+        self.lowest_bankroll: int = 1_000_000
+        self.max_table_risk: int = 0
+        self.total_sevens: int = 0
         self.shooter_stats: Dict[int, Dict[str, Any]] = {}
         self.player_stats: Dict[str, Dict[str, Any]] = {}
         self.shooter: Optional[Any] = None
@@ -106,10 +108,17 @@ class Statistics:
                 self.bankroll_history[player] = []
             self.bankroll_history[player].extend(bankrolls)
 
-    def update_rolls(self) -> None:
-        """Increment the roll count."""
+    def update_rolls(self, total: Optional[int] = None, table_risk: Optional[int] = None) -> None:
+        """Increment the roll count and optionally record roll total and table risk."""
         self.session_rolls += 1
         self.roll_numbers.append(self.session_rolls)
+
+        if total == 7:
+            self.total_sevens += 1
+
+        if table_risk is not None:
+            self.max_table_risk = max(self.max_table_risk, table_risk)
+
 
     def update_win_loss(self, bet: Any) -> None:
         """
@@ -230,3 +239,15 @@ class Statistics:
             return f"{hours} hr"
         else:
             return f"{minutes} min"
+
+    def record_table_risk(self, table_risk: int) -> None:
+        self.max_table_risk = max(self.max_table_risk, table_risk)
+
+    def record_roll_total(self, total: int) -> None:
+        if total == 7:
+            self.total_sevens += 1
+
+    def seven_roll_ratio(self) -> float:
+        if self.session_rolls == 0:
+            return 0.0
+        return self.total_sevens / self.session_rolls
