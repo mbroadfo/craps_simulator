@@ -8,7 +8,7 @@ class Statistics:
         self.table_minimum: int = table_minimum
         self.num_shooters: int = num_shooters
         self.num_players: int = num_players
-        self.num_rolls: int = 0
+        self.session_rolls: int = 0
         self.total_house_win_loss: int = 0
         self.total_player_win_loss: int = 0
         self.player_bankrolls: List[int] = []
@@ -63,7 +63,7 @@ class Statistics:
             self.shooter_stats[shooter_num] = {
                 "points_rolled": 0,
                 "rolls_before_7_out": [],
-                "total_rolls": 0,
+                "shooter_rolls": 0,
             }
             
     def initialize_bankroll_history(self, players: List[Any]) -> None:
@@ -73,7 +73,7 @@ class Statistics:
 
     def merge(self, other_stats: "Statistics") -> None:
         """Merge statistics from another session."""
-        self.num_rolls += other_stats.num_rolls
+        self.session_rolls += other_stats.session_rolls
         self.total_house_win_loss += other_stats.total_house_win_loss
         self.total_player_win_loss += other_stats.total_player_win_loss
         self.player_bankrolls.extend(other_stats.player_bankrolls)
@@ -89,11 +89,11 @@ class Statistics:
                 self.shooter_stats[shooter_name] = {
                     "points_rolled": 0,
                     "rolls_before_7_out": [],
-                    "total_rolls": 0,
+                    "shooter_rolls": 0,
                 }
             self.shooter_stats[shooter_name]["points_rolled"] += stats["points_rolled"]
             self.shooter_stats[shooter_name]["rolls_before_7_out"].extend(stats["rolls_before_7_out"])
-            self.shooter_stats[shooter_name]["total_rolls"] += stats["total_rolls"]
+            self.shooter_stats[shooter_name]["shooter_rolls"] += stats["shooter_rolls"]
 
         # Merge bankroll history
         for player, bankrolls in other_stats.bankroll_history.items():
@@ -103,8 +103,8 @@ class Statistics:
 
     def update_rolls(self) -> None:
         """Increment the roll count."""
-        self.num_rolls += 1
-        self.roll_numbers.append(self.num_rolls)
+        self.session_rolls += 1
+        self.roll_numbers.append(self.session_rolls)
 
     def update_win_loss(self, bet: Any) -> None:
         """
@@ -133,26 +133,26 @@ class Statistics:
 
     def record_seven_out(self) -> None:
         """Record the roll number where a 7-out occurs."""
-        self.seven_out_rolls.append(self.num_rolls)
+        self.seven_out_rolls.append(self.session_rolls)
         if self.shooter and self.shooter_num is not None:  # Ensure shooter_num is an int
             if self.shooter_num not in self.shooter_stats:
                 self.shooter_stats[self.shooter_num] = {
                     "points_rolled": 0,
                     "rolls_before_7_out": [],
-                    "total_rolls": 0,
+                    "shooter_rolls": 0,
                 }
             self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(self.shooter.current_roll_count)
             self.shooter.current_roll_count = 0
         
     def record_point_number_roll(self) -> None:
         """Record the roll number where a point number (4, 5, 6, 8, 9, 10) is rolled."""
-        self.point_number_rolls.append(self.num_rolls)
+        self.point_number_rolls.append(self.session_rolls)
         if self.shooter and self.shooter_num is not None:  # Ensure shooter_num is an int
             if self.shooter_num not in self.shooter_stats:
                 self.shooter_stats[self.shooter_num] = {
                     "points_rolled": 0,
                     "rolls_before_7_out": [],
-                    "total_rolls": 0,
+                    "shooter_rolls": 0,
                 }
             self.shooter_stats[self.shooter_num]["points_rolled"] += 1
 
@@ -165,9 +165,9 @@ class Statistics:
             self.shooter_stats[self.shooter_num] = {
                 "points_rolled": 0,
                 "rolls_before_7_out": [],
-                "total_rolls": 0,
+                "shooter_rolls": 0,
             }
-        self.shooter_stats[self.shooter_num]["total_rolls"] = shooter.current_roll_count
+        self.shooter_stats[self.shooter_num]["shooter_rolls"] = shooter.current_roll_count
         self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
 
 
@@ -177,7 +177,7 @@ class Statistics:
         logging.info(f"Table Minimum: ${self.table_minimum}")
         logging.info(f"Number of Shooters: {self.num_shooters}")
         logging.info(f"Number of Players: {self.num_players}")
-        logging.info(f"Number of Rolls: {self.num_rolls}")
+        logging.info(f"Number of Rolls: {self.session_rolls}")
         logging.info(f"Total House Win/Loss: ${self.total_house_win_loss}")
         logging.info(f"Total Player Win/Loss: ${self.total_player_win_loss}")
         logging.info(f"Player Bankrolls: {self.player_bankrolls}")
@@ -189,6 +189,16 @@ class Statistics:
         logging.info("\n=== Shooter Performance Report ===")
         for shooter_num, stats in self.shooter_stats.items():
             total_points_rolled = stats["points_rolled"]
-            total_rolls = stats["total_rolls"]
+            shooter_rolls = stats["shooter_rolls"]
             rolls_before_7_out = stats["rolls_before_7_out"]
-            avg_rolls_before_7_out = sum(rolls_before_7_out) / len(rolls_before_7_out) if rolls_before_7_out else 0
+            avg_rolls_before_7_out = (
+                sum(rolls_before_7_out) / len(rolls_before_7_out)
+                if rolls_before_7_out else 0
+            )
+
+            logging.info(
+                f"  Shooter #{shooter_num}: {shooter_rolls} rolls "
+                f"({total_points_rolled} points made, "
+                f"{len(rolls_before_7_out)} 7-outs, "
+                f"avg rolls before 7-out: {avg_rolls_before_7_out:.2f})"
+            )

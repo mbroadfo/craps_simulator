@@ -19,7 +19,7 @@ def main():
     log_viewer.view(play_by_play.play_by_play_file)
 
     # Visualize player bankrolls (only if there are players and rolls)
-    if stats.num_players == 0 or stats.num_rolls == 0:
+    if stats.num_players == 0 or stats.session_rolls == 0:
         print("⚠️ No data to visualize — skipping charts.")
     else:
         visualizer = Visualizer(stats)

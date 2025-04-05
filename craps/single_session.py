@@ -104,13 +104,13 @@ def run_single_session(
             stats.update_shooter_stats(shooter)
 
             # Log the roll
-            roll_message = f"  🎲 Roll #{stats.num_rolls} → {outcome} = {total}"
+            roll_message = f"  🎲 Roll #{stats.session_rolls} → {outcome} = {total}"
             play_by_play.write(roll_message)
 
             # Log the roll to the history
             roll_history.append({
                 "shooter_num": shooter_num,
-                "roll_number": stats.num_rolls,
+                "roll_number": stats.session_rolls,
                 "dice": outcome,
                 "total": total,
                 "phase": game_state.phase,
