@@ -94,42 +94,60 @@ class Table:
         Settle resolved bets by paying winners, removing losers, and resetting status.
         - Winning bets are paid and Player bankroll increased by winnings.
         - Losing bets are removed & Player bankroll reduced by bet amount.
-        - Contract bets are returned to the player if they win and removed if they lose
-        - Whether bets should stay working and/or to lave winning bets up controlled by HOUSE RULES
+        - Contract bets are returned to the player if they win and removed if they lose.
+        - Linked odds bets follow the resolution of their parent bet.
+        - Whether bets should stay working and/or to leave winning bets up controlled by HOUSE RULES.
+        - Winners that remain on the table will keep status='won' temporarily (for stats),
+        and are flipped to 'active' afterward by caller.
         """
         settled_bets: List[Bet] = []
 
         for bet in list(self.bets):
-            # ✅ Handle Lost Bets — always remove, pay loss
+            # Skip odds bets — handled when parent resolves
+            if bet.parent_bet is not None:
+                continue
+
+            # ✅ Handle Lost Bets
             if bet.status == "lost":
                 bet.owner.lose_bet(bet, self.play_by_play)
                 self.bets.remove(bet)
                 settled_bets.append(bet)
 
+                # Also settle attached odds bets
+                for attached in list(self.bets):
+                    if attached.parent_bet == bet:
+                        attached.owner.lose_bet(attached, self.play_by_play)
+                        self.bets.remove(attached)
+                        settled_bets.append(attached)
+
             # ✅ Handle Winning Bets
             elif bet.status == "won":
                 bet.owner.win_bet(bet, self.play_by_play)
+                settled_bets.append(bet)
 
-                # 🎯 Contract bets: return to player (e.g., Pass Line, Come)
                 if bet.is_contract_bet:
                     self.bets.remove(bet)
-                    settled_bets.append(bet)
-
-                # 🎯 Non-contract bets: possibly stay on table
                 else:
                     bet_rules = self.rules_engine.get_bet_rules(bet.bet_type)
                     always_working = bet_rules.get("always_working", False)
 
                     if not self.house_rules.leave_winning_bets_up:
                         self.bets.remove(bet)
-                        settled_bets.append(bet)
                     elif always_working or self.house_rules.leave_bets_working:
-                        bet.status = "active"
+                        # Leave on table — status stays 'won' for now, caller will flip
+                        pass
                     else:
                         bet.status = "inactive"
 
-        return settled_bets
+                # Also settle attached odds bets
+                for attached in list(self.bets):
+                    if attached.parent_bet == bet:
+                        attached.owner.win_bet(attached, self.play_by_play)
+                        self.bets.remove(attached)
+                        settled_bets.append(attached)
 
+        return settled_bets
+    
     def get_active_players(self) -> List["Player"]:
         """Retrieve all active players at the table."""
         return self.player_lineup.get_active_players_list()

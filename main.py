@@ -17,9 +17,6 @@ def main():
     log_viewer = InteractiveLogViewer()
     log_viewer.view("output/statistics_report.txt")
 
-    stats.print_shooter_report()
-    stats.print_player_statistics()
-
     # Visualize player bankrolls (only if there are players and rolls)
     if stats.num_players == 0 or stats.session_rolls == 0:
         print("⚠️ No data to visualize — skipping charts.")

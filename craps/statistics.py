@@ -118,8 +118,7 @@ class Statistics:
         :param bet: The resolved bet.
         """
         if bet.status == "won":
-            payout = bet.payout()
-            self.total_amount_won += payout
+            self.total_amount_won += bet.payout()
             self.total_amount_bet += bet.amount
         elif bet.status == "lost":
             self.total_amount_lost += bet.amount

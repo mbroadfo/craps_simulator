@@ -80,6 +80,10 @@ def run_single_session(
     # ✅ Initialize roll history
     roll_history = []
 
+    # ✅ Initialize player stats...   
+    stats.initialize_player_stats(players)
+
+
     # ✅ Simulate shooters
     if num_shooters is None:
         num_shooters = 10
@@ -125,6 +129,11 @@ def run_single_session(
             resolved_bets = table.settle_resolved_bets()
             for bet in resolved_bets:
                 stats.update_win_loss(bet)
+            
+            # 🟢 Flip to active if still on table and was marked won
+            for bet in resolved_bets:
+                if bet.status == "won" and bet in table.bets:
+                    bet.status = "active"
 
             # Update the game state
             previous_phase = game_state.phase
@@ -147,6 +156,7 @@ def run_single_session(
 
     # ✅ Return stats and roll history
     stats.roll_history = roll_history
+    stats.update_player_stats(players)
     statistics_report = StatisticsReport()
     statistics_report.write_statistics(stats)
 

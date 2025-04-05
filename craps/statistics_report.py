@@ -32,3 +32,19 @@ class StatisticsReport:
         self.write(f"🎲 House Edge: {house_edge:.2f}%")
         self.write(f"🔺 Highest Bankroll During Session: ${stats.session_highest_bankroll}")
         self.write(f"🔻 Lowest Bankroll During Session: ${stats.session_lowest_bankroll}")
+        
+        self.write_player_statistics(stats)
+
+
+    def write_player_statistics(self, stats: "Statistics") -> None:
+        self.write("\n=============================================")
+        self.write("🧑‍🤝‍🧑 Player Performance Report\n")
+
+        for name, data in stats.player_stats.items():
+            net = data["net_win_loss"]
+            result = "Won" if net >= 0 else "Lost"
+            sign = "+" if net >= 0 else "-"
+            self.write(f"🎲 {name}")
+            self.write(f"  📥 Initial Bankroll: ${data['initial_bankroll']}")
+            self.write(f"  📤 Final Bankroll: ${data['final_bankroll']}")
+            self.write(f"  📊 Net Result: {sign}${abs(net)} ({result})\n")
