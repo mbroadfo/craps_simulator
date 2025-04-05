@@ -47,7 +47,17 @@ class StatisticsReport:
             net = data["net_win_loss"]
             result = "Won" if net >= 0 else "Lost"
             sign = "+" if net >= 0 else "-"
+
+            # Derived stat
+            settled = data["bets_settled"]
+            won = data["bets_won"]
+            win_rate = (won / settled * 100) if settled > 0 else 0.0
+
             self.write(f"🎲 {name}")
             self.write(f"  📥 Initial Bankroll: ${data['initial_bankroll']}")
-            self.write(f"  📤 Final Bankroll: ${data['final_bankroll']}")
-            self.write(f"  📊 Net Result: {sign}${abs(net)} ({result})\n")
+            self.write(f"  📤 Final Bankroll:   ${data['final_bankroll']}")
+            self.write(f"  📊 Net Result:       {sign}${abs(net)} ({result})")
+            self.write(f"  🎯 Bets Settled:     {settled}")
+            self.write(f"  ✅ Bets Won:         {won} ({win_rate:.1f}% win rate)")
+            self.write(f"  🔺 Highest Bankroll: ${data['highest_bankroll']}")
+            self.write(f"  🔻 Lowest Bankroll:  ${data['lowest_bankroll']}\n")

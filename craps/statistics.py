@@ -40,6 +40,10 @@ class Statistics:
                 "initial_bankroll": player.balance,
                 "final_bankroll": player.balance,
                 "net_win_loss": 0,
+                "bets_settled": 0,
+                "bets_won": 0,
+                "highest_bankroll": player.balance,
+                "lowest_bankroll": player.balance,
             }
             
     def update_player_stats(self, players: List[Any]) -> None:
@@ -50,17 +54,6 @@ class Statistics:
                 self.player_stats[player.name]["net_win_loss"] = (
                     player.balance - self.player_stats[player.name]["initial_bankroll"]
                 )
-                
-    def print_player_statistics(self) -> None:
-        """Print player-specific statistics."""
-        logging.info("\n=== Player Performance Report ===")
-        for player_name, stats in self.player_stats.items():
-            net_win_loss = stats["net_win_loss"]
-            result = "Won" if net_win_loss >= 0 else "Lost"
-            logging.info(f"\nPlayer: {player_name}")
-            logging.info(f"  Initial Bankroll: ${stats['initial_bankroll']}")
-            logging.info(f"  Final Bankroll: ${stats['final_bankroll']}")
-            logging.info(f"  Net Win/Loss: ${net_win_loss} ({result})")
     
     def set_shooter(self, shooter: Any, shooter_num: int) -> None:
         """Set the current shooter and their turn number."""
@@ -126,12 +119,17 @@ class Statistics:
 
         :param bet: The resolved bet.
         """
-        if bet.status == "won":
-            self.total_amount_won += bet.payout()
+        if bet.status in ("won", "lost"):
             self.total_amount_bet += bet.amount
-        elif bet.status == "lost":
-            self.total_amount_lost += bet.amount
-            self.total_amount_bet += bet.amount
+
+            player_stats = self.player_stats.get(bet.owner.name)
+            if player_stats:
+                player_stats["bets_settled"] += 1
+                if bet.status == "won":
+                    self.total_amount_won += bet.payout()
+                    player_stats["bets_won"] += 1
+                elif bet.status == "lost":
+                    self.total_amount_lost += bet.amount
     
     def update_player_bankrolls(self, players: List[Any]) -> None:
         """Update player bankrolls and track highest/lowest bankroll."""
@@ -143,6 +141,12 @@ class Statistics:
             if player.name not in self.bankroll_history:
                 self.bankroll_history[player.name] = []
             self.bankroll_history[player.name].append(player.balance)
+            
+            if player.name in self.player_stats:
+                stats = self.player_stats[player.name]
+                stats["highest_bankroll"] = max(stats["highest_bankroll"], player.balance)
+                stats["lowest_bankroll"] = min(stats["lowest_bankroll"], player.balance)
+            
             if player.balance > self.session_highest_bankroll:
                 self.session_highest_bankroll = player.balance
             if player.balance < self.session_lowest_bankroll:
