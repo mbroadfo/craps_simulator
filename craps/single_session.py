@@ -1,4 +1,5 @@
 from typing import List, Optional, Any
+from config import HOUSE_RULES
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.house_rules import HouseRules
@@ -8,7 +9,7 @@ from craps.rules_engine import RulesEngine
 from craps.play_by_play import PlayByPlay
 from craps.player_setup import SetupPlayers
 from craps.lineup import PlayerLineup
-from config import HOUSE_RULES
+from craps.statistics_report import StatisticsReport
 import os
 
 def run_single_session(
@@ -146,4 +147,7 @@ def run_single_session(
 
     # ✅ Return stats and roll history
     stats.roll_history = roll_history
+    statistics_report = StatisticsReport()
+    statistics_report.write_statistics(stats)
+
     return stats, play_by_play

@@ -3,7 +3,7 @@ from typing import List
 from craps.single_session import run_single_session
 from craps.house_rules import HouseRules
 from craps.statistics import Statistics
-
+from craps.view_log import InteractiveLogViewer
 class SimulationManager:
     def __init__(self, house_rules: HouseRules, num_tables: int, num_shooters: int, strategies: List):
         """
@@ -27,5 +27,7 @@ class SimulationManager:
                 stats, play_by_play = run_single_session(self.house_rules, self.strategies, num_shooters=self.num_shooters)
                 self.stats.merge(stats)  # Merge session stats into overall stats
 
-        self.stats.print_statistics()
+        # View the statistics report
+        log_viewer = InteractiveLogViewer()
+        log_viewer.view("output/statistics_report.txt")
         self.stats.print_shooter_report()

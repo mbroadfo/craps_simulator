@@ -9,6 +9,11 @@ class Statistics:
         self.num_shooters: int = num_shooters
         self.num_players: int = num_players
         self.session_rolls: int = 0
+        self.total_amount_bet: int = 0
+        self.total_amount_won: int = 0
+        self.total_amount_lost: int = 0
+        self.session_highest_bankroll: int = 0
+        self.session_lowest_bankroll: int = 1_000_000  # Arbitrary high value
         self.total_house_win_loss: int = 0
         self.total_player_win_loss: int = 0
         self.player_bankrolls: List[int] = []
@@ -114,11 +119,11 @@ class Statistics:
         """
         if bet.status == "won":
             payout = bet.payout()
-            self.total_house_win_loss -= payout
-            self.total_player_win_loss += payout
+            self.total_amount_won += payout
+            self.total_amount_bet += bet.amount
         elif bet.status == "lost":
-            self.total_house_win_loss += bet.amount
-            self.total_player_win_loss -= bet.amount
+            self.total_amount_lost += bet.amount
+            self.total_amount_bet += bet.amount
     
     def update_player_bankrolls(self, players: List[Any]) -> None:
         """Update player bankrolls and track highest/lowest bankroll."""
@@ -130,6 +135,10 @@ class Statistics:
             if player.name not in self.bankroll_history:
                 self.bankroll_history[player.name] = []
             self.bankroll_history[player.name].append(player.balance)
+            if player.balance > self.session_highest_bankroll:
+                self.session_highest_bankroll = player.balance
+            if player.balance < self.session_lowest_bankroll:
+                self.session_lowest_bankroll = player.balance
 
     def record_seven_out(self) -> None:
         """Record the roll number where a 7-out occurs."""
@@ -170,20 +179,6 @@ class Statistics:
         self.shooter_stats[self.shooter_num]["shooter_rolls"] = shooter.current_roll_count
         self.shooter_stats[self.shooter_num]["rolls_before_7_out"].append(shooter.rolls_before_7_out)
 
-
-    def print_statistics(self) -> None:
-        """Print the simulation statistics."""
-        logging.info("\n=== Simulation Statistics ===")
-        logging.info(f"Table Minimum: ${self.table_minimum}")
-        logging.info(f"Number of Shooters: {self.num_shooters}")
-        logging.info(f"Number of Players: {self.num_players}")
-        logging.info(f"Number of Rolls: {self.session_rolls}")
-        logging.info(f"Total House Win/Loss: ${self.total_house_win_loss}")
-        logging.info(f"Total Player Win/Loss: ${self.total_player_win_loss}")
-        logging.info(f"Player Bankrolls: {self.player_bankrolls}")
-        logging.info(f"Highest Player Bankroll: ${self.highest_bankroll}")
-        logging.info(f"Lowest Player Bankroll: ${self.lowest_bankroll}")
-
     def print_shooter_report(self) -> None:
         """Print a report summarizing each shooter's performance."""
         logging.info("\n=== Shooter Performance Report ===")
@@ -202,3 +197,37 @@ class Statistics:
                 f"{len(rolls_before_7_out)} 7-outs, "
                 f"avg rolls before 7-out: {avg_rolls_before_7_out:.2f})"
             )
+
+    def average_rolls_per_shooter(self) -> float:
+        """Average number of rolls per shooter."""
+        if self.num_shooters == 0:
+            return 0.0
+        return self.session_rolls / self.num_shooters
+
+    def estimated_session_time_minutes(self, rolls_per_hour: int = 90) -> int:
+        """Estimate session duration in minutes."""
+        if rolls_per_hour <= 0:
+            return 0
+        return int((self.session_rolls / rolls_per_hour) * 60)
+
+    def house_take(self) -> int:
+        """Total house profit."""
+        return self.total_amount_lost - self.total_amount_won
+
+    def house_edge(self) -> float:
+        """Effective house edge as a percentage of total amount bet."""
+        if self.total_amount_bet == 0:
+            return 0.0
+        return (self.house_take() / self.total_amount_bet) * 100
+
+    def get_estimated_session_time(self) -> str:
+        total_minutes = round((self.session_rolls / 90) * 60)
+        rounded_minutes = int(round(total_minutes / 15.0) * 15)
+        hours = rounded_minutes // 60
+        minutes = rounded_minutes % 60
+        if hours and minutes:
+            return f"{hours} hr {minutes} min"
+        elif hours:
+            return f"{hours} hr"
+        else:
+            return f"{minutes} min"

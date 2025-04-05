@@ -8,7 +8,7 @@ from craps.rules_engine import RulesEngine
 from craps.statistics import Statistics
 from craps.game_state import GameState
 from craps.lineup import PlayerLineup
-
+from craps.statistics_report import StatisticsReport
 class InitializeSession:
     def __init__(
         self, 
@@ -58,5 +58,8 @@ class InitializeSession:
 
         # Clear the play-by-play file before starting the session
         self.play_by_play.clear_play_by_play_file()
+
+        # Clear the Statistics Report before starting the session        
+        StatisticsReport().clear_statistics_file()
 
         return self.house_rules, table, self.roll_history_manager, self.log_manager, self.play_by_play, stats, game_state
