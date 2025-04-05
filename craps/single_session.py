@@ -16,12 +16,11 @@ def run_single_session(
     strategies: Optional[List[Any]] = None,
     initial_bankroll: Optional[int] = 500, 
     num_shooters: Optional[int] = 10, 
-    roll_history_file: Optional[str] = None
-) -> tuple[Statistics, PlayByPlay]:
+    roll_history_file: Optional[str] = None) -> tuple[Statistics, PlayByPlay]:
     """
     Run a single session of craps and log the roll history.
     """
-    # ✅ Ensure house_rules is an object, not a dict
+    # ✅ Set the house_rules
     if house_rules is None:
         house_rules = HouseRules(HOUSE_RULES)
 
@@ -32,11 +31,29 @@ def run_single_session(
     rules_engine = RulesEngine()
     play_by_play = PlayByPlay()
     log_manager = LogManager()
-    player_lineup = PlayerLineup(house_rules, None, play_by_play, rules_engine)  # ✅ Added PlayerLineup
+    player_lineup = PlayerLineup(house_rules, None, play_by_play, rules_engine)
 
+    # ✅ Initialize players via SetupPlayers
+    strategies = strategies or []
+    players = SetupPlayers().setup()
+
+    # ✅ Validate players exist
+    if not players:
+        play_by_play.clear_play_by_play_file()
+        play_by_play.write("⚠️ No active players configured. Exiting session early.")
+        return Statistics(
+            table_minimum=house_rules.table_minimum,
+            num_shooters=num_shooters or 10,
+            num_players=0
+        ), play_by_play
+    
+    # ✅ Assign player strategies
+    player_lineup.assign_strategies(players)
+    
+    # ✅ Initialize the Session
     session_initializer = InitializeSession(
         session_mode="live",
-        house_rules=house_rules,  # ✅ Now guaranteed to be a HouseRules object
+        house_rules=house_rules,
         play_by_play=play_by_play,
         log_manager=log_manager,
         rules_engine=rules_engine,
@@ -52,15 +69,9 @@ def run_single_session(
         raise RuntimeError("Failed to initialize session.")
 
     house_rules, table, roll_history_manager, log_manager, play_by_play, stats, game_state = session_data
-
-    # ✅ Initialize players via SetupPlayers
-    strategies = strategies or []
-    players = SetupPlayers().setup()
-    player_lineup.assign_strategies(players)
-
-    # ✅ Validate players exist
-    if not players:
-        raise RuntimeError("No players found. Cannot start session.")
+    
+    # ✅ Set num_players now that players are loaded
+    stats.num_players = len(players)
 
     # ✅ Initialize bankroll history
     stats.initialize_bankroll_history(players)

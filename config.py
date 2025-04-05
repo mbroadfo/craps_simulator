@@ -1,8 +1,8 @@
 # File: .\config.py
 
 ACTIVE_PLAYERS = {
-    "Pass-Line": False,
-    "Pass-Line w/ Odds": False,
+    "Pass-Line": True,
+    "Pass-Line w/ Odds": True,
     "$44 Inside": False,
     "$54 Across": False,
     "Field": True,

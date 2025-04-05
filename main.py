@@ -18,9 +18,12 @@ def main():
     log_viewer = InteractiveLogViewer()
     log_viewer.view(play_by_play.play_by_play_file)
 
-    # Visualize player bankrolls
-    visualizer = Visualizer(stats)
-    visualizer.visualize_bankrolls()
+    # Visualize player bankrolls (only if there are players and rolls)
+    if stats.num_players == 0 or stats.num_rolls == 0:
+        print("⚠️ No data to visualize — skipping charts.")
+    else:
+        visualizer = Visualizer(stats)
+        visualizer.visualize_bankrolls()
 
 if __name__ == "__main__":
     main()

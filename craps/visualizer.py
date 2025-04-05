@@ -13,10 +13,6 @@ class Visualizer:
         self.stats = stats
 
     def visualize_bankrolls(self) -> None:
-        print("Bankroll History Keys:", self.stats.bankroll_history.keys())
-        for player, bankrolls in self.stats.bankroll_history.items():
-            print(f"{player}: {len(bankrolls)} bankroll entries — Last value: {bankrolls[-1] if bankrolls else 'EMPTY'}")
-
         """Visualize player bankrolls over time."""
         plt.figure(figsize=(12, 6))
 

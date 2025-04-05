@@ -195,9 +195,6 @@ class RulesEngine:
 
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
-            print(f"[DEBUG] Field bet → total: {total}, phase: {phase_key}, "
-                f"win_numbers: {winning_numbers}, lose_numbers: {losing_numbers}")
-
             if total in winning_numbers:
                 bet.status = "won"
                 bet.number = total  # ✅ Required for payout calculation
