@@ -36,7 +36,7 @@ class PlayerLineup:
             "Pass-Line w/ Odds": PassLineOddsStrategy(
                 table=self.table,
                 rules_engine=self.rules_engine,
-                odds_multiple=3  # or 2, 5, etc. — whatever multiple you want for odds
+                odds_multiple="3x-4x-5x"  # or 2, 5, "1-2-3" etc. — whatever multiple you want for odds
             ),
             "Place Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside", rules_engine=self.rules_engine),
             "Place Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across", rules_engine=self.rules_engine),

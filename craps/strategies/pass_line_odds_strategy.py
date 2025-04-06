@@ -1,5 +1,5 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Union
 from craps.bet import Bet
 from craps.base_strategy import BaseStrategy
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class PassLineOddsStrategy(BaseStrategy):
     """Betting strategy for Pass Line with Odds bets."""
 
-    def __init__(self, table: Table, rules_engine: RulesEngine, odds_multiple: int = 1) -> None:
+    def __init__(self, table: Table, rules_engine: RulesEngine, odds_multiple: Union[int, str] = 1) -> None:
         """
         Initialize the Pass Line Odds strategy.
 
@@ -23,7 +23,7 @@ class PassLineOddsStrategy(BaseStrategy):
         super().__init__("Pass Line Odds")
         self.table: Table = table
         self.rules_engine: RulesEngine = rules_engine
-        self.odds_multiple: int = odds_multiple
+        self.odds_multiple: Union[int, str] = odds_multiple
 
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
@@ -61,10 +61,22 @@ class PassLineOddsStrategy(BaseStrategy):
             if pass_line_bet is None:
                 return []  # No Pass Line bet found
 
+            # Calculate odds amount based on fixed or dynamic odds
+            if isinstance(self.odds_multiple, str):
+                point = game_state.point
+                if point is None:
+                    return []
+                multiplier = self.rules_engine.get_odds_multiplier(self.odds_multiple, point)
+                if multiplier is None:
+                    return []
+                odds_amount = table.house_rules.table_minimum * multiplier
+            else:
+                odds_amount = table.house_rules.table_minimum * self.odds_multiple
+
             # Use RulesEngine to create a Pass Line Odds bet linked to the Pass Line bet
             return [rules_engine.create_bet(
                 "Pass Line Odds",
-                table.house_rules.table_minimum * self.odds_multiple,
+                odds_amount,
                 player,
                 parent_bet=pass_line_bet
             )]
