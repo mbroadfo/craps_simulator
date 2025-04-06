@@ -79,7 +79,15 @@ class Table:
         :param point: The current point number (if in point phase).
         """
         for bet in self.bets:
+            original_number = bet.number  # Track if a Come/Don't Come bet moves to a number
+            
             bet.resolve(self.rules_engine, dice_outcome, phase, point)
+            
+            # 🟢 Log movement of Come/Don't Come bet to a number
+            if bet.bet_type in ["Come", "Don't Come"] and original_number is None and bet.number is not None:
+                self.play_by_play.write(
+                    f"  🎯 {bet.owner.name}'s {bet.bet_type} bet moves to {bet.number} — now active on {bet.number}."
+                )
 
     def settle_resolved_bets(self) -> List[Bet]:
         """

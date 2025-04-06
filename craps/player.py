@@ -133,8 +133,7 @@ class Player:
     def win_bet(self, bet: Bet, play_by_play: Optional[Any] = None) -> None:
         """Handle a winning bet: update bankroll and optionally log result."""
         winnings = bet.payout()
-        total_return = winnings + (bet.amount if bet.is_contract_bet else 0)
-        self.balance += total_return
+        self.balance += winnings
 
         if play_by_play:
             play_by_play.write(

@@ -6,8 +6,8 @@ ACTIVE_PLAYERS = {
     "$44 Inside": False,
     "$54 Across": False,
     "Field": False,
-    "Iron Cross": True,
-    "3-Point Molly": False,
+    "Iron Cross": False,
+    "3-Point Molly": True,
 }
 
 # Add a new configuration entry for session mode
