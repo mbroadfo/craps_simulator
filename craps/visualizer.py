@@ -1,7 +1,6 @@
-# File: .\craps\visualizer.py
-
 import matplotlib.pyplot as plt
 from typing import Any
+import os
 
 class Visualizer:
     def __init__(self, stats: Any) -> None:
@@ -67,5 +66,10 @@ class Visualizer:
         plt.title("Player Bankrolls Over Time")
         plt.legend()
         plt.grid(True)
-        plt.show()
 
+        # Save figure to /output/session_visualizer.png
+        os.makedirs("output", exist_ok=True)
+        plt.savefig("output/session_visualizer.png")
+
+        # Also display it
+        plt.show()

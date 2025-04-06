@@ -20,6 +20,7 @@ class StatisticsReport:
         self.write(f"📌 Table Minimum: ${stats.table_minimum}")
         self.write(f"👥 Number of Players: {stats.num_players}")
         self.write(f"🎯 Number of Shooters: {stats.num_shooters}")
+        self.write(f"⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋")
         self.write(f"🎲 Session Rolls: {stats.session_rolls}")
         self.write(f"🧮 Rolls per Shooter: {stats.session_rolls / stats.num_shooters:.2f}")
         self.write(f"⏱️ Estimated Session Time: {stats.get_estimated_session_time()}")
