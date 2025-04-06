@@ -13,6 +13,7 @@ from craps.strategies.pass_line_strategy import PassLineStrategy
 from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
 from craps.strategies.iron_cross_strategy import IronCrossStrategy
 from craps.strategies.double_hop_strategy import DoubleHopStrategy
+from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.statistics import Statistics
 from tests.test_utils import assert_contains_bet
 
@@ -226,6 +227,65 @@ class TestStrategies(unittest.TestCase):
         hop_bet.hits += 1
         self.strategy.adjust_bets(self.game_state, self.player, self.table)
         self.assertEqual(hop_bet.amount, 10)
+
+    def test_three_two_one_strategy(self):
+        # Set up the strategy
+        strategy = ThreeTwoOneStrategy(self.rules_engine, min_bet=10)
+        self.player.betting_strategy = strategy
+
+        # Step 1: Come-out → expect Pass Line only
+        self.game_state.point = None  # Come-out
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        self.assertEqual(len(bets), 1)
+        self.assertEqual(bets[0].bet_type, "Pass Line")
+
+        self.table.place_bet(bets[0], self.game_state.phase)
+        self.player.balance -= bets[0].amount
+
+        # Step 2: Point is set to 5
+        self.game_state.point = 5
+
+        # Step 3: Place inside bets (should exclude 5), and odds
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        bet_types = [b.bet_type for b in bets]
+        numbers = [b.number for b in bets if b.bet_type == "Place"]
+
+        self.assertIn("Pass Line Odds", bet_types)
+        self.assertCountEqual(numbers, [6, 8, 9])
+
+        for bet in bets:
+            self.table.place_bet(bet, self.game_state.phase)
+            self.player.balance -= bet.amount
+
+        # Step 4: Simulate 3 hits (6, 8, 9 all win)
+        for bet in self.table.bets:
+            if bet.bet_type == "Place":
+                bet.status = "won"
+
+        strategy.adjust_bets(self.game_state, self.player, self.table)
+
+        # Step 5: Verify that place bets were turned off
+        for bet in self.table.bets:
+            if bet.bet_type == "Place":
+                self.assertEqual(bet.status, "inactive")
+
+        # Step 6: Simulate 5 rolled (point hit)
+        for bet in self.table.bets:
+            if bet.bet_type in {"Pass Line", "Pass Line Odds"}:
+                bet.status = "won"
+
+        # Simulate resolution — not verifying payout here
+        # Step 7: Set puck off (new come-out)
+        self.game_state.point = None # Come-out
+        strategy.adjust_bets(self.game_state, self.player, self.table)  # Should reset state
+
+        # Step 8: New point → place bets should come back alive
+        self.game_state.point = 10  # Point
+        strategy.place_bets(self.game_state, self.player, self.table)
+
+        for bet in self.table.bets:
+            if bet.bet_type == "Place":
+                self.assertEqual(bet.status, "active")
 
 if __name__ == "__main__":
     unittest.main()

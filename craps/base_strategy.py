@@ -25,6 +25,14 @@ class BaseStrategy(ABC):
     def remove_bets(self, game_state: GameState, player: Player, table: "Table") -> Optional[List[Bet]]:
         """Remove bets when necessary (e.g., conservative strategies)."""
         return None  # Default to no bet removal
+    
+    def turn_off_bets(self, game_state: GameState, player: Player, table: "Table") -> Optional[List[Bet]]:
+        """Disable bets without removing them."""
+        return None
+
+    def turn_on_bets(self, game_state: GameState, player: Player, table: "Table") -> Optional[List[Bet]]:
+        """Re-enable previously turned-off bets."""
+        return None
 
     def __str__(self) -> str:
         return f"{self.name} Strategy"

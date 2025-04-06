@@ -6,6 +6,7 @@ from craps.strategies.field_strategy import FieldBetStrategy
 from craps.strategies.iron_cross_strategy import IronCrossStrategy
 from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
 from craps.strategies.double_hop_strategy import DoubleHopStrategy
+from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.rules_engine import RulesEngine
 
 if TYPE_CHECKING:
@@ -41,7 +42,8 @@ class PlayerLineup:
             "Inside": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="inside",),
             "Across": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="across",),
             "Place 68": PlaceBetStrategy(table=self.table, numbers_or_strategy=[6, 8], rules_engine=self.rules_engine),
-            "Double Aces": DoubleHopStrategy(base_bet=5, hop_target=(1, 1), rules_engine=rules_engine)
+            "Double Aces": DoubleHopStrategy(base_bet=1, hop_target=(1, 1), rules_engine=rules_engine),
+            "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="3x-4x-5x"),
         }
 
     def add_player(self, player: "Player") -> None:
