@@ -57,7 +57,7 @@ class ThreePointMollyStrategy:
             odds_bets = self.odds_strategy.get_odds_bet(game_state, player, table)
             if odds_bets:
                 for odds_bet in odds_bets:
-                    if odds_bet.linked_bet and not table.has_odds_bet(odds_bet.linked_bet):
+                    if odds_bet.parent_bet and not table.has_odds_bet(odds_bet.parent_bet):
                         bets.append(odds_bet)
 
         return bets if bets else []

@@ -1,9 +1,9 @@
 from __future__ import annotations  # Enable forward references for type hints
 from typing import TYPE_CHECKING, List, Optional
 from craps.bet import Bet
+from craps.game_state import GameState
 
 if TYPE_CHECKING:
-    from craps.game_state import GameState
     from craps.player import Player
     from craps.table import Table
 
@@ -38,8 +38,16 @@ class FreeOddsStrategy:
         active_bets = [bet for bet in table.bets if bet.owner == player]
 
         for active_bet in active_bets:
-            if active_bet.bet_type in ["Pass Line", "Come"]:
-                multiplier = rules_engine.get_odds_multiplier(self.odds_type, active_bet.number if isinstance(active_bet.number, int) else None)
+            if active_bet.is_contract_bet:
+                # Determine the relevant point number
+                if active_bet.bet_type in ["Pass Line", "Don't Pass"]:
+                    point_number = game_state.point
+                elif active_bet.bet_type in ["Come", "Don't Come"]:
+                    point_number = active_bet.number if isinstance(active_bet.number, int) else None
+                else:
+                    point_number = None
+
+                multiplier = rules_engine.get_odds_multiplier(self.odds_type, point_number)
 
                 if multiplier is None:
                     continue  # Skip if no valid multiplier

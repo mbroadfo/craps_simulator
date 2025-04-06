@@ -97,6 +97,7 @@ def run_single_session(
 
         while True:
             # Allow all players to place bets
+            play_by_play.write(f"  ---------- Place Your Bets! -------------")
             for player in players:
                 bets = player.betting_strategy.place_bets(game_state, player, table)
                 if bets:
@@ -143,6 +144,8 @@ def run_single_session(
             
             # 🧼 For remaining Place/Buy/Lay bets, set status based on puck + house rules
             for bet in table.bets:
+                if bet.bet_type == "Field":
+                    bet.status = "active"
                 if bet.bet_type in ["Place", "Buy", "Lay"]:
                     if game_state.phase == "point" or house_rules.leave_bets_working:
                         bet.status = "active"

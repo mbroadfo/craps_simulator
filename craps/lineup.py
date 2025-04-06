@@ -33,33 +33,13 @@ class PlayerLineup:
         # Define all supported strategies
         self.all_strategies: Dict[str, Any] = {
             "Pass-Line": PassLineStrategy(bet_amount=self.house_rules.table_minimum, table=self.table),
-            "Pass-Line w/ Odds": PassLineOddsStrategy(
-                table=self.table,
-                rules_engine=self.rules_engine,
-                odds_multiple="3x-4x-5x"  # or 2, 5, "1-2-3" etc. — whatever multiple you want for odds
-            ),
-            "Place Inside": PlaceBetStrategy(table=self.table, numbers_or_strategy="inside", rules_engine=self.rules_engine),
-            "Place Across": PlaceBetStrategy(table=self.table, numbers_or_strategy="across", rules_engine=self.rules_engine),
+            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, rules_engine=self.rules_engine, odds_multiple="3x-4x-5x"),  # str or int
             "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
-            "Iron Cross": IronCrossStrategy(
-                table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine
-            ),
-            "3-Point Molly": ThreePointMollyStrategy(
-                table=self.table,  # ✅ Pass `table` first
-                bet_amount=self.house_rules.table_minimum,  # ✅ Correct order
-                odds_type="3x-4x-5x"
-            ),
-            "Inside": PlaceBetStrategy(
-                table=self.table,
-                rules_engine=self.rules_engine,
-                numbers_or_strategy="inside",
-            ),
-            "Across": PlaceBetStrategy(
-                table=self.table,
-                rules_engine=self.rules_engine,
-                numbers_or_strategy="across",
-            ),
-
+            "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine),
+            "3-Point Molly": ThreePointMollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="1x"),
+            "Inside": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="inside",),
+            "Across": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="across",),
+            "Place 68": PlaceBetStrategy(table=self.table, numbers_or_strategy=[6, 8], rules_engine=self.rules_engine),
         }
 
     def add_player(self, player: "Player") -> None:
