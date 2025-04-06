@@ -29,12 +29,12 @@ class RulesEngine:
         return bet_rules.get("linked_bet")
 
     @staticmethod
-    def get_minimum_bet(bet_type: str, table: Any) -> int:
+    def get_minimum_bet(bet_type: str, table: Any, number: int | None = None) -> int:
         """Returns the correct minimum bet amount for a given bet type based on table rules."""
         table_min = table.house_rules.table_minimum
         table_max = table.house_rules.table_maximum
-        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified rule retrieval
-
+        bet_rules = RulesEngine.get_bet_rules(bet_type) 
+        
         # 🟢 **Base Minimum Bet: All bets must be at least $1**
         min_bet = 1
 
@@ -48,8 +48,11 @@ class RulesEngine:
             return min_bet  # No additional constraints
 
         # 🟢 **Place & Don't Place Bets: Special Case for 6 & 8**
-        elif bet_type in ["Place", "Don't Place"] and bet_rules.get("valid_numbers") == [6, 8]:
-            return table_min + (table_min // 5)  # Ensure correct payout increments
+        elif bet_type in ["Place", "Buy"]:
+            if number in [6, 8]:
+                return table_min + (table_min // 5)  # $12 for $10 table minimum
+            else:
+                return table_min
 
         # 🟢 **Odds on 5 & 9: Must be Even for Correct Payouts**
         elif bet_type in ["Pass Line Odds", "Don't Pass Odds", "Come Odds", "Don't Come Odds"] and bet_rules.get("valid_numbers") == [5, 9]:

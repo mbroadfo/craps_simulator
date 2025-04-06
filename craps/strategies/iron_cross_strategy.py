@@ -50,7 +50,7 @@ class IronCrossStrategy(BaseStrategy):
             for bet in table.bets:
                 if bet.owner == player and bet.bet_type.startswith("Place") and bet.status == "inactive":
                     bet.status = "active"
-                    message = f"{player.name}'s {bet.bet_type} bet is now ON."
+                    message = f"  🧑{player.name}'s {bet.bet_type} bet is now ON."
                     self.play_by_play.write(message)
 
             # Place Place bets on 5, 6, and 8 during the point phase (excluding the point number)
@@ -72,7 +72,7 @@ class IronCrossStrategy(BaseStrategy):
             # Use RulesEngine to create Place bets
             bets: List[Bet] = []
             for number in numbers:
-                min_bet = rules_engine.get_minimum_bet("Place", table)  # ✅ Correct
+                min_bet = rules_engine.get_minimum_bet("Place", table, number)  # ✅ Correct
                 bets.append(rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists

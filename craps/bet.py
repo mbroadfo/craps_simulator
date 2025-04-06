@@ -109,6 +109,6 @@ class Bet:
     def __str__(self) -> str:
         """Return a string representation of the bet."""
         if self.number is not None:
-            return f"{self.owner.name}'s ${self.amount} {self.bet_type} {self.number} bet (Status: {self.status})"
+            return f"{self.owner.name}'s {self.bet_type} {self.number} bet"
         else:
-            return f"{self.owner.name}'s ${self.amount} {self.bet_type} bet (Status: {self.status})"
+            return f"{self.owner.name}'s {self.bet_type} bet"

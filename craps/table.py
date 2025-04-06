@@ -59,14 +59,6 @@ class Table:
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet was placed successfully, False otherwise.
         """
-        # ✅ Fetch player's preferred bet amount
-        if bet.bet_type in ["Pass Line", "Come", "Field", "Don't Pass", "Don't Come", "Place", "Buy"]:
-            bet_amount = self.player_lineup.get_bet_amount(bet.owner)
-            if bet.amount != bet_amount:
-                message = f"  🔄 Adjusting {bet.owner.name}'s bet from ${bet.amount} to ${bet_amount} (preferred setting)."
-                self.play_by_play.write(message)
-                bet.amount = bet_amount  # ✅ Apply new amount
-
         # Validate the bet before placing it
         if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
             message = f"  ❌ Invalid bet: {bet}"

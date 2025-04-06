@@ -57,12 +57,23 @@ class Player:
 
             if play_by_play:
                 risk = self.get_total_at_risk(table)
+
+                # 🧩 Compose the bet label
+                if b.bet_type in ["Place", "Buy", "Lay", "Hardways", "Hop"] and b.number is not None:
+                    bet_label = f"{b.bet_type} {b.number}"
+                else:
+                    bet_label = b.bet_type
+
+                # 🧩 Add parent info if this is an odds or linked bet
+                parent_info = ""
+                if hasattr(b, "parent_bet") and b.parent_bet:
+                    parent_info = f" (odds on {b.parent_bet.bet_type})"
+
                 message = (
-                    f"  💰 Bet placed: {self.name}'s ${b.amount} {b.bet_type} bet "
+                    f"  💰 Bet placed: {self.name}'s ${b.amount} {bet_label} bet{parent_info} "
                     f"(Status: {b.status}). Bankroll: ${self.balance} (w/ ${risk} on the table)"
                 )
                 play_by_play.write(message)
-
 
         return True
 
