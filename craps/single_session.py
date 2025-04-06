@@ -10,6 +10,8 @@ from craps.play_by_play import PlayByPlay
 from craps.player_setup import SetupPlayers
 from craps.lineup import PlayerLineup
 from craps.statistics_report import StatisticsReport
+from craps.view_log import InteractiveLogViewer
+from craps.visualizer import Visualizer
 import os
 
 def run_single_session(
@@ -17,7 +19,7 @@ def run_single_session(
     strategies: Optional[List[Any]] = None,
     initial_bankroll: Optional[int] = 500, 
     num_shooters: Optional[int] = 10, 
-    roll_history_file: Optional[str] = None) -> tuple[Statistics, PlayByPlay]:
+    roll_history_file: Optional[str] = None) -> Statistics:
     """
     Run a single session of craps and log the roll history.
     """
@@ -46,7 +48,7 @@ def run_single_session(
             table_minimum=house_rules.table_minimum,
             num_shooters=num_shooters or 10,
             num_players=0
-        ), play_by_play
+        )
     
     # ✅ Assign player strategies
     player_lineup.assign_strategies(players)
@@ -173,10 +175,25 @@ def run_single_session(
                 game_state.clear_shooter()  # Reset shooter status
                 break  # Next shooter
 
-    # ✅ Return stats and roll history
+    # ✅ Wrap up Session
     stats.roll_history = roll_history
     stats.update_player_stats(players)
     statistics_report = StatisticsReport()
     statistics_report.write_statistics(stats)
+    
+    # View the play-by-play log
+    log_viewer = InteractiveLogViewer()
+    log_viewer.view(play_by_play.play_by_play_file)
+    
+    # View the statistics report
+    log_viewer = InteractiveLogViewer()
+    log_viewer.view("output/statistics_report.txt")
 
-    return stats, play_by_play
+    # Visualize player bankrolls (only if there are players and rolls)
+    if stats.num_players == 0 or stats.session_rolls == 0:
+        print("⚠️ No data to visualize — skipping charts.")
+    else:
+        visualizer = Visualizer(stats)
+        visualizer.visualize_bankrolls()
+
+    return stats

@@ -24,7 +24,7 @@ class SimulationManager:
         """Run multiple sessions and collect statistics."""
         for _ in range(num_sessions):
             for _ in range(self.num_tables):
-                stats, play_by_play = run_single_session(self.house_rules, self.strategies, num_shooters=self.num_shooters)
+                stats = run_single_session(self.house_rules, self.strategies, num_shooters=self.num_shooters)
                 self.stats.merge(stats)  # Merge session stats into overall stats
 
         # View the statistics report
