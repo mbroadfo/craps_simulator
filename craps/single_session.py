@@ -144,15 +144,23 @@ def run_single_session(
             state_message = game_state.update_state(outcome)
             play_by_play.write(state_message)
             
+            # 💡 Adjust bets after resolution (if strategy supports it)
+            for player in players:
+                if hasattr(player.betting_strategy, "adjust_bets"):
+                    player.betting_strategy.adjust_bets(game_state, player, table)
+
             # 🧼 For remaining Place/Buy/Lay bets, set status based on puck + house rules
             for bet in table.bets:
                 if bet.bet_type == "Field":
                     bet.status = "active"
-                if bet.bet_type in ["Place", "Buy", "Lay"]:
+                elif bet.bet_type in ["Place", "Buy", "Lay"]:
                     if game_state.phase == "point" or house_rules.leave_bets_working:
                         bet.status = "active"
                     else:
                         bet.status = "inactive"
+                elif bet.bet_type in ["Hop", "Hardways", "Proposition"]:
+                    if bet.status == "won":
+                        bet.status = "active"
 
             # 🛠️ Log current player bets
             for player in players:

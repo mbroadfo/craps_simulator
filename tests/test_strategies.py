@@ -9,6 +9,7 @@ from craps.game_state import GameState
 from craps.strategies.pass_line_strategy import PassLineStrategy
 from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
 from craps.strategies.iron_cross_strategy import IronCrossStrategy
+from craps.strategies.double_hop_strategy import DoubleHopStrategy
 from craps.statistics import Statistics
 from tests.test_utils import assert_contains_bet
 
@@ -27,7 +28,6 @@ class TestStrategies(unittest.TestCase):
         self.stats = Statistics(self.house_rules.table_minimum, num_shooters=1, num_players=1)
         self.game_state = GameState(stats=self.stats, play_by_play=self.play_by_play)
         self.game_state.set_table(self.table)
-
 
     def test_pass_line_base_bet(self):
         """Test placing a Pass Line bet with no odds."""
@@ -182,6 +182,47 @@ class TestStrategies(unittest.TestCase):
         # Retry — should return no additional bets
         bets = strategy.place_bets(self.game_state, self.player, self.table)
         self.assertFalse(bets, "Expected no additional bets once Iron Cross is established")
+
+    def setUp(self):
+        self.rules_engine = RulesEngine()
+        self.play_by_play = PlayByPlay()
+        self.house_rules = HouseRules({"table_minimum": 10, "table_maximum": 5000})
+        self.player = Player(name="DoubleHopTester", initial_balance=1000)
+        self.player_lineup = PlayerLineup(self.house_rules, None, self.play_by_play, self.rules_engine)
+        self.player_lineup.add_player(self.player)
+        self.table = Table(self.house_rules, self.play_by_play, self.rules_engine, self.player_lineup)
+        self.stats = Statistics(self.house_rules.table_minimum, num_shooters=1, num_players=1)
+        self.game_state = GameState(stats=self.stats, play_by_play=self.play_by_play)
+        self.game_state.set_table(self.table)
+        self.strategy = DoubleHopStrategy(hop_target=(1, 1), rules_engine=self.rules_engine, base_bet=10)
+        self.player.betting_strategy = self.strategy
+
+    def test_initial_placement(self):
+        bets = self.strategy.place_bets(self.game_state, self.player, self.table)
+        self.assertEqual(len(self.table.bets), 1)
+        hop_bet = self.table.bets[0]
+        self.assertEqual(hop_bet.number, (1, 1))
+        self.assertEqual(hop_bet.amount, 10)
+        self.assertEqual(hop_bet.bet_type, "Hop")
+
+    def test_press_and_reset_cycle(self):
+        # Step 1: Place initial bet
+        self.strategy.place_bets(self.game_state, self.player, self.table)
+        hop_bet = self.table.bets[0]
+
+        # Step 2: First win (should press to 310)
+        hop_bet.status = "won"
+        hop_bet.resolved_payout = 300
+        hop_bet.hits += 1
+        self.strategy.adjust_bets(self.game_state, self.player, self.table)
+        self.assertEqual(hop_bet.amount, 310)
+
+        # Step 3: Second win (should reset to base bet)
+        hop_bet.status = "won"
+        hop_bet.resolved_payout = 9300
+        hop_bet.hits += 1
+        self.strategy.adjust_bets(self.game_state, self.player, self.table)
+        self.assertEqual(hop_bet.amount, 10)
 
 if __name__ == "__main__":
     unittest.main()

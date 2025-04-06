@@ -1,5 +1,6 @@
 from __future__ import annotations  # Enable forward references for type hints
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from craps.rules import BET_RULES
 import logging
 
 if TYPE_CHECKING:
@@ -24,7 +25,8 @@ class Bet:
         number: Optional[Union[int, Tuple[int, int]]] = None,  # ✅ Now supports tuples for Hop bets
         parent_bet: Optional[Bet] = None,
         linked_bet: Optional["Bet"] = None,
-        is_contract_bet: bool = False
+        is_contract_bet: bool = False,
+        hits: int = 0,
     ) -> None:
         """
         Initializes a Bet.
@@ -45,6 +47,7 @@ class Bet:
         self.is_contract_bet: bool = is_contract_bet  # Whether the bet is a contract bet
         self.linked_bet: Optional[Bet] = linked_bet
         self.resolved_payout: int = 0
+        self.hits: int = 0
 
     def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
         """
@@ -60,15 +63,30 @@ class Bet:
             logging.warning(f"{self.owner.name}'s {self.bet_type} bet cannot be placed during the {phase} phase.")
             return False
 
-        # Check if the bet amount is within table limits
-        if self.amount < table_minimum:
+        # Determine the category the bet belongs to
+        bet_category = next(
+            (
+                category
+                for category, config in BET_RULES.items()
+                if isinstance(config, dict) and self.bet_type in {
+                    k for k in config.keys()
+                    if isinstance(config[k], dict)  # Only consider actual bet definitions
+                }
+            ),
+            None
+        )
+        
+        # Check table minimum unless it's an 'Other Bets' category
+        if bet_category != "Other Bets" and self.amount < table_minimum:
             logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} is below the table minimum of ${table_minimum}.")
             return False
+
+        # Check table maximum
         if self.amount > table_maximum:
             logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} exceeds the table maximum of ${table_maximum}.")
             return False
 
-        # Check if the bet amount is valid for the bet type
+        # Check unit multiple validity for Place/Buy
         if self.bet_type in ["Place", "Buy"]:
             if self.amount % self.unit != 0:
                 logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} must be a multiple of ${self.unit}.")

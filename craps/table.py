@@ -118,6 +118,7 @@ class Table:
 
             # ✅ Handle Lost Bets
             if bet.status == "lost":
+                bet.hits = 0
                 bet.owner.lose_bet(bet, self.play_by_play)
                 self.bets.remove(bet)
                 settled_bets.append(bet)
@@ -131,6 +132,7 @@ class Table:
 
             # ✅ Handle Winning Bets
             elif bet.status == "won":
+                bet.hits += 1
                 bet.owner.win_bet(bet, self.play_by_play)
                 settled_bets.append(bet)
 
