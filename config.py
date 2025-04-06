@@ -1,14 +1,14 @@
 # File: .\config.py
 
 ACTIVE_PLAYERS = {
-    "Pass-Line": True,
+    "Pass-Line": False,
     "Pass-Line w/ Odds": True,
-    "Field": True,
-    "Iron Cross": True,
+    "Field": False,
+    "Iron Cross": False,
     "3-Point Molly": True,
-    "Inside": True,
-    "Across": True,
-    "Place 68": True,
+    "Inside": False,
+    "Across": False,
+    "Place 68": False,
 }
 
 # Add a new configuration entry for session mode

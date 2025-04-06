@@ -1,9 +1,9 @@
-from __future__ import annotations  # Enable forward references for type hints
+from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional
 from craps.strategies.free_odds_strategy import FreeOddsStrategy
 
 if TYPE_CHECKING:
-    from craps.table import Table  # Prevents circular imports
+    from craps.table import Table
     from craps.rules_engine import RulesEngine  
     from craps.game_state import GameState
     from craps.player import Player
@@ -56,8 +56,19 @@ class ThreePointMollyStrategy:
         if self.odds_strategy and game_state.phase == "point":
             odds_bets = self.odds_strategy.get_odds_bet(game_state, player, table)
             if odds_bets:
+                existing_odds = {
+                    (bet.parent_bet, bet.number)
+                    for bet in table.bets
+                    if bet.bet_type.endswith("Odds") and bet.owner == player
+                }
                 for odds_bet in odds_bets:
-                    if odds_bet.parent_bet and not table.has_odds_bet(odds_bet.parent_bet):
+                    parent = odds_bet.parent_bet
+                    if (
+                        parent
+                        and parent.owner == player
+                        and (parent, parent.number) not in existing_odds
+                    ):
+                        odds_bet.number = parent.number  # Ensure odds bet inherits number
                         bets.append(odds_bet)
 
         return bets if bets else []
