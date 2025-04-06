@@ -3,11 +3,11 @@
 ACTIVE_PLAYERS = {
     "Pass-Line": False,
     "Pass-Line w/ Odds": False,
-    "$44 Inside": False,
-    "$54 Across": False,
+    "Inside": True,
+    "Across": False,
     "Field": False,
     "Iron Cross": False,
-    "3-Point Molly": True,
+    "3-Point Molly": False,
 }
 
 # Add a new configuration entry for session mode

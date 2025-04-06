@@ -49,6 +49,17 @@ class PlayerLineup:
                 bet_amount=self.house_rules.table_minimum,  # ✅ Correct order
                 odds_type="3x-4x-5x"
             ),
+            "Inside": PlaceBetStrategy(
+                table=self.table,
+                rules_engine=self.rules_engine,
+                numbers_or_strategy="inside",
+            ),
+            "Across": PlaceBetStrategy(
+                table=self.table,
+                rules_engine=self.rules_engine,
+                numbers_or_strategy="across",
+            ),
+
         }
 
     def add_player(self, player: "Player") -> None:

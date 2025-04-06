@@ -122,18 +122,31 @@ def run_single_session(
                 "point": game_state.point
             })
 
-            # Check bets on the table
-            table.check_bets(outcome, game_state.phase, game_state.point)
+            # Resolve all bets and capture those that changed status (won/lost)
+            resolved_bets = table.check_bets(outcome, game_state.phase, game_state.point)
 
-            # Settle resolved bets
-            resolved_bets = table.settle_resolved_bets()
+            # Process bet results
             for bet in resolved_bets:
-                stats.update_win_loss(bet)
-            
-            # 🟢 Flip to active if still on table and was marked won
+                if bet.status == "won":
+                    bet.owner.win_bet(bet, play_by_play)
+                elif bet.status == "lost":
+                    bet.owner.lose_bet(bet, play_by_play)
+
+            # 🟢 Flip Place bets back to active after win (they stay on the table unless removed)
             for bet in resolved_bets:
-                if bet.status == "won" and bet in table.bets:
+                if (
+                    bet.status == "won"
+                    and bet in table.bets
+                    and bet.bet_type in ["Place", "Buy", "Lay"]
+                ):
                     bet.status = "active"
+            
+            # 🛠️ Log current active bets for debugging
+            for player in players:
+                active_bets = [b for b in table.bets if b.owner == player and b.status == "active"]
+                if active_bets:
+                    summary = ", ".join(f"{b.bet_type} {b.number} (${b.amount})" for b in active_bets)
+                    play_by_play.write(f"  📊 {player.name}'s active bets: {summary}")
 
             # Update the game state
             previous_phase = game_state.phase

@@ -70,25 +70,34 @@ class Table:
         self.bets.append(bet)
         return True
 
-    def check_bets(self, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:
+    def check_bets(self, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> List[Bet]:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.
 
         :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
+        :return: List of bets that were resolved (won/lost)
         """
+        resolved_bets: List[Bet] = []
+
         for bet in self.bets:
-            original_number = bet.number  # Track if a Come/Don't Come bet moves to a number
-            
+            original_number = bet.number  # Track Come/Don't Come movement
+            original_status = bet.status
+
             bet.resolve(self.rules_engine, dice_outcome, phase, point)
-            
-            # 🟢 Log movement of Come/Don't Come bet to a number
+
+            if bet.status != original_status and bet.status in ("won", "lost"):
+                resolved_bets.append(bet)
+
+            # 🎯 Movement message for Come/Don't Come bets
             if bet.bet_type in ["Come", "Don't Come"] and original_number is None and bet.number is not None:
                 self.play_by_play.write(
                     f"  🎯 {bet.owner.name}'s {bet.bet_type} bet moves to {bet.number} — now active on {bet.number}."
                 )
 
+        return resolved_bets
+    
     def settle_resolved_bets(self) -> List[Bet]:
         """
         Settle resolved bets by paying winners, removing losers, and resetting status.

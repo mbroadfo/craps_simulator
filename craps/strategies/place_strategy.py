@@ -56,7 +56,7 @@ class PlaceBetStrategy(BaseStrategy):
         # Use Table's RulesEngine to create Place bets
         bets: List[Bet] = []
         for number in numbers:
-            min_bet = rules_engine.get_minimum_bet("Place", table)  # Use correct RulesEngine reference
+            min_bet = rules_engine.get_minimum_bet("Place", table, number=number)  # Use correct RulesEngine reference
             bets.append(rules_engine.create_bet("Place", min_bet, player, number=number))
 
         return bets if bets else []  # Return bets if any were created
