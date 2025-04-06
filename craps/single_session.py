@@ -122,37 +122,40 @@ def run_single_session(
                 "point": game_state.point
             })
 
-            # Resolve all bets and capture those that changed status (won/lost)
-            resolved_bets = table.check_bets(outcome, game_state.phase, game_state.point)
+            # Check bets on the table
+            table.check_bets(outcome, game_state.phase, game_state.point)
 
-            # Process bet results
+            # Settle resolved bets & update stats
+            resolved_bets = table.settle_resolved_bets()
             for bet in resolved_bets:
-                if bet.status == "won":
-                    bet.owner.win_bet(bet, play_by_play)
-                elif bet.status == "lost":
-                    bet.owner.lose_bet(bet, play_by_play)
-
-            # 🟢 Flip Place bets back to active after win (they stay on the table unless removed)
-            for bet in resolved_bets:
-                if (
-                    bet.status == "won"
-                    and bet in table.bets
-                    and bet.bet_type in ["Place", "Buy", "Lay"]
-                ):
-                    bet.status = "active"
+                stats.update_win_loss(bet)
             
-            # 🛠️ Log current active bets for debugging
-            for player in players:
-                active_bets = [b for b in table.bets if b.owner == player and b.status == "active"]
-                if active_bets:
-                    summary = ", ".join(f"{b.bet_type} {b.number} (${b.amount})" for b in active_bets)
-                    play_by_play.write(f"  📊 {player.name}'s active bets: {summary}")
-
+            # 🧼 Remove winning bets that must come down (contract or per house rules)
+            for bet in resolved_bets:
+                if bet.status == "won" and bet in table.bets:
+                    if bet.is_contract_bet or not house_rules.leave_winning_bets_up:
+                        table.bets.remove(bet)
+                        
             # Update the game state
             previous_phase = game_state.phase
             state_message = game_state.update_state(outcome)
             play_by_play.write(state_message)
             
+            # 🧼 For remaining Place/Buy/Lay bets, set status based on puck + house rules
+            for bet in table.bets:
+                if bet.bet_type in ["Place", "Buy", "Lay"]:
+                    if game_state.phase == "point" or house_rules.leave_bets_working:
+                        bet.status = "active"
+                    else:
+                        bet.status = "inactive"
+
+            # 🛠️ Log current player bets
+            for player in players:
+                remaining_bets = [b for b in table.bets if b.owner == player]
+                if remaining_bets:
+                    summary = ", ".join(f"{b.bet_type} {b.number} (${b.amount} {b.status})" for b in remaining_bets)
+                    play_by_play.write(f"  📊 {player.name}'s remaining bets: {summary}")
+
             # Update player bankrolls in statistics
             stats.update_player_bankrolls(players)
 

@@ -134,20 +134,6 @@ class Table:
                 bet.owner.win_bet(bet, self.play_by_play)
                 settled_bets.append(bet)
 
-                if bet.is_contract_bet:
-                    self.bets.remove(bet)
-                else:
-                    bet_rules = self.rules_engine.get_bet_rules(bet.bet_type)
-                    always_working = bet_rules.get("always_working", False)
-
-                    if not self.house_rules.leave_winning_bets_up:
-                        self.bets.remove(bet)
-                    elif always_working or self.house_rules.leave_bets_working:
-                        # Leave on table — status stays 'won' for now, caller will flip
-                        pass
-                    else:
-                        bet.status = "inactive"
-
                 # Also settle attached odds bets
                 for attached in list(self.bets):
                     if attached.parent_bet == bet:
