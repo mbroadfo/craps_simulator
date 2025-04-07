@@ -43,7 +43,7 @@ class PlayerLineup:
             "Across": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="across",),
             "Place 68": PlaceBetStrategy(table=self.table, numbers_or_strategy=[6, 8], rules_engine=self.rules_engine),
             "Double Aces": DoubleHopStrategy(base_bet=1, hop_target=(1, 1), rules_engine=rules_engine),
-            "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="3x-4x-5x"),
+            "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="1x"),
         }
 
     def add_player(self, player: "Player") -> None:

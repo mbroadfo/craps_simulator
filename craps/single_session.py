@@ -76,8 +76,9 @@ def run_single_session(
     # ✅ Set num_players now that players are loaded
     stats.num_players = len(players)
 
-    # ✅ Initialize bankroll history
+    # ✅ Initialize bankroll & at_risk history
     stats.initialize_bankroll_history(players)
+    stats.initialize_at_risk_history(players)
 
     # ✅ Initialize roll history
     roll_history = []
@@ -151,13 +152,18 @@ def run_single_session(
 
             # 🧼 For remaining Place/Buy/Lay bets, set status based on puck + house rules
             for bet in table.bets:
+                strategy = getattr(bet.owner, "betting_strategy", None)
+                is_turned_off = getattr(strategy, "turned_off", False)
+
                 if bet.bet_type == "Field":
                     bet.status = "active"
+                
                 elif bet.bet_type in ["Place", "Buy", "Lay"]:
-                    if game_state.phase == "point" or house_rules.leave_bets_working:
+                    if (game_state.phase == "point" or house_rules.leave_bets_working) and not is_turned_off:
                         bet.status = "active"
                     else:
                         bet.status = "inactive"
+                
                 elif bet.bet_type in ["Hop", "Hardways", "Proposition"]:
                     if bet.status == "won":
                         bet.status = "active"
@@ -169,8 +175,9 @@ def run_single_session(
                     summary = ", ".join(f"{b.bet_type} {b.number} (${b.amount} {b.status})" for b in remaining_bets)
                     play_by_play.write(f"  📊 {player.name}'s remaining bets: {summary}")
 
-            # Update player bankrolls in statistics
+            # Update player bankrolls & risk history in statistics
             stats.update_player_bankrolls(players)
+            stats.update_player_risk(players, table)
 
             # ✅ Handle "Point Made" (shooter stays)
             if previous_phase == "point" and total == game_state.point:

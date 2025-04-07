@@ -30,6 +30,7 @@ class Statistics:
         # For visualization
         self.roll_numbers: List[int] = [0]  # Start with roll 0
         self.bankroll_history: Dict[str, List[int]] = {}  # Track bankroll history for each player
+        self.at_risk_history: Dict[str, List[int]] = {}  # Track at_risk history for each player
         self.seven_out_rolls: List[int] = []  # Track rolls where a 7-out occurs
         self.point_number_rolls: List[int] = []  # Track rolls where a point number (4, 5, 6, 8, 9, 10) is rolled
         
@@ -71,6 +72,11 @@ class Statistics:
         for player in players:
             self.bankroll_history[player.name] = [player.balance]  # Roll 0: initial bankroll
 
+    def initialize_at_risk_history(self, players: List[Any]) -> None:
+        """Initialize at_risk history as zero for each player."""
+        for player in players:
+            self.at_risk_history[player.name] = [0]  # Roll 0: initial risk
+
     def merge(self, other_stats: "Statistics") -> None:
         """Merge statistics from another session."""
         self.session_rolls += other_stats.session_rolls
@@ -100,6 +106,12 @@ class Statistics:
             if player not in self.bankroll_history:
                 self.bankroll_history[player] = []
             self.bankroll_history[player].extend(bankrolls)
+        
+        # Merge at_risk history
+        for player, at_risks in other_stats.at_risk_history.items():
+            if player not in self.at_risk_history:
+                self.at_risk_history[player] = []
+            self.at_risk_history[player].extend(at_risks)
 
     def update_rolls(self, total: Optional[int] = None, table_risk: Optional[int] = None) -> None:
         """Increment the roll count and optionally record roll total and table risk."""
@@ -151,6 +163,14 @@ class Statistics:
                 self.session_highest_bankroll = player.balance
             if player.balance < self.session_lowest_bankroll:
                 self.session_lowest_bankroll = player.balance
+
+    def update_player_risk(self, players: List[Any], table: Any) -> None:
+        """Update the amount at risk for each player this roll."""
+        for player in players:
+            at_risk = sum(b.amount for b in table.bets if b.owner == player and b.status == "active")
+            if player.name not in self.at_risk_history:
+                self.at_risk_history[player.name] = []
+            self.at_risk_history[player.name].append(at_risk)
 
     def record_seven_out(self) -> None:
         """Record the roll number where a 7-out occurs."""

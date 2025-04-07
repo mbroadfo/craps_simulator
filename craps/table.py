@@ -82,7 +82,12 @@ class Table:
         resolved_bets: List[Bet] = []
 
         for bet in self.bets:
-            original_number = bet.number  # Track Come/Don't Come movement
+            # ⛔ Skip bets that are inactive (e.g., 3-2-1 turned off Place bets)
+            if bet.status == "inactive":
+                continue
+            
+            # Track Come/Don't Come movement
+            original_number = bet.number
             original_status = bet.status
 
             bet.resolve(self.rules_engine, dice_outcome, phase, point)
@@ -92,9 +97,7 @@ class Table:
 
             # 🎯 Movement message for Come/Don't Come bets
             if bet.bet_type in ["Come", "Don't Come"] and original_number is None and bet.number is not None:
-                self.play_by_play.write(
-                    f"  🎯 {bet.owner.name}'s {bet.bet_type} bet moves to {bet.number} — now active on {bet.number}."
-                )
+                self.play_by_play.write("  🎯 {bet.owner.name}'s {bet.bet_type} bet moves to {bet.number} — now active on {bet.number}.")
 
         return resolved_bets
     

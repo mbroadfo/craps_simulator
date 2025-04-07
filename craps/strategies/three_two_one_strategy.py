@@ -50,7 +50,8 @@ class ThreeTwoOneStrategy(BaseStrategy):
                     None
                 )
                 if not existing:
-                    inside_bet = self.rules_engine.create_bet("Place", self.min_bet, player, num)
+                    amount = self.rules_engine.get_minimum_bet("Place", table, num)
+                    inside_bet = self.rules_engine.create_bet("Place", amount, player, num)
                     new_bets.append(inside_bet)
                 elif existing.status == "inactive":
                     existing.status = "active"
