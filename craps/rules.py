@@ -189,7 +189,38 @@ BET_RULES = {
                 "point_win": ["hop_win"],
                 "point_lose": ["hop_lose"],
             },
-        }
+        },
+        "All Tall Small Bets": {
+            "is_contract_bet": False,
+            "valid_numbers": None,
+            "Small": {
+                "linked_bet": None,
+                "valid_phases": ["come-out"],
+                "payout_ratio": (34, 1),
+                "resolution": {
+                    "win_condition": ["small_complete"],
+                    "lose_condition": [7],
+                },
+            },
+            "Tall": {
+                "linked_bet": None,
+                "valid_phases": ["come-out"],
+                "payout_ratio": (34, 1),
+                "resolution": {
+                    "win_condition": ["tall_complete"],
+                    "lose_condition": [7],
+                },
+            },
+            "All": {
+                "linked_bet": None,
+                "valid_phases": ["come-out"],
+                "payout_ratio": (175, 1),
+                "resolution": {
+                    "win_condition": ["all_complete"],
+                    "lose_condition": [7],
+                },
+            },
+        },
     }
 }
 
