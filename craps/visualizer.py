@@ -26,6 +26,18 @@ class Visualizer:
                 roll_numbers = self.stats.roll_numbers
                 at_risk = self.stats.at_risk_history.get(player, [0] * len(roll_numbers))
 
+            # Draw the baseline
+            # Draw horizontal line for player's starting bankroll
+            initial_bankroll = self.stats.player_stats.get(player, {}).get("initial_bankroll", 500)
+            plt.axhline(
+                y=initial_bankroll,
+                color="black",
+                linestyle="-",
+                linewidth=1.2,
+                alpha=0.6,
+                zorder=1
+            )
+            
             # Draw bankroll line
             line, = plt.plot(roll_numbers, bankrolls, label=player)
 
@@ -36,7 +48,7 @@ class Visualizer:
                              bankrolls,
                              color=color,
                              alpha=0.2,
-                             label=f"{player} at risk")
+                             label="_nolegend_")
 
         # Only show the legend label once per type
         seven_out_shown = False
@@ -46,7 +58,7 @@ class Visualizer:
                 color='red',
                 linestyle='--',
                 alpha=0.5,
-                label='7-Out' if not seven_out_shown else '_nolegend_'
+                label='_nolegend_'
             )
             seven_out_shown = True
 
@@ -57,7 +69,7 @@ class Visualizer:
                 color='green',
                 linestyle=':',
                 alpha=0.5,
-                label='Point Number Rolled' if not point_roll_shown else '_nolegend_'
+                label='_nolegend_'
             )
             point_roll_shown = True
 
