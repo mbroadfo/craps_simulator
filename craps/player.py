@@ -128,7 +128,7 @@ class Player:
 
     def get_total_at_risk(self, table: "Table") -> int:
         """Return the total amount this player has at risk on the table."""
-        return sum(bet.amount for bet in table.bets if bet.owner == self)
+        return sum(bet.amount for bet in table.bets if bet.owner == self and bet.status == "active")
     
     def win_bet(self, bet: Bet, play_by_play: Optional[Any] = None) -> None:
         """Handle a winning bet: update bankroll and optionally log result."""

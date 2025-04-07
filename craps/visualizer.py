@@ -20,10 +20,23 @@ class Visualizer:
             if len(bankrolls) != len(self.stats.roll_numbers):
                 min_length = min(len(bankrolls), len(self.stats.roll_numbers))
                 bankrolls = bankrolls[:min_length]
+                at_risk = self.stats.at_risk_history.get(player, [0] * min_length)[:min_length]
                 roll_numbers = self.stats.roll_numbers[:min_length]
             else:
                 roll_numbers = self.stats.roll_numbers
-            plt.plot(roll_numbers, bankrolls, label=player)
+                at_risk = self.stats.at_risk_history.get(player, [0] * len(roll_numbers))
+
+            # Draw bankroll line
+            line, = plt.plot(roll_numbers, bankrolls, label=player)
+
+            # Draw "at risk" shaded area beneath bankroll
+            color = line.get_color()
+            plt.fill_between(roll_numbers,
+                             [b - r for b, r in zip(bankrolls, at_risk)],
+                             bankrolls,
+                             color=color,
+                             alpha=0.2,
+                             label=f"{player} at risk")
 
         # Only show the legend label once per type
         seven_out_shown = False

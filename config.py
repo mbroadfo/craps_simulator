@@ -14,7 +14,7 @@ ACTIVE_PLAYERS = {
 }
 
 # Add a new configuration entry for session mode
-SESSION_MODE = "live"  # Options: "live" or "history"
+SESSION_MODE = "history"  # Options: "live" or "history"
 
 # House Rules Configuration
 HOUSE_RULES = {
