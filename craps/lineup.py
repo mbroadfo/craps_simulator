@@ -7,6 +7,10 @@ from craps.strategies.iron_cross_strategy import IronCrossStrategy
 from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
 from craps.strategies.double_hop_strategy import DoubleHopStrategy
 from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
+from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
+from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
+from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
+from craps.bet_adjusters import HalfPressAdjuster
 from craps.rules_engine import RulesEngine
 
 if TYPE_CHECKING:
@@ -44,6 +48,9 @@ class PlayerLineup:
             "Place 68": PlaceBetStrategy(table=self.table, numbers_or_strategy=[6, 8], rules_engine=self.rules_engine),
             "Double Aces": DoubleHopStrategy(base_bet=1, hop_target=(1, 1), rules_engine=rules_engine),
             "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="1x"),
+            "RegressHalfPress": PlaceRegressionStrategy(high_unit=20, low_unit=3, regression_factor=2),
+            "RegressHalfPress": RegressThenPressStrategy(regression_strategy=PlaceRegressionStrategy(high_unit=10,low_unit=2,regression_factor=2),
+                                                         press_strategy=AdjusterOnlyStrategy(name="HalfPress",adjuster=HalfPressAdjuster()))
         }
 
     def add_player(self, player: "Player") -> None:

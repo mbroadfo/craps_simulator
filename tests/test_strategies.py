@@ -15,7 +15,12 @@ from craps.strategies.iron_cross_strategy import IronCrossStrategy
 from craps.strategies.double_hop_strategy import DoubleHopStrategy
 from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.statistics import Statistics
+from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
+from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
+from craps.bet_adjusters import HalfPressAdjuster
+from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
 from tests.test_utils import assert_contains_bet
+
 
 class TestStrategies(unittest.TestCase):
     """Tests for betting strategies like Pass Line and Three-Point Molly."""
@@ -286,6 +291,72 @@ class TestStrategies(unittest.TestCase):
         for bet in self.table.bets:
             if bet.bet_type == "Place":
                 self.assertEqual(bet.status, "active")
+
+    def test_regress_then_half_press_strategy(self):
+        """Test RegressThenPressStrategy regresses bets then half-presses after buffer."""
+
+        unit_levels = [20, 10, 5, 3]
+
+        regression_strategy = PlaceRegressionStrategy(
+            high_unit=unit_levels[0],
+            low_unit=unit_levels[-1],
+            regression_factor=2
+        )
+
+        press_strategy = AdjusterOnlyStrategy(
+            name="Half Press",
+            adjuster=HalfPressAdjuster()
+        )
+
+        strategy = RegressThenPressStrategy(
+            regression_strategy=regression_strategy,
+            press_strategy=press_strategy
+        )
+
+        self.player.betting_strategy = strategy
+
+        # Simulate point being established
+        self.game_state.point = 6
+
+        # Trigger initial Place bets
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        self.assertEqual(len(bets), 4)
+        self.assertTrue(all(bet.bet_type == "Place" for bet in bets))
+
+        # ✅ Place the bets on the table
+        for bet in bets:
+            self.table.place_bet(bet, self.game_state.phase)
+            self.player.balance -= bet.amount
+
+        # Simulate a win on 6
+        place_bet = next(b for b in self.table.bets if b.bet_type == "Place" and b.number == 6)
+        place_bet.status = "won"
+        place_bet.resolved_payout = 140  # Simulate win (e.g., $20 unit * 7 payout)
+
+        # Inject last roll value into stats to simulate a win on an inside number
+        self.stats.last_roll_total = 6  # This matches the Place bet number
+
+        # Run regression logic
+        updated_bets = strategy.adjust_bets(self.game_state, self.player, self.table)
+        self.assertIsNotNone(updated_bets)
+
+        # Simulate enough wins to trigger pressing phase
+        for _ in range(4):
+            strategy.notify_payout(140)
+
+        self.assertTrue(strategy.transitioned)
+        self.assertIs(strategy.active_strategy, press_strategy)
+
+        # Simulate another win
+        place_bet.status = "won"
+        place_bet.resolved_payout = 140
+
+        updated_bets = strategy.adjust_bets(self.game_state, self.player, self.table)
+        self.assertIsNotNone(updated_bets)
+
+        # Final assertions
+        pressed_bet = next(b for b in self.table.bets if b.number == 6)
+        self.assertGreater(pressed_bet.amount, 20 * 6)
 
 if __name__ == "__main__":
     unittest.main()

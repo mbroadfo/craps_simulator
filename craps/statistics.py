@@ -117,13 +117,15 @@ class Statistics:
         """Increment the roll count and optionally record roll total and table risk."""
         self.session_rolls += 1
         self.roll_numbers.append(self.session_rolls)
+        
+        if total is not None:
+            self.last_roll_total = total
 
         if total == 7:
             self.total_sevens += 1
 
         if table_risk is not None:
             self.max_table_risk = max(self.max_table_risk, table_risk)
-
 
     def update_win_loss(self, bet: Any) -> None:
         """

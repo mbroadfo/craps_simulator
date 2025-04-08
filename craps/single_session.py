@@ -86,7 +86,6 @@ def run_single_session(
     # ✅ Initialize player stats...   
     stats.initialize_player_stats(players)
 
-
     # ✅ Simulate shooters
     if num_shooters is None:
         num_shooters = 10
@@ -97,6 +96,12 @@ def run_single_session(
 
         # Assign new shooter via GameState
         game_state.assign_new_shooter(shooter, shooter_num)
+
+        # Inform strategies of new shooter
+        for player in players:
+            strategy = getattr(player, "betting_strategy", None)
+            if strategy and hasattr(strategy, "on_new_shooter"):
+                strategy.on_new_shooter()
 
         while True:
             # Allow all players to place bets
@@ -129,10 +134,15 @@ def run_single_session(
             # Check bets on the table
             table.check_bets(outcome, game_state.phase, game_state.point)
 
-            # Settle resolved bets & update stats
+            # Settle resolved bets & update stats & notify strategies of payout
             resolved_bets = table.settle_resolved_bets()
             for bet in resolved_bets:
                 stats.update_win_loss(bet)
+                if bet.status == "won":
+                    payout = bet.resolved_payout
+                    strategy = getattr(bet.owner, "betting_strategy", None)
+                    if strategy and hasattr(strategy, "notify_payout"):
+                        strategy.notify_payout(payout)
             
             # 🧼 Remove winning bets that must come down (contract or per house rules)
             for bet in resolved_bets:
@@ -188,6 +198,12 @@ def run_single_session(
             if previous_phase == "point" and total == 7:
                 stats.record_seven_out()
                 game_state.clear_shooter()  # Reset shooter status
+
+                # Inform the strategies of a 7-out
+                for player in players:
+                    if hasattr(player.betting_strategy, "on_new_shooter"):
+                        player.betting_strategy.on_new_shooter()
+
                 break  # Next shooter
 
     # ✅ Wrap up Session

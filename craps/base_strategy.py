@@ -34,5 +34,17 @@ class BaseStrategy(ABC):
         """Re-enable previously turned-off bets."""
         return None
 
+    def on_new_shooter(self) -> None:
+        """Optional hook called at the start of a new shooter."""
+        pass
+
+    def notify_payout(self, amount: int) -> None:
+        """Optional hook called when a player wins a payout (excluding original bet)."""
+        pass
+
+    def notify_roll(self, game_state: "GameState", player: "Player", table: "Table") -> None:
+        """Optional hook called after a roll is resolved."""
+        pass
+
     def __str__(self) -> str:
         return f"{self.name} Strategy"
