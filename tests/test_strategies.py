@@ -293,7 +293,7 @@ class TestStrategies(unittest.TestCase):
                 self.assertEqual(bet.status, "active")
 
     def test_regress_then_half_press_strategy(self):
-        """Test RegressThenPressStrategy regresses bets then half-presses after buffer."""
+        """Test RegressThenPressStrategy cycles between regress and press within same shooter."""
 
         unit_levels = [20, 10, 5, 3]
 
@@ -314,49 +314,51 @@ class TestStrategies(unittest.TestCase):
         )
 
         self.player.betting_strategy = strategy
+        self.game_state.point = 6  # Simulate point established
 
-        # Simulate point being established
-        self.game_state.point = 6
-
-        # Trigger initial Place bets
+        # Phase 1: Start in regression mode
         bets = strategy.place_bets(self.game_state, self.player, self.table)
         self.assertEqual(len(bets), 4)
-        self.assertTrue(all(bet.bet_type == "Place" for bet in bets))
+        self.assertIs(strategy.active_strategy, regression_strategy)
+        self.assertFalse(strategy.transitioned)
 
-        # ✅ Place the bets on the table
         for bet in bets:
             self.table.place_bet(bet, self.game_state.phase)
             self.player.balance -= bet.amount
 
-        # Simulate a win on 6
-        place_bet = next(b for b in self.table.bets if b.bet_type == "Place" and b.number == 6)
-        place_bet.status = "won"
-        place_bet.resolved_payout = 140  # Simulate win (e.g., $20 unit * 7 payout)
-
-        # Inject last roll value into stats to simulate a win on an inside number
-        self.stats.last_roll_total = 6  # This matches the Place bet number
-
-        # Run regression logic
-        updated_bets = strategy.adjust_bets(self.game_state, self.player, self.table)
-        self.assertIsNotNone(updated_bets)
-
-        # Simulate enough wins to trigger pressing phase
-        for _ in range(4):
+        # Simulate enough wins to transition to press mode
+        for _ in range(5):  # simulate enough profit to exceed exposure
             strategy.notify_payout(140)
 
         self.assertTrue(strategy.transitioned)
         self.assertIs(strategy.active_strategy, press_strategy)
 
-        # Simulate another win
+        # Phase 2: In press mode
+        place_bet = next(b for b in self.table.bets if b.bet_type == "Place" and b.number == 6)
         place_bet.status = "won"
         place_bet.resolved_payout = 140
+        self.stats.last_roll_total = 6
 
         updated_bets = strategy.adjust_bets(self.game_state, self.player, self.table)
         self.assertIsNotNone(updated_bets)
 
-        # Final assertions
-        pressed_bet = next(b for b in self.table.bets if b.number == 6)
-        self.assertGreater(pressed_bet.amount, 20 * 6)
+        # Simulate pressing that pushes us back to original unit level
+        while strategy.transitioned:
+            place_bet.status = "won"
+            place_bet.resolved_payout = 140
+            self.stats.last_roll_total = 6
+            updated_bets = strategy.adjust_bets(self.game_state, self.player, self.table)
+
+        # Phase 3: Back to regression
+        self.assertFalse(strategy.transitioned)
+        self.assertIs(strategy.active_strategy, regression_strategy)
+
+        # Simulate enough wins to return to press mode again
+        for _ in range(5):
+            strategy.notify_payout(140)
+
+        self.assertTrue(strategy.transitioned)
+        self.assertIs(strategy.active_strategy, press_strategy)
 
 if __name__ == "__main__":
     unittest.main()

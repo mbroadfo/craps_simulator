@@ -64,6 +64,7 @@ class PlaceRegressionStrategy(BaseStrategy):
 
     def on_new_shooter(self) -> None:
         """Called at start of new shooter."""
+        print(f"[TRACE] PlaceRegressionStrategy reset shooter state.")
         self.reset_shooter_state()
 
     def notify_payout(self, amount: int) -> None:
@@ -73,7 +74,15 @@ class PlaceRegressionStrategy(BaseStrategy):
             self.mode = "press"
 
     def place_bets(self, game_state: GameState, player: Player, table: "Table") -> List[Bet]:
-        if game_state.phase != "point" or self.placed:
+        if game_state.phase != "point":
+            return []
+
+        # 🔍 Check if the player already has Place bets
+        existing_place_bets = [
+            b for b in table.bets
+            if b.owner == player and b.bet_type == "Place" and b.number in self.inside_numbers and b.status != "removed"
+        ]
+        if existing_place_bets:
             return []
 
         bets: List[Bet] = []
@@ -84,7 +93,6 @@ class PlaceRegressionStrategy(BaseStrategy):
             bet = RulesEngine.create_bet("Place", bet_amount, player, number)
             bets.append(bet)
 
-        self.placed = True
         return bets
 
     def adjust_bets(self, game_state: GameState, player: Player, table: "Table") -> Optional[List[Bet]]:
@@ -106,13 +114,14 @@ class PlaceRegressionStrategy(BaseStrategy):
                 return None
 
             self.hits += 1
-            adjuster: BetAdjuster = RegressAdjuster(self.unit_levels, self.hits)
+            level_index = min(self.hits - 1, len(self.unit_levels) - 1)
+            adjuster: BetAdjuster = RegressAdjuster(self.unit_levels, level_index)
             for bet in table.bets:
                 if bet.owner == player and bet.bet_type == "Place" and bet.number in self.inside_numbers:
                     adjuster.adjust(bet, table, table.rules_engine)
                     updated_bets.append(bet)
 
-            table.play_by_play.write(f"  📉 {player.name} regressing to unit level {self.level} after hit #{self.hits}")
+            table.play_by_play.write(f"  📉 {player.name} regressing to unit level {level_index} after hit #{self.hits}")
 
         elif self.mode == "press":
             # ✅ Check BEFORE adjusting if we're over original exposure
@@ -140,3 +149,4 @@ class PlaceRegressionStrategy(BaseStrategy):
                     updated_bets.append(bet)
 
         return updated_bets if updated_bets else None
+

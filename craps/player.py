@@ -1,4 +1,3 @@
-from colorama import Fore, Style
 from typing import List, Union, Optional, Any, Tuple, TYPE_CHECKING
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
@@ -43,14 +42,14 @@ class Player:
         total_amount: int = sum(b.amount for b in bets)
 
         if total_amount > self.balance:
-            message: str = f"  ❌ {self.name} has insufficient funds to place ${total_amount} in bets.{Style.RESET_ALL}"
+            message: str = f"  ❌ {self.name} has insufficient funds to place ${total_amount} in bets."
             if play_by_play:
                 play_by_play.write(message)
             return False
 
         for b in bets:
             if not table.place_bet(b, phase):
-                message = f"  ❌ Failed to place {b.bet_type} bet for {self.name}.{Style.RESET_ALL}"
+                message = f"  ❌ Failed to place {b.bet_type} bet for {self.name}"
                 if play_by_play:
                     play_by_play.write(message)
                 return False

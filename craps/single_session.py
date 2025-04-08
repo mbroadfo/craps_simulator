@@ -182,8 +182,11 @@ def run_single_session(
             for player in players:
                 remaining_bets = [b for b in table.bets if b.owner == player]
                 if remaining_bets:
-                    summary = ", ".join(f"{b.bet_type} {b.number} (${b.amount} {b.status})" for b in remaining_bets)
-                    play_by_play.write(f"  📊 {player.name}'s remaining bets: {summary}")
+                    summary = ", ".join(
+                        f"{b.bet_type} {b.number} (${b.amount} {b.status})" for b in remaining_bets
+                    )
+                    total = sum(b.amount for b in remaining_bets)
+                    play_by_play.write(f"  📊 {player.name}'s remaining bets: {summary} | Total on table: ${total}")
 
             # Update player bankrolls & risk history in statistics
             stats.update_player_bankrolls(players)

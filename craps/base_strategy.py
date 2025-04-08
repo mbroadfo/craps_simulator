@@ -45,6 +45,10 @@ class BaseStrategy(ABC):
     def notify_roll(self, game_state: "GameState", player: "Player", table: "Table") -> None:
         """Optional hook called after a roll is resolved."""
         pass
+    
+    def reset_shooter_state(self) -> None:
+        """Optional hook for regression-based strategies to reset between modes."""
+        pass
 
     def __str__(self) -> str:
         return f"{self.name} Strategy"
