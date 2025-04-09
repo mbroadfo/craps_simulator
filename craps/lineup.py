@@ -5,6 +5,7 @@ from craps.strategies.place_strategy import PlaceBetStrategy
 from craps.strategies.field_strategy import FieldBetStrategy
 from craps.strategies.iron_cross_strategy import IronCrossStrategy
 from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
+from craps.strategies.three_point_dolly_strategy import ThreePointDollyStrategy
 from craps.strategies.double_hop_strategy import DoubleHopStrategy
 from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
@@ -43,6 +44,7 @@ class PlayerLineup:
             "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
             "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine),
             "3-Point Molly": ThreePointMollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="1x-2x-3x"),
+            "3-Point Dolly": ThreePointDollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="1x-2x-3x"),
             "Inside": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="inside",),
             "Across": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="across",),
             "Place 68": PlaceBetStrategy(table=self.table, numbers_or_strategy=[6, 8], rules_engine=self.rules_engine),
@@ -50,7 +52,7 @@ class PlayerLineup:
             "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="1x"),
             "RegressHalfPress": PlaceRegressionStrategy(high_unit=20, low_unit=3, regression_factor=2),
             "RegressHalfPress": RegressThenPressStrategy(regression_strategy=PlaceRegressionStrategy(high_unit=10,low_unit=2,regression_factor=2),
-                                                         press_strategy=AdjusterOnlyStrategy(name="HalfPress",adjuster=HalfPressAdjuster()))
+                                                         press_strategy=AdjusterOnlyStrategy(name="HalfPress",adjuster=HalfPressAdjuster())),
         }
 
     def add_player(self, player: "Player") -> None:

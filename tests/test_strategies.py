@@ -360,5 +360,55 @@ class TestStrategies(unittest.TestCase):
         self.assertTrue(strategy.transitioned)
         self.assertIs(strategy.active_strategy, press_strategy)
 
+    def test_three_point_dolly(self):
+        """Test Three-Point Dolly strategy places Don't Pass, Don't Come, and Lay Odds correctly."""
+        from craps.strategies.three_point_dolly_strategy import ThreePointDollyStrategy
+
+        strategy = ThreePointDollyStrategy(table=self.table, bet_amount=10, odds_type="3x-4x-5x")
+        self.player.betting_strategy = strategy
+
+        # 1) Come-out roll — should place Don't Pass
+        self.game_state.point = None
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        assert_contains_bet(bets, "Don't Pass", self.player)
+
+        dp_bet = bets[0]
+        self.table.place_bet(dp_bet, self.game_state.phase)
+        self.player.balance -= dp_bet.amount
+
+        # 2) Point is established (e.g., 8)
+        self.game_state.point = 8
+
+        # 3) Should place Don't Come and lay odds on Don't Pass
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        assert_contains_bet(bets, "Don't Come", self.player)
+        assert_contains_bet(bets, "Don't Pass Odds", self.player)
+
+        for b in bets:
+            self.table.place_bet(b, self.game_state.phase)
+            self.player.balance -= b.amount
+
+        # 4) Simulate Don't Come bet moving to 5
+        dc_bet = next(b for b in self.table.bets if b.bet_type == "Don't Come")
+        dc_bet.number = 5
+
+        # 5) Place second Don't Come and odds on the first
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        assert_contains_bet(bets, "Don't Come", self.player)
+        assert_contains_bet(bets, "Don't Come Odds", self.player)
+
+        for b in bets:
+            self.table.place_bet(b, self.game_state.phase)
+            self.player.balance -= b.amount
+
+        # 6) Simulate second Don't Come moving to 9
+        second_dc = next(b for b in self.table.bets if b.bet_type == "Don't Come" and b.number is None)
+        second_dc.number = 9
+
+        # 7) Try placing more Don't Come bets → should NOT place (already have 2 DC points)
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        base_dont_come_bets = [b for b in bets if b.bet_type == "Don't Come"]
+        self.assertEqual(len(base_dont_come_bets), 0, "Should not place more than 2 Don't Come bets")
+
 if __name__ == "__main__":
     unittest.main()

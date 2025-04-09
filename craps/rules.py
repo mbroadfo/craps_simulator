@@ -162,7 +162,7 @@ BET_RULES = {
             },
         },
         "Hardways": {
-            "valid_numbers": [(2, 2), (3, 3), (4, 4), (5, 5)],
+            "valid_numbers": [4, 6, 8, 10],
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Hardways",
             "resolution": {
@@ -313,4 +313,3 @@ ODDS_MULTIPLIERS = {
     "20x": {4: 20, 5: 20, 6: 20, 8: 20, 9: 20, 10: 20},
     "100x": {4: 100, 5: 100, 6: 100, 8: 100, 9: 100, 10: 100},
 }
-

@@ -171,27 +171,27 @@ class RulesEngine:
             return 0
         
         # 🎯 **1. LINE BETS (Pass Line, Don't Pass, Come, Don't Come)**
-        if bet_rules.get("is_contract_bet", False):  # ✅ Line bets use contract logic
+        if bet_rules.get("is_contract_bet", False):
             # 🏆 **Come/Don't Come Special Case - Handle First Roll**
             if bet.bet_type in ["Come", "Don't Come"]:
-                if bet.number is None:  # ✅ First roll for Come/Don't Come
-                    if total in resolution_rules["come_out_win"]:
+                if bet.number is None:
+                    come_out_win = resolution_rules.get("come_out_win", [])
+                    come_out_lose = resolution_rules.get("come_out_lose", [])
+
+                    if total in come_out_win:
                         bet.status = "won"
-                    elif total in resolution_rules["come_out_lose"]:
+                    elif total in come_out_lose:
                         bet.status = "lost"
                     else:
-                        bet.number = total  # ✅ Move the bet to a number
-                else:  # ✅ Subsequent rolls after moving to a number
-                    if total == bet.number:
+                        bet.number = total
+                else:
+                    if total in winning_numbers:
                         bet.status = "won"
-                    elif total == 7:
+                    elif total in losing_numbers:
                         bet.status = "lost"
-            
-            # 🏆 **Pass Line / Don't Pass Logic**
-            else:
-                if "point_made" in winning_numbers and point is not None and total == point:
-                    bet.status = "won"
-                elif phase == "come-out" and total in winning_numbers:
+
+            else:  # Pass Line / Don't Pass logic
+                if total in winning_numbers:
                     bet.status = "won"
                 elif total in losing_numbers:
                     bet.status = "lost"
