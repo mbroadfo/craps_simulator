@@ -94,6 +94,7 @@ class RulesEngine:
             number=number,
             parent_bet=parent_bet,
             is_contract_bet=bet_rules.get("is_contract_bet", False),
+            vig=bet_rules.get("has_vig", False),
         )
 
     @staticmethod
