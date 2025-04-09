@@ -64,7 +64,6 @@ class PlaceRegressionStrategy(BaseStrategy):
 
     def on_new_shooter(self) -> None:
         """Called at start of new shooter."""
-        print(f"[TRACE] PlaceRegressionStrategy reset shooter state.")
         self.reset_shooter_state()
 
     def notify_payout(self, amount: int) -> None:

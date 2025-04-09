@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from craps.bet import Bet
 from craps.base_strategy import BaseStrategy
 from craps.bet_adjusters import PressAdjuster
@@ -58,7 +58,11 @@ class ThreeTwoOneStrategy(BaseStrategy):
 
         return new_bets
 
-    def adjust_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
+    def adjust_bets(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
+        # Avoid adjusting during cleanup after 7-out
+        if game_state.phase != "come-out" and game_state.point is None:
+            return []
+
         if game_state.phase == "come-out":
             self.total_hits = 0
             self.turned_off = False
@@ -74,9 +78,14 @@ class ThreeTwoOneStrategy(BaseStrategy):
                 if (
                     bet.bet_type == "Place" and bet.owner == player and
                     (game_state.point in {4, 10} and self.total_hits >= 2 or
-                     game_state.point in {5, 6, 8, 9} and self.total_hits >= 3)
+                    game_state.point in {5, 6, 8, 9} and self.total_hits >= 3)
                 ):
                     self.turned_off = True
                     bet.status = "inactive"
 
-        return []
+        return None
+
+    def reset_shooter_state(self) -> None:
+        """Reset stateful tracking for a new shooter (used by composite strategies)."""
+        self.total_hits = 0
+        self.turned_off = False
