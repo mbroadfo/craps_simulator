@@ -10,6 +10,7 @@ from craps.strategies.double_hop_strategy import DoubleHopStrategy
 from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
 from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
+from craps.strategies.lay_strategy import LayBetStrategy
 from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
 from craps.bet_adjusters import HalfPressAdjuster
 from craps.rules_engine import RulesEngine
@@ -40,7 +41,7 @@ class PlayerLineup:
         # Define all supported strategies
         self.all_strategies: Dict[str, Any] = {
             "Pass-Line": PassLineStrategy(bet_amount=self.house_rules.table_minimum, table=self.table),
-            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, rules_engine=self.rules_engine, odds_multiple="3x-4x-5x"),  # str or int
+            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, rules_engine=self.rules_engine, odds_multiple="1x-2x-3x"),  # str or int
             "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
             "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine),
             "3-Point Molly": ThreePointMollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="1x-2x-3x"),
@@ -53,6 +54,7 @@ class PlayerLineup:
             "RegressHalfPress": PlaceRegressionStrategy(high_unit=20, low_unit=3, regression_factor=2),
             "RegressHalfPress": RegressThenPressStrategy(regression_strategy=PlaceRegressionStrategy(high_unit=10,low_unit=2,regression_factor=2),
                                                          press_strategy=AdjusterOnlyStrategy(name="HalfPress",adjuster=HalfPressAdjuster())),
+            "Lay Outside": LayBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="Outside"),
         }
 
     def add_player(self, player: "Player") -> None:

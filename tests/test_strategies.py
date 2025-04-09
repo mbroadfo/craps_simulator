@@ -410,5 +410,31 @@ class TestStrategies(unittest.TestCase):
         base_dont_come_bets = [b for b in bets if b.bet_type == "Don't Come"]
         self.assertEqual(len(base_dont_come_bets), 0, "Should not place more than 2 Don't Come bets")
 
+    def test_lay_strategy_outside(self):
+        """Test LayBetStrategy places correct Lay bets on 4 and 10 after point is established."""
+        from craps.strategies.lay_strategy import LayBetStrategy  # Ensure path matches your layout
+
+        strategy = LayBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="outside")
+        self.player.betting_strategy = strategy
+
+        self.game_state.point = 6  # Simulate point is established
+
+        # Player should lay against 4 and 10
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        self.assertEqual(len(bets), 2)
+
+        expected_numbers = {4, 10}
+        actual_numbers = {b.number for b in bets}
+        self.assertEqual(expected_numbers, actual_numbers)
+
+        for bet in bets:
+            self.assertEqual(bet.bet_type, "Lay")
+            self.table.place_bet(bet, self.game_state.phase)
+            self.player.balance -= bet.amount
+
+        # Re-invoke — should not place duplicates
+        followup_bets = strategy.place_bets(self.game_state, self.player, self.table)
+        self.assertEqual(len(followup_bets), 0, "Strategy should not place duplicate Lay bets")
+
 if __name__ == "__main__":
     unittest.main()

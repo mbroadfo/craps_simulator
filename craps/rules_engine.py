@@ -48,7 +48,7 @@ class RulesEngine:
             return min_bet  # No additional constraints
 
         # 🟢 **Place & Don't Place Bets: Special Case for 6 & 8**
-        elif bet_type in ["Place", "Buy"]:
+        elif bet_type in ["Place", "Buy", "Lay"]:
             if number in [6, 8]:
                 return table_min + (table_min // 5)  # $12 for $10 table minimum
             else:
@@ -216,7 +216,7 @@ class RulesEngine:
                 bet.status = "won"
 
             # ✅ Lose if total is in "point_lose"
-            elif "point_lose" in losing_numbers and total == 7:
+            elif "number_hit" in losing_numbers and total == bet.number:
                 bet.status = "lost"
             elif total in losing_numbers:
                 bet.status = "lost"
