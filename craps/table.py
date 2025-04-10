@@ -82,7 +82,7 @@ class Table:
         resolved_bets: List[Bet] = []
 
         for bet in self.bets:
-            # ⛔ Skip bets that are inactive (e.g., 3-2-1 turned off Place bets)
+            # Skip bets that are inactive (e.g., 3-2-1 turned off Place bets)
             if bet.status == "inactive":
                 continue
             
@@ -96,8 +96,15 @@ class Table:
                 resolved_bets.append(bet)
 
             # 🎯 Movement message for Come/Don't Come bets
-            if bet.bet_type in ["Come", "Don't Come"] and original_number is None and bet.number is not None:
-                self.play_by_play.write("  🎯 {bet.owner.name}'s {bet.bet_type} bet moves to {bet.number} — now active on {bet.number}.")
+            if (
+                bet.bet_type in ["Come", "Don't Come"]
+                and original_number is None
+                and bet.number is not None
+                and bet.status == "active"
+            ):
+                self.play_by_play.write(f"  🎯 {bet.owner.name}'s {bet.bet_type} bet is now active on {bet.number}.")
+            elif bet.status == "push":
+                self.play_by_play.write(f"  ⏸️ {bet.owner.name}'s {bet.bet_type} bet was barred and did not move.")
 
         return resolved_bets
     

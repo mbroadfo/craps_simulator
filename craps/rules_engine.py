@@ -178,11 +178,14 @@ class RulesEngine:
                 if bet.number is None:
                     come_out_win = resolution_rules.get("come_out_win", [])
                     come_out_lose = resolution_rules.get("come_out_lose", [])
+                    barred = bet_rules.get("barred_numbers", [])
 
                     if total in come_out_win:
                         bet.status = "won"
                     elif total in come_out_lose:
                         bet.status = "lost"
+                    elif total in barred:
+                        pass # Bet is barred on this number
                     else:
                         bet.number = total
                 else:
@@ -192,8 +195,19 @@ class RulesEngine:
                         bet.status = "lost"
 
             else:  # Pass Line / Don't Pass logic
-                if total in winning_numbers:
+                # Win conditions
+                if "number_hit" in winning_numbers and bet.number is not None and total == bet.number:
                     bet.status = "won"
+                elif "point_made" in winning_numbers and point is not None and total == point:
+                    bet.status = "won"
+                elif total in winning_numbers:
+                    bet.status = "won"
+
+                # Loss conditions
+                elif "number_hit" in losing_numbers and bet.number is not None and total == bet.number:
+                    bet.status = "lost"
+                elif "point_made" in losing_numbers and point is not None and total == point:
+                    bet.status = "lost"
                 elif total in losing_numbers:
                     bet.status = "lost"
 

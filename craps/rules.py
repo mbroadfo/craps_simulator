@@ -22,6 +22,7 @@ BET_RULES = {
             "linked_bet": "Don't Pass Odds",
             "valid_phases": ["come-out"],
             "payout_ratio": "Even Money",
+            "barred_numbers": [12],
             "resolution": {
                 "come_out_win": [2, 3],
                 "come_out_lose": [7, 11],
@@ -45,6 +46,7 @@ BET_RULES = {
             "linked_bet": "Don't Come Odds",
             "valid_phases": ["point"],
             "payout_ratio": "Even Money",
+            "barred_numbers": [12],
             "resolution": {
                 "come_out_win": [2, 3],
                 "come_out_lose": [7, 11],

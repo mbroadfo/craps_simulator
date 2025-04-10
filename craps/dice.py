@@ -2,6 +2,7 @@ import csv
 import random
 import os
 from typing import Optional, List, Dict, Tuple, cast
+from collections import deque
 
 class Dice:
     def __init__(self, roll_history_file: Optional[str] = None) -> None:
@@ -14,6 +15,7 @@ class Dice:
         self.roll_history_file: Optional[str] = roll_history_file
         self.roll_history: List[Dict[str, int | Tuple[int, int]]] = []
         self.current_roll_index: int = 0
+        self.forced_rolls: deque[Tuple[int, int]] = deque()
 
         if self.roll_history_file:
             self._load_roll_history()
@@ -44,6 +46,10 @@ class Dice:
                 })
 
     def roll(self) -> Tuple[int, int]:
+        """Forced Rolls used for testing"""
+        if self.forced_rolls:
+            self.values = self.forced_rolls.popleft()
+            return self.values
         """Roll the dice. If roll history is loaded, use the next roll from the history."""
         if self.roll_history:
             if self.current_roll_index >= len(self.roll_history):
@@ -56,7 +62,7 @@ class Dice:
             self.values = dice  # Ensure it's a valid (int, int) tuple
             self.current_roll_index += 1
         else:
-            # Generate random rolls if no history is loaded
+            """ Generate random rolls if no history is loaded """
             self.values = (random.randint(1, 6), random.randint(1, 6))  # Ensure it's a tuple
         
         return self.values
