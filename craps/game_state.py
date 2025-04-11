@@ -114,7 +114,7 @@ class GameState:
                 message = f"  ✅ 7-Winner: Pass Line bets win! → Puck OFF."
             elif total in [2, 3, 12]:  # Craps loss
                 self.point = None  # Stay in come-out phase
-                message = f"  ❌ Craps: Pass Line bets lose! → Puck OFF."
+                message = f"  ☄️ Craps: Pass Line bets lose! → Puck OFF."
             else:  # Set the point
                 self.point = total
                 message = f"  🎯 Point Set to {total} → Puck ON"
@@ -127,7 +127,7 @@ class GameState:
                 self.stats.record_seven_out()
                 self.point = None  # Reset back to come-out
                 self.reset_ats_tracking()  # Clear tracked numbers on 7-out
-                message = f"  ❌ 7-Out: Pass Line bets lose! → Puck OFF."
+                message = f"  🛑 7-Out: Pass Line bets lose! → Puck OFF."
 
         return message
     

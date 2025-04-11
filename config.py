@@ -1,18 +1,18 @@
 # File: .\config.py
 
 ACTIVE_PLAYERS = {
-    "Pass-Line": True,
-    "Pass-Line w/ Odds": True,
-    "Field": True,
-    "Iron Cross": True,
-    "3-Point Molly": True,
-    "3-Point Dolly": True,
-    "Inside": True,
-    "Across": True,
-    "Place 68": True,
-    "Lay Outside": True,
-    "Double Aces": True,
-    "Three-Two-One": True,
+    "Pass-Line": False,
+    "Pass-Line w/ Odds": False,
+    "Field": False,
+    "Iron Cross": False,
+    "3-Point Molly": False,
+    "3-Point Dolly": False,
+    "Inside": False,
+    "Across": False,
+    "Place 68": False,
+    "Lay Outside": False,
+    "Double Aces": False,
+    "Three-Two-One": False,
     "RegressHalfPress": True,
 }
 

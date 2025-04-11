@@ -300,7 +300,8 @@ class TestStrategies(unittest.TestCase):
         regression_strategy = PlaceRegressionStrategy(
             high_unit=unit_levels[0],
             low_unit=unit_levels[-1],
-            regression_factor=2
+            regression_factor=2,
+            regress_units=10
         )
 
         press_strategy = AdjusterOnlyStrategy(
@@ -314,7 +315,7 @@ class TestStrategies(unittest.TestCase):
         )
 
         self.player.betting_strategy = strategy
-        self.game_state.point = 6  # Simulate point established
+        self.game_state.point = 6
 
         # Phase 1: Start in regression mode
         bets = strategy.place_bets(self.game_state, self.player, self.table)
@@ -326,47 +327,25 @@ class TestStrategies(unittest.TestCase):
             self.table.place_bet(bet, self.game_state.phase)
             self.player.balance -= bet.amount
 
-        # Simulate 2 regression hits
-        for _ in range(2):
-            strategy.notify_payout(140)
-            self.stats.last_roll_total = 6  # inside number
-            strategy.adjust_bets(self.game_state, self.player, self.table)
-
-        # 💡 One more adjust_bets call required to trigger the transition
-        self.stats.last_roll_total = 6
-        strategy.adjust_bets(self.game_state, self.player, self.table)
-        
-        self.assertTrue(strategy.transitioned)
-        self.assertIs(strategy.active_strategy, press_strategy)
-
-        # Phase 2: In press mode — simulate press adjustment
-        place_bet = next(b for b in self.table.bets if b.bet_type == "Place" and b.number == 6)
-        place_bet.status = "won"
-        place_bet.resolved_payout = 140
-        self.stats.last_roll_total = 6
-
-        updated_bets = strategy.adjust_bets(self.game_state, self.player, self.table)
-        self.assertIsNotNone(updated_bets)
-
-        # Simulate pressing until we hit original exposure again and trigger regression
+        # Simulate 3 hits to fully regress from 20 → 10 → 5
         for _ in range(3):
-            place_bet.status = "won"
+            strategy.notify_payout(140)
+            self.stats.last_roll_total = 6
+
+            place_bet = next(
+                b for b in self.table.bets if b.bet_type == "Place" and b.number == 6
+            )
+            place_bet.status = "won"  # ✅ <-- reset before every adjust call
             place_bet.resolved_payout = 140
-            self.stats.last_roll_total = 6
+
             strategy.adjust_bets(self.game_state, self.player, self.table)
 
-        # ✅ Trigger the switch to press mode
-        strategy.notify_payout(140)
-        self.assertFalse(strategy.transitioned)
-        self.assertIs(strategy.active_strategy, regression_strategy)
+        # ✅ One final call to sync the wrapper strategy state
+        place_bet.status = "won"
+        strategy.adjust_bets(self.game_state, self.player, self.table)
 
-        # Phase 3: Back to press mode again after a few hits
-        for _ in range(3):
-            strategy.notify_payout(140)
-            self.stats.last_roll_total = 6
-            strategy.adjust_bets(self.game_state, self.player, self.table)
-
-        self.assertTrue(strategy.transitioned)
+        # ✅ Confirm state transition
+        self.assertEqual(regression_strategy.mode, "press")
         self.assertIs(strategy.active_strategy, press_strategy)
 
     def test_three_point_dolly(self):

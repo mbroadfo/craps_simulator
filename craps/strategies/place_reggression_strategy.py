@@ -17,12 +17,13 @@ class PlaceRegressionStrategy(BaseStrategy):
     - Switch to pressing after session profit buffer is met
     """
 
-    def __init__(self, high_unit: int = 10, low_unit: int = 2, regression_factor: int = 2) -> None:
+    def __init__(self, high_unit: int = 10, low_unit: int = 2, regression_factor: int = 2, regress_units: int = 10) -> None:
         super().__init__("Place Regression")
 
         self.high_unit = high_unit
         self.low_unit = low_unit
         self.regression_factor = regression_factor
+        self.regress_units = regress_units
         self.unit_levels: List[int] = self._generate_unit_levels()
 
         self.inside_numbers: Set[int] = {5, 6, 8, 9}
@@ -124,30 +125,18 @@ class PlaceRegressionStrategy(BaseStrategy):
                     updated_bets.append(bet)
 
             table.play_by_play.write(f"  📉 {player.name} regressing to unit level {current_unit} after hit #{self.hits}")
-            
+            print(f"→ Hits: {self.hits}, Regression Index: {regression_index}, Current Unit: {current_unit}")
+
             # 👇 Switch to press mode after completing regression
             if current_unit == self.low_unit:
                 self.mode = "press"
+                self.level = 0
+                self.hits = 0
                 table.play_by_play.write(
                     f"  🎯 {player.name} completed regression to unit ${current_unit} — switching to press mode."
                 )
 
         elif self.mode == "press":
-            # ✅ Check BEFORE adjusting if we're over original exposure
-            total_exposure = sum(
-                bet.amount for bet in table.bets
-                if bet.owner == player and bet.bet_type == "Place" and bet.number in self.inside_numbers
-            )
-            if total_exposure >= self.original_exposure:
-                self.mode = "regress"
-                self.level = 0
-                self.hits = 0
-                table.play_by_play.write(
-                    f"  🛑 {player.name}'s total press goal of (${total_exposure}) met! — resetting to regression mode."
-                )
-                return None  # 🚫 Do not adjust this round — wait for next regression step
-
-            # 👇 Only reach here if exposure is still below threshold
             half_press_adjuster = HalfPressAdjuster()
             for bet in table.bets:
                 if (
@@ -157,5 +146,24 @@ class PlaceRegressionStrategy(BaseStrategy):
                     half_press_adjuster.adjust(bet, table, table.rules_engine)
                     updated_bets.append(bet)
 
+            # 👇 Check if we're now over threshold and need to regress
+            if self.regress_units:
+                total_exposure = sum(
+                    bet.amount for bet in table.bets
+                    if bet.owner == player and bet.bet_type == "Place" and bet.number in self.inside_numbers
+                )
+                target_threshold = self.regress_units * 22
+                if total_exposure >= target_threshold:
+                    self.mode = "regress"
+                    self.level = 0
+                    self.hits = 0
+                    table.play_by_play.write(
+                        f"  🎯 {player.name}'s press exposure (${total_exposure}) exceeded threshold (${target_threshold}) — switching back to regression."
+                    )
+                    # Reset bets to the regress_unit 
+                    for b in table.bets:
+                        if b.owner == player and b.bet_type == "Place" and b.number in self.inside_numbers:
+                            base_unit = RulesEngine.get_bet_unit(b.bet_type, b.number)
+                            b.amount = base_unit * self.regress_units
+
         return updated_bets if updated_bets else None
-    
