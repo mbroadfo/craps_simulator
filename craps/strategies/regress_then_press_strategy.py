@@ -41,17 +41,7 @@ class RegressThenPressStrategy(BaseStrategy):
     def notify_payout(self, amount: int) -> None:
         self.regression.notify_payout(amount)
         self.press.notify_payout(amount)
-
-        if not self.transitioned:
-            session_profit = getattr(self.regression, "session_profit", 0)
-            exposure = getattr(self.regression, "original_exposure", float("inf"))
-            if session_profit >= exposure:
-                self.active_strategy = self.press
-                self.transitioned = True
-
-                # Capture the max press limit (i.e., original bet size when regressing)
-                self.max_press_threshold = exposure
-
+        
     def place_bets(self, game_state: "GameState", player: "Player", table: "Table") -> List[Bet]:
         return self.active_strategy.place_bets(game_state, player, table)
 

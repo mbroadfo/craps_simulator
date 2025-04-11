@@ -61,6 +61,18 @@ class RulesEngine:
         return min_bet  # Default minimum bet
 
     @staticmethod
+    def get_bet_unit(bet_type: str, number: Optional[Union[int, Tuple[int, int]]]) -> int:
+        if bet_type == "Place":
+            if number in [6, 8]:
+                return 6
+            elif number in [5, 9, 4, 10]:
+                return 5
+            else:
+                raise ValueError(f"Invalid Place number: {number}")
+        # Add additional bet types as needed
+        return 1  # Default fallback
+
+    @staticmethod
     def create_bet(bet_type: str, amount: int, owner: Any, number: Optional[Union[int, Tuple[int, int]]] = None, parent_bet: Optional[Bet] = None) -> Bet:
         """Create a bet based on the bet type."""
         bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
@@ -95,6 +107,7 @@ class RulesEngine:
             parent_bet=parent_bet,
             is_contract_bet=bet_rules.get("is_contract_bet", False),
             vig=bet_rules.get("has_vig", False),
+            unit = RulesEngine.get_bet_unit(bet_type, number),
         )
 
     @staticmethod
@@ -187,7 +200,7 @@ class RulesEngine:
                     elif total in barred:
                         pass # Bet is barred on this number
                     else:
-                        bet.number = total
+                        bet.number = total  # Bet moved to number
                 else:
                     if total in winning_numbers:
                         bet.status = "won"
@@ -215,7 +228,7 @@ class RulesEngine:
         elif bet.bet_type == "Field":
             if total in winning_numbers:
                 bet.status = "won"
-                bet.number = total  # ✅ Required for payout calculation
+                bet.number = total
             elif total in losing_numbers:
                 bet.status = "lost"
 
@@ -227,7 +240,7 @@ class RulesEngine:
             # ✅ Win if the rolled total matches the "number_hit" or is in "point_win"
             if "number_hit" in winning_numbers and total == bet.number:
                 bet.status = "won"
-            elif total in winning_numbers:  # ✅ Fully respects rules, includes Lay bet
+            elif total in winning_numbers:
                 bet.status = "won"
 
             # ✅ Lose if total is in "point_lose"

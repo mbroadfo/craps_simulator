@@ -17,7 +17,7 @@ class PlaceRegressionStrategy(BaseStrategy):
     - Switch to pressing after session profit buffer is met
     """
 
-    def __init__(self, high_unit: int = 20, low_unit: int = 2, regression_factor: int = 2) -> None:
+    def __init__(self, high_unit: int = 10, low_unit: int = 2, regression_factor: int = 2) -> None:
         super().__init__("Place Regression")
 
         self.high_unit = high_unit
@@ -67,10 +67,8 @@ class PlaceRegressionStrategy(BaseStrategy):
         self.reset_shooter_state()
 
     def notify_payout(self, amount: int) -> None:
-        """Called after a winning payout (does not include original bet amount)."""
-        self.session_profit += amount
-        if self.session_profit >= self.original_exposure and self.mode != "press":
-            self.mode = "press"
+        """Track hit count and prepare for mode switch after completing regression."""
+        self.hits += 1
 
     def place_bets(self, game_state: GameState, player: Player, table: "Table") -> List[Bet]:
         if game_state.phase != "point":
@@ -88,7 +86,8 @@ class PlaceRegressionStrategy(BaseStrategy):
         unit = self.unit_levels[self.level] if self.mode == "regress" else self.unit_levels[-1]
 
         for number in self.inside_numbers:
-            bet_amount = unit * 6 if number in [6, 8] else unit * 5
+            base_unit = RulesEngine.get_bet_unit("Place", number)
+            bet_amount = base_unit * unit
             bet = RulesEngine.create_bet("Place", bet_amount, player, number)
             bets.append(bet)
 
@@ -112,15 +111,26 @@ class PlaceRegressionStrategy(BaseStrategy):
             if not hit_bet:
                 return None
 
-            self.hits += 1
-            level_index = min(self.hits - 1, len(self.unit_levels) - 1)
-            adjuster: BetAdjuster = RegressAdjuster(self.unit_levels, level_index)
+            # ✅ Determine regression level
+            regression_index = max(0, min(self.hits, len(self.unit_levels) - 1))
+            current_unit = self.unit_levels[regression_index]
+            adjuster: BetAdjuster = RegressAdjuster(self.unit_levels, regression_index)
+
+            # ✅ Regress *all* of the player’s inside Place bets
             for bet in table.bets:
                 if bet.owner == player and bet.bet_type == "Place" and bet.number in self.inside_numbers:
+                    bet.amount = current_unit * RulesEngine.get_bet_unit(bet.bet_type, bet.number)
                     adjuster.adjust(bet, table, table.rules_engine)
                     updated_bets.append(bet)
 
-            table.play_by_play.write(f"  📉 {player.name} regressing to unit level {level_index} after hit #{self.hits}")
+            table.play_by_play.write(f"  📉 {player.name} regressing to unit level {current_unit} after hit #{self.hits}")
+            
+            # 👇 Switch to press mode after completing regression
+            if current_unit == self.low_unit:
+                self.mode = "press"
+                table.play_by_play.write(
+                    f"  🎯 {player.name} completed regression to unit ${current_unit} — switching to press mode."
+                )
 
         elif self.mode == "press":
             # ✅ Check BEFORE adjusting if we're over original exposure
@@ -138,14 +148,14 @@ class PlaceRegressionStrategy(BaseStrategy):
                 return None  # 🚫 Do not adjust this round — wait for next regression step
 
             # 👇 Only reach here if exposure is still below threshold
-            adjuster = HalfPressAdjuster()
+            half_press_adjuster = HalfPressAdjuster()
             for bet in table.bets:
                 if (
                     bet.owner == player and bet.bet_type == "Place"
                     and bet.number == last_roll and bet.status == "won"
                 ):
-                    adjuster.adjust(bet, table, table.rules_engine)
+                    half_press_adjuster.adjust(bet, table, table.rules_engine)
                     updated_bets.append(bet)
 
         return updated_bets if updated_bets else None
-
+    

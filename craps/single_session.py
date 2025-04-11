@@ -17,7 +17,6 @@ import os
 def run_single_session(
     house_rules: Optional[HouseRules] = None,
     strategies: Optional[List[Any]] = None,
-    initial_bankroll: Optional[int] = 500, 
     num_shooters: Optional[int] = 10, 
     roll_history_file: Optional[str] = None,
     pattern_name: Optional[str] = None) -> Statistics:

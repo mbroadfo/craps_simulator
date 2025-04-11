@@ -6,14 +6,14 @@ ACTIVE_PLAYERS = {
     "Field": False,
     "Iron Cross": False,
     "3-Point Molly": False,
-    "3-Point Dolly": True,
+    "3-Point Dolly": False,
     "Inside": False,
     "Across": False,
     "Place 68": False,
     "Lay Outside": False,
     "Double Aces": False,
     "Three-Two-One": False,
-    "RegressHalfPress": False,
+    "RegressHalfPress": True,
 }
 
 # Add a new configuration entry for session mode

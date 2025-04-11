@@ -79,35 +79,34 @@ class RegressAdjuster(BetAdjuster):
         self.hit_count = hit_count
 
     def adjust(self, bet: "Bet", table: "Table", rules_engine: "RulesEngine") -> None:
-        # Determine the regression level based on hit count
-        level = min(self.hit_count, len(self.unit_levels) - 1)
-        unit = self.unit_levels[level]
+        # Determine the proper unit level based on hit count
+        level_index = min(self.hit_count - 1, len(self.unit_levels) - 1)
+        unit_multiplier = self.unit_levels[level_index]
 
-        # Calculate proper target amount
-        if bet.number in [6, 8]:
-            target_amount = unit * 6
-        elif bet.number in [5, 9]:
-            target_amount = unit * 5
-        else:
-            return  # Not a supported Place number
+        if not isinstance(bet.number, int):
+            return  # Skip unsupported types
+
+        unit_base = rules_engine.get_bet_unit("Place", bet.number)
+        target_amount = unit_multiplier * unit_base
 
         if bet.amount > target_amount:
             bet.amount = target_amount
             
 class HalfPressAdjuster(BetAdjuster):
     def adjust(self, bet: "Bet", table: "Table", rules_engine: "RulesEngine") -> None:
+        """
+        Presses a Place bet by adding half the winnings, rounded to the correct multiple.
+        """
         if bet.status != "won" or bet.resolved_payout == 0:
             return
 
-        number = bet.number
-        if number in [6, 8]:
-            unit = 6
-        elif number in [5, 9]:
-            unit = 5
-        else:
-            return  # Not an inside Place bet
+        if not isinstance(bet.number, int):
+            return
+
+        unit = bet.unit  # ✅ Pull directly from the bet
+        if unit == 0:
+            return  # Safety check
 
         half_press = bet.resolved_payout // 2
-        additional = (half_press // unit) * unit  # Round down to nearest multiple
+        additional = (half_press // unit) * unit  # Round down to nearest multiple of unit
         bet.amount += additional
-
