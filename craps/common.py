@@ -47,7 +47,7 @@ class CommonTableSetup:
         self.player_name = "Alice"
         self.initial_balance = 1000
         self.rules_engine = RulesEngine()
-        self.player = Player(self.player_name, self.initial_balance)
+        self.player = Player(name=self.player_name, strategy_name=None, initial_balance=self.initial_balance)
 
         # ✅ Setup Gamestate
         self.game_state.set_table(self.table)

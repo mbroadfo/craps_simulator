@@ -1,5 +1,5 @@
 from typing import Optional, Any
-from config import HOUSE_RULES, DICE_TEST_PATTERNS
+from config import HOUSE_RULES, DICE_TEST_PATTERNS, ACTIVE_PLAYERS
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
@@ -11,7 +11,7 @@ from craps.table import Table
 from craps.roll_history_manager import RollHistoryManager
 from craps.statistics import Statistics
 from craps.game_state import GameState
-
+from craps.player import Player
 
 class SessionManager:
     def __init__(self) -> None:
@@ -81,3 +81,19 @@ class SessionManager:
 
         self.initialized = True
         return True
+
+    def add_players_from_config(self) -> int:
+        """
+        Add players based on the ACTIVE_PLAYERS dict in config.py.
+        UI or CLI setup should modify this config ahead of time.
+        """
+        if not self.player_lineup:
+            raise RuntimeError("Session must be initialized before adding players.")
+
+        players = [
+            Player(name=player_name, strategy_name=strategy_name)
+            for player_name, (strategy_name, enabled) in ACTIVE_PLAYERS.items() if enabled
+        ]
+
+        self.player_lineup.assign_strategies(players)
+        return len(players)

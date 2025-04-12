@@ -1,19 +1,17 @@
-# File: .\config.py
-
 ACTIVE_PLAYERS = {
-    "Pass-Line": False,
-    "Pass-Line w/ Odds": False,
-    "Field": False,
-    "Iron Cross": False,
-    "3-Point Molly": True,
-    "3-Point Dolly": True,
-    "Inside": False,
-    "Across": False,
-    "Place 68": False,
-    "Lay Outside": False,
-    "Double Aces": False,
-    "Three-Two-One": False,
-    "RegressHalfPress": False,
+    "Molly Does": ("3-Point Molly", True),
+    "Dolly Doesn't": ("3-Point Dolly", True),
+    "Line Larry": ("Pass-Line", False),
+    "Odds Otto": ("Pass-Line w/ Odds", False),
+    "Field Finn": ("Field", False),
+    "Cross Cara": ("Iron Cross", False),
+    "Inside Ivy": ("Inside", False),
+    "Across Ace": ("Across", False),
+    "Place Peg": ("Place 68", False),
+    "Layla": ("Lay Outside", False),
+    "Double Hop": ("Double Aces", False),
+    "ThreeTwoOne": ("Three-Two-One", False),
+    "Regress Rex": ("RegressHalfPress", False),
 }
 
 # Add a new configuration entry for session mode

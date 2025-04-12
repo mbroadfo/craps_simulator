@@ -1,4 +1,3 @@
-# File: craps/simulation_manager.py
 from typing import List
 from craps.single_session import run_single_session
 from craps.house_rules import HouseRules

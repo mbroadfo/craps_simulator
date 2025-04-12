@@ -1,5 +1,3 @@
-# File: craps/statistics.py
-
 import logging
 from typing import List, Dict, Any, Optional
 

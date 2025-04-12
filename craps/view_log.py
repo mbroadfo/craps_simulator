@@ -1,5 +1,3 @@
-# File: .\craps\view_log.py
-
 import subprocess
 from abc import ABC, abstractmethod
 import os

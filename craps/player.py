@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from craps.table import Table
     
 class Player:
-    def __init__(self, name: str, initial_balance: int = 500, betting_strategy: Optional[Any] = None):
+    def __init__(self, name: str, strategy_name: Optional[str] = None, initial_balance: int = 500, betting_strategy: Optional[Any] = None):
         """
         Initialize a player.
 
@@ -16,6 +16,7 @@ class Player:
         :param betting_strategy: The betting strategy used by the player.
         """
         self.name: str = name
+        self.strategy_name: str = strategy_name or name
         self.balance: int = initial_balance
         self.betting_strategy: Any = betting_strategy
         self.is_shooter: bool = False

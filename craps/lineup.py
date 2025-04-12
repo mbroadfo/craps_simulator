@@ -91,8 +91,9 @@ class PlayerLineup:
         Assigns betting strategies to players based on their name and adds them to the lineup.
         """
         for player in players:
-            if player.name in self.all_strategies:
-                player.betting_strategy = self.all_strategies[player.name]
+            print(f"  🧪 Checking: {player.name} (strategy: {getattr(player, 'strategy_name', 'N/A')})")
+            if player.strategy_name in self.all_strategies:
+                player.betting_strategy = self.all_strategies[player.strategy_name]
                 self.add_player(player)
             else:
                 raise ValueError(f"No strategy found for player '{player.name}'")
