@@ -111,23 +111,23 @@ class GameState:
         if self.phase == "come-out":
             if total in [7, 11]:  # Natural win
                 self.point = None  # Reset to come-out phase
-                message = f"  ✅ 7-Winner: Pass Line bets win! → Puck OFF."
+                message = f"  ⚫ 7-Winner: Pass Line bets win! → Puck OFF."
             elif total in [2, 3, 12]:  # Craps loss
                 self.point = None  # Stay in come-out phase
-                message = f"  ☄️ Craps: Pass Line bets lose! → Puck OFF."
+                message = f"  ⚫ Craps: Pass Line bets lose! → Puck OFF."
             else:  # Set the point
                 self.point = total
-                message = f"  🎯 Point Set to {total} → Puck ON"
+                message = f"  ⚪ Point Set to {total} → Puck ON"
         else:  # Point phase
             if total == self.point:  # Point hit, pass line wins
                 self.stats.record_point_number_roll()
                 self.point = None  # Reset b ck to come-out
-                message = f"  ✅ Point Hit: {total} — Pass Line bets win! → Puck OFF"
+                message = f"  ⚫ Point Hit: {total} — Pass Line bets win! → Puck OFF"
             elif total == 7:  # Seven out, pass line loses
                 self.stats.record_seven_out()
                 self.point = None  # Reset back to come-out
                 self.reset_ats_tracking()  # Clear tracked numbers on 7-out
-                message = f"  🛑 7-Out: Pass Line bets lose! → Puck OFF."
+                message = f"  ⚫ 7-Out: Pass Line bets lose! → Puck OFF."
 
         return message
     
