@@ -102,7 +102,7 @@ class Table:
                 and bet.number is not None
                 and bet.status == "active"
             ):
-                self.play_by_play.write(f"  🎯 {bet.owner.name}'s {bet.bet_type} bet is now active on {bet.number}.")
+                self.play_by_play.write(f"  ⏫ {bet.owner.name}'s {bet.bet_type} bet moves to the {bet.number}.")
             elif bet.status == "push":
                 self.play_by_play.write(f"  ⏸️ {bet.owner.name}'s {bet.bet_type} bet was barred and did not move.")
 

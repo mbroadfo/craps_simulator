@@ -188,7 +188,7 @@ class RulesEngine:
         if bet_rules.get("is_contract_bet", False):
             # 🏆 **Come/Don't Come Special Case - Handle First Roll**
             if bet.bet_type in ["Come", "Don't Come"]:
-                if bet.number is None:
+                if bet.number is None:  # Come bet in come-out mode
                     come_out_win = resolution_rules.get("come_out_win", [])
                     come_out_lose = resolution_rules.get("come_out_lose", [])
                     barred = bet_rules.get("barred_numbers", [])
@@ -201,9 +201,13 @@ class RulesEngine:
                         pass # Bet is barred on this number
                     else:
                         bet.number = total  # Bet moved to number
-                else:
-                    if total in winning_numbers:
+                else:  # Come bet in point mode
+                    if "number_hit" in winning_numbers and total == bet.number:
                         bet.status = "won"
+                    elif total in winning_numbers:
+                        bet.status = "won"
+                    elif "number_hit" in losing_numbers and total == bet.number:
+                        bet.status = "lost"
                     elif total in losing_numbers:
                         bet.status = "lost"
 
