@@ -1,6 +1,8 @@
 from typing import List, Optional, TYPE_CHECKING
 from craps.base_strategy import BaseStrategy
 from craps.bet import Bet
+from craps.bet_adjusters import PressAdjuster, PressStyle
+from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
 
 if TYPE_CHECKING:
     from craps.table import Table
@@ -23,10 +25,13 @@ class RegressThenPressStrategy(BaseStrategy):
     then switches back to regression mode where the cycle repeats.
     """
 
-    def __init__(self, regression_strategy: BaseStrategy, press_strategy: BaseStrategy) -> None:
+    def __init__(self, regression_strategy: BaseStrategy, press_style: Optional[PressStyle] = None) -> None:
         super().__init__("Regress Then Press")
         self.regression = regression_strategy
-        self.press = press_strategy
+        self.press = AdjusterOnlyStrategy(
+            name=f"{(press_style or PressStyle.HALF).value.title()} Press",
+            adjuster=PressAdjuster(style=(press_style or PressStyle.HALF))
+        )
         self.active_strategy = self.regression
         self.transitioned = False
         self.max_press_threshold: Optional[float] = None
@@ -41,7 +46,7 @@ class RegressThenPressStrategy(BaseStrategy):
     def notify_payout(self, amount: int) -> None:
         self.regression.notify_payout(amount)
         self.press.notify_payout(amount)
-        
+
     def place_bets(self, game_state: "GameState", player: "Player", table: "Table") -> List[Bet]:
         return self.active_strategy.place_bets(game_state, player, table)
 

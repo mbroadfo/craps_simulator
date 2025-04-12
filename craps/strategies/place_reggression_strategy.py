@@ -4,7 +4,7 @@ from craps.player import Player
 from craps.game_state import GameState
 from craps.rules_engine import RulesEngine
 from craps.base_strategy import BaseStrategy
-from craps.bet_adjusters import BetAdjuster, RegressAdjuster, HalfPressAdjuster
+from craps.bet_adjusters import BetAdjuster, RegressAdjuster, PressAdjuster, PressStyle
 
 if TYPE_CHECKING:
     from craps.table import Table
@@ -125,7 +125,6 @@ class PlaceRegressionStrategy(BaseStrategy):
                     updated_bets.append(bet)
 
             table.play_by_play.write(f"  📉 {player.name} regressing to unit level {current_unit} after hit #{self.hits}")
-            print(f"→ Hits: {self.hits}, Regression Index: {regression_index}, Current Unit: {current_unit}")
 
             # 👇 Switch to press mode after completing regression
             if current_unit == self.low_unit:
@@ -137,7 +136,7 @@ class PlaceRegressionStrategy(BaseStrategy):
                 )
 
         elif self.mode == "press":
-            half_press_adjuster = HalfPressAdjuster()
+            half_press_adjuster = PressAdjuster(style=PressStyle.HALF)
             for bet in table.bets:
                 if (
                     bet.owner == player and bet.bet_type == "Place"

@@ -7,20 +7,18 @@ used to manage post-roll bet modifications such as pressing, collecting, regress
 | Class Name                | Behavior Summary                                        |
 |--------------------------|---------------------------------------------------------|
 | `PressAdjuster`          | Full press after win (add full winnings to bet)         |
-| `HalfPressAdjuster`      | Add half the winnings to the bet                        |
 | `RegressAdjuster`        | Reduce the bet by a set number of units                 |
-| `PowerPressAdjuster`     | Press full winnings plus one additional unit            |
-| `PressAndCollectAdjuster`| Press a portion of the win and collect the rest         |
-| `TakeDownAdjuster`       | Set bet status to inactive or remove from table         |
-| `UnitPressAdjuster`      | Press in fixed increments (e.g., $6)                    |
-| `TargetPressAdjuster`    | Keep pressing until target reached                      |
-| `PressAcrossAdjuster`    | Press all place bets                                    |
-| `PressInsideAdjuster`    | Press 5/6/8/9                                           |
-| `PressOutsideAdjuster`   | Press 4/10                                              |
 """
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
+from enum import Enum
+
+class PressStyle(Enum):
+    HALF = "half"
+    FULL = "full"
+    POWER = "power"
+    N_UNIT = "n_unit"
 
 if TYPE_CHECKING:
     from craps.bet import Bet
@@ -47,18 +45,6 @@ class BetAdjuster(ABC):
     def notify_payout(self, amount: int) -> None:
         """Optional hook called when a player wins a payout (not including original bet)."""
         pass
-
-class PressAdjuster(BetAdjuster):
-    """
-    Fully presses the bet by adding the winnings to the current amount
-    after a win. Assumes the bet has been resolved and won.
-    """
-
-    def adjust(self, bet: "Bet", table: "Table", rules_engine: "RulesEngine") -> None:
-        if bet.status != "won":
-            return
-
-        bet.amount += bet.resolved_payout  # Add winnings to bet in-place
 
 class RegressAdjuster(BetAdjuster):
     """
@@ -92,21 +78,26 @@ class RegressAdjuster(BetAdjuster):
         if bet.amount > target_amount:
             bet.amount = target_amount
             
-class HalfPressAdjuster(BetAdjuster):
+class PressAdjuster(BetAdjuster):
+    def __init__(self, style: PressStyle = PressStyle.HALF, n_units: int = 1) -> None:
+        self.style = style
+        self.n_units = n_units
+
     def adjust(self, bet: "Bet", table: "Table", rules_engine: "RulesEngine") -> None:
-        """
-        Presses a Place bet by adding half the winnings, rounded to the correct multiple.
-        """
         if bet.status != "won" or bet.resolved_payout == 0:
             return
 
-        if not isinstance(bet.number, int):
-            return
+        unit = bet.unit
+        winnings = bet.resolved_payout
+        additional = 0
 
-        unit = bet.unit  # ✅ Pull directly from the bet
-        if unit == 0:
-            return  # Safety check
+        if self.style == PressStyle.HALF:
+            additional = (winnings // 2) // unit * unit
+        elif self.style == PressStyle.FULL:
+            additional = (winnings // unit) * unit
+        elif self.style == PressStyle.POWER:
+            additional = ((winnings + unit - 1) // unit) * unit
+        elif self.style == PressStyle.N_UNIT and self.n_units:
+            additional = self.n_units * unit
 
-        half_press = bet.resolved_payout // 2
-        additional = (half_press // unit) * unit  # Round down to nearest multiple of unit
         bet.amount += additional

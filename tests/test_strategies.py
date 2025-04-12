@@ -17,7 +17,7 @@ from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.statistics import Statistics
 from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
 from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
-from craps.bet_adjusters import HalfPressAdjuster
+from craps.bet_adjusters import PressStyle, PressAdjuster
 from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
 from tests.test_utils import assert_contains_bet
 
@@ -208,6 +208,9 @@ class TestStrategies(unittest.TestCase):
 
     def test_initial_placement(self):
         bets = self.strategy.place_bets(self.game_state, self.player, self.table)
+        for bet in bets:
+            self.table.place_bet(bet, self.game_state.phase)  # ✅ Actually place the bet
+
         self.assertEqual(len(self.table.bets), 1)
         hop_bet = self.table.bets[0]
         self.assertEqual(hop_bet.number, (1, 1))
@@ -216,7 +219,10 @@ class TestStrategies(unittest.TestCase):
 
     def test_press_and_reset_cycle(self):
         # Step 1: Place initial bet
-        self.strategy.place_bets(self.game_state, self.player, self.table)
+        bets = self.strategy.place_bets(self.game_state, self.player, self.table)
+        for bet in bets:
+            self.table.place_bet(bet, self.game_state.phase)  # ✅ Actually place the bet
+
         hop_bet = self.table.bets[0]
 
         # Step 2: First win (should press to 310)
@@ -304,14 +310,9 @@ class TestStrategies(unittest.TestCase):
             regress_units=10
         )
 
-        press_strategy = AdjusterOnlyStrategy(
-            name="Half Press",
-            adjuster=HalfPressAdjuster()
-        )
-
         strategy = RegressThenPressStrategy(
             regression_strategy=regression_strategy,
-            press_strategy=press_strategy
+            press_style=PressStyle.HALF
         )
 
         self.player.betting_strategy = strategy
