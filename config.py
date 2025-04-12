@@ -1,21 +1,21 @@
 ACTIVE_PLAYERS = {
     "Molly Does": ("3-Point Molly", True),
-    "Dolly Doesn't": ("3-Point Dolly", True),
-    "Line Larry": ("Pass-Line", False),
-    "Odds Otto": ("Pass-Line w/ Odds", False),
-    "Field Finn": ("Field", False),
-    "Cross Cara": ("Iron Cross", False),
-    "Inside Ivy": ("Inside", False),
-    "Across Ace": ("Across", False),
-    "Place Peg": ("Place 68", False),
+    "Dolly Don't": ("3-Point Dolly", True),
+    "Easy Line": ("Pass-Line", False),
+    "Line Odds": ("Pass-Line w/ Odds", True),
+    "Field Newby": ("Field", False),
+    "Crosstopher": ("Iron Cross", True),
+    "Insider": ("Inside", False),
+    "All Across": ("Across", False),
+    "Easy Place": ("Place 68", False),
     "Layla": ("Lay Outside", False),
     "Double Hop": ("Double Aces", False),
-    "ThreeTwoOne": ("Three-Two-One", False),
-    "Regress Rex": ("RegressHalfPress", False),
+    "3-2-1 Blast": ("Three-Two-One", True),
+    "Regress-Press": ("RegressHalfPress", True),
 }
 
 # Add a new configuration entry for session mode
-DICE_MODE = "history"  # Options: "live" or "history"
+DICE_MODE = "live"  # Options: "live" or "history"
 
 # House Rules Configuration
 HOUSE_RULES = {
