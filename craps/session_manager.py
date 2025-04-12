@@ -113,13 +113,6 @@ class SessionManager:
         if not self.player_lineup or not self.play_by_play:
             raise RuntimeError("SessionManager is missing required components.")
 
-        # Assign first shooter
-        if self.player_lineup.get_active_players_list():
-            shooter = self.player_lineup.get_active_players_list()[self.shooter_index]
-            shooter.is_shooter = True
-            if self.game_state:
-                self.game_state.assign_new_shooter(shooter, self.shooter_index + 1)
-
     def accept_bets(self) -> int:
         if not self.locked:
             raise RuntimeError("Session must be locked before accepting bets.")
@@ -210,27 +203,6 @@ class SessionManager:
         state_message = self.game_state.update_state(outcome)
         self.play_by_play.write(state_message)
 
-    def _rotate_shooter(self) -> None:
-        if not self.player_lineup or not self.stats or not self.play_by_play:
-            return
-
-        players = self.player_lineup.get_active_players_list()
-        if not players:
-            return
-
-        current_shooter = players[self.shooter_index % len(players)]
-        current_shooter.reset_shooter()
-
-        self.shooter_index += 1
-        if self.shooter_index >= self.stats.num_shooters:
-            self.play_by_play.write("🔚 Maximum number of shooters reached. Ending session.")
-            self.locked = False
-            return
-
-        new_shooter = players[self.shooter_index % len(players)]
-        new_shooter.is_shooter = True
-        self.play_by_play.write(f"🎯 {new_shooter.name} is now the shooter.")
-
     def adjust_bets(self) -> None:
         """Let each strategy adjust bets after resolution (before next roll)."""
         if not self.game_state or not self.player_lineup or not self.table:
@@ -240,3 +212,35 @@ class SessionManager:
             strategy = getattr(player, "betting_strategy", None)
             if strategy and hasattr(strategy, "adjust_bets"):
                 strategy.adjust_bets(self.game_state, player, self.table)
+
+    def is_seven_out(self, outcome: tuple[int, int]) -> bool:
+        return (
+            self.game_state is not None
+            and self.game_state.phase == "point"
+            and sum(outcome) == 7
+        )
+
+    def handle_seven_out(self) -> None:
+        if not self.stats or not self.game_state or not self.player_lineup:
+            return
+
+        self.stats.record_seven_out()
+        self.game_state.clear_shooter()
+
+        for player in self.player_lineup.get_active_players_list():
+            strategy = getattr(player, "betting_strategy", None)
+            if strategy and hasattr(strategy, "on_new_shooter"):
+                strategy.on_new_shooter()
+
+        self.assign_next_shooter()
+
+    def assign_next_shooter(self) -> None:
+        if not self.game_state or not self.player_lineup:
+            return
+
+        players = self.player_lineup.get_active_players_list()
+        if not players:
+            return
+
+        next_shooter = players[self.shooter_index % len(players)]
+        self.game_state.assign_new_shooter(next_shooter, self.shooter_index + 1)

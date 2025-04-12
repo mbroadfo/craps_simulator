@@ -188,7 +188,7 @@ def run_single_session(
                         f"{b.bet_type} {b.number} (${b.amount} {b.status})" for b in remaining_bets
                     )
                     bet_total = sum(b.amount for b in remaining_bets)
-                    play_by_play.write(f"  📊 {player.name}'s remaining bets: {summary} | Total on table: ${bet_total}")
+                    play_by_play.write(f"  📊 {player.name}'s remaining bets: {summary} | Total on table: ${bet_total} Bankroll: {player.balance}")
 
             # Update player bankrolls & risk history in statistics
             stats.update_player_bankrolls(players)
