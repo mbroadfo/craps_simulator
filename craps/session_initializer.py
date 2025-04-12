@@ -12,7 +12,7 @@ from craps.statistics_report import StatisticsReport
 class InitializeSession:
     def __init__(
         self, 
-        session_mode: str, 
+        dice_mode: str, 
         house_rules: HouseRules,
         play_by_play: PlayByPlay, 
         rules_engine: RulesEngine, 
@@ -22,13 +22,13 @@ class InitializeSession:
         """
         Initialize the session.
 
-        :param session_mode: The session mode ("live" or "history").
+        :param dice_mode: The session mode ("live" or "history").
         :param house_rules: The HouseRules instance of the session.
         :param play_by_play: The PlayByPlay instance for logging session messages.
         :param rules_engine: The RulesEngine instance to use for the session.
         :param log_manager: The LogManager instance for managing session logs.
         """
-        self.session_mode: str = session_mode
+        self.dice_mode: str = dice_mode
         self.house_rules: HouseRules = house_rules
         self.roll_history_manager: RollHistoryManager = RollHistoryManager()
         self.log_manager = log_manager or LogManager()
@@ -41,7 +41,7 @@ class InitializeSession:
     ) -> Optional[Tuple[HouseRules, Table, RollHistoryManager, LogManager, PlayByPlay, Statistics, GameState]]:
         """Prepare the session based on the session mode."""
         try:
-            self.roll_history_manager.prepare_for_session(self.session_mode)
+            self.roll_history_manager.prepare_for_session(self.dice_mode)
         except (ValueError, FileNotFoundError) as e:
             print(f"Error: {e}")
             return None

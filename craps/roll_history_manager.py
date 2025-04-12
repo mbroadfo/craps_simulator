@@ -62,39 +62,39 @@ class RollHistoryManager:
         print(f"Roll history loaded from: {self.roll_history_file}")
         return roll_history
 
-    def prepare_for_session(self, session_mode: str) -> None:
+    def prepare_for_session(self, dice_mode: str) -> None:
         """
         Prepare for the session based on the session mode.
 
-        :param session_mode: The session mode ("live" or "history").
+        :param dice_mode: The session mode ("live" or "history").
         :raises FileNotFoundError: If the roll history file is missing in history mode.
         """
-        self.validate_session_mode(session_mode)
+        self.validate_dice_mode(dice_mode)
         self.ensure_output_folder_exists()
 
-        if session_mode == "live":
+        if dice_mode == "live":
             self.delete_roll_history_file()
             print("Running session in 'live' mode with random rolls.")
-        elif session_mode == "history":
+        elif dice_mode == "history":
             if not os.path.exists(self.roll_history_file):
                 raise FileNotFoundError(f"Roll history file '{self.roll_history_file}' not found. Please run in 'live' mode first.")
             print(f"Running session in 'history' mode using roll history from: {self.roll_history_file}")
 
-    def validate_session_mode(self, session_mode: str) -> None:
+    def validate_dice_mode(self, dice_mode: str) -> None:
         """
         Validate the session mode.
 
-        :param session_mode: The session mode ("live" or "history").
+        :param dice_mode: The session mode ("live" or "history").
         :raises ValueError: If the session mode is invalid.
         """
-        if session_mode not in ["live", "history"]:
-            raise ValueError(f"Invalid SESSION_MODE '{session_mode}'. Must be 'live' or 'history'.")
+        if dice_mode not in ["live", "history"]:
+            raise ValueError(f"Invalid dice_mode '{dice_mode}'. Must be 'live' or 'history'.")
 
-    def get_roll_history_file(self, session_mode: str) -> Optional[str]:
+    def get_roll_history_file(self, dice_mode: str) -> Optional[str]:
         """
         Get the roll history file based on the session mode.
 
-        :param session_mode: The session mode ("live" or "history").
+        :param dice_mode: The session mode ("live" or "history").
         :return: The roll history file path if in "history" mode, otherwise None.
         """
-        return self.roll_history_file if session_mode == "history" else None
+        return self.roll_history_file if dice_mode == "history" else None

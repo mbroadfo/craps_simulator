@@ -57,7 +57,7 @@ def run_single_session(
     
     # ✅ Initialize the Session
     session_initializer = InitializeSession(
-        session_mode="live",
+        dice_mode="live",
         house_rules=house_rules,
         play_by_play=play_by_play,
         log_manager=log_manager,
