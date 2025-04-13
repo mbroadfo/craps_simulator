@@ -66,7 +66,6 @@ def run_session():
 
              # 💥 Resolve outcomes and update state
             session_mgr.resolve_bets(outcome)
-            session_mgr.adjust_bets()
             session_mgr.refresh_bet_statuses()
             session_mgr.log_player_bets()
 

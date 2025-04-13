@@ -220,6 +220,9 @@ class SessionManager:
         state_message = self.game_state.update_state(outcome)
         self.play_by_play.write(state_message)
 
+        # Step 7: Adjust strategy bets
+        self.adjust_bets()
+
     def adjust_bets(self) -> None:
         """Let each strategy adjust bets after resolution (before next roll)."""
         if not self.game_state or not self.player_lineup or not self.table:
