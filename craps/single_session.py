@@ -101,7 +101,7 @@ def run_single_session(
         num_shooters = 10
 
     for shooter_num in range(1, num_shooters + 1):
-        player_index = (shooter_num - 1) % len(players)  # ✅ Safe calculation
+        player_index = (shooter_num - 1) % len(players)
         shooter = players[player_index]
 
         # Assign new shooter via GameState
@@ -120,6 +120,11 @@ def run_single_session(
                 bets = player.betting_strategy.place_bets(game_state, player, table)
                 if bets:
                     player.place_bet(bets, table, game_state.phase, play_by_play)
+
+            # Visual separator with shooter context
+            roll_num = stats.session_rolls + 1
+            shooter_name = shooter.name if shooter else f"Shooter {shooter_num}"
+            play_by_play.write(f"  ---------- Shooter {shooter_num} ({shooter_name}) — Roll #{roll_num} ----------")
 
             # Roll the dice and resolve bets
             outcome = dice.roll()  # Now returns Tuple[int, int]
