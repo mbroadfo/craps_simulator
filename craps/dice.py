@@ -16,6 +16,7 @@ class Dice:
         self.roll_history: List[Dict[str, int | Tuple[int, int]]] = []
         self.current_roll_index: int = 0
         self.forced_rolls: deque[Tuple[int, int]] = deque()
+        self.current_roll_index = 0
 
         if self.roll_history_file:
             self._load_roll_history()

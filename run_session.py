@@ -78,8 +78,9 @@ def run_session():
             print(puck_msg)
 
             # ❌ Handle 7-out transition
-            if session_mgr.game_state.phase == "come-out" and sum(outcome) == 7:
-                break  # end current shooter
+            summary = session_mgr.handle_post_roll(outcome, previous_phase)
+            if summary.new_shooter_assigned:
+                break  # move to next shooter
             
     # 🔚 Wrap up after all shooters are done
     session_mgr.finalize_session(

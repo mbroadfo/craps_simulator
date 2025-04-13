@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Any, NamedTuple
-from config import HOUSE_RULES, ACTIVE_PLAYERS, DICE_TEST_PATTERNS
+from config import HOUSE_RULES, ACTIVE_PLAYERS
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
@@ -51,7 +51,6 @@ class SessionManager:
         num_players: int = 0,
         dice_mode: str = "live", # "live" or "history"
         roll_history_file: Optional[str] = None,
-        pattern_name: Optional[str] = None
     ) -> bool:
         """
         Initializes core game components and prepares the session.
@@ -67,8 +66,6 @@ class SessionManager:
             self.dice = Dice(roll_history_file)
         else:
             self.dice = Dice()
-            if dice_mode == "pattern" and pattern_name in DICE_TEST_PATTERNS:
-                self.dice.forced_rolls.extend(DICE_TEST_PATTERNS[pattern_name])
 
         # ✅ Initialize Session
         session_initializer = InitializeSession(
@@ -259,7 +256,7 @@ class SessionManager:
         if not players:
             return
 
-        self.shooter_index += 1  # ✅ Increment first
+        self.shooter_index += 1
         shooter = players[(self.shooter_index - 1) % len(players)]  # Use previous index for assignment
         self.game_state.assign_new_shooter(shooter, self.shooter_index)
 
@@ -301,7 +298,9 @@ class SessionManager:
         current_phase = self.game_state.phase
         puck_on = self.game_state.puck_on
 
-        seven_out = self.game_state.phase == "point" and sum(outcome) == 7
+        # Detect 7-out since phase has changed
+        seven_out = previous_phase == "point" and total == 7
+
         point_was_hit = (
             previous_phase == "point"
             and current_phase == "come-out"
@@ -320,6 +319,7 @@ class SessionManager:
             self.assign_next_shooter()
             new_shooter_assigned = True
 
+        # ✅ Shooter continues if it’s a come-out roll and not a 7-out
         shooter_continues = not seven_out and current_phase == "come-out"
 
         return PostRollSummary(

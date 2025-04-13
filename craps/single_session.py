@@ -1,5 +1,5 @@
 from typing import List, Optional, Any
-from config import HOUSE_RULES, DICE_TEST_PATTERNS, DICE_MODE
+from config import HOUSE_RULES, DICE_MODE
 from craps.dice import Dice
 from craps.roll_history_manager import RollHistoryManager
 from craps.statistics import Statistics
@@ -18,8 +18,7 @@ import os
 def run_single_session(
     house_rules: Optional[HouseRules] = None,
     strategies: Optional[List[Any]] = None,
-    num_shooters: Optional[int] = 10, 
-    pattern_name: Optional[str] = None) -> Statistics:
+    num_shooters: Optional[int] = 10) -> Statistics:
     """
     Run a single session of craps and log the roll history.
     """
@@ -30,16 +29,9 @@ def run_single_session(
     # ✅ Prepare roll history manager and load rolls if needed
     roll_history_manager = RollHistoryManager()
     roll_history_manager.prepare_for_session(DICE_MODE)
-    rolls = roll_history_manager.load_roll_history() if DICE_MODE == "history" else None
-
-    # ✅ Prepare dice
-    dice = Dice()
-    if rolls:
-        dice.roll_history = rolls
-        dice.current_roll_index = 0  # 🔧 Reset index when assigning external roll history
-    if pattern_name and pattern_name in DICE_TEST_PATTERNS:
-        dice.forced_rolls.extend(DICE_TEST_PATTERNS[pattern_name])
-
+    roll_history_file = roll_history_manager.get_roll_history_file(DICE_MODE)
+    dice = Dice(roll_history_file)
+        
     # ✅ Initialize session-level objects
     rules_engine = RulesEngine()
     play_by_play = PlayByPlay()
