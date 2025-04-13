@@ -1,4 +1,5 @@
-from typing import Optional, Any
+from __future__ import annotations
+from typing import Optional, Any, NamedTuple
 from config import HOUSE_RULES, ACTIVE_PLAYERS, DICE_TEST_PATTERNS
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
@@ -12,6 +13,15 @@ from craps.roll_history_manager import RollHistoryManager
 from craps.statistics import Statistics
 from craps.game_state import GameState
 from craps.player import Player
+
+class PostRollSummary(NamedTuple):
+    total: int
+    seven_out: bool
+    point_was_hit: bool
+    transitioned: bool
+    puck_on: bool
+    new_shooter_assigned: bool
+    shooter_continues: bool
 
 
 class SessionManager:
@@ -148,6 +158,11 @@ class SessionManager:
         if not (self.dice and self.stats and self.table and self.play_by_play and self.roll_history_manager and self.game_state and self.player_lineup):
             raise RuntimeError("SessionManager missing required components for rolling dice.")
 
+        # 📣 Visual separator with shooter context
+        shooter_name = self.game_state.shooter.name if self.game_state.shooter else f"Shooter {self.shooter_index + 1}"
+        roll_num = self.stats.session_rolls + 1  # next roll
+        self.play_by_play.write(f"  ---------- Shooter {self.shooter_index} ({shooter_name}) — Roll #{roll_num} ----------")
+
         outcome = self.dice.roll()
         total = sum(outcome)
 
@@ -156,13 +171,12 @@ class SessionManager:
         self.stats.update_rolls(total=total, table_risk=self.table.total_risk())
         self.stats.update_shooter_stats(shooter)
 
-        roll_number = self.stats.session_rolls
-        roll_message = f"  🎲 Roll #{roll_number} → {outcome} = {total}"
+        roll_message = f"  🎲 Roll #{self.stats.session_rolls} → {outcome} = {total}"
         self.play_by_play.write(roll_message)
 
         self.roll_history.append({
             "shooter_num": self.shooter_index + 1,
-            "roll_number": roll_number,
+            "roll_number": self.stats.session_rolls,
             "dice": outcome,
             "total": total,
             "phase": self.game_state.phase,
@@ -170,7 +184,7 @@ class SessionManager:
         })
 
         return outcome
-    
+
     def resolve_bets(self, outcome: tuple[int, int]) -> None:
         if not (self.table and self.game_state and self.stats and self.play_by_play and self.house_rules):
             raise RuntimeError("Missing components for resolving bets.")
@@ -199,9 +213,23 @@ class SessionManager:
                     self.table.bets.remove(bet)
         
         # Step 6: Update game state
-        previous_phase = self.game_state.phase
         state_message = self.game_state.update_state(outcome)
         self.play_by_play.write(state_message)
+
+        # Step 7: Check for 7-out transition (must use updated phase!)
+        if self.game_state.previous_point is not None and self.game_state.point is None and sum(outcome) == 7:
+            self.stats.record_seven_out()
+            self.game_state.clear_shooter()
+
+            if not self.player_lineup:
+                raise RuntimeError("SessionManager: player_lineup is not initialized.")
+
+            for player in self.player_lineup.get_active_players_list():
+                strategy = getattr(player, "betting_strategy", None)
+                if strategy and hasattr(strategy, "on_new_shooter"):
+                    strategy.on_new_shooter()
+
+            self.assign_next_shooter()
 
     def adjust_bets(self) -> None:
         """Let each strategy adjust bets after resolution (before next roll)."""
@@ -212,27 +240,9 @@ class SessionManager:
             strategy = getattr(player, "betting_strategy", None)
             if strategy and hasattr(strategy, "adjust_bets"):
                 strategy.adjust_bets(self.game_state, player, self.table)
-
-    def is_seven_out(self, outcome: tuple[int, int]) -> bool:
-        return (
-            self.game_state is not None
-            and self.game_state.phase == "point"
-            and sum(outcome) == 7
-        )
-
-    def handle_seven_out(self) -> None:
-        if not self.stats or not self.game_state or not self.player_lineup:
-            return
-
-        self.stats.record_seven_out()
-        self.game_state.clear_shooter()
-
-        for player in self.player_lineup.get_active_players_list():
-            strategy = getattr(player, "betting_strategy", None)
-            if strategy and hasattr(strategy, "on_new_shooter"):
-                strategy.on_new_shooter()
-
-        self.assign_next_shooter()
+        
+        if self.stats:
+            self.stats.update_player_bankrolls(self.player_lineup.get_active_players_list())
 
     def assign_next_shooter(self) -> None:
         if not self.game_state or not self.player_lineup:
@@ -242,5 +252,75 @@ class SessionManager:
         if not players:
             return
 
-        next_shooter = players[self.shooter_index % len(players)]
-        self.game_state.assign_new_shooter(next_shooter, self.shooter_index + 1)
+        self.shooter_index += 1  # ✅ Increment first
+        shooter = players[(self.shooter_index - 1) % len(players)]  # Use previous index for assignment
+        self.game_state.assign_new_shooter(shooter, self.shooter_index)
+
+
+    def refresh_bet_statuses(self) -> None:
+        """Reset bet statuses based on game phase, house rules, and strategy preferences."""
+        if not self.table or not self.game_state:
+            return
+
+        for bet in self.table.bets:
+            strategy = getattr(bet.owner, "betting_strategy", None)
+            is_turned_off = getattr(strategy, "turned_off", False)
+
+            if bet.bet_type == "Field":
+                bet.status = "active"
+            elif bet.bet_type in ["Place", "Buy", "Lay"]:
+                if self.house_rules and (self.game_state.phase == "point" or self.house_rules.leave_bets_working):
+                    bet.status = "active"
+                else:
+                    bet.status = "inactive"
+            elif bet.bet_type in ["Hop", "Hardways", "Proposition"]:
+                if bet.status == "won":
+                    bet.status = "active"
+
+        if self.stats and self.player_lineup:
+            self.stats.update_player_risk(
+                self.player_lineup.get_active_players_list(),
+                self.table
+        )
+
+    def handle_post_roll(self, outcome: tuple[int, int], previous_phase: str) -> PostRollSummary:
+        if not self.game_state or not self.stats:
+            raise RuntimeError("Game state or statistics not initialized.")
+        
+        if not self.player_lineup:
+            raise RuntimeError("PlayerLineup is not initialized.")
+
+        total = sum(outcome)
+        current_phase = self.game_state.phase
+        puck_on = self.game_state.puck_on
+
+        seven_out = self.game_state.phase == "point" and sum(outcome) == 7
+        point_was_hit = (
+            previous_phase == "point"
+            and current_phase == "come-out"
+            and total == self.game_state.previous_point
+        )
+        transitioned = previous_phase != current_phase
+        new_shooter_assigned = False
+
+        if seven_out:
+            self.stats.record_seven_out()
+            self.game_state.clear_shooter()
+            for player in self.player_lineup.get_active_players_list():
+                strategy = getattr(player, "betting_strategy", None)
+                if strategy and hasattr(strategy, "on_new_shooter"):
+                    strategy.on_new_shooter()
+            self.assign_next_shooter()
+            new_shooter_assigned = True
+
+        shooter_continues = not seven_out and current_phase == "come-out"
+
+        return PostRollSummary(
+            total=total,
+            seven_out=seven_out,
+            point_was_hit=point_was_hit,
+            transitioned=transitioned,
+            puck_on=puck_on,
+            new_shooter_assigned=new_shooter_assigned,
+            shooter_continues=shooter_continues,
+        )

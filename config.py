@@ -1,17 +1,17 @@
 ACTIVE_PLAYERS = {
-    "Molly Does": ("3-Point Molly", True),
-    "Dolly Don't": ("3-Point Dolly", True),
-    "Easy Line": ("Pass-Line", False),
-    "Line Odds": ("Pass-Line w/ Odds", True),
-    "Field Newby": ("Field", False),
-    "Crosstopher": ("Iron Cross", True),
+    "Molly": ("3-Point Molly", False),
+    "Dolly": ("3-Point Dolly", False),
+    "Passer": ("Pass-Line", False),
+    "High Pass": ("Pass-Line w/ Odds", False),
+    "Fielder": ("Field", False),
+    "Crosstopher": ("Iron Cross", False),
     "Insider": ("Inside", False),
-    "All Across": ("Across", False),
+    "My Boxes": ("Across", False),
     "Easy Place": ("Place 68", False),
     "Layla": ("Lay Outside", False),
-    "Double Hop": ("Double Aces", False),
+    "Blow It": ("Double Aces", False),
     "3-2-1 Blast": ("Three-Two-One", True),
-    "Regress-Press": ("RegressHalfPress", True),
+    "Go Big": ("RegressHalfPress", False),
 }
 
 # Add a new configuration entry for session mode

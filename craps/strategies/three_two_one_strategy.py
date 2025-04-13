@@ -38,6 +38,7 @@ class ThreeTwoOneStrategy(BaseStrategy):
                         multiplier = self.rules_engine.get_odds_multiplier(self.odds_type, game_state.point) or 0
                         odds_amount = self.min_bet * multiplier
                         odds_bet = self.rules_engine.create_bet("Pass Line Odds", odds_amount, player)
+                        odds_bet.parent_bet = bet  # ✅ Critical: link odds to Pass Line
                         new_bets.append(odds_bet)
 
             # Place inside numbers (excluding the point)
