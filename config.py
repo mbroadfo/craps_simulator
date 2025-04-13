@@ -28,7 +28,7 @@ HOUSE_RULES = {
     "leave_winning_bets_up": True,  # If it pays, it stays
 }
 
-"""DICE_TEST_PATTERNS = {
+DICE_TEST_PATTERNS = {
     "point_7_out": [
         (3, 3),  # point set
         (4, 1),  # random roll
@@ -44,4 +44,3 @@ HOUSE_RULES = {
     ],
 
 }
-"""
