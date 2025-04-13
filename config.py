@@ -6,7 +6,7 @@ ACTIVE_PLAYERS = {
     "Fielder": ("Field", True),
     "Crosstopher": ("Iron Cross", True),
     "Insider": ("Inside", True),
-    "My Boxes": ("Across", True),
+    "All Boxes": ("Across", True),
     "Six-Eight": ("Place 68", True),
     "Layla": ("Lay Outside", True),
     "Blow It": ("Double Aces", True),

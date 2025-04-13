@@ -1,6 +1,7 @@
 from typing import List, Optional, Any
 from config import HOUSE_RULES, DICE_TEST_PATTERNS, DICE_MODE
 from craps.dice import Dice
+from craps.roll_history_manager import RollHistoryManager
 from craps.statistics import Statistics
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
@@ -18,7 +19,6 @@ def run_single_session(
     house_rules: Optional[HouseRules] = None,
     strategies: Optional[List[Any]] = None,
     num_shooters: Optional[int] = 10, 
-    roll_history_file: Optional[str] = None,
     pattern_name: Optional[str] = None) -> Statistics:
     """
     Run a single session of craps and log the roll history.
@@ -27,12 +27,20 @@ def run_single_session(
     if house_rules is None:
         house_rules = HouseRules(HOUSE_RULES)
 
-    # Set dice mode
-    dice = Dice(roll_history_file) if roll_history_file and os.path.exists(roll_history_file) else Dice()
+    # ✅ Prepare roll history manager and load rolls if needed
+    roll_history_manager = RollHistoryManager()
+    roll_history_manager.prepare_for_session(DICE_MODE)
+    rolls = roll_history_manager.load_roll_history() if DICE_MODE == "history" else None
+
+    # ✅ Prepare dice
+    dice = Dice()
+    if rolls:
+        dice.roll_history = rolls
+        dice.current_roll_index = 0  # 🔧 Reset index when assigning external roll history
     if pattern_name and pattern_name in DICE_TEST_PATTERNS:
         dice.forced_rolls.extend(DICE_TEST_PATTERNS[pattern_name])
 
-        # ✅ Initialize session-level objects
+    # ✅ Initialize session-level objects
     rules_engine = RulesEngine()
     play_by_play = PlayByPlay()
     log_manager = LogManager()
@@ -64,7 +72,7 @@ def run_single_session(
         rules_engine=rules_engine,
         player_lineup=player_lineup
     )
-    
+
     session_data = session_initializer.prepare_session(
         num_shooters or 10,  # ✅ Default if None
         len(strategies or [])  # ✅ Safe check for None

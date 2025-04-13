@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Any, NamedTuple
-from config import HOUSE_RULES, ACTIVE_PLAYERS, DICE_TEST_PATTERNS, DICE_MODE
+from config import HOUSE_RULES, ACTIVE_PLAYERS, DICE_TEST_PATTERNS
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
@@ -49,8 +49,7 @@ class SessionManager:
         house_rules_dict: Optional[dict[str, Any]] = None,
         num_shooters: int = 10,
         num_players: int = 0,
-        session_mode: str = "interactive",
-        dice_mode: str = "live",
+        dice_mode: str = "live", # "live" or "history"
         roll_history_file: Optional[str] = None,
         pattern_name: Optional[str] = None
     ) -> bool:
@@ -113,7 +112,10 @@ class SessionManager:
         ]
 
         self.player_lineup.assign_strategies(players)
-        self.stats.num_players = len(players)
+
+        if self.stats:
+            self.stats.num_players = len(players)
+
         return len(players)
 
     def lock_session(self) -> None:
@@ -181,7 +183,7 @@ class SessionManager:
         self.roll_history.append({
             "shooter_num": self.shooter_index + 1,
             "roll_number": self.stats.session_rolls,
-            "dice": outcome,
+            "dice": list(outcome),
             "total": total,
             "phase": self.game_state.phase,
             "point": self.game_state.point
@@ -331,13 +333,15 @@ class SessionManager:
     
     def finalize_session(self,
         stats: Statistics,
+        dice_mode: str,
         roll_history: list[dict[str, Any]],
         roll_history_manager: RollHistoryManager,
         play_by_play: PlayByPlay,
         players: list[Any]
     ) -> Statistics:
+        
         # Save roll history if running in live mode
-        if DICE_MODE == "live":
+        if dice_mode == "live":
             roll_history_manager.save_roll_history(roll_history)
 
         # View the play-by-play log

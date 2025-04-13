@@ -22,9 +22,9 @@ class RollHistoryManager:
     def save_roll_history(self, roll_history: List[Dict[str, Any]]) -> None:
         """
         Save the roll history to a CSV file.
-
-        :param roll_history: A list of dictionaries representing the roll history.
+        Dice will be stored as stringified lists: "[6, 4]"
         """
+
         self.ensure_output_folder_exists()
         with open(self.roll_history_file, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ["shooter_num", "roll_number", "dice", "total", "phase", "point"]
@@ -35,7 +35,9 @@ class RollHistoryManager:
 
             # Write the roll history
             for roll in roll_history:
-                writer.writerow(roll)
+                row_to_write = roll.copy()
+                row_to_write["dice"] = str(list(roll["dice"]))
+                writer.writerow(row_to_write)
 
         print(f"Roll history saved to: {self.roll_history_file}")
 
@@ -46,7 +48,7 @@ class RollHistoryManager:
         :return: A list of dictionaries representing the roll history.
         """
         if not os.path.exists(self.roll_history_file):
-            raise FileNotFoundError(f"Roll history file '{self.roll_history_file}' not found.")
+            raise FileNotFoundError(f"💾 Roll history file '{self.roll_history_file}' not found.")
 
         roll_history: List[Dict[str, Any]] = []
         with open(self.roll_history_file, 'r', newline='', encoding='utf-8') as csvfile:
@@ -55,11 +57,13 @@ class RollHistoryManager:
                 # Convert dice and total to integers
                 row["roll_number"] = int(row["roll_number"])
                 row["shooter_num"] = int(row["shooter_num"])
-                row["dice"] = [int(die) for die in row["dice"].strip('[]').split(', ')]
+                dice_str = row["dice"].strip("[] ")
+                dice_parts = dice_str.split(",")
+                row["dice"] = [int(dice_parts[0]), int(dice_parts[1])]
                 row["total"] = int(row["total"])
                 roll_history.append(row)
 
-        print(f"Roll history loaded from: {self.roll_history_file}")
+        print(f"💾 Roll history loaded from: {self.roll_history_file}")
         return roll_history
 
     def prepare_for_session(self, dice_mode: str) -> None:
@@ -74,11 +78,11 @@ class RollHistoryManager:
 
         if dice_mode == "live":
             self.delete_roll_history_file()
-            print("Running session in 'live' mode with random rolls.")
+            print("📖 Running session in 'live' mode with random rolls.")
         elif dice_mode == "history":
             if not os.path.exists(self.roll_history_file):
-                raise FileNotFoundError(f"Roll history file '{self.roll_history_file}' not found. Please run in 'live' mode first.")
-            print(f"Running session in 'history' mode using roll history from: {self.roll_history_file}")
+                raise FileNotFoundError(f"👹 Roll history file '{self.roll_history_file}' not found. Please run in 'live' mode first.")
+            print(f"▶ Running session in 'history' mode using roll history from: {self.roll_history_file}")
 
     def validate_dice_mode(self, dice_mode: str) -> None:
         """
@@ -88,7 +92,7 @@ class RollHistoryManager:
         :raises ValueError: If the session mode is invalid.
         """
         if dice_mode not in ["live", "history"]:
-            raise ValueError(f"Invalid dice_mode '{dice_mode}'. Must be 'live' or 'history'.")
+            raise ValueError(f"💩 Invalid dice_mode '{dice_mode}'. Must be 'live' or 'history'.")
 
     def get_roll_history_file(self, dice_mode: str) -> Optional[str]:
         """
