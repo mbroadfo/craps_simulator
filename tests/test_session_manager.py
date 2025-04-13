@@ -1,8 +1,9 @@
 import sys
 import os
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from craps.session_manager import SessionManager
+from config import DICE_MODE
 
 def is_interactive() -> bool:
     """Detect whether this script is running in an interactive context (not under pytest)."""
@@ -12,18 +13,18 @@ def test_basic_session_setup():
     print("\n🔧 Testing SessionManager setup...")
     session_mgr = SessionManager()
     max_shooters = 3
-    success = session_mgr.setup_session(num_shooters=max_shooters)
+    success = session_mgr.setup_session(num_shooters=max_shooters, dice_mode=DICE_MODE)
 
     if not success:
         print("❌ Session initialization failed.")
         return
 
-    print(f"✅ Session initialized successfully!")
-    print(f"✅ House Rules: Table Min = ${session_mgr.house_rules.table_minimum}, Max = ${session_mgr.house_rules.table_maximum}")
-    print(f"✅ Game initialized with table: {bool(session_mgr.table)}, stats: {bool(session_mgr.stats)}")
+    print(f"🐣 Session initialized successfully!")
+    print(f"🏠 House Rules: Table Min = ${session_mgr.house_rules.table_minimum}, Max = ${session_mgr.house_rules.table_maximum}")
+    print(f"🧩 Game initialized with table: {bool(session_mgr.table)}, stats: {bool(session_mgr.stats)}")
 
     num_players = session_mgr.add_players_from_config()
-    print(f"✅ Players added from config: {num_players}")
+    print(f"🧑‍🤝‍🧑 Players added from config: {num_players}")
     for player in session_mgr.player_lineup.get_active_players_list():
         print(f"  🧑 {player.name} [Strategy: {player.name}] — Bankroll: ${player.balance}")
 
@@ -68,12 +69,20 @@ def test_basic_session_setup():
             )
             print(puck_msg)
 
-            # ✅ Handle 7-out transition
+            # ❌ Handle 7-out transition
             if session_mgr.game_state.phase == "come-out" and sum(outcome) == 7:
                 break  # end current shooter
-
-            if not is_interactive():
-                return
+            
+    # 🔚 EXIT here in non-interactive mode
+    if not is_interactive():
+        session_mgr.finalize_session(
+            stats=session_mgr.stats,
+            roll_history=session_mgr.roll_history,
+            roll_history_manager=session_mgr.roll_history_manager,
+            play_by_play=session_mgr.play_by_play,
+            players=session_mgr.player_lineup.get_active_players_list()
+        )
+        return
 
 if __name__ == "__main__":
     test_basic_session_setup()

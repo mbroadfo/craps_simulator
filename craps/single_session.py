@@ -1,5 +1,5 @@
 from typing import List, Optional, Any
-from config import HOUSE_RULES, DICE_TEST_PATTERNS
+from config import HOUSE_RULES, DICE_TEST_PATTERNS, DICE_MODE
 from craps.dice import Dice
 from craps.statistics import Statistics
 from craps.house_rules import HouseRules
@@ -57,7 +57,7 @@ def run_single_session(
     
     # ✅ Initialize the Session
     session_initializer = InitializeSession(
-        dice_mode="live",
+        dice_mode=DICE_MODE,
         house_rules=house_rules,
         play_by_play=play_by_play,
         log_manager=log_manager,
@@ -211,17 +211,19 @@ def run_single_session(
 
                 break  # Next shooter
 
-    # ✅ Wrap up Session
-    stats.roll_history = roll_history
-    stats.update_player_stats(players)
-    statistics_report = StatisticsReport()
-    statistics_report.write_statistics(stats)
-    
+    # ✅ Save roll history if running in live mode
+    if DICE_MODE == "live":
+        roll_history_manager.save_roll_history(roll_history)
+        
     # View the play-by-play log
     log_viewer = InteractiveLogViewer()
     log_viewer.view(play_by_play.play_by_play_file)
     
-    # View the statistics report
+    # ✅ Save the stats, build the report, and display the statistics
+    stats.roll_history = roll_history
+    stats.update_player_stats(players)
+    statistics_report = StatisticsReport()
+    statistics_report.write_statistics(stats)
     log_viewer = InteractiveLogViewer()
     log_viewer.view("output/statistics_report.txt")
 

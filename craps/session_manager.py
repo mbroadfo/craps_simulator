@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Any, NamedTuple
-from config import HOUSE_RULES, ACTIVE_PLAYERS, DICE_TEST_PATTERNS
+from config import HOUSE_RULES, ACTIVE_PLAYERS, DICE_TEST_PATTERNS, DICE_MODE
 from craps.house_rules import HouseRules
 from craps.log_manager import LogManager
 from craps.play_by_play import PlayByPlay
@@ -13,6 +13,9 @@ from craps.roll_history_manager import RollHistoryManager
 from craps.statistics import Statistics
 from craps.game_state import GameState
 from craps.player import Player
+from craps.view_log import InteractiveLogViewer
+from craps.statistics_report import StatisticsReport
+from craps.visualizer import Visualizer
 
 class PostRollSummary(NamedTuple):
     total: int
@@ -324,3 +327,34 @@ class SessionManager:
             new_shooter_assigned=new_shooter_assigned,
             shooter_continues=shooter_continues,
         )
+    
+    def finalize_session(self,
+        stats: Statistics,
+        roll_history: list[dict[str, Any]],
+        roll_history_manager: RollHistoryManager,
+        play_by_play: PlayByPlay,
+        players: list[Any]
+    ) -> Statistics:
+        # Save roll history if running in live mode
+        if DICE_MODE == "live":
+            roll_history_manager.save_roll_history(roll_history)
+
+        # View the play-by-play log
+        log_viewer = InteractiveLogViewer()
+        log_viewer.view(play_by_play.play_by_play_file)
+
+        # ✅ Save the stats, build the report, and display the statistics
+        stats.roll_history = roll_history
+        stats.update_player_stats(players)
+        statistics_report = StatisticsReport()
+        statistics_report.write_statistics(stats)
+        log_viewer.view("output/statistics_report.txt")
+
+        # Visualize player bankrolls (only if there are players and rolls)
+        if stats.num_players == 0 or stats.session_rolls == 0:
+            print("⚠️ No data to visualize — skipping charts.")
+        else:
+            visualizer = Visualizer(stats)
+            visualizer.visualize_bankrolls()
+
+        return stats
