@@ -9,8 +9,8 @@ ACTIVE_PLAYERS = {
     "All Boxes": ("Across", True),
     "Six-Eight": ("Place 68", True),
     "Layla": ("Lay Outside", True),
-    "Blow It": ("Double Aces", True),
-    "3-2-1 Blast": ("Three-Two-One", True),
+    "Blow Aces": ("Double Aces", True),
+    "321-Blast": ("Three-Two-One", True),
     "Go Big": ("RegressHalfPress", True),
 }
 

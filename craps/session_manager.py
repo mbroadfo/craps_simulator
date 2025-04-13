@@ -220,21 +220,6 @@ class SessionManager:
         state_message = self.game_state.update_state(outcome)
         self.play_by_play.write(state_message)
 
-        # Step 7: Check for 7-out transition (must use updated phase!)
-        if self.game_state.previous_point is not None and self.game_state.point is None and sum(outcome) == 7:
-            self.stats.record_seven_out()
-            self.game_state.clear_shooter()
-
-            if not self.player_lineup:
-                raise RuntimeError("SessionManager: player_lineup is not initialized.")
-
-            for player in self.player_lineup.get_active_players_list():
-                strategy = getattr(player, "betting_strategy", None)
-                if strategy and hasattr(strategy, "on_new_shooter"):
-                    strategy.on_new_shooter()
-
-            self.assign_next_shooter()
-
     def adjust_bets(self) -> None:
         """Let each strategy adjust bets after resolution (before next roll)."""
         if not self.game_state or not self.player_lineup or not self.table:
@@ -255,15 +240,18 @@ class SessionManager:
         players = self.player_lineup.get_active_players_list()
         if not players:
             return
+        
+        # 💥 Avoid assigning more shooters than we have planned
+        if not self.stats or self.shooter_index >= self.stats.num_shooters:
+            return  # Reached max shooters, do not assign more
 
         self.shooter_index += 1
         shooter = players[(self.shooter_index - 1) % len(players)]  # Use previous index for assignment
         self.game_state.assign_new_shooter(shooter, self.shooter_index)
 
-
     def refresh_bet_statuses(self) -> None:
         """Reset bet statuses based on game phase, house rules, and strategy preferences."""
-        if not self.table or not self.game_state:
+        if not self.table or not self.game_state or not self.house_rules:
             return
 
         for bet in self.table.bets:
@@ -272,11 +260,13 @@ class SessionManager:
 
             if bet.bet_type == "Field":
                 bet.status = "active"
+
             elif bet.bet_type in ["Place", "Buy", "Lay"]:
-                if self.house_rules and (self.game_state.phase == "point" or self.house_rules.leave_bets_working):
+                if (self.game_state.phase == "point" or self.house_rules.leave_bets_working) and not is_turned_off:
                     bet.status = "active"
                 else:
                     bet.status = "inactive"
+
             elif bet.bet_type in ["Hop", "Hardways", "Proposition"]:
                 if bet.status == "won":
                     bet.status = "active"
@@ -285,7 +275,7 @@ class SessionManager:
             self.stats.update_player_risk(
                 self.player_lineup.get_active_players_list(),
                 self.table
-        )
+            )
 
     def handle_post_roll(self, outcome: tuple[int, int], previous_phase: str) -> PostRollSummary:
         if not self.game_state or not self.stats:
@@ -364,3 +354,18 @@ class SessionManager:
             visualizer.visualize_bankrolls()
 
         return stats
+
+    def log_player_bets(self) -> None:
+        if not self.player_lineup or not self.table or not self.play_by_play:
+            return
+
+        for player in self.player_lineup.get_active_players_list():
+            remaining_bets = [b for b in self.table.bets if b.owner == player]
+            if remaining_bets:
+                summary = ", ".join(
+                    f"{b.bet_type} {b.number} (${b.amount} {b.status})" for b in remaining_bets
+                )
+                bet_total = sum(b.amount for b in remaining_bets)
+                self.play_by_play.write(
+                    f"  📊 {player.name}'s remaining bets: {summary} | Total on table: ${bet_total} Bankroll: {player.balance}"
+                )
