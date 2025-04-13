@@ -41,6 +41,7 @@ class Statistics:
                 "net_win_loss": 0,
                 "bets_settled": 0,
                 "bets_won": 0,
+                "bets_lost": 0,
                 "highest_bankroll": player.balance,
                 "lowest_bankroll": player.balance,
             }
