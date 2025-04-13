@@ -1,0 +1,2233 @@
+==============================================================================
+🎲🎲 Shooter #1: Molly steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $500 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  ---------- Shooter 1 (Molly) — Roll #1 ----------
+  🎲 Roll #1 → (6, 3) = 9
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $510
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $499
+  ⚪ Point Set to 9 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $500 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $500 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $500 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $500 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $500 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $10 Place 5 bet (Status: active). Bankroll: $500 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 6 bet (Status: active). Bankroll: $500 (w/ $32 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 8 bet (Status: active). Bankroll: $500 (w/ $44 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $500 (w/ $54 on the table)
+  💰 Bet placed: Insider's $10 Place 5 bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Insider's $12 Place 6 bet (Status: active). Bankroll: $500 (w/ $22 on the table)
+  💰 Bet placed: Insider's $12 Place 8 bet (Status: active). Bankroll: $500 (w/ $34 on the table)
+  💰 Bet placed: Insider's $10 Place 9 bet (Status: active). Bankroll: $500 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 4 bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: All Boxes's $10 Place 5 bet (Status: active). Bankroll: $500 (w/ $20 on the table)
+  💰 Bet placed: All Boxes's $12 Place 6 bet (Status: active). Bankroll: $500 (w/ $32 on the table)
+  💰 Bet placed: All Boxes's $12 Place 8 bet (Status: active). Bankroll: $500 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 9 bet (Status: active). Bankroll: $500 (w/ $54 on the table)
+  💰 Bet placed: All Boxes's $10 Place 10 bet (Status: active). Bankroll: $500 (w/ $64 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 6 bet (Status: active). Bankroll: $500 (w/ $12 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 8 bet (Status: active). Bankroll: $500 (w/ $24 on the table)
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $500 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $499 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $500 (w/ $20 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 5 bet (Status: active). Bankroll: $500 (w/ $30 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 6 bet (Status: active). Bankroll: $500 (w/ $42 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 8 bet (Status: active). Bankroll: $500 (w/ $54 on the table)
+  💰 Bet placed: Go Big's $60 Place 8 bet (Status: active). Bankroll: $500 (w/ $60 on the table)
+  💰 Bet placed: Go Big's $50 Place 9 bet (Status: active). Bankroll: $500 (w/ $110 on the table)
+  💰 Bet placed: Go Big's $50 Place 5 bet (Status: active). Bankroll: $500 (w/ $160 on the table)
+  💰 Bet placed: Go Big's $60 Place 6 bet (Status: active). Bankroll: $500 (w/ $220 on the table)
+  ---------- Shooter 1 (Molly) — Roll #2 ----------
+  🎲 Roll #2 → (4, 1) = 5
+  ⏫ Molly's Come bet moves to the 5.
+  ⏫ Dolly's Don't Come bet moves to the 5.
+  ❌ Fielder's Field 9 bet LOST $10. New Bankroll: $500
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $514
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $504
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $514
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $514
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $498
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $514
+  ⚡Go Big's Place 5 bet WON $70! New Bankroll: $570
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $500 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $500 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $500 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $500 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $504 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $498 (w/ $1 on the table)
+  ---------- Shooter 1 (Molly) — Roll #3 ----------
+  🎲 Roll #3 → (2, 6) = 8
+  ⏫ Molly's Come bet moves to the 8.
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $518
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $528
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $528
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $514
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $528
+  ⚡Go Big's Place 8 bet WON $35! New Bankroll: $605
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $490
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $508
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $497
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $500 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $500 (w/ $60 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $508 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $497 (w/ $1 on the table)
+  ---------- Shooter 1 (Molly) — Roll #4 ----------
+  🎲 Roll #4 → (6, 4) = 10
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $546
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $490
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $500
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $518
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $496
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $490 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $496 (w/ $1 on the table)
+  ---------- Shooter 1 (Molly) — Roll #5 ----------
+  🎲 Roll #5 → (1, 6) = 7
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $490
+  ❌ Molly's Pass Line Odds bet LOST $10. New Bankroll: $480
+  ⚡Dolly's Don't Pass bet WON $10! New Bankroll: $510
+  ⚡Dolly's Don't Pass Odds bet WON $10! New Bankroll: $520
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $490
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $490
+  ❌ Odd Linus's Pass Line Odds bet LOST $10. New Bankroll: $480
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $508
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $518
+  ❌ 3-2-1 Blast's Pass Line Odds bet LOST $10. New Bankroll: $508
+  ❌ Molly's Come 5 bet LOST $10. New Bankroll: $470
+  ❌ Molly's Come Odds 5 bet LOST $10. New Bankroll: $460
+  ⚡Dolly's Don't Come 5 bet WON $10! New Bankroll: $530
+  ⚡Dolly's Don't Come Odds 5 bet WON $6! New Bankroll: $536
+  ❌ Crosstopher's Place 5 bet LOST $10. New Bankroll: $498
+  ❌ Crosstopher's Place 6 bet LOST $12. New Bankroll: $486
+  ❌ Crosstopher's Place 8 bet LOST $12. New Bankroll: $474
+  ❌ Insider's Place 5 bet LOST $10. New Bankroll: $518
+  ❌ Insider's Place 6 bet LOST $12. New Bankroll: $506
+  ❌ Insider's Place 8 bet LOST $12. New Bankroll: $494
+  ❌ Insider's Place 9 bet LOST $10. New Bankroll: $484
+  ❌ All Boxes's Place 4 bet LOST $10. New Bankroll: $536
+  ❌ All Boxes's Place 5 bet LOST $10. New Bankroll: $526
+  ❌ All Boxes's Place 6 bet LOST $12. New Bankroll: $514
+  ❌ All Boxes's Place 8 bet LOST $12. New Bankroll: $502
+  ❌ All Boxes's Place 9 bet LOST $10. New Bankroll: $492
+  ❌ All Boxes's Place 10 bet LOST $10. New Bankroll: $482
+  ❌ Six-Eight's Place 6 bet LOST $12. New Bankroll: $502
+  ❌ Six-Eight's Place 8 bet LOST $12. New Bankroll: $490
+  ⚡Layla's Lay 4 bet WON $5! New Bankroll: $495
+  ❌ 3-2-1 Blast's Place 5 bet LOST $10. New Bankroll: $498
+  ❌ 3-2-1 Blast's Place 6 bet LOST $12. New Bankroll: $486
+  ❌ 3-2-1 Blast's Place 8 bet LOST $12. New Bankroll: $474
+  ❌ Go Big's Place 8 bet LOST $18. New Bankroll: $587
+  ❌ Go Big's Place 9 bet LOST $15. New Bankroll: $572
+  ❌ Go Big's Place 5 bet LOST $15. New Bankroll: $557
+  ❌ Go Big's Place 6 bet LOST $18. New Bankroll: $539
+  ❌ Molly's Come 8 bet LOST $10. New Bankroll: $450
+  ❌ Molly's Come Odds 8 bet LOST $10. New Bankroll: $440
+  ⚡Dolly's Don't Come 8 bet WON $10! New Bankroll: $546
+  ⚡Dolly's Don't Come Odds 8 bet WON $8! New Bankroll: $554
+  ❌ Fielder's Field 10 bet LOST $10. New Bankroll: $490
+  ❌ Crosstopher's Field 10 bet LOST $10. New Bankroll: $464
+  ⚡Layla's Lay 10 bet WON $5! New Bankroll: $500
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $495
+  ⚫ 7-Out → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #2: Dolly steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $440 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $554 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $464 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $495 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $474 (w/ $10 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #6 ----------
+  🎲 Roll #6 → (5, 1) = 6
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $480
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $494
+  ⚪ Point Set to 6 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $440 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $440 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $554 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $554 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $480 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Place 5 bet (Status: active). Bankroll: $464 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 8 bet (Status: active). Bankroll: $464 (w/ $32 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $464 (w/ $42 on the table)
+  💰 Bet placed: Insider's $10 Place 5 bet (Status: active). Bankroll: $484 (w/ $10 on the table)
+  💰 Bet placed: Insider's $12 Place 6 bet (Status: active). Bankroll: $484 (w/ $22 on the table)
+  💰 Bet placed: Insider's $12 Place 8 bet (Status: active). Bankroll: $484 (w/ $34 on the table)
+  💰 Bet placed: Insider's $10 Place 9 bet (Status: active). Bankroll: $484 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 4 bet (Status: active). Bankroll: $482 (w/ $10 on the table)
+  💰 Bet placed: All Boxes's $10 Place 5 bet (Status: active). Bankroll: $482 (w/ $20 on the table)
+  💰 Bet placed: All Boxes's $12 Place 6 bet (Status: active). Bankroll: $482 (w/ $32 on the table)
+  💰 Bet placed: All Boxes's $12 Place 8 bet (Status: active). Bankroll: $482 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 9 bet (Status: active). Bankroll: $482 (w/ $54 on the table)
+  💰 Bet placed: All Boxes's $10 Place 10 bet (Status: active). Bankroll: $482 (w/ $64 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 6 bet (Status: active). Bankroll: $490 (w/ $12 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 8 bet (Status: active). Bankroll: $490 (w/ $24 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $494 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $474 (w/ $20 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 5 bet (Status: active). Bankroll: $474 (w/ $30 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 8 bet (Status: active). Bankroll: $474 (w/ $42 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 9 bet (Status: active). Bankroll: $474 (w/ $52 on the table)
+  💰 Bet placed: Go Big's $60 Place 8 bet (Status: active). Bankroll: $539 (w/ $60 on the table)
+  💰 Bet placed: Go Big's $50 Place 9 bet (Status: active). Bankroll: $539 (w/ $110 on the table)
+  💰 Bet placed: Go Big's $50 Place 5 bet (Status: active). Bankroll: $539 (w/ $160 on the table)
+  💰 Bet placed: Go Big's $60 Place 6 bet (Status: active). Bankroll: $539 (w/ $220 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #7 ----------
+  🎲 Roll #7 → (4, 2) = 6
+  ⏫ Molly's Come bet moves to the 6.
+  ⏫ Dolly's Don't Come bet moves to the 6.
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $450
+  ⚡Molly's Pass Line Odds 6 bet WON $12! New Bankroll: $462
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $544
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $534
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $500
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $490
+  ⚡Odd Linus's Pass Line Odds 6 bet WON $12! New Bankroll: $502
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $474
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $484
+  ⚡3-2-1 Blast's Pass Line Odds 6 bet WON $12! New Bankroll: $496
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $470
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $464
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $498
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $496
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $504
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $493
+  ⚡Go Big's Place 6 bet WON $70! New Bankroll: $609
+  ⚫ Point Hit: 6! → Puck OFF
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $462 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $534 (w/ $20 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $502 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $464 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $493 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $496 (w/ $10 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #8 ----------
+  🎲 Roll #8 → (3, 1) = 4
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $480
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $492
+  ⚪ Point Set to 4 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $462 (w/ $30 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $462 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $462 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $534 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $534 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $534 (w/ $50 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $502 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 6 bet (Status: active). Bankroll: $464 (w/ $44 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $464 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $492 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $496 (w/ $52 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 6 bet (Status: active). Bankroll: $496 (w/ $64 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #9 ----------
+  🎲 Roll #9 → (2, 3) = 5
+  ⏫ Molly's Come bet moves to the 5.
+  ⏫ Dolly's Don't Come bet moves to the 5.
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $478
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $512
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $510
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $510
+  ⚡Go Big's Place 5 bet WON $35! New Bankroll: $644
+  ❌ Fielder's Field 4 bet LOST $10. New Bankroll: $470
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $468
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $491
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $462 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $534 (w/ $60 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $468 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $491 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #10 ----------
+  🎲 Roll #10 → (2, 1) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $480
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $478
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $490
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $490 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #11 ----------
+  🎲 Roll #11 → (4, 6) = 10
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $490
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $528
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $490
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $488
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $489
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $490 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $489 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #12 ----------
+  🎲 Roll #12 → (2, 6) = 8
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $502
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $526
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $542
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $518
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $524
+  ⚡Go Big's Place 8 bet WON $21! New Bankroll: $665
+  ❌ Fielder's Field 10 bet LOST $10. New Bankroll: $480
+  ❌ Crosstopher's Field 10 bet LOST $10. New Bankroll: $492
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $488
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $492 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $488 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #13 ----------
+  🎲 Roll #13 → (4, 1) = 5
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $506
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $540
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $556
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $538
+  ⚡Go Big's Place 5 bet WON $21! New Bankroll: $686
+  ⚡Molly's Come 5 bet WON $10! New Bankroll: $472
+  ⚡Molly's Come Odds 5 bet WON $15! New Bankroll: $487
+  ❌ Dolly's Don't Come 5 bet LOST $10. New Bankroll: $524
+  ❌ Dolly's Don't Come Odds 5 bet LOST $10. New Bankroll: $514
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $470
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $496
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $487
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $487 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $514 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $496 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $487 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #14 ----------
+  🎲 Roll #14 → (5, 4) = 9
+  ⏫ Molly's Come bet moves to the 9.
+  ⏫ Dolly's Don't Come bet moves to the 9.
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $554
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $570
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $552
+  ⚡Go Big's Place 9 bet WON $21! New Bankroll: $707
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $480
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $506
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $486
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $487 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $514 (w/ $60 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $486 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #15 ----------
+  🎲 Roll #15 → (5, 3) = 8
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $520
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $568
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $584
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $532
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $566
+  ⚡Go Big's Place 8 bet WON $28! New Bankroll: $735
+  ❌ Fielder's Field 9 bet LOST $10. New Bankroll: $470
+  ❌ Crosstopher's Field 9 bet LOST $10. New Bankroll: $510
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $485
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $510 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $485 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #16 ----------
+  🎲 Roll #16 → (5, 5) = 10
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $602
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $480
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $480
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $520
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $484
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $480 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $484 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #17 ----------
+  🎲 Roll #17 → (3, 5) = 8
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $534
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $582
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $616
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $546
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $580
+  ⚡Go Big's Place 8 bet WON $42! New Bankroll: $777
+  ❌ Fielder's Field 10 bet LOST $10. New Bankroll: $470
+  ❌ Crosstopher's Field 10 bet LOST $10. New Bankroll: $524
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $483
+  No change in game state.
+  🎯 Go Big's press exposure ($122) exceeded threshold ($110) — switching back to regression.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $524 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $483 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #18 ----------
+  🎲 Roll #18 → (5, 6) = 11
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $480
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $534
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $482
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $482 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #19 ----------
+  🎲 Roll #19 → (2, 1) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $490
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $544
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $481
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $481 (w/ $1 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #20 ----------
+  🎲 Roll #20 → (3, 1) = 4
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $470
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $634
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $497
+  ⚡Molly's Pass Line Odds 4 bet WON $20! New Bankroll: $517
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $504
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $494
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $510
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $512
+  ⚡Odd Linus's Pass Line Odds 4 bet WON $20! New Bankroll: $532
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $554
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $590
+  ⚡3-2-1 Blast's Pass Line Odds 4 bet WON $20! New Bankroll: $610
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $500
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $564
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $480
+  ⚫ Point Hit: 4! → Puck OFF
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $517 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $494 (w/ $50 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $510 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $532 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $564 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $480 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $610 (w/ $10 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #21 ----------
+  🎲 Roll #21 → (5, 1) = 6
+  ❌ Fielder's Field 4 bet LOST $10. New Bankroll: $490
+  ❌ Crosstopher's Field 4 bet LOST $10. New Bankroll: $554
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $479
+  ⚪ Point Set to 6 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $517 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $494 (w/ $60 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $532 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $554 (w/ $54 on the table)
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $470 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $479 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $610 (w/ $64 on the table)
+  ---------- Shooter 2 (Dolly) — Roll #22 ----------
+  🎲 Roll #22 → (6, 1) = 7
+  ❌ Molly's Come 6 bet LOST $10. New Bankroll: $507
+  ❌ Molly's Come Odds 6 bet LOST $10. New Bankroll: $497
+  ⚡Dolly's Don't Come 6 bet WON $10! New Bankroll: $504
+  ⚡Dolly's Don't Come Odds 6 bet WON $8! New Bankroll: $512
+  ❌ Crosstopher's Place 5 bet LOST $10. New Bankroll: $544
+  ❌ Crosstopher's Place 8 bet LOST $12. New Bankroll: $532
+  ❌ Insider's Place 5 bet LOST $10. New Bankroll: $572
+  ❌ Insider's Place 6 bet LOST $12. New Bankroll: $560
+  ❌ Insider's Place 8 bet LOST $12. New Bankroll: $548
+  ❌ Insider's Place 9 bet LOST $10. New Bankroll: $538
+  ❌ All Boxes's Place 4 bet LOST $10. New Bankroll: $624
+  ❌ All Boxes's Place 5 bet LOST $10. New Bankroll: $614
+  ❌ All Boxes's Place 6 bet LOST $12. New Bankroll: $602
+  ❌ All Boxes's Place 8 bet LOST $12. New Bankroll: $590
+  ❌ All Boxes's Place 9 bet LOST $10. New Bankroll: $580
+  ❌ All Boxes's Place 10 bet LOST $10. New Bankroll: $570
+  ❌ Six-Eight's Place 6 bet LOST $12. New Bankroll: $534
+  ❌ Six-Eight's Place 8 bet LOST $12. New Bankroll: $522
+  ❌ 3-2-1 Blast's Place 5 bet LOST $10. New Bankroll: $600
+  ❌ 3-2-1 Blast's Place 8 bet LOST $12. New Bankroll: $588
+  ❌ 3-2-1 Blast's Place 9 bet LOST $10. New Bankroll: $578
+  ❌ Go Big's Place 8 bet LOST $30. New Bankroll: $747
+  ❌ Go Big's Place 9 bet LOST $25. New Bankroll: $722
+  ❌ Go Big's Place 5 bet LOST $25. New Bankroll: $697
+  ❌ Go Big's Place 6 bet LOST $30. New Bankroll: $667
+  ❌ Crosstopher's Place 6 bet LOST $12. New Bankroll: $520
+  ❌ 3-2-1 Blast's Place 6 bet LOST $12. New Bankroll: $566
+  ❌ Molly's Come 9 bet LOST $10. New Bankroll: $487
+  ❌ Molly's Come Odds 9 bet LOST $10. New Bankroll: $477
+  ⚡Dolly's Don't Come 9 bet WON $10! New Bankroll: $522
+  ⚡Dolly's Don't Come Odds 9 bet WON $6! New Bankroll: $528
+  ⚡Layla's Lay 10 bet WON $5! New Bankroll: $475
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $467
+  ❌ Molly's Pass Line Odds bet LOST $10. New Bankroll: $457
+  ⚡Dolly's Don't Pass bet WON $10! New Bankroll: $538
+  ⚡Dolly's Don't Pass Odds bet WON $10! New Bankroll: $548
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $500
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $522
+  ❌ Odd Linus's Pass Line Odds bet LOST $10. New Bankroll: $512
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $510
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $556
+  ❌ 3-2-1 Blast's Pass Line Odds bet LOST $10. New Bankroll: $546
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $480
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $500
+  ⚡Layla's Lay 4 bet WON $5! New Bankroll: $480
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $478
+  ⚫ 7-Out → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #3: Linus steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $457 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $548 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $512 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $478 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $546 (w/ $10 on the table)
+  ---------- Shooter 3 (Linus) — Roll #23 ----------
+  🎲 Roll #23 → (6, 6) = 12
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $447
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $490
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $502
+  ⚡Fielder's Field 12 bet WON $30! New Bankroll: $510
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $490
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $477
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $536
+  ⚫ Craps! → Puck OFF.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $447 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $502 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $477 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $536 (w/ $10 on the table)
+  ---------- Shooter 3 (Linus) — Roll #24 ----------
+  🎲 Roll #24 → (1, 4) = 5
+  ❌ Fielder's Field 12 bet LOST $10. New Bankroll: $500
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $476
+  ⚪ Point Set to 5 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $447 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $447 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $548 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $548 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $502 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 6 bet (Status: active). Bankroll: $490 (w/ $22 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 8 bet (Status: active). Bankroll: $490 (w/ $34 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $490 (w/ $44 on the table)
+  💰 Bet placed: Insider's $10 Place 5 bet (Status: active). Bankroll: $538 (w/ $10 on the table)
+  💰 Bet placed: Insider's $12 Place 6 bet (Status: active). Bankroll: $538 (w/ $22 on the table)
+  💰 Bet placed: Insider's $12 Place 8 bet (Status: active). Bankroll: $538 (w/ $34 on the table)
+  💰 Bet placed: Insider's $10 Place 9 bet (Status: active). Bankroll: $538 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 4 bet (Status: active). Bankroll: $570 (w/ $10 on the table)
+  💰 Bet placed: All Boxes's $10 Place 5 bet (Status: active). Bankroll: $570 (w/ $20 on the table)
+  💰 Bet placed: All Boxes's $12 Place 6 bet (Status: active). Bankroll: $570 (w/ $32 on the table)
+  💰 Bet placed: All Boxes's $12 Place 8 bet (Status: active). Bankroll: $570 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 9 bet (Status: active). Bankroll: $570 (w/ $54 on the table)
+  💰 Bet placed: All Boxes's $10 Place 10 bet (Status: active). Bankroll: $570 (w/ $64 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 6 bet (Status: active). Bankroll: $522 (w/ $12 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 8 bet (Status: active). Bankroll: $522 (w/ $24 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $476 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $536 (w/ $20 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 6 bet (Status: active). Bankroll: $536 (w/ $32 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 8 bet (Status: active). Bankroll: $536 (w/ $44 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 9 bet (Status: active). Bankroll: $536 (w/ $54 on the table)
+  💰 Bet placed: Go Big's $60 Place 8 bet (Status: active). Bankroll: $667 (w/ $60 on the table)
+  💰 Bet placed: Go Big's $50 Place 9 bet (Status: active). Bankroll: $667 (w/ $110 on the table)
+  💰 Bet placed: Go Big's $50 Place 5 bet (Status: active). Bankroll: $667 (w/ $160 on the table)
+  💰 Bet placed: Go Big's $60 Place 6 bet (Status: active). Bankroll: $667 (w/ $220 on the table)
+  ---------- Shooter 3 (Linus) — Roll #25 ----------
+  🎲 Roll #25 → (5, 1) = 6
+  ⏫ Molly's Come bet moves to the 6.
+  ⏫ Dolly's Don't Come bet moves to the 6.
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $490
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $504
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $494
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $552
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $584
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $536
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $475
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $550
+  ⚡Go Big's Place 6 bet WON $70! New Bankroll: $737
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $447 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $447 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $548 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $548 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $494 (w/ $44 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $475 (w/ $1 on the table)
+  ---------- Shooter 3 (Linus) — Roll #26 ----------
+  🎲 Roll #26 → (5, 2) = 7
+  ⚡Layla's Lay 10 bet WON $5! New Bankroll: $485
+  ⚡Layla's Lay 4 bet WON $5! New Bankroll: $490
+  ⚡Dolly's Don't Pass bet WON $10! New Bankroll: $558
+  ⚡Dolly's Don't Pass Odds bet WON $10! New Bankroll: $568
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $437
+  ❌ Molly's Pass Line Odds bet LOST $10. New Bankroll: $427
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $480
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $492
+  ❌ Odd Linus's Pass Line Odds bet LOST $10. New Bankroll: $482
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $484
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $540
+  ❌ 3-2-1 Blast's Pass Line Odds bet LOST $10. New Bankroll: $530
+  ❌ Molly's Come 6 bet LOST $10. New Bankroll: $417
+  ❌ Molly's Come Odds 6 bet LOST $10. New Bankroll: $407
+  ⚡Dolly's Don't Come 6 bet WON $10! New Bankroll: $578
+  ⚡Dolly's Don't Come Odds 6 bet WON $8! New Bankroll: $586
+  ❌ Crosstopher's Place 6 bet LOST $12. New Bankroll: $472
+  ❌ Crosstopher's Place 8 bet LOST $12. New Bankroll: $460
+  ❌ Insider's Place 5 bet LOST $10. New Bankroll: $542
+  ❌ Insider's Place 6 bet LOST $12. New Bankroll: $530
+  ❌ Insider's Place 8 bet LOST $12. New Bankroll: $518
+  ❌ Insider's Place 9 bet LOST $10. New Bankroll: $508
+  ❌ All Boxes's Place 4 bet LOST $10. New Bankroll: $574
+  ❌ All Boxes's Place 5 bet LOST $10. New Bankroll: $564
+  ❌ All Boxes's Place 6 bet LOST $12. New Bankroll: $552
+  ❌ All Boxes's Place 8 bet LOST $12. New Bankroll: $540
+  ❌ All Boxes's Place 9 bet LOST $10. New Bankroll: $530
+  ❌ All Boxes's Place 10 bet LOST $10. New Bankroll: $520
+  ❌ Six-Eight's Place 6 bet LOST $12. New Bankroll: $524
+  ❌ Six-Eight's Place 8 bet LOST $12. New Bankroll: $512
+  ❌ 3-2-1 Blast's Place 6 bet LOST $12. New Bankroll: $518
+  ❌ 3-2-1 Blast's Place 8 bet LOST $12. New Bankroll: $506
+  ❌ 3-2-1 Blast's Place 9 bet LOST $10. New Bankroll: $496
+  ❌ Go Big's Place 8 bet LOST $30. New Bankroll: $707
+  ❌ Go Big's Place 9 bet LOST $25. New Bankroll: $682
+  ❌ Go Big's Place 5 bet LOST $25. New Bankroll: $657
+  ❌ Go Big's Place 6 bet LOST $30. New Bankroll: $627
+  ⚡Molly's Come bet WON $10! New Bankroll: $417
+  ❌ Dolly's Don't Come bet LOST $10. New Bankroll: $576
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $480
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $450
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $474
+  ⚫ 7-Out → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #4: Odd Linus steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $417 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $576 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $482 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $450 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $474 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $496 (w/ $10 on the table)
+  ---------- Shooter 4 (Odd Linus) — Roll #27 ----------
+  🎲 Roll #27 → (5, 5) = 10
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $490
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $473
+  ⚪ Point Set to 10 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $417 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $417 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $576 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $576 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $482 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $10 Place 5 bet (Status: active). Bankroll: $450 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 6 bet (Status: active). Bankroll: $450 (w/ $32 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 8 bet (Status: active). Bankroll: $450 (w/ $44 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $450 (w/ $54 on the table)
+  💰 Bet placed: Insider's $10 Place 5 bet (Status: active). Bankroll: $508 (w/ $10 on the table)
+  💰 Bet placed: Insider's $12 Place 6 bet (Status: active). Bankroll: $508 (w/ $22 on the table)
+  💰 Bet placed: Insider's $12 Place 8 bet (Status: active). Bankroll: $508 (w/ $34 on the table)
+  💰 Bet placed: Insider's $10 Place 9 bet (Status: active). Bankroll: $508 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 4 bet (Status: active). Bankroll: $520 (w/ $10 on the table)
+  💰 Bet placed: All Boxes's $10 Place 5 bet (Status: active). Bankroll: $520 (w/ $20 on the table)
+  💰 Bet placed: All Boxes's $12 Place 6 bet (Status: active). Bankroll: $520 (w/ $32 on the table)
+  💰 Bet placed: All Boxes's $12 Place 8 bet (Status: active). Bankroll: $520 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 9 bet (Status: active). Bankroll: $520 (w/ $54 on the table)
+  💰 Bet placed: All Boxes's $10 Place 10 bet (Status: active). Bankroll: $520 (w/ $64 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 6 bet (Status: active). Bankroll: $512 (w/ $12 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 8 bet (Status: active). Bankroll: $512 (w/ $24 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $473 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $496 (w/ $20 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 5 bet (Status: active). Bankroll: $496 (w/ $30 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 6 bet (Status: active). Bankroll: $496 (w/ $42 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 8 bet (Status: active). Bankroll: $496 (w/ $54 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 9 bet (Status: active). Bankroll: $496 (w/ $64 on the table)
+  💰 Bet placed: Go Big's $60 Place 8 bet (Status: active). Bankroll: $627 (w/ $60 on the table)
+  💰 Bet placed: Go Big's $50 Place 9 bet (Status: active). Bankroll: $627 (w/ $110 on the table)
+  💰 Bet placed: Go Big's $50 Place 5 bet (Status: active). Bankroll: $627 (w/ $160 on the table)
+  💰 Bet placed: Go Big's $60 Place 6 bet (Status: active). Bankroll: $627 (w/ $220 on the table)
+  ---------- Shooter 4 (Odd Linus) — Roll #28 ----------
+  🎲 Roll #28 → (3, 2) = 5
+  ⏫ Molly's Come bet moves to the 5.
+  ⏫ Dolly's Don't Come bet moves to the 5.
+  ❌ Fielder's Field 10 bet LOST $10. New Bankroll: $480
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $464
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $454
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $522
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $534
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $472
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $510
+  ⚡Go Big's Place 5 bet WON $70! New Bankroll: $697
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $417 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $417 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $576 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $576 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $454 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $472 (w/ $1 on the table)
+  ---------- Shooter 4 (Odd Linus) — Roll #29 ----------
+  🎲 Roll #29 → (4, 5) = 9
+  ⏫ Molly's Come bet moves to the 9.
+  ⏫ Dolly's Don't Come bet moves to the 9.
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $536
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $548
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $524
+  ⚡Go Big's Place 9 bet WON $35! New Bankroll: $732
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $490
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $464
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $471
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $417 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $576 (w/ $60 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $471 (w/ $1 on the table)
+  ---------- Shooter 4 (Odd Linus) — Roll #30 ----------
+  🎲 Roll #30 → (2, 1) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $500
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $474
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $470
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $470 (w/ $1 on the table)
+  ---------- Shooter 4 (Odd Linus) — Roll #31 ----------
+  🎲 Roll #31 → (3, 3) = 6
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $488
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $550
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $562
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $526
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $538
+  ⚡Go Big's Place 6 bet WON $21! New Bankroll: $753
+  ❌ Fielder's Field 3 bet LOST $10. New Bankroll: $490
+  ❌ Crosstopher's Field 3 bet LOST $10. New Bankroll: $478
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $469
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $478 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $469 (w/ $1 on the table)
+  ---------- Shooter 4 (Odd Linus) — Roll #32 ----------
+  🎲 Roll #32 → (2, 5) = 7
+  ⚡Layla's Lay 10 bet WON $5! New Bankroll: $495
+  ⚡Layla's Lay 4 bet WON $5! New Bankroll: $500
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $407
+  ❌ Molly's Pass Line Odds bet LOST $10. New Bankroll: $397
+  ⚡Dolly's Don't Pass bet WON $10! New Bankroll: $586
+  ⚡Dolly's Don't Pass Odds bet WON $10! New Bankroll: $596
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $470
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $472
+  ❌ Odd Linus's Pass Line Odds bet LOST $10. New Bankroll: $462
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $468
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $528
+  ❌ 3-2-1 Blast's Pass Line Odds bet LOST $10. New Bankroll: $518
+  ❌ Molly's Come 5 bet LOST $10. New Bankroll: $387
+  ❌ Molly's Come Odds 5 bet LOST $10. New Bankroll: $377
+  ⚡Dolly's Don't Come 5 bet WON $10! New Bankroll: $606
+  ⚡Dolly's Don't Come Odds 5 bet WON $6! New Bankroll: $612
+  ❌ Crosstopher's Place 5 bet LOST $10. New Bankroll: $458
+  ❌ Crosstopher's Place 6 bet LOST $12. New Bankroll: $446
+  ❌ Crosstopher's Place 8 bet LOST $12. New Bankroll: $434
+  ❌ Insider's Place 5 bet LOST $10. New Bankroll: $540
+  ❌ Insider's Place 6 bet LOST $12. New Bankroll: $528
+  ❌ Insider's Place 8 bet LOST $12. New Bankroll: $516
+  ❌ Insider's Place 9 bet LOST $10. New Bankroll: $506
+  ❌ All Boxes's Place 4 bet LOST $10. New Bankroll: $552
+  ❌ All Boxes's Place 5 bet LOST $10. New Bankroll: $542
+  ❌ All Boxes's Place 6 bet LOST $12. New Bankroll: $530
+  ❌ All Boxes's Place 8 bet LOST $12. New Bankroll: $518
+  ❌ All Boxes's Place 9 bet LOST $10. New Bankroll: $508
+  ❌ All Boxes's Place 10 bet LOST $10. New Bankroll: $498
+  ❌ Six-Eight's Place 6 bet LOST $12. New Bankroll: $514
+  ❌ Six-Eight's Place 8 bet LOST $12. New Bankroll: $502
+  ❌ 3-2-1 Blast's Place 5 bet LOST $10. New Bankroll: $508
+  ❌ 3-2-1 Blast's Place 6 bet LOST $12. New Bankroll: $496
+  ❌ 3-2-1 Blast's Place 8 bet LOST $12. New Bankroll: $484
+  ❌ 3-2-1 Blast's Place 9 bet LOST $10. New Bankroll: $474
+  ❌ Go Big's Place 8 bet LOST $18. New Bankroll: $735
+  ❌ Go Big's Place 9 bet LOST $15. New Bankroll: $720
+  ❌ Go Big's Place 5 bet LOST $15. New Bankroll: $705
+  ❌ Go Big's Place 6 bet LOST $24. New Bankroll: $681
+  ❌ Molly's Come 9 bet LOST $10. New Bankroll: $367
+  ❌ Molly's Come Odds 9 bet LOST $10. New Bankroll: $357
+  ⚡Dolly's Don't Come 9 bet WON $10! New Bankroll: $622
+  ⚡Dolly's Don't Come Odds 9 bet WON $6! New Bankroll: $628
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $480
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $424
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $468
+  ⚫ 7-Out → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #5: Fielder steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $357 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $628 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $462 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $424 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $468 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $474 (w/ $10 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #33 ----------
+  🎲 Roll #33 → (3, 6) = 9
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $490
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $467
+  ⚪ Point Set to 9 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $357 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $357 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $628 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $628 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $462 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $10 Place 5 bet (Status: active). Bankroll: $424 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 6 bet (Status: active). Bankroll: $424 (w/ $32 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 8 bet (Status: active). Bankroll: $424 (w/ $44 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $424 (w/ $54 on the table)
+  💰 Bet placed: Insider's $10 Place 5 bet (Status: active). Bankroll: $506 (w/ $10 on the table)
+  💰 Bet placed: Insider's $12 Place 6 bet (Status: active). Bankroll: $506 (w/ $22 on the table)
+  💰 Bet placed: Insider's $12 Place 8 bet (Status: active). Bankroll: $506 (w/ $34 on the table)
+  💰 Bet placed: Insider's $10 Place 9 bet (Status: active). Bankroll: $506 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 4 bet (Status: active). Bankroll: $498 (w/ $10 on the table)
+  💰 Bet placed: All Boxes's $10 Place 5 bet (Status: active). Bankroll: $498 (w/ $20 on the table)
+  💰 Bet placed: All Boxes's $12 Place 6 bet (Status: active). Bankroll: $498 (w/ $32 on the table)
+  💰 Bet placed: All Boxes's $12 Place 8 bet (Status: active). Bankroll: $498 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 9 bet (Status: active). Bankroll: $498 (w/ $54 on the table)
+  💰 Bet placed: All Boxes's $10 Place 10 bet (Status: active). Bankroll: $498 (w/ $64 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 6 bet (Status: active). Bankroll: $502 (w/ $12 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 8 bet (Status: active). Bankroll: $502 (w/ $24 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $467 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $474 (w/ $20 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 5 bet (Status: active). Bankroll: $474 (w/ $30 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 6 bet (Status: active). Bankroll: $474 (w/ $42 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 8 bet (Status: active). Bankroll: $474 (w/ $54 on the table)
+  💰 Bet placed: Go Big's $60 Place 8 bet (Status: active). Bankroll: $681 (w/ $60 on the table)
+  💰 Bet placed: Go Big's $50 Place 9 bet (Status: active). Bankroll: $681 (w/ $110 on the table)
+  💰 Bet placed: Go Big's $50 Place 5 bet (Status: active). Bankroll: $681 (w/ $160 on the table)
+  💰 Bet placed: Go Big's $60 Place 6 bet (Status: active). Bankroll: $681 (w/ $220 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #34 ----------
+  🎲 Roll #34 → (2, 3) = 5
+  ⏫ Molly's Come bet moves to the 5.
+  ⏫ Dolly's Don't Come bet moves to the 5.
+  ❌ Fielder's Field 9 bet LOST $10. New Bankroll: $480
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $438
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $428
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $520
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $512
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $466
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $488
+  ⚡Go Big's Place 5 bet WON $70! New Bankroll: $751
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $357 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $357 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $628 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $628 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $428 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $466 (w/ $1 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #35 ----------
+  🎲 Roll #35 → (4, 4) = 8
+  ⏫ Molly's Come bet moves to the 8.
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $442
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $534
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $526
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $516
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $502
+  ⚡Go Big's Place 8 bet WON $35! New Bankroll: $786
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $470
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $432
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $465
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $357 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $628 (w/ $60 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $432 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $465 (w/ $1 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #36 ----------
+  🎲 Roll #36 → (2, 1) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $480
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $442
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $464
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $464 (w/ $1 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #37 ----------
+  🎲 Roll #37 → (2, 1) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $490
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $452
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $463
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $463 (w/ $1 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #38 ----------
+  🎲 Roll #38 → (6, 4) = 10
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $490
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $544
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $500
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $462
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $462
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $490 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $462 (w/ $1 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #39 ----------
+  🎲 Roll #39 → (6, 6) = 12
+  ⚡Fielder's Field 12 bet WON $30! New Bankroll: $530
+  ⚡Crosstopher's Field 12 bet WON $30! New Bankroll: $492
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $461
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $461 (w/ $1 on the table)
+  ---------- Shooter 5 (Fielder) — Roll #40 ----------
+  🎲 Roll #40 → (2, 5) = 7
+  ⚡Layla's Lay 4 bet WON $5! New Bankroll: $495
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $347
+  ❌ Molly's Pass Line Odds bet LOST $10. New Bankroll: $337
+  ⚡Dolly's Don't Pass bet WON $10! New Bankroll: $638
+  ⚡Dolly's Don't Pass Odds bet WON $10! New Bankroll: $648
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $460
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $452
+  ❌ Odd Linus's Pass Line Odds bet LOST $10. New Bankroll: $442
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $482
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $492
+  ❌ 3-2-1 Blast's Pass Line Odds bet LOST $10. New Bankroll: $482
+  ❌ Molly's Come 5 bet LOST $10. New Bankroll: $327
+  ❌ Molly's Come Odds 5 bet LOST $10. New Bankroll: $317
+  ⚡Dolly's Don't Come 5 bet WON $10! New Bankroll: $658
+  ⚡Dolly's Don't Come Odds 5 bet WON $6! New Bankroll: $664
+  ❌ Crosstopher's Place 5 bet LOST $10. New Bankroll: $472
+  ❌ Crosstopher's Place 6 bet LOST $12. New Bankroll: $460
+  ❌ Crosstopher's Place 8 bet LOST $12. New Bankroll: $448
+  ❌ Insider's Place 5 bet LOST $10. New Bankroll: $524
+  ❌ Insider's Place 6 bet LOST $12. New Bankroll: $512
+  ❌ Insider's Place 8 bet LOST $12. New Bankroll: $500
+  ❌ Insider's Place 9 bet LOST $10. New Bankroll: $490
+  ❌ All Boxes's Place 4 bet LOST $10. New Bankroll: $534
+  ❌ All Boxes's Place 5 bet LOST $10. New Bankroll: $524
+  ❌ All Boxes's Place 6 bet LOST $12. New Bankroll: $512
+  ❌ All Boxes's Place 8 bet LOST $12. New Bankroll: $500
+  ❌ All Boxes's Place 9 bet LOST $10. New Bankroll: $490
+  ❌ All Boxes's Place 10 bet LOST $10. New Bankroll: $480
+  ❌ Six-Eight's Place 6 bet LOST $12. New Bankroll: $504
+  ❌ Six-Eight's Place 8 bet LOST $12. New Bankroll: $492
+  ❌ 3-2-1 Blast's Place 5 bet LOST $10. New Bankroll: $472
+  ❌ 3-2-1 Blast's Place 6 bet LOST $12. New Bankroll: $460
+  ❌ 3-2-1 Blast's Place 8 bet LOST $12. New Bankroll: $448
+  ❌ Go Big's Place 8 bet LOST $18. New Bankroll: $768
+  ❌ Go Big's Place 9 bet LOST $15. New Bankroll: $753
+  ❌ Go Big's Place 5 bet LOST $15. New Bankroll: $738
+  ❌ Go Big's Place 6 bet LOST $18. New Bankroll: $720
+  ❌ Molly's Come 8 bet LOST $10. New Bankroll: $307
+  ❌ Molly's Come Odds 8 bet LOST $10. New Bankroll: $297
+  ⚡Dolly's Don't Come 8 bet WON $10! New Bankroll: $674
+  ⚡Dolly's Don't Come Odds 8 bet WON $8! New Bankroll: $682
+  ❌ Fielder's Field 12 bet LOST $10. New Bankroll: $520
+  ❌ Crosstopher's Field 12 bet LOST $10. New Bankroll: $438
+  ⚡Layla's Lay 10 bet WON $5! New Bankroll: $500
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $460
+  ⚫ 7-Out → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #6: Crosstopher steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $297 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $682 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $460 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $442 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $520 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $438 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $460 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $448 (w/ $10 on the table)
+  ---------- Shooter 6 (Crosstopher) — Roll #41 ----------
+  🎲 Roll #41 → (3, 1) = 4
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $530
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $459
+  ⚪ Point Set to 4 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $297 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $297 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $682 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $682 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $442 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $10 Place 5 bet (Status: active). Bankroll: $438 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 6 bet (Status: active). Bankroll: $438 (w/ $32 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 8 bet (Status: active). Bankroll: $438 (w/ $44 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $438 (w/ $54 on the table)
+  💰 Bet placed: Insider's $10 Place 5 bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Insider's $12 Place 6 bet (Status: active). Bankroll: $490 (w/ $22 on the table)
+  💰 Bet placed: Insider's $12 Place 8 bet (Status: active). Bankroll: $490 (w/ $34 on the table)
+  💰 Bet placed: Insider's $10 Place 9 bet (Status: active). Bankroll: $490 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 4 bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: All Boxes's $10 Place 5 bet (Status: active). Bankroll: $480 (w/ $20 on the table)
+  💰 Bet placed: All Boxes's $12 Place 6 bet (Status: active). Bankroll: $480 (w/ $32 on the table)
+  💰 Bet placed: All Boxes's $12 Place 8 bet (Status: active). Bankroll: $480 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 9 bet (Status: active). Bankroll: $480 (w/ $54 on the table)
+  💰 Bet placed: All Boxes's $10 Place 10 bet (Status: active). Bankroll: $480 (w/ $64 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 6 bet (Status: active). Bankroll: $492 (w/ $12 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 8 bet (Status: active). Bankroll: $492 (w/ $24 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $459 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $448 (w/ $20 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 5 bet (Status: active). Bankroll: $448 (w/ $30 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 6 bet (Status: active). Bankroll: $448 (w/ $42 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 8 bet (Status: active). Bankroll: $448 (w/ $54 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 9 bet (Status: active). Bankroll: $448 (w/ $64 on the table)
+  💰 Bet placed: Go Big's $60 Place 8 bet (Status: active). Bankroll: $720 (w/ $60 on the table)
+  💰 Bet placed: Go Big's $50 Place 9 bet (Status: active). Bankroll: $720 (w/ $110 on the table)
+  💰 Bet placed: Go Big's $50 Place 5 bet (Status: active). Bankroll: $720 (w/ $160 on the table)
+  💰 Bet placed: Go Big's $60 Place 6 bet (Status: active). Bankroll: $720 (w/ $220 on the table)
+  ---------- Shooter 6 (Crosstopher) — Roll #42 ----------
+  🎲 Roll #42 → (1, 5) = 6
+  ⏫ Molly's Come bet moves to the 6.
+  ⏫ Dolly's Don't Come bet moves to the 6.
+  ❌ Fielder's Field 4 bet LOST $10. New Bankroll: $520
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $452
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $442
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $504
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $494
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $506
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $458
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $462
+  ⚡Go Big's Place 6 bet WON $70! New Bankroll: $790
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $297 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $297 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $682 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $682 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $520 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $442 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $458 (w/ $1 on the table)
+  ---------- Shooter 6 (Crosstopher) — Roll #43 ----------
+  🎲 Roll #43 → (4, 2) = 6
+  ⏫ Molly's Come bet moves to the 6.
+  ⏫ Dolly's Don't Come bet moves to the 6.
+  ⚡Molly's Come 6 bet WON $10! New Bankroll: $307
+  ⚡Molly's Come Odds 6 bet WON $12! New Bankroll: $319
+  ❌ Dolly's Don't Come 6 bet LOST $10. New Bankroll: $672
+  ❌ Dolly's Don't Come Odds 6 bet LOST $10. New Bankroll: $662
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $456
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $518
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $508
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $520
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $476
+  ⚡Go Big's Place 6 bet WON $35! New Bankroll: $825
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $510
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $446
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $457
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $319 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $319 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $662 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $662 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $510 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $446 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $457 (w/ $1 on the table)
+  ---------- Shooter 6 (Crosstopher) — Roll #44 ----------
+  🎲 Roll #44 → (4, 4) = 8
+  ⏫ Molly's Come bet moves to the 8.
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $460
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $532
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $522
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $534
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $490
+  ⚡Go Big's Place 8 bet WON $21! New Bankroll: $846
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $500
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $450
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $456
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $319 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $662 (w/ $60 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $450 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $456 (w/ $1 on the table)
+  ---------- Shooter 6 (Crosstopher) — Roll #45 ----------
+  🎲 Roll #45 → (2, 2) = 4
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $490
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $329
+  ⚡Molly's Pass Line Odds 4 bet WON $20! New Bankroll: $349
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $652
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $642
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $470
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $452
+  ⚡Odd Linus's Pass Line Odds 4 bet WON $20! New Bankroll: $472
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $460
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $500
+  ⚡3-2-1 Blast's Pass Line Odds 4 bet WON $20! New Bankroll: $520
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $540
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $510
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $470
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $455
+  ⚫ Point Hit: 4! → Puck OFF
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $349 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $642 (w/ $50 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $472 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $470 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $455 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $520 (w/ $10 on the table)
+  ---------- Shooter 6 (Crosstopher) — Roll #46 ----------
+  🎲 Roll #46 → (5, 2) = 7
+  ⚡Molly's Come 6 bet WON $10! New Bankroll: $359
+  ⚡Molly's Come Odds 6 bet WON $12! New Bankroll: $371
+  ❌ Dolly's Don't Come 6 bet LOST $10. New Bankroll: $632
+  ❌ Dolly's Don't Come Odds 6 bet LOST $10. New Bankroll: $622
+  ⚡Molly's Come 8 bet WON $10! New Bankroll: $381
+  ⚡Molly's Come Odds 8 bet WON $12! New Bankroll: $393
+  ❌ Dolly's Don't Come 8 bet LOST $10. New Bankroll: $612
+  ❌ Dolly's Don't Come Odds 8 bet LOST $10. New Bankroll: $602
+  ❌ Fielder's Field 4 bet LOST $10. New Bankroll: $500
+  ❌ Crosstopher's Field 4 bet LOST $10. New Bankroll: $460
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $403
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $592
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $480
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $482
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $470
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $454
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $530
+  ⚫ Pass Line Winner! → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #7: Insider steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $403 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $592 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $482 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $470 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $454 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $530 (w/ $10 on the table)
+  ---------- Shooter 7 (Insider) — Roll #47 ----------
+  🎲 Roll #47 → (5, 1) = 6
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $490
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $453
+  ⚪ Point Set to 6 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $403 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $403 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $592 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $592 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $482 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $470 (w/ $54 on the table)
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $490 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $453 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $530 (w/ $64 on the table)
+  ---------- Shooter 7 (Insider) — Roll #48 ----------
+  🎲 Roll #48 → (6, 2) = 8
+  ⏫ Molly's Come bet moves to the 8.
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $484
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $546
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $554
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $548
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $544
+  ⚡Go Big's Place 8 bet WON $28! New Bankroll: $874
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $480
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $474
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $452
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $403 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $403 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $592 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $592 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $474 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $452 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #49 ----------
+  🎲 Roll #49 → (1, 3) = 4
+  ⏫ Molly's Come bet moves to the 4.
+  ⏫ Dolly's Don't Come bet moves to the 4.
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $572
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $480
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $490
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $484
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $451
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $403 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $592 (w/ $60 on the table)
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $480 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $451 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #50 ----------
+  🎲 Roll #50 → (3, 6) = 9
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $560
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $586
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $558
+  ⚡Go Big's Place 9 bet WON $35! New Bankroll: $909
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $500
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $494
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $450
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $450 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #51 ----------
+  🎲 Roll #51 → (1, 2) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $510
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $504
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $449
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $449 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #52 ----------
+  🎲 Roll #52 → (2, 3) = 5
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $518
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $574
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $600
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $572
+  ⚡Go Big's Place 5 bet WON $21! New Bankroll: $930
+  ❌ Fielder's Field 3 bet LOST $10. New Bankroll: $500
+  ❌ Crosstopher's Field 3 bet LOST $10. New Bankroll: $508
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $448
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $508 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $448 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #53 ----------
+  🎲 Roll #53 → (6, 5) = 11
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $510
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $518
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $447
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $447 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #54 ----------
+  🎲 Roll #54 → (5, 4) = 9
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $588
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $614
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $586
+  ⚡Go Big's Place 9 bet WON $21! New Bankroll: $951
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $520
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $528
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $446
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $446 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #55 ----------
+  🎲 Roll #55 → (1, 3) = 4
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $632
+  ⚡Molly's Come 4 bet WON $10! New Bankroll: $413
+  ⚡Molly's Come Odds 4 bet WON $20! New Bankroll: $433
+  ❌ Dolly's Don't Come 4 bet LOST $10. New Bankroll: $582
+  ❌ Dolly's Don't Come Odds 4 bet LOST $10. New Bankroll: $572
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $470
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $530
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $538
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $445
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $433 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $572 (w/ $50 on the table)
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $470 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $445 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #56 ----------
+  🎲 Roll #56 → (6, 6) = 12
+  ⚡Fielder's Field 12 bet WON $30! New Bankroll: $560
+  ⚡Crosstopher's Field 12 bet WON $30! New Bankroll: $568
+  ❌ Molly's Come bet LOST $10. New Bankroll: $423
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $444
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $423 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $572 (w/ $60 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $444 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #57 ----------
+  🎲 Roll #57 → (6, 6) = 12
+  ⚡Fielder's Field 12 bet WON $30! New Bankroll: $590
+  ⚡Crosstopher's Field 12 bet WON $30! New Bankroll: $598
+  ❌ Molly's Come bet LOST $10. New Bankroll: $413
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $443
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $413 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $572 (w/ $70 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $443 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #58 ----------
+  🎲 Roll #58 → (4, 4) = 8
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⏫ Molly's Come bet moves to the 8.
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $612
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $602
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $646
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $562
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $600
+  ⚡Go Big's Place 8 bet WON $21! New Bankroll: $972
+  ⚡Molly's Come 8 bet WON $10! New Bankroll: $423
+  ⚡Molly's Come Odds 8 bet WON $12! New Bankroll: $435
+  ❌ Dolly's Don't Come 8 bet LOST $10. New Bankroll: $562
+  ❌ Dolly's Don't Come Odds 8 bet LOST $10. New Bankroll: $552
+  ❌ Fielder's Field 12 bet LOST $10. New Bankroll: $580
+  ❌ Crosstopher's Field 12 bet LOST $10. New Bankroll: $602
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $442
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $435 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $435 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $552 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $552 (w/ $70 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $552 (w/ $80 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $580 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $602 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $442 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #59 ----------
+  🎲 Roll #59 → (4, 6) = 10
+  ⏫ Molly's Come bet moves to the 10.
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $460
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $664
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $590
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $612
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $441
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $435 (w/ $60 on the table)
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $460 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $441 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #60 ----------
+  🎲 Roll #60 → (2, 2) = 4
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $682
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $450
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $600
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $622
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $440
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $450 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $440 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #61 ----------
+  🎲 Roll #61 → (1, 3) = 4
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $700
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $610
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $632
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $440
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $439
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $440 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $439 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #62 ----------
+  🎲 Roll #62 → (5, 6) = 11
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $620
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $642
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $438
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $438 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #63 ----------
+  🎲 Roll #63 → (2, 3) = 5
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $656
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $616
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $714
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $614
+  ⚡Go Big's Place 5 bet WON $35! New Bankroll: $1007
+  ❌ Fielder's Field 11 bet LOST $10. New Bankroll: $610
+  ❌ Crosstopher's Field 11 bet LOST $10. New Bankroll: $646
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $437
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $610 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $646 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $437 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #64 ----------
+  🎲 Roll #64 → (2, 1) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $620
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $656
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $436
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $436 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #65 ----------
+  🎲 Roll #65 → (5, 6) = 11
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $630
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $666
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $435
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $435 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #66 ----------
+  🎲 Roll #66 → (1, 3) = 4
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $732
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $430
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $640
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $676
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $434
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $430 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $434 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #67 ----------
+  🎲 Roll #67 → (1, 3) = 4
+  ⚡All Boxes's Place 4 bet WON $18! New Bankroll: $750
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $650
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $686
+  ❌ Layla's Lay 4 bet LOST $10. New Bankroll: $420
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $433
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 4 bet (Status: active). Bankroll: $420 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $433 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #68 ----------
+  🎲 Roll #68 → (2, 4) = 6
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $700
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $630
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $764
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $576
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $628
+  ⚡Go Big's Place 6 bet WON $21! New Bankroll: $1028
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $445
+  ⚡Molly's Pass Line Odds 6 bet WON $12! New Bankroll: $457
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $542
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $532
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $490
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $492
+  ⚡Odd Linus's Pass Line Odds 6 bet WON $12! New Bankroll: $504
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $710
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $638
+  ⚡3-2-1 Blast's Pass Line Odds 6 bet WON $12! New Bankroll: $650
+  ❌ Fielder's Field 4 bet LOST $10. New Bankroll: $640
+  ❌ Crosstopher's Field 4 bet LOST $10. New Bankroll: $700
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $432
+  ⚫ Point Hit: 6! → Puck OFF
+  🎯 Go Big's press exposure ($113) exceeded threshold ($110) — switching back to regression.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $457 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $532 (w/ $70 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $504 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $640 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $700 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $432 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $650 (w/ $10 on the table)
+  ---------- Shooter 7 (Insider) — Roll #69 ----------
+  🎲 Roll #69 → (1, 2) = 3
+  ⚡Dolly's Don't Come 8 bet WON $10! New Bankroll: $542
+  ⚡Dolly's Don't Come Odds 8 bet WON $8! New Bankroll: $550
+  ⚡Dolly's Don't Come 8 bet WON $10! New Bankroll: $560
+  ⚡Dolly's Don't Come Odds 8 bet WON $8! New Bankroll: $568
+  ❌ Molly's Come 8 bet LOST $10. New Bankroll: $447
+  ❌ Molly's Come Odds 8 bet LOST $10. New Bankroll: $437
+  ⚡Dolly's Don't Come 8 bet WON $10! New Bankroll: $578
+  ⚡Dolly's Don't Come Odds 8 bet WON $8! New Bankroll: $586
+  ❌ Molly's Come 10 bet LOST $10. New Bankroll: $427
+  ❌ Molly's Come Odds 10 bet LOST $10. New Bankroll: $417
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $407
+  ⚡Dolly's Don't Pass bet WON $10! New Bankroll: $596
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $480
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $494
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $650
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $690
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $431
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $640
+  ⚫ Craps! → Puck OFF.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $407 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $596 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $494 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $690 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $431 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $640 (w/ $10 on the table)
+  ---------- Shooter 7 (Insider) — Roll #70 ----------
+  🎲 Roll #70 → (5, 5) = 10
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $660
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $430
+  ⚪ Point Set to 10 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $407 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $407 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $596 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $596 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $494 (w/ $20 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $690 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $430 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $640 (w/ $64 on the table)
+  ---------- Shooter 7 (Insider) — Roll #71 ----------
+  🎲 Roll #71 → (5, 4) = 9
+  ⏫ Molly's Come bet moves to the 9.
+  ⏫ Dolly's Don't Come bet moves to the 9.
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $644
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $778
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $654
+  ⚡Go Big's Place 9 bet WON $35! New Bankroll: $1063
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $670
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $700
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $429
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $407 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $407 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $596 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $596 (w/ $50 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $429 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #72 ----------
+  🎲 Roll #72 → (6, 3) = 9
+  ⏫ Molly's Come bet moves to the 9.
+  ⏫ Dolly's Don't Come bet moves to the 9.
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $658
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $792
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $668
+  ⚡Go Big's Place 9 bet WON $35! New Bankroll: $1098
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $680
+  ⚡Molly's Come 9 bet WON $10! New Bankroll: $417
+  ⚡Molly's Come Odds 9 bet WON $15! New Bankroll: $432
+  ❌ Dolly's Don't Come 9 bet LOST $10. New Bankroll: $586
+  ❌ Dolly's Don't Come Odds 9 bet LOST $10. New Bankroll: $576
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $710
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $428
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $432 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $432 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $576 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $576 (w/ $50 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $428 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #73 ----------
+  🎲 Roll #73 → (4, 6) = 10
+  ⏫ Molly's Come bet moves to the 10.
+  ⏫ Dolly's Don't Come bet moves to the 10.
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $810
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $410
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $690
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $442
+  ⚡Molly's Pass Line Odds 10 bet WON $20! New Bankroll: $462
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $566
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $556
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $490
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $504
+  ⚡Odd Linus's Pass Line Odds 10 bet WON $20! New Bankroll: $524
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $720
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $678
+  ⚡3-2-1 Blast's Pass Line Odds 10 bet WON $20! New Bankroll: $698
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $730
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $427
+  ⚫ Point Hit: 10! → Puck OFF
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $462 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $556 (w/ $40 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $524 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $730 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $427 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $698 (w/ $10 on the table)
+  ---------- Shooter 7 (Insider) — Roll #74 ----------
+  🎲 Roll #74 → (1, 3) = 4
+  ⚡Fielder's Field 4 bet WON $10! New Bankroll: $700
+  ⚡Crosstopher's Field 4 bet WON $10! New Bankroll: $740
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $426
+  ⚪ Point Set to 4 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $462 (w/ $50 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $462 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $556 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $556 (w/ $60 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $524 (w/ $20 on the table)
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $410 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $426 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $698 (w/ $64 on the table)
+  ---------- Shooter 7 (Insider) — Roll #75 ----------
+  🎲 Roll #75 → (4, 1) = 5
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $754
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $672
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $824
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $712
+  ⚡Go Big's Place 5 bet WON $21! New Bankroll: $1119
+  ❌ Fielder's Field 4 bet LOST $10. New Bankroll: $690
+  ❌ Crosstopher's Field 4 bet LOST $10. New Bankroll: $744
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $425
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $690 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $744 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $425 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #76 ----------
+  🎲 Roll #76 → (2, 3) = 5
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $758
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $686
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $838
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $726
+  ⚡Go Big's Place 5 bet WON $35! New Bankroll: $1154
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $680
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $748
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $424
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $680 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $748 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $424 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #77 ----------
+  🎲 Roll #77 → (4, 2) = 6
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $762
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $700
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $852
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $590
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $740
+  ⚡Go Big's Place 6 bet WON $21! New Bankroll: $1175
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $670
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $752
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $423
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $670 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $752 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $423 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #78 ----------
+  🎲 Roll #78 → (6, 3) = 9
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $714
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $866
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $754
+  ⚡Go Big's Place 9 bet WON $21! New Bankroll: $1196
+  ⚡Molly's Come 9 bet WON $10! New Bankroll: $472
+  ⚡Molly's Come Odds 9 bet WON $15! New Bankroll: $487
+  ❌ Dolly's Don't Come 9 bet LOST $10. New Bankroll: $546
+  ❌ Dolly's Don't Come Odds 9 bet LOST $10. New Bankroll: $536
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $680
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $762
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $422
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $487 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $536 (w/ $50 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $422 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #79 ----------
+  🎲 Roll #79 → (2, 6) = 8
+  ⏫ Molly's Come bet moves to the 8.
+  ⏫ Dolly's Don't Come bet moves to the 8.
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $776
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $728
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $880
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $604
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $768
+  ⚡Go Big's Place 8 bet WON $21! New Bankroll: $1217
+  ❌ Fielder's Field 9 bet LOST $10. New Bankroll: $670
+  ❌ Crosstopher's Field 9 bet LOST $10. New Bankroll: $766
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $421
+  No change in game state.
+  🎯 Go Big's press exposure ($113) exceeded threshold ($110) — switching back to regression.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $487 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $536 (w/ $60 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $670 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $766 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $421 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #80 ----------
+  🎲 Roll #80 → (5, 6) = 11
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $680
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $776
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $420
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $420 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #81 ----------
+  🎲 Roll #81 → (6, 6) = 12
+  ⚡Fielder's Field 12 bet WON $30! New Bankroll: $710
+  ⚡Crosstopher's Field 12 bet WON $30! New Bankroll: $806
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $419
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $419 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #82 ----------
+  🎲 Roll #82 → (6, 5) = 11
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $720
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $816
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $418
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $418 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #83 ----------
+  🎲 Roll #83 → (3, 2) = 5
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $830
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $742
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $894
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $782
+  ⚡Go Big's Place 5 bet WON $35! New Bankroll: $1252
+  ❌ Fielder's Field 11 bet LOST $10. New Bankroll: $710
+  ❌ Crosstopher's Field 11 bet LOST $10. New Bankroll: $820
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $417
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $710 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $820 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $417 (w/ $1 on the table)
+  ---------- Shooter 7 (Insider) — Roll #84 ----------
+  🎲 Roll #84 → (6, 1) = 7
+  ❌ Crosstopher's Place 5 bet LOST $10. New Bankroll: $810
+  ❌ Crosstopher's Place 6 bet LOST $12. New Bankroll: $798
+  ❌ Crosstopher's Place 8 bet LOST $12. New Bankroll: $786
+  ❌ Insider's Place 5 bet LOST $10. New Bankroll: $732
+  ❌ Insider's Place 6 bet LOST $12. New Bankroll: $720
+  ❌ Insider's Place 8 bet LOST $12. New Bankroll: $708
+  ❌ Insider's Place 9 bet LOST $10. New Bankroll: $698
+  ❌ All Boxes's Place 4 bet LOST $10. New Bankroll: $884
+  ❌ All Boxes's Place 5 bet LOST $10. New Bankroll: $874
+  ❌ All Boxes's Place 6 bet LOST $12. New Bankroll: $862
+  ❌ All Boxes's Place 8 bet LOST $12. New Bankroll: $850
+  ❌ All Boxes's Place 9 bet LOST $10. New Bankroll: $840
+  ❌ All Boxes's Place 10 bet LOST $10. New Bankroll: $830
+  ❌ Six-Eight's Place 6 bet LOST $12. New Bankroll: $592
+  ❌ Six-Eight's Place 8 bet LOST $12. New Bankroll: $580
+  ❌ 3-2-1 Blast's Place 5 bet LOST $10. New Bankroll: $772
+  ❌ 3-2-1 Blast's Place 6 bet LOST $12. New Bankroll: $760
+  ❌ 3-2-1 Blast's Place 8 bet LOST $12. New Bankroll: $748
+  ❌ 3-2-1 Blast's Place 9 bet LOST $10. New Bankroll: $738
+  ❌ Go Big's Place 8 bet LOST $30. New Bankroll: $1222
+  ❌ Go Big's Place 9 bet LOST $25. New Bankroll: $1197
+  ❌ Go Big's Place 5 bet LOST $25. New Bankroll: $1172
+  ❌ Go Big's Place 6 bet LOST $30. New Bankroll: $1142
+  ⚡Layla's Lay 4 bet WON $5! New Bankroll: $415
+  ❌ Molly's Come 10 bet LOST $10. New Bankroll: $477
+  ❌ Molly's Come Odds 10 bet LOST $10. New Bankroll: $467
+  ⚡Dolly's Don't Come 10 bet WON $10! New Bankroll: $546
+  ⚡Dolly's Don't Come Odds 10 bet WON $5! New Bankroll: $551
+  ❌ Molly's Pass Line bet LOST $10. New Bankroll: $457
+  ❌ Molly's Pass Line Odds bet LOST $10. New Bankroll: $447
+  ⚡Dolly's Don't Pass bet WON $10! New Bankroll: $561
+  ⚡Dolly's Don't Pass Odds bet WON $10! New Bankroll: $571
+  ❌ Linus's Pass Line bet LOST $10. New Bankroll: $480
+  ❌ Odd Linus's Pass Line bet LOST $10. New Bankroll: $514
+  ❌ Odd Linus's Pass Line Odds bet LOST $10. New Bankroll: $504
+  ❌ Crosstopher's Pass Line bet LOST $10. New Bankroll: $776
+  ❌ 3-2-1 Blast's Pass Line bet LOST $10. New Bankroll: $728
+  ❌ 3-2-1 Blast's Pass Line Odds bet LOST $10. New Bankroll: $718
+  ⚡Layla's Lay 10 bet WON $5! New Bankroll: $420
+  ❌ Molly's Come 8 bet LOST $10. New Bankroll: $437
+  ❌ Molly's Come Odds 8 bet LOST $10. New Bankroll: $427
+  ⚡Dolly's Don't Come 8 bet WON $10! New Bankroll: $581
+  ⚡Dolly's Don't Come Odds 8 bet WON $8! New Bankroll: $589
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $700
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $766
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $416
+  ⚫ 7-Out → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #8: All Boxes steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $427 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $589 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $480 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $504 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $700 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $766 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $416 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $718 (w/ $10 on the table)
+  ---------- Shooter 8 (All Boxes) — Roll #85 ----------
+  🎲 Roll #85 → (3, 2) = 5
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $690
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $415
+  ⚪ Point Set to 5 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $427 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $427 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $589 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $589 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $504 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $690 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 6 bet (Status: active). Bankroll: $766 (w/ $22 on the table)
+  💰 Bet placed: Crosstopher's $12 Place 8 bet (Status: active). Bankroll: $766 (w/ $34 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $766 (w/ $44 on the table)
+  💰 Bet placed: Insider's $10 Place 5 bet (Status: active). Bankroll: $698 (w/ $10 on the table)
+  💰 Bet placed: Insider's $12 Place 6 bet (Status: active). Bankroll: $698 (w/ $22 on the table)
+  💰 Bet placed: Insider's $12 Place 8 bet (Status: active). Bankroll: $698 (w/ $34 on the table)
+  💰 Bet placed: Insider's $10 Place 9 bet (Status: active). Bankroll: $698 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 4 bet (Status: active). Bankroll: $830 (w/ $10 on the table)
+  💰 Bet placed: All Boxes's $10 Place 5 bet (Status: active). Bankroll: $830 (w/ $20 on the table)
+  💰 Bet placed: All Boxes's $12 Place 6 bet (Status: active). Bankroll: $830 (w/ $32 on the table)
+  💰 Bet placed: All Boxes's $12 Place 8 bet (Status: active). Bankroll: $830 (w/ $44 on the table)
+  💰 Bet placed: All Boxes's $10 Place 9 bet (Status: active). Bankroll: $830 (w/ $54 on the table)
+  💰 Bet placed: All Boxes's $10 Place 10 bet (Status: active). Bankroll: $830 (w/ $64 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 6 bet (Status: active). Bankroll: $580 (w/ $12 on the table)
+  💰 Bet placed: Six-Eight's $12 Place 8 bet (Status: active). Bankroll: $580 (w/ $24 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $415 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $718 (w/ $20 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 6 bet (Status: active). Bankroll: $718 (w/ $32 on the table)
+  💰 Bet placed: 3-2-1 Blast's $12 Place 8 bet (Status: active). Bankroll: $718 (w/ $44 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 9 bet (Status: active). Bankroll: $718 (w/ $54 on the table)
+  💰 Bet placed: Go Big's $60 Place 8 bet (Status: active). Bankroll: $1142 (w/ $60 on the table)
+  💰 Bet placed: Go Big's $50 Place 9 bet (Status: active). Bankroll: $1142 (w/ $110 on the table)
+  💰 Bet placed: Go Big's $50 Place 5 bet (Status: active). Bankroll: $1142 (w/ $160 on the table)
+  💰 Bet placed: Go Big's $60 Place 6 bet (Status: active). Bankroll: $1142 (w/ $220 on the table)
+  ---------- Shooter 8 (All Boxes) — Roll #86 ----------
+  🎲 Roll #86 → (2, 1) = 3
+  ❌ Molly's Come bet LOST $10. New Bankroll: $417
+  ⚡Dolly's Don't Come bet WON $10! New Bankroll: $599
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $700
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $776
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $414
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $417 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $599 (w/ $30 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $414 (w/ $1 on the table)
+  ---------- Shooter 8 (All Boxes) — Roll #87 ----------
+  🎲 Roll #87 → (3, 2) = 5
+  ⏫ Molly's Come bet moves to the 5.
+  ⏫ Dolly's Don't Come bet moves to the 5.
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $427
+  ⚡Molly's Pass Line Odds 5 bet WON $15! New Bankroll: $442
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $589
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $579
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $490
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $514
+  ⚡Odd Linus's Pass Line Odds 5 bet WON $15! New Bankroll: $529
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $786
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $728
+  ⚡3-2-1 Blast's Pass Line Odds 5 bet WON $15! New Bankroll: $743
+  ❌ Fielder's Field 3 bet LOST $10. New Bankroll: $690
+  ❌ Crosstopher's Field 3 bet LOST $10. New Bankroll: $776
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $712
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $844
+  ⚡Go Big's Place 5 bet WON $70! New Bankroll: $1212
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $413
+  ⚫ Point Hit: 5! → Puck OFF
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $442 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $579 (w/ $20 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $490 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $529 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $690 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $776 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $413 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $743 (w/ $10 on the table)
+  ---------- Shooter 8 (All Boxes) — Roll #88 ----------
+  🎲 Roll #88 → (3, 4) = 7
+  ⚡Molly's Come 5 bet WON $10! New Bankroll: $452
+  ❌ Dolly's Don't Come 5 bet LOST $10. New Bankroll: $569
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $462
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $559
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $500
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $539
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $680
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $786
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $412
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $753
+  ⚫ Pass Line Winner! → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #9: Six-Eight steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $462 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $559 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $500 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $539 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $680 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $786 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $412 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $753 (w/ $10 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #89 ----------
+  🎲 Roll #89 → (2, 6) = 8
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $670
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $411
+  ⚪ Point Set to 8 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $462 (w/ $20 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $462 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $559 (w/ $20 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $559 (w/ $30 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $539 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $670 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Place 5 bet (Status: active). Bankroll: $786 (w/ $44 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $786 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $411 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $753 (w/ $54 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Place 5 bet (Status: active). Bankroll: $753 (w/ $64 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #90 ----------
+  🎲 Roll #90 → (5, 1) = 6
+  ⏫ Molly's Come bet moves to the 6.
+  ⏫ Dolly's Don't Come bet moves to the 6.
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $800
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $726
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $858
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $594
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $767
+  ⚡Go Big's Place 6 bet WON $35! New Bankroll: $1247
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $660
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $790
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $410
+  No change in game state.
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $462 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $462 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $559 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $559 (w/ $50 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $660 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $790 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $410 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #91 ----------
+  🎲 Roll #91 → (1, 4) = 5
+  ⏫ Molly's Come bet moves to the 5.
+  ⏫ Dolly's Don't Come bet moves to the 5.
+  ⚡Insider's Place 5 bet WON $14! New Bankroll: $740
+  ⚡All Boxes's Place 5 bet WON $14! New Bankroll: $872
+  ⚡Go Big's Place 5 bet WON $35! New Bankroll: $1282
+  ⚡Crosstopher's Place 5 bet WON $14! New Bankroll: $804
+  ⚡3-2-1 Blast's Place 5 bet WON $14! New Bankroll: $781
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $650
+  ❌ Crosstopher's Field bet LOST $10. New Bankroll: $794
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $409
+  No change in game state.
+  📉 Go Big regressing to unit level 3 after hit #2
+  🎯 Go Big completed regression to unit $3 — switching to press mode.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $462 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $559 (w/ $60 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $650 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $794 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $409 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #92 ----------
+  🎲 Roll #92 → (3, 6) = 9
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $754
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $886
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $795
+  ⚡Go Big's Place 9 bet WON $21! New Bankroll: $1303
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $660
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $804
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $408
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $408 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #93 ----------
+  🎲 Roll #93 → (6, 3) = 9
+  ⚡Insider's Place 9 bet WON $14! New Bankroll: $768
+  ⚡All Boxes's Place 9 bet WON $14! New Bankroll: $900
+  ⚡3-2-1 Blast's Place 9 bet WON $14! New Bankroll: $809
+  ⚡Go Big's Place 9 bet WON $35! New Bankroll: $1338
+  ⚡Fielder's Field 9 bet WON $10! New Bankroll: $670
+  ⚡Crosstopher's Field 9 bet WON $10! New Bankroll: $814
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $407
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $407 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #94 ----------
+  🎲 Roll #94 → (3, 5) = 8
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $828
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $782
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $914
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $608
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $823
+  ⚡Go Big's Place 8 bet WON $21! New Bankroll: $1359
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $472
+  ⚡Molly's Pass Line Odds 8 bet WON $12! New Bankroll: $484
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $549
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $539
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $510
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $549
+  ⚡Odd Linus's Pass Line Odds 8 bet WON $12! New Bankroll: $561
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $838
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $833
+  ⚡3-2-1 Blast's Pass Line Odds 8 bet WON $12! New Bankroll: $845
+  ❌ Fielder's Field 9 bet LOST $10. New Bankroll: $660
+  ❌ Crosstopher's Field 9 bet LOST $10. New Bankroll: $828
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $406
+  ⚫ Point Hit: 8! → Puck OFF
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $484 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $539 (w/ $50 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $510 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $561 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $660 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $828 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $406 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $845 (w/ $10 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #95 ----------
+  🎲 Roll #95 → (5, 1) = 6
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $650
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $405
+  ⚪ Point Set to 6 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $484 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $539 (w/ $60 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $561 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $650 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $828 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $405 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $845 (w/ $64 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #96 ----------
+  🎲 Roll #96 → (5, 5) = 10
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $410
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $932
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $660
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $838
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $404
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $410 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $404 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #97 ----------
+  🎲 Roll #97 → (4, 2) = 6
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $852
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $796
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $946
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $622
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $859
+  ⚡Go Big's Place 6 bet WON $21! New Bankroll: $1380
+  ⚡Molly's Come 6 bet WON $10! New Bankroll: $494
+  ⚡Molly's Come Odds 6 bet WON $12! New Bankroll: $506
+  ❌ Dolly's Don't Come 6 bet LOST $10. New Bankroll: $529
+  ❌ Dolly's Don't Come Odds 6 bet LOST $10. New Bankroll: $519
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $516
+  ⚡Molly's Pass Line Odds 6 bet WON $12! New Bankroll: $528
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $509
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $499
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $520
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $571
+  ⚡Odd Linus's Pass Line Odds 6 bet WON $12! New Bankroll: $583
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $862
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $869
+  ⚡3-2-1 Blast's Pass Line Odds 6 bet WON $12! New Bankroll: $881
+  ❌ Fielder's Field 10 bet LOST $10. New Bankroll: $650
+  ❌ Crosstopher's Field 10 bet LOST $10. New Bankroll: $852
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $403
+  ⚫ Point Hit: 6! → Puck OFF
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $528 (w/ $30 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $499 (w/ $30 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $520 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $583 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $650 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $852 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $403 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $881 (w/ $10 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #98 ----------
+  🎲 Roll #98 → (2, 6) = 8
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $640
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $402
+  ⚪ Point Set to 8 → Puck ON
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $528 (w/ $40 on the table)
+  💰 Bet placed: Molly's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $528 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $499 (w/ $40 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass Odds bet (odds on Don't Pass) (Status: active). Bankroll: $499 (w/ $50 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $583 (w/ $20 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $640 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $852 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $402 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line Odds bet (odds on Pass Line) (Status: active). Bankroll: $881 (w/ $64 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #99 ----------
+  🎲 Roll #99 → (6, 5) = 11
+  ⚡Molly's Come bet WON $10! New Bankroll: $538
+  ❌ Dolly's Don't Come bet LOST $10. New Bankroll: $489
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $650
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $862
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $401
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $538 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $489 (w/ $50 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $401 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #100 ----------
+  🎲 Roll #100 → (6, 5) = 11
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $660
+  ⚡Crosstopher's Field 11 bet WON $10! New Bankroll: $872
+  ⚡Molly's Come bet WON $10! New Bankroll: $548
+  ❌ Dolly's Don't Come bet LOST $10. New Bankroll: $479
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $400
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $548 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $479 (w/ $50 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $400 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #101 ----------
+  🎲 Roll #101 → (6, 6) = 12
+  ⚡Fielder's Field 12 bet WON $30! New Bankroll: $690
+  ⚡Crosstopher's Field 12 bet WON $30! New Bankroll: $902
+  ❌ Molly's Come bet LOST $10. New Bankroll: $538
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $399
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come bet (Status: active). Bankroll: $538 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come bet (Status: active). Bankroll: $479 (w/ $60 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $399 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #102 ----------
+  🎲 Roll #102 → (5, 1) = 6
+  ⏫ Dolly's Don't Come bet moves to the 6.
+  ⏫ Molly's Come bet moves to the 6.
+  ⏫ Dolly's Don't Come bet moves to the 6.
+  ⚡Crosstopher's Place 6 bet WON $14! New Bankroll: $916
+  ⚡Insider's Place 6 bet WON $14! New Bankroll: $810
+  ⚡All Boxes's Place 6 bet WON $14! New Bankroll: $960
+  ⚡Six-Eight's Place 6 bet WON $14! New Bankroll: $636
+  ⚡3-2-1 Blast's Place 6 bet WON $14! New Bankroll: $895
+  ⚡Go Big's Place 6 bet WON $28! New Bankroll: $1408
+  ❌ Fielder's Field 12 bet LOST $10. New Bankroll: $680
+  ❌ Crosstopher's Field 12 bet LOST $10. New Bankroll: $906
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $398
+  No change in game state.
+  🎯 Go Big's press exposure ($115) exceeded threshold ($110) — switching back to regression.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Come Odds bet (odds on Come) (Status: active). Bankroll: $538 (w/ $60 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $479 (w/ $70 on the table)
+  💰 Bet placed: Dolly's $10 Don't Come Odds bet (odds on Don't Come) (Status: active). Bankroll: $479 (w/ $80 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $680 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Field bet (Status: active). Bankroll: $906 (w/ $54 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $398 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #103 ----------
+  🎲 Roll #103 → (5, 5) = 10
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $978
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $400
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $690
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $916
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $397
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $400 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $397 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #104 ----------
+  🎲 Roll #104 → (4, 6) = 10
+  ⚡All Boxes's Place 10 bet WON $18! New Bankroll: $996
+  ⚡Fielder's Field 10 bet WON $10! New Bankroll: $700
+  ⚡Crosstopher's Field 10 bet WON $10! New Bankroll: $926
+  ❌ Layla's Lay 10 bet LOST $10. New Bankroll: $390
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $396
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Layla's $10 Lay 10 bet (Status: active). Bankroll: $390 (w/ $20 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $396 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #105 ----------
+  🎲 Roll #105 → (2, 1) = 3
+  ⚡Fielder's Field 3 bet WON $10! New Bankroll: $710
+  ⚡Crosstopher's Field 3 bet WON $10! New Bankroll: $936
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $395
+  No change in game state.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $395 (w/ $1 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #106 ----------
+  🎲 Roll #106 → (3, 5) = 8
+  ⚡Crosstopher's Place 8 bet WON $14! New Bankroll: $950
+  ⚡Insider's Place 8 bet WON $14! New Bankroll: $824
+  ⚡All Boxes's Place 8 bet WON $14! New Bankroll: $1010
+  ⚡Six-Eight's Place 8 bet WON $14! New Bankroll: $650
+  ⚡3-2-1 Blast's Place 8 bet WON $14! New Bankroll: $909
+  ⚡Go Big's Place 8 bet WON $35! New Bankroll: $1443
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $548
+  ⚡Molly's Pass Line Odds 8 bet WON $12! New Bankroll: $560
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $469
+  ❌ Dolly's Don't Pass Odds bet LOST $10. New Bankroll: $459
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $530
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $593
+  ⚡Odd Linus's Pass Line Odds 8 bet WON $12! New Bankroll: $605
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $960
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $919
+  ⚡3-2-1 Blast's Pass Line Odds 8 bet WON $12! New Bankroll: $931
+  ❌ Fielder's Field 3 bet LOST $10. New Bankroll: $700
+  ❌ Crosstopher's Field 3 bet LOST $10. New Bankroll: $950
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $394
+  ⚫ Point Hit: 8! → Puck OFF
+  📉 Go Big regressing to unit level 5 after hit #1
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $560 (w/ $50 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $459 (w/ $70 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $530 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $605 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $700 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $950 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $394 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $931 (w/ $10 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #107 ----------
+  🎲 Roll #107 → (6, 5) = 11
+  ⚡Molly's Come 5 bet WON $10! New Bankroll: $570
+  ⚡Molly's Come Odds 5 bet WON $15! New Bankroll: $585
+  ❌ Dolly's Don't Come 5 bet LOST $10. New Bankroll: $449
+  ❌ Dolly's Don't Come Odds 5 bet LOST $10. New Bankroll: $439
+  ❌ Dolly's Don't Come 6 bet LOST $10. New Bankroll: $429
+  ❌ Dolly's Don't Come Odds 6 bet LOST $10. New Bankroll: $419
+  ⚡Molly's Come 6 bet WON $10! New Bankroll: $595
+  ⚡Molly's Come Odds 6 bet WON $12! New Bankroll: $607
+  ❌ Dolly's Don't Come 6 bet LOST $10. New Bankroll: $409
+  ❌ Dolly's Don't Come Odds 6 bet LOST $10. New Bankroll: $399
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $617
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $389
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $540
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $615
+  ⚡Fielder's Field 11 bet WON $10! New Bankroll: $710
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $960
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $393
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $941
+  ⚫ Pass Line Winner! → Puck OFF.
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $617 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $389 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $540 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $615 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $960 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $393 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $941 (w/ $10 on the table)
+  ---------- Shooter 9 (Six-Eight) — Roll #108 ----------
+  🎲 Roll #108 → (3, 4) = 7
+  ❌ Fielder's Field 11 bet LOST $10. New Bankroll: $700
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $627
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $379
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $550
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $625
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $970
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $392
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $951
+  ⚫ Pass Line Winner! → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #10: Layla steps up!
+  ---------- Place Your Bets! -------------
+  💰 Bet placed: Molly's $10 Pass Line bet (Status: active). Bankroll: $627 (w/ $10 on the table)
+  💰 Bet placed: Dolly's $10 Don't Pass bet (Status: active). Bankroll: $379 (w/ $10 on the table)
+  💰 Bet placed: Linus's $10 Pass Line bet (Status: active). Bankroll: $550 (w/ $10 on the table)
+  💰 Bet placed: Odd Linus's $10 Pass Line bet (Status: active). Bankroll: $625 (w/ $10 on the table)
+  💰 Bet placed: Fielder's $10 Field bet (Status: active). Bankroll: $700 (w/ $10 on the table)
+  💰 Bet placed: Crosstopher's $10 Pass Line bet (Status: active). Bankroll: $970 (w/ $10 on the table)
+  💰 Bet placed: Blow It's $1 Hop (1, 1) bet (Status: active). Bankroll: $392 (w/ $1 on the table)
+  💰 Bet placed: 3-2-1 Blast's $10 Pass Line bet (Status: active). Bankroll: $951 (w/ $10 on the table)
+  ---------- Shooter 10 (Layla) — Roll #109 ----------
+  🎲 Roll #109 → (4, 3) = 7
+  ⚡Molly's Pass Line bet WON $10! New Bankroll: $637
+  ❌ Dolly's Don't Pass bet LOST $10. New Bankroll: $369
+  ⚡Linus's Pass Line bet WON $10! New Bankroll: $560
+  ⚡Odd Linus's Pass Line bet WON $10! New Bankroll: $635
+  ❌ Fielder's Field bet LOST $10. New Bankroll: $690
+  ⚡Crosstopher's Pass Line bet WON $10! New Bankroll: $980
+  ❌ Blow It's Hop (1, 1) bet LOST $1. New Bankroll: $391
+  ⚡3-2-1 Blast's Pass Line bet WON $10! New Bankroll: $961
+  ⚫ Pass Line Winner! → Puck OFF.
+==============================================================================
+🎲🎲 Shooter #11: Blow It steps up!

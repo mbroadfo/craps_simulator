@@ -1,0 +1,153 @@
+
+=============================================
+🧑‍🤝‍🧑 Player Performance Report
+
+🎲 Molly
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $637
+  📊 Net Result:       +$137 (Won)
+  🎯 Bets Settled:     93
+  ✅ Bets Won:         49 (52.7% win rate)
+  🔥 Max At-Risk:      $60
+  🔺 Highest Bankroll: $637
+  🔻 Lowest Bankroll:  $297
+
+🎲 Dolly
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $369
+  📊 Net Result:       -$131 (Lost)
+  🎯 Bets Settled:     93
+  ✅ Bets Won:         42 (45.2% win rate)
+  🔥 Max At-Risk:      $80
+  🔺 Highest Bankroll: $682
+  🔻 Lowest Bankroll:  $369
+
+🎲 Linus
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $560
+  📊 Net Result:       +$60 (Won)
+  🎯 Bets Settled:     22
+  ✅ Bets Won:         14 (63.6% win rate)
+  🔥 Max At-Risk:      $10
+  🔺 Highest Bankroll: $560
+  🔻 Lowest Bankroll:  $460
+
+🎲 Odd Linus
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $635
+  📊 Net Result:       +$135 (Won)
+  🎯 Bets Settled:     37
+  ✅ Bets Won:         23 (62.2% win rate)
+  🔥 Max At-Risk:      $20
+  🔺 Highest Bankroll: $635
+  🔻 Lowest Bankroll:  $442
+
+🎲 Fielder
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $690
+  📊 Net Result:       +$190 (Won)
+  🎯 Bets Settled:     109
+  ✅ Bets Won:         58 (53.2% win rate)
+  🔥 Max At-Risk:      $10
+  🔺 Highest Bankroll: $720
+  🔻 Lowest Bankroll:  $470
+
+🎲 Crosstopher
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $980
+  📊 Net Result:       +$480 (Won)
+  🎯 Bets Settled:     160
+  ✅ Bets Won:         94 (58.8% win rate)
+  🔥 Max At-Risk:      $54
+  🔺 Highest Bankroll: $980
+  🔻 Lowest Bankroll:  $424
+
+🎲 Insider
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $824
+  📊 Net Result:       +$324 (Won)
+  🎯 Bets Settled:     66
+  ✅ Bets Won:         42 (63.6% win rate)
+  🔥 Max At-Risk:      $44
+  🔺 Highest Bankroll: $824
+  🔻 Lowest Bankroll:  $484
+
+🎲 All Boxes
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $1010
+  📊 Net Result:       +$510 (Won)
+  🎯 Bets Settled:     95
+  ✅ Bets Won:         59 (62.1% win rate)
+  🔥 Max At-Risk:      $64
+  🔺 Highest Bankroll: $1010
+  🔻 Lowest Bankroll:  $480
+
+🎲 Six-Eight
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $650
+  📊 Net Result:       +$150 (Won)
+  🎯 Bets Settled:     33
+  ✅ Bets Won:         21 (63.6% win rate)
+  🔥 Max At-Risk:      $24
+  🔺 Highest Bankroll: $650
+  🔻 Lowest Bankroll:  $490
+
+🎲 Layla
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $390
+  📊 Net Result:       -$110 (Lost)
+  🎯 Bets Settled:     29
+  ✅ Bets Won:         12 (41.4% win rate)
+  🔥 Max At-Risk:      $20
+  🔺 Highest Bankroll: $500
+  🔻 Lowest Bankroll:  $390
+
+🎲 Blow It
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $391
+  📊 Net Result:       -$109 (Lost)
+  🎯 Bets Settled:     109
+  ✅ Bets Won:         0 (0.0% win rate)
+  🔥 Max At-Risk:      $0
+  🔺 Highest Bankroll: $500
+  🔻 Lowest Bankroll:  $391
+
+🎲 3-2-1 Blast
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $961
+  📊 Net Result:       +$461 (Won)
+  🎯 Bets Settled:     98
+  ✅ Bets Won:         63 (64.3% win rate)
+  🔥 Max At-Risk:      $64
+  🔺 Highest Bankroll: $961
+  🔻 Lowest Bankroll:  $448
+
+🎲 Go Big
+  📥 Initial Bankroll: $500
+  📤 Final Bankroll:   $1443
+  📊 Net Result:       +$943 (Won)
+  🎯 Bets Settled:     66
+  ✅ Bets Won:         42 (63.6% win rate)
+  🔥 Max At-Risk:      $220
+  🔺 Highest Bankroll: $1443
+  🔻 Lowest Bankroll:  $500
+
+=============================================
+📊 Simulation Statistics
+📌 Table Minimum: $10
+👥 Number of Players: 13
+🎯 Number of Shooters: 10
+⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋
+🎲 Session Rolls: 109
+🧮 Rolls per Shooter: 10.90
+⏱️ Estimated Session Time: 1 hr 15 min
+📉 Max Table Risk: $591
+💸 Total Amount Bet: $10474
+💰 Total Amount Won: $7383
+❌ Total Amount Lost: $4343
+🏦 House Take: $-3040
+🎲 House Edge: -29.02%
+😈 Total 7s Rolled: 10
+🎯 7-Roll Ratio (SRR): 0.09
+🔺 Highest Bankroll During Session: $1443
+🔻 Lowest Bankroll During Session: $297
