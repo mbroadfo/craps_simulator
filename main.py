@@ -1,9 +1,7 @@
-import os
-from craps.single_session import run_single_session
-
-def main():
-    
-    stats = run_single_session()
+import sys
+from run_session import run_session
 
 if __name__ == "__main__":
-    main()
+    # Simulate command-line arguments: --auto --history
+    sys.argv += ["--auto", "--history"]
+    run_session()
