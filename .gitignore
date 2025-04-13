@@ -17,3 +17,8 @@ env/
 .DS_Store
 Thumbs.db
 
+# Ignore local output files
+.output/
+*.txt
+*.log
+*.csv

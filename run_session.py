@@ -1,4 +1,4 @@
-from craps.session_manager import SessionManager
+from craps.craps_engine import CrapsEngine
 from craps.roll_history_manager import RollHistoryManager
 import sys
 
@@ -17,7 +17,7 @@ def run_session():
 
     max_shooters = 10
 
-    session_mgr = SessionManager()
+    session_mgr = CrapsEngine()
     roll_history_mgr = RollHistoryManager()
     success = session_mgr.setup_session(num_shooters=max_shooters, dice_mode=dice_mode, roll_history_file=roll_history_mgr.get_roll_history_file(dice_mode))
 

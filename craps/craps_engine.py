@@ -27,7 +27,7 @@ class PostRollSummary(NamedTuple):
     shooter_continues: bool
 
 
-class SessionManager:
+class CrapsEngine:
     def __init__(self) -> None:
         self.house_rules: Optional[HouseRules] = None
         self.table: Optional[Table] = None
