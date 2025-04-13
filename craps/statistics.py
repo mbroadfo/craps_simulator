@@ -142,6 +142,7 @@ class Statistics:
                     player_stats["bets_won"] += 1
                 elif bet.status == "lost":
                     self.total_amount_lost += bet.amount
+        print(f"🧮 Recording {bet.status.upper()} → {bet.owner.name} {bet.bet_type} ${bet.amount} payout ${bet.resolved_payout}")
     
     def update_player_bankrolls(self, players: List[Any]) -> None:
         """Update player bankrolls and track highest/lowest bankroll."""

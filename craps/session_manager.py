@@ -114,6 +114,7 @@ class SessionManager:
         self.player_lineup.assign_strategies(players)
 
         if self.stats:
+            self.stats.initialize_player_stats(players)
             self.stats.num_players = len(players)
 
         return len(players)
@@ -204,6 +205,7 @@ class SessionManager:
         # Step 3: Update win/loss stats
         for bet in resolved_bets:
             self.stats.update_win_loss(bet)
+            print(f"[STATS DEBUG] update_win_loss called → Owner: {bet.owner.name}, Type: {bet.bet_type}, Status: {bet.status}, Amount: {bet.amount}, Payout: {bet.resolved_payout}")
 
             # Step 4: Notify strategy if bet won
             if bet.status == "won":
