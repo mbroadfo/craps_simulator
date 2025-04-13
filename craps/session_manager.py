@@ -113,6 +113,7 @@ class SessionManager:
         ]
 
         self.player_lineup.assign_strategies(players)
+        self.stats.num_players = len(players)
         return len(players)
 
     def lock_session(self) -> None:

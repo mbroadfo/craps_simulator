@@ -73,16 +73,15 @@ def test_basic_session_setup():
             if session_mgr.game_state.phase == "come-out" and sum(outcome) == 7:
                 break  # end current shooter
             
-    # 🔚 EXIT here in non-interactive mode
-    if not is_interactive():
-        session_mgr.finalize_session(
-            stats=session_mgr.stats,
-            roll_history=session_mgr.roll_history,
-            roll_history_manager=session_mgr.roll_history_manager,
-            play_by_play=session_mgr.play_by_play,
-            players=session_mgr.player_lineup.get_active_players_list()
-        )
-        return
+    # 🔚 Wrap up after all shooters are done
+    session_mgr.finalize_session(
+        stats=session_mgr.stats,
+        roll_history=session_mgr.roll_history,
+        roll_history_manager=session_mgr.roll_history_manager,
+        play_by_play=session_mgr.play_by_play,
+        players=session_mgr.player_lineup.get_active_players_list()
+    )
+    return
 
 if __name__ == "__main__":
     test_basic_session_setup()
