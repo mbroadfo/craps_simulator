@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING, Set, Tuple
+from craps.bet_adjusters import PressAdjuster, PressStyle
 from craps.base_strategy import BaseStrategy
 
 if TYPE_CHECKING:
@@ -32,7 +33,7 @@ class HardwayHighwayStrategy(BaseStrategy):
 
         self.place_levels: dict[int, int] = {6: 2, 8: 2}  # starts at 2 units
         self.hardway_units: dict[int, int] = {6: 1, 8: 1}  # starts at 1 unit
-        self.max_place_units: int = 6
+        self.max_place_units: int = 5
         self.max_hardway_units: int = 2
 
     def on_new_shooter(self) -> None:
@@ -80,8 +81,15 @@ class HardwayHighwayStrategy(BaseStrategy):
                     continue
                 if bet.status == "lost":
                     self.hardway_units[num] = 1
+                    if self.play_by_play:
+                        self.play_by_play.write(f"  👈 {player.name}'s Hardways {num} bet reset to $5 after loss."
+                    )
                 elif bet.status == "won" and self.hardway_units[num] < self.max_hardway_units:
-                    self.hardway_units[num] = self.max_hardway_units
+                    for target in (6, 8):
+                        if self.hardway_units[target] < self.max_hardway_units:
+                            self.hardway_units[target] = self.max_hardway_units
+                            if self.play_by_play:
+                                self.play_by_play.write(f"  💸 {player.name}'s Hardways {target} bet doubled to ${self.hardway_units[target] * self._unit(table)} after hard hit.")
 
             if bet.bet_type == "Place" and bet.number in (6, 8):
                 if isinstance(bet.number, int):
@@ -91,7 +99,20 @@ class HardwayHighwayStrategy(BaseStrategy):
                 if bet.status == "won":
                     if is_hard_hit and self.hardway_units[num] < self.max_hardway_units:
                         self.hardway_units[num] = self.max_hardway_units
-                    if self.place_levels[num] < self.max_place_units:
-                        self.place_levels[num] += 1
+                    self.place_levels[num] = min(self.place_levels[num] + 1, self.max_place_units)
+
+        # Use PressAdjuster to press winning Place bets by 1 unit
+        press_adjuster = PressAdjuster(style=PressStyle.N_UNIT, n_units=1)
+        for bet in table.bets:
+            if bet.owner != player or bet.bet_type != "Place" or not bet.is_resolved():
+                continue
+            if isinstance(bet.number, int) and bet.number in (6, 8) and bet.status == "won":
+                unit_count = bet.amount // bet.unit
+                max_units = self.max_place_units
+                desired_units = min(unit_count + 1, max_units)
+                bet.amount = desired_units * bet.unit
+                if self.play_by_play and unit_count < desired_units:
+                    self.play_by_play.write(f"  💸 {player.name}'s Place {bet.number} bet pressed from {unit_count} units to {desired_units} units"
+                    )
 
         return None
