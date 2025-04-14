@@ -19,9 +19,12 @@ from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
 from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
 from craps.bet_adjusters import PressStyle, PressAdjuster
 from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
+from craps.strategies.hardway_highway_strategy import HardwayHighwayStrategy
 from tests.test_utils import assert_contains_bet
 
-
+class FakeDice:
+    def __init__(self, values):
+        self.values = values
 class TestStrategies(unittest.TestCase):
     """Tests for betting strategies like Pass Line and Three-Point Molly."""
 
@@ -420,6 +423,50 @@ class TestStrategies(unittest.TestCase):
         # Re-invoke — should not place duplicates
         followup_bets = strategy.place_bets(self.game_state, self.player, self.table)
         self.assertEqual(len(followup_bets), 0, "Strategy should not place duplicate Lay bets")
+    
+    def test_hardway_highway_strategy(self):
+
+        strategy = HardwayHighwayStrategy(self.table, self.rules_engine, strategy_name="HardwayHighway")
+        self.player.betting_strategy = strategy
+
+        # Come-out: Pass Line and hardways
+        self.game_state._point = None
+        self.table.bets.clear()
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        assert any(b.bet_type == "Pass Line" for b in bets)
+        assert any(b.bet_type == "Hardways" and b.number == 6 for b in bets)
+        assert any(b.bet_type == "Hardways" and b.number == 8 for b in bets)
+
+        # Set point to trigger place bets
+        self.game_state._point = 5
+        self.table.bets.clear()
+        bets = strategy.place_bets(self.game_state, self.player, self.table)
+        assert any(b.bet_type == "Place" and b.number == 6 for b in bets)
+        assert any(b.bet_type == "Place" and b.number == 8 for b in bets)
+
+        # Simulate soft 6 win (4,2)
+        self.table.bets = [self.rules_engine.create_bet("Place", 12, self.player, number=6)]
+        self.table.dice = FakeDice((4, 2))
+        self.table.bets[0].status = "won"
+        strategy.adjust_bets(self.game_state, self.player, self.table)
+        assert strategy.place_levels[6] == 3  # pressed one unit
+
+        # Simulate hard 8 win (4,4)
+        self.table.bets = [self.rules_engine.create_bet("Place", 12, self.player, number=8),
+                        self.rules_engine.create_bet("Hardways", 5, self.player, number=8)]
+        self.table.dice = FakeDice((4, 4))
+        for b in self.table.bets:
+            b.status = "won"
+        strategy.adjust_bets(self.game_state, self.player, self.table)
+        assert strategy.place_levels[8] == 3
+        assert strategy.hardway_units[8] == 2  # doubled
+
+        # Simulate hard 6 loss
+        self.table.bets = [self.rules_engine.create_bet("Hardways", 5, self.player, number=6)]
+        self.table.bets[0].status = "lost"
+        strategy.adjust_bets(self.game_state, self.player, self.table)
+        assert strategy.hardway_units[6] == 1  # reset
+
 
 if __name__ == "__main__":
     unittest.main()

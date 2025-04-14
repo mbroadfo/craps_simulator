@@ -11,6 +11,7 @@ from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
 from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
 from craps.strategies.lay_strategy import LayBetStrategy
+from craps.strategies.hardway_highway_strategy import HardwayHighwayStrategy
 from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
 from craps.bet_adjusters import PressAdjuster, PressStyle
 from craps.rules_engine import RulesEngine
@@ -53,6 +54,7 @@ class PlayerLineup:
             "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="1x"),
             "RegressHalfPress": RegressThenPressStrategy(regression_strategy=PlaceRegressionStrategy(high_unit=10,low_unit=3, regression_factor=2, regress_units=5),press_style = PressStyle.HALF),
             "Lay Outside": LayBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="Outside"),
+            "HardwayHighway": HardwayHighwayStrategy(table=self.table, rules_engine=self.rules_engine, play_by_play=self.play_by_play)
         }
 
     def add_player(self, player: "Player") -> None:
