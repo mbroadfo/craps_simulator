@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from config import HOUSE_RULES, DICE_MODE
+from config import HOUSE_RULES
 from craps.craps_engine import CrapsEngine
 from craps.roll_history_manager import RollHistoryManager
 class TestSingleSession(unittest.TestCase):
@@ -13,13 +13,13 @@ class TestSingleSession(unittest.TestCase):
         engine = CrapsEngine()
         roll_history_mgr = RollHistoryManager()
 
-        roll_history_mgr.prepare_for_session(DICE_MODE)
-        roll_file = roll_history_mgr.get_roll_history_file(DICE_MODE)
+        roll_history_mgr.prepare_for_session("live")
+        roll_file = roll_history_mgr.get_roll_history_file("live")
 
         success = engine.setup_session(
             house_rules_dict=HOUSE_RULES,
             num_shooters=5,
-            dice_mode=DICE_MODE,
+            dice_mode="live",
             roll_history_file=roll_file
         )
 
@@ -46,7 +46,7 @@ class TestSingleSession(unittest.TestCase):
 
         stats = engine.finalize_session(
             stats=engine.stats,
-            dice_mode=DICE_MODE,
+            dice_mode="live",
             roll_history=engine.roll_history,
             roll_history_manager=engine.roll_history_manager,
             play_by_play=engine.play_by_play,
