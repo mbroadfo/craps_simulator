@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING, Set, Tuple
 from craps.bet_adjusters import PressAdjuster, PressStyle
 from craps.base_strategy import BaseStrategy
+from craps.play_by_play import PlayByPlay
 
 if TYPE_CHECKING:
     from craps.table import Table
@@ -25,7 +26,7 @@ class HardwayHighwayStrategy(BaseStrategy):
     - Reset all bet levels on new shooter
     """
 
-    def __init__(self, table: Table, rules_engine: RulesEngine, play_by_play: Optional[object] = None, strategy_name: Optional[str] = None) -> None:
+    def __init__(self, table: Table, rules_engine: RulesEngine, play_by_play: Optional[PlayByPlay] = None, strategy_name: Optional[str] = None) -> None:
         super().__init__(strategy_name or "HardwayHighway")
         self.table = table
         self.rules_engine = rules_engine
@@ -82,8 +83,7 @@ class HardwayHighwayStrategy(BaseStrategy):
                 if bet.status == "lost":
                     self.hardway_units[num] = 1
                     if self.play_by_play:
-                        self.play_by_play.write(f"  👈 {player.name}'s Hardways {num} bet reset to $5 after loss."
-                    )
+                        self.play_by_play.write(f"  👈 {player.name}'s Hardways {num} bet reset to $5 after loss.")
                 elif bet.status == "won" and self.hardway_units[num] < self.max_hardway_units:
                     for target in (6, 8):
                         if self.hardway_units[target] < self.max_hardway_units:
@@ -112,7 +112,6 @@ class HardwayHighwayStrategy(BaseStrategy):
                 desired_units = min(unit_count + 1, max_units)
                 bet.amount = desired_units * bet.unit
                 if self.play_by_play and unit_count < desired_units:
-                    self.play_by_play.write(f"  💸 {player.name}'s Place {bet.number} bet pressed from {unit_count} units to {desired_units} units"
-                    )
+                    self.play_by_play.write(f"  💸 {player.name}'s Place {bet.number} bet pressed from {unit_count} units to {desired_units} units")
 
         return None

@@ -36,7 +36,7 @@ class PlayerLineup:
         self.play_by_play = play_by_play
         self.rules_engine = rules_engine
 
-        # ✅ Store actual Player instances
+        # Store actual Player instances
         self.players: List["Player"] = []
 
         # Define all supported strategies
@@ -86,14 +86,13 @@ class PlayerLineup:
         strategy = self.get_strategy_for_player(player)
         if strategy and hasattr(strategy, "bet_amount"):
             return strategy.bet_amount
-        return self.house_rules.table_minimum  # ✅ Default to table min
+        return self.house_rules.table_minimum
 
     def assign_strategies(self, players: List["Player"]) -> None:
         """
         Assigns betting strategies to players based on their name and adds them to the lineup.
         """
         for player in players:
-            print(f"  🧪 Checking: {player.name} (strategy: {getattr(player, 'strategy_name', 'N/A')})")
             if player.strategy_name in self.all_strategies:
                 player.betting_strategy = self.all_strategies[player.strategy_name]
                 self.add_player(player)

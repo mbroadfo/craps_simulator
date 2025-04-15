@@ -1,4 +1,8 @@
 from __future__ import annotations
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from typing import Optional, Any, NamedTuple
 from config import HOUSE_RULES, ACTIVE_PLAYERS
 from craps.house_rules import HouseRules
@@ -28,21 +32,40 @@ class PostRollSummary(NamedTuple):
 
 
 class CrapsEngine:
-    def __init__(self) -> None:
+    def __init__(self, quiet_mode: bool = False) -> None:
         self.house_rules: Optional[HouseRules] = None
         self.table: Optional[Table] = None
+        self.dice: Optional[Dice] = None
+        self.game_state: Optional[GameState] = None
         self.roll_history_manager: Optional[RollHistoryManager] = None
+        self.roll_history: list[dict[str, Any]] = []
         self.log_manager: Optional[LogManager] = None
-        self.play_by_play: Optional[PlayByPlay] = None
         self.rules_engine: Optional[RulesEngine] = None
         self.stats: Optional[Statistics] = None
-        self.game_state: Optional[GameState] = None
         self.player_lineup: Optional[PlayerLineup] = None
-        self.dice: Optional[Dice] = None
+        self.shooter_index: int = 0
         self.initialized: bool = False
         self.locked: bool = False
-        self.shooter_index: int = 0
-        self.roll_history: list[dict[str, Any]] = []
+        self._quiet_mode: bool = quiet_mode
+        self._visualizer: Optional[Visualizer] = None
+        self._report_writer: Optional[StatisticsReport] = None
+        self.play_by_play = PlayByPlay(engine=self)
+        
+    @property
+    def quiet_mode(self) -> bool:
+        return self._quiet_mode
+
+    @property
+    def visualizer(self) -> Visualizer:
+        if self._visualizer is None:
+            self._visualizer = Visualizer(self.stats)
+        return self._visualizer
+
+    @property
+    def report_writer(self) -> StatisticsReport:
+        if self._report_writer is None:
+            self._report_writer = StatisticsReport()
+        return self._report_writer
 
     def setup_session(
         self,
@@ -56,7 +79,7 @@ class CrapsEngine:
         Initializes core game components and prepares the session.
         """
         self.house_rules = HouseRules(house_rules_dict or HOUSE_RULES)
-        self.play_by_play = PlayByPlay()
+        self.play_by_play = PlayByPlay(engine=self)
         self.log_manager = LogManager()
         self.rules_engine = RulesEngine()
         self.player_lineup = PlayerLineup(self.house_rules, None, self.play_by_play, self.rules_engine)
@@ -339,23 +362,24 @@ class CrapsEngine:
             roll_history_manager.save_roll_history(roll_history)
 
         # View the play-by-play log
-        log_viewer = InteractiveLogViewer()
-        log_viewer.view(play_by_play.play_by_play_file)
+        if not self.quiet_mode:
+            log_viewer = InteractiveLogViewer()
+            log_viewer.view(play_by_play.play_by_play_file)
 
         # ✅ Save the stats, build the report, and display the statistics
         stats.roll_history = roll_history
         stats.update_player_stats(players)
-        statistics_report = StatisticsReport()
-        statistics_report.write_statistics(stats)
-        log_viewer.view("output/statistics_report.txt")
+        if not self.quiet_mode:
+            self.report_writer.write_statistics(stats)
+            log_viewer.view("output/statistics_report.txt")
 
         # Visualize player bankrolls (only if there are players and rolls)
-        if stats.num_players == 0 or stats.session_rolls == 0:
-            print("⚠️ No data to visualize — skipping charts.")
-        else:
-            visualizer = Visualizer(stats)
-            visualizer.visualize_bankrolls()
-
+        if not self.quiet_mode:
+            if stats.num_players == 0 or stats.session_rolls == 0:
+                print("⚠️ No data to visualize — skipping charts.")
+            else:
+                self.visualizer.visualize_bankrolls()
+        
         return stats
 
     def log_player_bets(self) -> None:

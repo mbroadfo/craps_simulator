@@ -1,23 +1,32 @@
 import os
 import csv
 from typing import List, Dict, Any, Optional
+from craps.play_by_play import PlayByPlay
 
 class RollHistoryManager:
-    def __init__(self, output_folder: str = "output", roll_history_file: str = "single_session_roll_history.csv") -> None:
+    def __init__(
+        self,
+        output_folder: str = "output",
+        roll_history_file: str = "single_session_roll_history.csv",
+        play_by_play: Optional[PlayByPlay] = None
+    ) -> None:
         self.output_folder: str = output_folder
         self.roll_history_file: str = os.path.join(output_folder, roll_history_file)
+        self.play_by_play: Optional[PlayByPlay] = play_by_play
 
     def ensure_output_folder_exists(self) -> None:
         """Ensure the output folder exists. Create it if it doesn't."""
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder)
-            print(f"Created output folder: {self.output_folder}")
+            if self.play_by_play:
+                self.play_by_play.write(f"Created output folder: {self.output_folder}")
 
     def delete_roll_history_file(self) -> None:
         """Delete the roll history file if it exists."""
         if os.path.exists(self.roll_history_file):
             os.remove(self.roll_history_file)
-            print(f"Deleted existing roll history file: {self.roll_history_file}")
+            if self.play_by_play:
+                self.play_by_play.write(f"Deleted existing roll history file: {self.roll_history_file}")
 
     def save_roll_history(self, roll_history: List[Dict[str, Any]]) -> None:
         """
@@ -39,7 +48,8 @@ class RollHistoryManager:
                 row_to_write["dice"] = str(list(roll["dice"]))
                 writer.writerow(row_to_write)
 
-        print(f"Roll history saved to: {self.roll_history_file}")
+        if self.play_by_play:
+                self.play_by_play.write(f"Roll history saved to: {self.roll_history_file}")
 
     def load_roll_history(self) -> List[Dict[str, Any]]:
         """
@@ -63,7 +73,8 @@ class RollHistoryManager:
                 row["total"] = int(row["total"])
                 roll_history.append(row)
 
-        print(f"💾 Roll history loaded from: {self.roll_history_file}")
+        if self.play_by_play:
+                self.play_by_play.write(f"💾 Roll history loaded from: {self.roll_history_file}")
         return roll_history
 
     def prepare_for_session(self, dice_mode: str) -> None:
@@ -78,7 +89,8 @@ class RollHistoryManager:
 
         if dice_mode == "live":
             self.delete_roll_history_file()
-            print("📖 Running session in 'live' mode with random rolls.")
+            if self.play_by_play:
+                self.play_by_play.write(f"📖 Running session in 'live' mode with random rolls.")
         elif dice_mode == "history":
             if not os.path.exists(self.roll_history_file):
                 raise FileNotFoundError(f"👹 Roll history file '{self.roll_history_file}' not found. Please run in 'live' mode first.")
