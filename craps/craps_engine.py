@@ -374,7 +374,11 @@ class CrapsEngine:
             log_viewer.view("output/statistics_report.txt")
 
         # Visualize player bankrolls (only if there are players and rolls)
-        if not self.quiet_mode:
+        if self.quiet_mode:
+            visualizer_path = "output/session_visualizer.png"
+            if os.path.exists(visualizer_path):
+                os.remove(visualizer_path)
+        else:
             if stats.num_players == 0 or stats.session_rolls == 0:
                 print("⚠️ No data to visualize — skipping charts.")
             else:

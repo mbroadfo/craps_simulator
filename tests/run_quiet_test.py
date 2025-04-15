@@ -6,7 +6,7 @@ from craps.craps_engine import CrapsEngine
 
 def test_quiet_mode_session():
     engine = CrapsEngine(quiet_mode=True)
-    engine.setup_session(num_shooters=3, num_players=0)  # use config.py players
+    engine.setup_session(num_shooters=10, num_players=10)  # use config.py players
     engine.add_players_from_config()
     engine.lock_session()
 
