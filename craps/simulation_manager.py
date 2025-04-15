@@ -1,32 +1,25 @@
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import List
-from craps.single_session import run_single_session
-from craps.house_rules import HouseRules
 from craps.statistics import Statistics
-from craps.view_log import InteractiveLogViewer
+from craps.simulation_runner import simulate_single_session
+from tqdm import tqdm
+
 class SimulationManager:
-    def __init__(self, house_rules: HouseRules, num_tables: int, num_shooters: int, strategies: List):
-        """
-        Initialize the SimulationManager.
-        
-        :param house_rules: The HouseRules object for payout rules and limits.
-        :param num_tables: The number of tables to simulate.
-        :param num_shooters: The number of shooters per session.
-        :param strategies: A list of betting strategies to evaluate.
-        """
-        self.house_rules = house_rules
-        self.num_tables = num_tables
-        self.num_shooters = num_shooters
-        self.strategies = strategies
-        self.stats = Statistics(house_rules.table_minimum, num_shooters, len(strategies))
+    def __init__(self, num_sessions: int = 1000, max_workers: int = 4) -> None:
+        self.num_sessions = num_sessions
+        self.max_workers = max_workers
+        self.stats_results: List[Statistics] = []
 
-    def run_simulation(self, num_sessions: int) -> None:
-        """Run multiple sessions and collect statistics."""
-        for _ in range(num_sessions):
-            for _ in range(self.num_tables):
-                stats = run_single_session(self.house_rules, self.strategies, num_shooters=self.num_shooters)
-                self.stats.merge(stats)  # Merge session stats into overall stats
+    def run_simulations(self) -> None:
 
-        # View the statistics report
-        log_viewer = InteractiveLogViewer()
-        log_viewer.view("output/statistics_report.txt")
-        self.stats.print_shooter_report()
+        with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
+            futures = [executor.submit(simulate_single_session) for _ in range(self.num_sessions)]
+            for future in tqdm(as_completed(futures), total=self.num_sessions, desc="Running Simulations"):
+                result = future.result()
+                self.stats_results.append(result)
+                
+    def save_results(self, path: str="output/aggregated_stats.pkl") -> None:
+        import pickle
+        with open(path, "wb") as f:
+            pickle.dump(self.stats_results, f)
+        print(f"💾 Saved {len(self.stats_results)} sessions to {path}")
