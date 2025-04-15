@@ -3,7 +3,10 @@ from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from craps.statistics import Statistics
 from craps.simulation_runner import simulate_single_session
-
+from simulation_utils import get_dynamic_worker_count
+from craps.simulation_report import summarize_simulation
+import pickle
+import os
 
 class SimulationManager:
     def __init__(self, num_sessions: int = 1000, max_workers: int = 4) -> None:
@@ -16,7 +19,7 @@ class SimulationManager:
 
     def run_simulations(self) -> None:
         start_time = datetime.now()
-        print(f"⏰ Starting {self.num_sessions} simulations with {self.max_workers} workers at {start_time.strftime('%H:%M:%S')}")
+        print(f"⏰ Starting {self.num_sessions:,} simulations with {self.max_workers} workers at {start_time.strftime('%H:%M:%S')}")
 
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = self.submit_simulations(executor)
@@ -32,15 +35,18 @@ class SimulationManager:
         
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
-        print(f"🏁 Finished at {end_time.strftime('%H:%M:%S')} (⌛ Duration: {duration:.2f} seconds)")
+        minutes, seconds = divmod(int(duration), 60)
+        print(f"🏁 Finished at {end_time.strftime('%H:%M:%S')} (⌛ Duration: {minutes:02d}:{seconds:02d})")
 
     def save_results(self, path="output/aggregated_stats.pkl") -> None:
-        import pickle
         with open(path, "wb") as f:
             pickle.dump(self.stats_results, f)
-        print(f"💾 Saved {len(self.stats_results)} sessions to {path}")
+        file_size_mb = os.path.getsize(path) / (1024 * 1024)
+        print(f"💾 Saved {len(self.stats_results):,} sessions to {path} ({file_size_mb:.2f} MB)")
 
 if __name__ == "__main__":
-    sim = SimulationManager(num_sessions=1000, max_workers=10)
+    worker_count = get_dynamic_worker_count(target_utilization=0.80)
+    sim = SimulationManager(num_sessions=100000, max_workers=worker_count)
     sim.run_simulations()
     sim.save_results()
+    summarize_simulation("output/aggregated_stats.pkl")

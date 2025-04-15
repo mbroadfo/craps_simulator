@@ -6,6 +6,7 @@ import logging
 if TYPE_CHECKING:
     from craps.player import Player  # Prevent circular imports
     from craps.rules_engine import RulesEngine  # Ensure correct type hint for resolve method
+    from craps.play_by_play import PlayByPlay
 
 class Bet:
     """Represents a single bet in the game of Craps."""
@@ -49,7 +50,7 @@ class Bet:
         self.resolved_payout: int = 0
         self.hits: int = 0
 
-    def validate_bet(self, phase: str, table_minimum: int, table_maximum: int) -> bool:
+    def validate_bet(self, phase: str, table_minimum: int, table_maximum: int, play_by_play: Optional[PlayByPlay]) -> bool:
         """
         Validate the bet based on the game phase, table limits, and bet type.
 
@@ -58,9 +59,15 @@ class Bet:
         :param table_maximum: The table's maximum bet amount.
         :return: True if the bet is valid, False otherwise.
         """
+        message = ""
+
         # Check if the bet can be placed during the current phase
         if phase not in self.valid_phases:
-            logging.warning(f"{self.owner.name}'s {self.bet_type} bet cannot be placed during the {phase} phase.")
+            message = f"  🛑 {self.owner.name}'s {self.bet_type} bet cannot be placed during the {phase} phase."
+            if play_by_play:
+                play_by_play.write(message)
+            else:
+                logging.warning(message)
             return False
 
         # Determine the category the bet belongs to
@@ -78,20 +85,20 @@ class Bet:
         
         # Check table minimum unless it's an 'Other Bets' category
         if bet_category != "Other Bets" and self.amount < table_minimum:
-            logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} is below the table minimum of ${table_minimum}.")
+            message = f"  🛑 {self.owner.name}'s {self.bet_type} bet amount ${self.amount} is below the table minimum of ${table_minimum}."
             return False
 
         # Check table maximum
         if self.amount > table_maximum:
-            logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} exceeds the table maximum of ${table_maximum}.")
+            message = f"  🛑 {self.owner.name}'s {self.bet_type} bet amount ${self.amount} exceeds the table maximum of ${table_maximum}."
             return False
 
         # Check unit multiple validity for Place/Buy
         if self.bet_type in ["Place", "Buy"]:
             if self.amount % self.unit != 0:
-                logging.warning(f"{self.owner.name}'s {self.bet_type} bet amount ${self.amount} must be a multiple of ${self.unit}.")
+                message = f"  🛑{self.owner.name}'s {self.bet_type} bet amount ${self.amount} must be a multiple of ${self.unit}."
                 return False
-
+                
         return True
 
     def resolve(self, rules_engine: RulesEngine, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:

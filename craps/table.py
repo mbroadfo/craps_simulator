@@ -51,7 +51,7 @@ class Table:
             message = f"{', '.join(reactivated_bets)} are now ON."
             self.play_by_play.write(message)
 
-    def place_bet(self, bet: Bet, phase: str) -> bool:
+    def place_bet(self, bet: Bet, phase: str, play_by_play: Optional[PlayByPlay]=None) -> bool:
         """
         Place a bet on the table after validating it.
 
@@ -60,7 +60,7 @@ class Table:
         :return: True if the bet was placed successfully, False otherwise.
         """
         # Validate the bet before placing it
-        if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum):
+        if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum, play_by_play):
             message = f"  ❌ Invalid bet: {bet}"
             self.play_by_play.write(message)
             return False

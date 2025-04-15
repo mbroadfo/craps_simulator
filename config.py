@@ -1,6 +1,6 @@
 ACTIVE_PLAYERS = {
-    "Molly": ("3-Point Molly", True),
-    "Dolly": ("3-Point Dolly", True),
+    "Molly": ("3-Point Molly", False),
+    "Dolly": ("3-Point Dolly", False),
     "Linus": ("Pass-Line", False),
     "Odd Linus": ("Pass-Line w/ Odds", False),
     "Fielder": ("Field", False),
@@ -11,7 +11,7 @@ ACTIVE_PLAYERS = {
     "Layla": ("Lay Outside", False),
     "Blow Aces": ("Double Aces", False),
     "321-Blast": ("Three-Two-One", False),
-    "Go Big": ("RegressHalfPress", False),
+    "Go Big": ("RegressHalfPress", True),
     "Hardy": ("HardwayHighway",False),
 }
 

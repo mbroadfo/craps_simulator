@@ -49,7 +49,7 @@ class Player:
             return False
 
         for b in bets:
-            if not table.place_bet(b, phase):
+            if not table.place_bet(b, phase, play_by_play=play_by_play):
                 message = f"  ❌ Failed to place {b.bet_type} bet for {self.name}"
                 if play_by_play:
                     play_by_play.write(message)
