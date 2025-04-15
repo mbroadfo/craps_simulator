@@ -358,7 +358,7 @@ class CrapsEngine:
     ) -> Statistics:
         
         # Save roll history if running in live mode
-        if dice_mode == "live":
+        if dice_mode == "live" and not self.quiet_mode:
             roll_history_manager.save_roll_history(roll_history)
 
         # View the play-by-play log
