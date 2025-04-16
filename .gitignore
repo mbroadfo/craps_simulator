@@ -18,7 +18,8 @@ env/
 Thumbs.db
 
 # Ignore local output files
-.output/
+.output/*
+*.pkl
 *.txt
 *.log
 *.csv
