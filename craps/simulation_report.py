@@ -69,6 +69,7 @@ def summarize_by_shooter(sessions: list[Statistics]) -> None:
                     max_loss = net
                     max_loser = player
 
+    print(f"📈 Shooter outcome histograms...")
     for player, counter in outcome_counter.items():
         print(f"{player:>12} →  Won: {counter['won']:>5}, Lost: {counter['lost']:>5}, Push: {counter['push']:>5}")
 
@@ -87,11 +88,11 @@ def summarize_by_shooter(sessions: list[Statistics]) -> None:
     plt.grid(True, linestyle="--", alpha=0.6)
     plt.tight_layout()
     plt.savefig("output/shooter_histogram.png")
-    print("📈 Shooter outcome histogram saved to output/shooter_histogram.png")
 
 import matplotlib.pyplot as plt
 
 def plot_shooter_outcomes_bar(outcome_counter: dict[str, Counter]) -> None:
+    print(f"📊 Generating shooter outcome bar chart...")
     for player, counts in outcome_counter.items():
         outcomes = ['Won', 'Lost', 'Push']
         values = [counts['won'], counts['lost'], counts['push']]
@@ -110,4 +111,3 @@ def plot_shooter_outcomes_bar(outcome_counter: dict[str, Counter]) -> None:
         plt.xlabel("Percentage")
         plt.tight_layout()
         plt.savefig(f"output/{player.lower().replace(' ', '_')}_shooter_outcomes_bar.png")
-        print(f"📊 Saved shooter outcome bar chart to output/{player.lower().replace(' ', '_')}_shooter_outcomes_bar.png")
