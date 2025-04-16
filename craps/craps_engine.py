@@ -271,6 +271,14 @@ class CrapsEngine:
         if not self.stats or self.shooter_index >= self.stats.num_shooters:
             return  # Reached max shooters, do not assign more
 
+        # Save starting bankrolls for each player at the start of a new shooter
+        if self.stats and self.player_lineup:
+            snapshot = {
+                player.name: player.balance
+                for player in self.player_lineup.get_active_players_list()
+            }
+            self._starting_bankroll_snapshot = snapshot  # cache for comparison
+
         self.shooter_index += 1
         shooter = players[(self.shooter_index - 1) % len(players)]  # Use previous index for assignment
         self.game_state.assign_new_shooter(shooter, self.shooter_index)
@@ -324,8 +332,21 @@ class CrapsEngine:
         )
         transitioned = previous_phase != current_phase
         new_shooter_assigned = False
-
+        
         if seven_out:
+            # Record shooter results into statistics
+            if self.stats and self.player_lineup and hasattr(self, "_starting_bankroll_snapshot"):
+                ending_snapshot = {
+                    player.name: player.balance
+                    for player in self.player_lineup.get_active_players_list()
+                }
+                result = {
+                    name: ending_snapshot[name] - starting_balance
+                    for name, starting_balance in self._starting_bankroll_snapshot.items()
+                }
+                self.stats.shooter_stats[self.shooter_index] = result
+                del self._starting_bankroll_snapshot  # clean up
+
             self.stats.record_seven_out()
             self.game_state.clear_shooter()
             for player in self.player_lineup.get_active_players_list():

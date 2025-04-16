@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from craps.statistics import Statistics
 from craps.simulation_runner import simulate_single_session
 from simulation_utils import get_dynamic_worker_count
-from craps.simulation_report import summarize_simulation
+from craps.simulation_report import simulation_report
 import pickle
 import os
 
@@ -49,4 +49,4 @@ if __name__ == "__main__":
     sim = SimulationManager(num_sessions=100000, max_workers=worker_count)
     sim.run_simulations()
     sim.save_results()
-    summarize_simulation("output/aggregated_stats.pkl")
+    simulation_report("output/aggregated_stats.pkl")
