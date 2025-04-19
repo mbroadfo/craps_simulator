@@ -5,7 +5,7 @@ import random
 
 if TYPE_CHECKING:
     from craps.table import Table
-    
+
 class Player:
     def __init__(self, name: str, strategy_name: Optional[str] = None, initial_balance: int = 500, betting_strategy: Optional[Any] = None):
         """
@@ -39,14 +39,6 @@ class Player:
                     raise ValueError("Cannot place odds bet on another player's bet")
                 if not table.has_bet(b.parent_bet):
                     raise ValueError("Parent bet must be on the table before placing odds")
-
-        total_amount: int = sum(b.amount for b in bets)
-
-        if total_amount > self.balance:
-            message: str = f"  ❌ {self.name} has insufficient funds to place ${total_amount} in bets."
-            if play_by_play:
-                play_by_play.write(message)
-            return False
 
         for b in bets:
             if not table.place_bet(b, phase, play_by_play=play_by_play):
@@ -129,7 +121,7 @@ class Player:
     def get_total_at_risk(self, table: "Table") -> int:
         """Return the total amount this player has at risk on the table."""
         return sum(bet.amount for bet in table.bets if bet.owner == self and bet.status == "active")
-    
+
     def win_bet(self, bet: Bet, play_by_play: Optional[Any] = None) -> None:
         """Handle a winning bet: update bankroll and optionally log result."""
         winnings = bet.payout()

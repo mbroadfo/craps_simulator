@@ -250,7 +250,7 @@ class RulesEngine:
                     elif total in losing_numbers:
                         bet.status = "lost"
 
-            else:  # Pass Line / Don't Pass logic
+            elif bet.bet_type in ("Pass Line", "Don't Pass"):  # Pass Line / Don't Pass logic
                 # Win conditions
                 if "number_hit" in winning_numbers and bet.number is not None and total == bet.number:
                     bet.status = "won"
@@ -258,7 +258,6 @@ class RulesEngine:
                     bet.status = "won"
                 elif total in winning_numbers:
                     bet.status = "won"
-
                 # Loss conditions
                 elif "number_hit" in losing_numbers and bet.number is not None and total == bet.number:
                     bet.status = "lost"
@@ -266,6 +265,24 @@ class RulesEngine:
                     bet.status = "lost"
                 elif total in losing_numbers:
                     bet.status = "lost"
+            
+            elif bet.bet_type in ("All", "Tall", "Small"):  #. All / Tall / Small
+                if game_state is None:
+                    raise RuntimeError("GameState is required for ATS bet resolution.")
+                total = sum(dice_outcome)
+                # Lose immediately on 7
+                if total == 7:
+                    bet.status = "lost"
+                else:
+                    ats_status = game_state.check_ats_completion()
+                    if bet.bet_type == "All" and ats_status.get("all_complete"):
+                        bet.status = "won"
+                    elif bet.bet_type == "Tall" and ats_status.get("tall_complete"):
+                        bet.status = "won"
+                    elif bet.bet_type == "Small" and ats_status.get("small_complete"):
+                        bet.status = "won"
+            else:
+                raise ValueError(f"Unknown contract bet: {bet.bet_type}")
 
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
@@ -341,26 +358,6 @@ class RulesEngine:
             elif bet.parent_bet and bet.parent_bet.status == "lost":
                 bet.status = "lost"
 
-        ### 🎯 8. ALL / TALL / SMALL BETS
-        elif bet.bet_type in ("All", "Tall", "Small"):
-            if game_state is None:
-                raise RuntimeError("GameState is required for ATS bet resolution.")
-
-            total = sum(dice_outcome)
-
-            # Lose immediately on 7
-            if total == 7:
-                bet.status = "lost"
-            else:
-                ats_status = game_state.check_ats_completion()
-
-                if bet.bet_type == "All" and ats_status.get("all_complete"):
-                    bet.status = "won"
-                elif bet.bet_type == "Tall" and ats_status.get("tall_complete"):
-                    bet.status = "won"
-                elif bet.bet_type == "Small" and ats_status.get("small_complete"):
-                    bet.status = "won"
-        
         ### 🎯 **Calculate Payout if Won**
         payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0
         return payout

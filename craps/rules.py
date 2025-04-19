@@ -194,7 +194,7 @@ BET_RULES = {
         },
     },
     "All Tall Small Bets": {
-        "is_contract_bet": False,
+        "is_contract_bet": True,
         "valid_numbers": None,
         "All": {
             "linked_bet": None,

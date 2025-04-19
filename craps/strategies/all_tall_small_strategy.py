@@ -48,7 +48,6 @@ class AllTallSmallStrategy(BaseStrategy):
         for ats_type in self.ats_components:
             if not player.has_active_bet(table, ats_type):
                 bet = self.rules_engine.create_bet(ats_type, bet_amount, player)
-                table.place_bet(bet, game_state.phase)
                 placed_bets.append(bet)
 
         return placed_bets
