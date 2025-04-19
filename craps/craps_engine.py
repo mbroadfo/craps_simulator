@@ -216,6 +216,12 @@ class CrapsEngine:
         if not (self.table and self.game_state and self.stats and self.play_by_play and self.house_rules):
             raise RuntimeError("Missing components for resolving bets.")
 
+        # Step 0: Update ATS tracking
+        if self.game_state.phase == "point" and sum(outcome) != 7:
+            ats_message = self.game_state.record_number_hit(sum(outcome))
+            if ats_message:
+                self.play_by_play.write(ats_message)
+        
         # Step 1: Check active bets
         self.table.check_bets(outcome, self.game_state)
 

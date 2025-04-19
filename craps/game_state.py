@@ -64,15 +64,37 @@ class GameState:
         self.small_hits.clear()
         self.tall_hits.clear()
         
-    def record_number_hit(self, total: int) -> None:
+    def record_number_hit(self, total: int) -> str:
         """
         Track number hit for All Tall Small logic.
         Called after every roll (excluding 7s).
+        Provides visual update when a new number is marked.
         """
+        message = ""
+        # Track pre-hit state for animation
+        small_before = self.small_hits.copy()
+        tall_before = self.tall_hits.copy()
+
         if total in range(2, 7):
             self.small_hits.add(total)
         elif total in range(8, 13):
             self.tall_hits.add(total)
+
+        # Detect newly flipped numbers
+        small_new = self.small_hits - small_before
+        tall_new = self.tall_hits - tall_before
+
+        if (small_new or tall_new):
+            # Build buttons: 🟢 = hit, ⚫ = not hit
+            def build_button_line(hits: set[int], range_vals: range) -> str:
+                return "".join("🟢" if n in hits else "⚫" for n in range_vals)
+
+            small_display = build_button_line(self.small_hits, range(2, 7))
+            tall_display = build_button_line(self.tall_hits, range(8, 13))
+
+            message = f"  🎯 ATS Update: {small_display} / {tall_display}"
+        
+        return message
 
     def check_ats_completion(self) -> dict[str, bool]:
         """
@@ -104,10 +126,7 @@ class GameState:
         total = sum(dice_outcome)
         message = "  No change in game state."
         
-        # Update ATS tracking
-        if total != 7:
-            self.record_number_hit(total)
-
+        # Update Point >> Phase & Puck
         if self.phase == "come-out":
             if total in [7, 11]:  # Natural win
                 self.point = None  # Reset to come-out phase
