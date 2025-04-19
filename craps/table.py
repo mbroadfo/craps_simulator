@@ -1,13 +1,12 @@
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import List, Optional, Tuple, TYPE_CHECKING, Union
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
 from craps.lineup import PlayerLineup
 from craps.game_state import GameState
+from craps.player import Player
 
-if TYPE_CHECKING:
-    from craps.player import Player
 class Table:
     def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine, player_lineup: PlayerLineup) -> None:
         """
@@ -25,9 +24,9 @@ class Table:
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
 
     def get_rules_engine(self) -> RulesEngine:
-            """Expose RulesEngine for other classes to query."""
-            return self.rules_engine
-    
+        """Expose RulesEngine for other classes to query."""
+        return self.rules_engine
+
     def has_bet(self, bet: Bet) -> bool:
         """
         Check if a specific bet is on the table.
@@ -36,6 +35,24 @@ class Table:
         :return: True if the bet is on the table, False otherwise.
         """
         return bet in self.bets
+
+    def has_existing_bet(self, player: Player, bet_type: str, number: Optional[Union[int, tuple[int, int]]] = None) -> bool:
+        """
+        Check if the player already has an active bet of the same type and number.
+
+        :param player: The player placing the bet.
+        :param bet_type: The type of bet (e.g., "All", "Place").
+        :param number: The number associated with the bet (e.g., 6 or (2, 5) for Hop bets).
+        :return: True if an active duplicate bet exists.
+        """
+        for bet in self.bets:
+            if (
+                bet.owner == player
+                and bet.bet_type == bet_type
+                and bet.number == number
+            ):
+                return True
+        return False
 
     def reactivate_inactive_bets(self) -> None:
         """
@@ -59,8 +76,13 @@ class Table:
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet was placed successfully, False otherwise.
         """
-        # Validate the bet before placing it
-        valid, message = self.rules_engine.validate_bet(bet, phase, self.house_rules.table_minimum, self.house_rules.table_maximum)
+        has_duplicate = self.has_existing_bet(bet.owner, bet.bet_type, bet.number)
+        at_risk = sum(b.amount for b in self.bets if b.owner == bet.owner)
+
+        valid, message = self.rules_engine.validate_bet_phase(bet=bet, phase=phase)
+        if valid:
+            valid, message = self.validate_bet(bet, phase)
+
         if not valid:
             if self.play_by_play and message:
                 self.play_by_play.write(f"  🚫 {message}")
@@ -70,6 +92,48 @@ class Table:
         bet.resolved_payout = 0  # Reset in case reused
         self.bets.append(bet)
         return True
+
+    def validate_bet(self, bet: Bet, phase: str) -> Tuple[bool, Optional[str]]:
+        """
+        Validate a bet against table rules including phase, limits, units, duplicates, and bankroll.
+
+        :param bet: The bet to validate.
+        :param phase: The current game phase.
+        :return: Tuple of (is_valid, message).
+        """
+        # Phase validation via RulesEngine
+        if not self.rules_engine.validate_bet_phase(bet, phase):
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet cannot be placed during the {phase} phase."
+
+        if self.has_existing_bet(bet.owner, bet.bet_type, bet.number):
+            message = f"{bet.owner.name} already has an active {bet.bet_type} bet"
+            if bet.number is not None:
+                message += f" on {bet.number}"
+            message += "."
+            return False, message
+
+        bets_with_table_minimums = ["Pass", "Don't Pass", "Come", "Don't Come", "Place", "Buy", "Lay"]
+        minimum = self.house_rules.table_minimum if bet.bet_type in bets_with_table_minimums else 1
+        maximum = self.house_rules.table_maximum
+
+        if bet.amount < minimum:
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) is below table minimum (${minimum})."
+
+        if bet.amount > maximum:
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) exceeds table maximum (${maximum})."
+
+        unit = bet.unit or 1
+        if bet.amount % unit != 0:
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet of ${bet.amount} must be in units of ${unit}."
+
+        total_risk = sum(b.amount for b in self.bets if b.owner == bet.owner)
+        if bet.amount + total_risk > bet.owner.balance:
+            return False, (
+                f"{bet.owner.name} cannot afford ${bet.amount} on {bet.bet_type} — "
+                f"balance ${bet.owner.balance}, already risking ${total_risk}."
+            )
+
+        return True, None
 
     def check_bets(self, dice_outcome: Tuple[int, int], game_state: GameState) -> List[Bet]:
         """
@@ -86,7 +150,7 @@ class Table:
             # Skip bets that are inactive (e.g., 3-2-1 turned off Place bets)
             if bet.status == "inactive":
                 continue
-            
+
             # Track Come/Don't Come movement
             original_number = bet.number
             original_status = bet.status
@@ -108,7 +172,7 @@ class Table:
                 self.play_by_play.write(f"  ⏸️ {bet.owner.name}'s {bet.bet_type} bet was barred and did not move.")
 
         return resolved_bets
-    
+
     def settle_resolved_bets(self) -> List[Bet]:
         """
         Settle resolved bets by paying winners, removing losers, and resetting status.
@@ -155,7 +219,7 @@ class Table:
                         settled_bets.append(attached)
 
         return settled_bets
-    
+
     def get_active_players(self) -> List["Player"]:
         """Retrieve all active players at the table."""
         return self.player_lineup.get_active_players_list()
