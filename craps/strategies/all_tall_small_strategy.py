@@ -51,9 +51,4 @@ class AllTallSmallStrategy(BaseStrategy):
                 table.place_bet(bet, game_state.phase)
                 placed_bets.append(bet)
 
-                if self.play_by_play:
-                    self.play_by_play.write(
-                        f"  🎯 Placing ATS bet: ${bet_amount} on {ats_type}"
-                    )
-
         return placed_bets
