@@ -24,6 +24,8 @@ class Statistics:
         self.shooter: Optional[Any] = None
         self.shooter_num: Optional[int] = None
         self.roll_history: List[Dict[str, Any]] = []
+        self.session_high_roller: Optional[tuple[str, str, int]] = None  # (player_name, strategy_name, profit)
+        self.session_low_roller: Optional[tuple[str, str, int]] = None   # (player_name, strategy_name, loss)
 
         # For visualization
         self.roll_numbers: List[int] = [0]  # Start with roll 0

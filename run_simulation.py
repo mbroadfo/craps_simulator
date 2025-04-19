@@ -5,6 +5,7 @@ from craps.statistics import Statistics
 from craps.simulation_runner import simulate_single_session
 from simulation_utils import get_dynamic_worker_count
 from craps.simulation_report import simulation_report
+from craps.high_roller import export_all_dice_histories
 import pickle
 import os
 
@@ -23,6 +24,7 @@ class SimulationManager:
 
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = self.submit_simulations(executor)
+            session_counter = 0
             for future in tqdm(
                 as_completed(futures),
                 total=self.num_sessions,
@@ -31,7 +33,9 @@ class SimulationManager:
                 bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed} • {rate_fmt}]",
             ):
                 result = future.result()
+                result.session_number = session_counter
                 self.stats_results.append(result)
+                session_counter += 1
         
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
@@ -50,3 +54,4 @@ if __name__ == "__main__":
     sim.run_simulations()
     sim.save_results()
     simulation_report("output/aggregated_stats.pkl")
+    export_all_dice_histories(simulation_data={"sessions": sim.stats_results})

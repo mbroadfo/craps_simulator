@@ -399,9 +399,28 @@ class CrapsEngine:
             log_viewer = InteractiveLogViewer()
             log_viewer.view(play_by_play.play_by_play_file)
 
-        # ✅ Save the stats, build the report, and display the statistics
+        # ✅ Save the stats
         stats.roll_history = roll_history
         stats.update_player_stats(players)
+        
+        # Track session high/low roller after final bankrolls are known
+        best = None
+        worst = None
+        for player in players:
+            strategy = getattr(player.betting_strategy, "strategy_name", "Unknown")
+            start = stats.player_stats[player.name]["initial_bankroll"]
+            final = stats.player_stats[player.name]["final_bankroll"]
+            profit = final - start
+
+            if best is None or profit > best[2]:
+                best = (player.name, strategy, profit)
+            if worst is None or profit < worst[2]:
+                worst = (player.name, strategy, profit)
+
+        stats.session_high_roller = best
+        stats.session_low_roller = worst
+        
+        # Build the report, and display the statistics
         if not self.quiet_mode:
             self.report_writer.write_statistics(stats)
             log_viewer.view("output/statistics_report.txt")
