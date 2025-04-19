@@ -1,8 +1,8 @@
 ACTIVE_PLAYERS = {
-    "Molly": ("3-Point Molly", True),
+    "Molly": ("3-Point Molly", False),
     "Dolly": ("3-Point Dolly", False),
     "Linus": ("Pass-Line", False),
-    "Odd Linus": ("Pass-Line w/ Odds", True),
+    "Odd Linus": ("Pass-Line w/ Odds", False),
     "Fielder": ("Field", False),
     "Crosstopher": ("Iron Cross", False),
     "Insider": ("Inside", False),
@@ -13,6 +13,7 @@ ACTIVE_PLAYERS = {
     "321-Blast": ("Three-Two-One", False),
     "Go Big": ("RegressHalfPress", False),
     "Hardy": ("HardwayHighway",False),
+    "ATS": ("AllTallSmall", True),
 }
 
 NUM_SHOOTERS = 10
