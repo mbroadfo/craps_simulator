@@ -147,19 +147,22 @@ class RulesEngine:
         bet_rules = RulesEngine.get_bet_rules(bet_type)
         payout_key = bet_rules.get("payout_ratio")
 
-        # Ensure payout_key exists and its value in BET_PAYOUT is a dictionary
         if payout_key in BET_PAYOUT:
             payout_data = BET_PAYOUT[payout_key]
-            if isinstance(payout_data, dict):
-                # Case 1: If no number is provided, return the default payout ratio
+
+            # 🟢 Case 1: Flat ratio (ATS, Even Money)
+            if isinstance(payout_data, tuple) and len(payout_data) == 2:
+                return payout_data
+            elif isinstance(payout_data, dict):
+                # Case 2: If no number is provided, return the default payout ratio
                 if number is None:
                     return payout_data.get("default", (1, 1))
 
-                # Case 2: If number is an integer (e.g., True Odds, Place Bets)
+                # Case 3: If number is an integer (e.g., True Odds, Place Bets)
                 if isinstance(number, int):
                     return payout_data.get(number, payout_data.get("default", (1, 1)))
 
-                # Case 3: If number is a tuple (e.g., Hop bets)
+                # Case 4: If number is a tuple (e.g., Hop bets)
                 if isinstance(number, tuple):
                     return payout_data.get(number, payout_data.get("default", (1, 1)))
 
@@ -305,6 +308,26 @@ class RulesEngine:
             elif bet.parent_bet and bet.parent_bet.status == "lost":
                 bet.status = "lost"
 
+        ### 🎯 8. ALL / TALL / SMALL BETS
+        elif bet.bet_type in ("All", "Tall", "Small"):
+            if game_state is None:
+                raise RuntimeError("GameState is required for ATS bet resolution.")
+
+            total = sum(dice_outcome)
+
+            # Lose immediately on 7
+            if total == 7:
+                bet.status = "lost"
+            else:
+                ats_status = game_state.check_ats_completion()
+
+                if bet.bet_type == "All" and ats_status.get("all_complete"):
+                    bet.status = "won"
+                elif bet.bet_type == "Tall" and ats_status.get("tall_complete"):
+                    bet.status = "won"
+                elif bet.bet_type == "Small" and ats_status.get("small_complete"):
+                    bet.status = "won"
+        
         ### 🎯 **Calculate Payout if Won**
         payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0
         return payout

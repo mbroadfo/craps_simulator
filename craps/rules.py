@@ -192,35 +192,35 @@ BET_RULES = {
                 "point_lose": ["hop_lose"],
             },
         },
-        "All Tall Small Bets": {
-            "is_contract_bet": False,
-            "valid_numbers": None,
-            "Small": {
-                "linked_bet": None,
-                "valid_phases": ["come-out"],
-                "payout_ratio": (34, 1),
-                "resolution": {
-                    "win_condition": ["small_complete"],
-                    "lose_condition": [7],
-                },
+    },
+    "All Tall Small Bets": {
+        "is_contract_bet": False,
+        "valid_numbers": None,
+        "All": {
+            "linked_bet": None,
+            "valid_phases": ["come-out"],
+            "payout_ratio": "ATS-All",
+            "resolution": {
+                "win_condition": ["all_complete"],
+                "lose_condition": [7],
             },
-            "Tall": {
-                "linked_bet": None,
-                "valid_phases": ["come-out"],
-                "payout_ratio": (34, 1),
-                "resolution": {
-                    "win_condition": ["tall_complete"],
-                    "lose_condition": [7],
-                },
+        },
+        "Tall": {
+            "linked_bet": None,
+            "valid_phases": ["come-out"],
+            "payout_ratio": "ATS-Tall",
+            "resolution": {
+                "win_condition": ["tall_complete"],
+                "lose_condition": [7],
             },
-            "All": {
-                "linked_bet": None,
-                "valid_phases": ["come-out"],
-                "payout_ratio": (175, 1),
-                "resolution": {
-                    "win_condition": ["all_complete"],
-                    "lose_condition": [7],
-                },
+        },
+        "Small": {
+            "linked_bet": None,
+            "valid_phases": ["come-out"],
+            "payout_ratio": "ATS-Small",
+            "resolution": {
+                "win_condition": ["small_complete"],
+                "lose_condition": [7],
             },
         },
     }
@@ -304,8 +304,12 @@ BET_PAYOUT = {
         (5, 5): (30, 1),
         (5, 6): (15, 1),
         (6, 6): (30, 1),
-    }
+    },
+    "ATS-All": (175, 1),        
+    "ATS-Tall": (34, 1),
+    "ATS-Small": (34, 1),
 }
+
 ODDS_MULTIPLIERS = {
     "1x": {4: 1, 5: 1, 6: 1, 8: 1, 9: 1, 10: 1},
     "2x": {4: 2, 5: 2, 6: 2, 8: 2, 9: 2, 10: 2},

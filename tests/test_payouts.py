@@ -44,7 +44,10 @@ class TestPayouts(unittest.TestCase):
             ("Proposition", (5,6), 11, None),
             ("Proposition", (6,6), 12, None),
             ("Hop", (5,1), (1, 5), None),
-            ("Hop", (3,3), (3, 3), None)
+            ("Hop", (3,3), (3, 3), None),
+            ("All", (3,3), None, None),
+            ("Tall", (3,3), None, None),
+            ("Small", (3,3), None, None),
         ]
 
         placed_bets = {}  # Dictionary to track placed bets by type
@@ -88,6 +91,14 @@ class TestPayouts(unittest.TestCase):
                     )
                     self.common_setup.table.place_bet(bet, self.game_state.phase)
 
+            elif bet_type in ["All","Tall","Small"]:
+                # Simulate a sequence of valid hits (2–6, 8–12) avoiding 7
+                hit_sequence = [2, 3, 4, 5, 6, 8, 9, 10, 11, 12]
+                for roll in hit_sequence:
+                    bet = self.rules_engine.create_bet(bet_type, self.min_bet, self.player, number=bet_is_on)
+                    self.common_setup.table.place_bet(bet, self.game_state.phase)
+                    self.game_state.record_number_hit(roll)
+                
             else:
                 # Regular bets resolve normally
                 bet = self.rules_engine.create_bet(bet_type, self.min_bet, self.player, number=bet_is_on)
@@ -115,7 +126,6 @@ class TestPayouts(unittest.TestCase):
 
             # Validate payout
             self.assertEqual(payout, expected_payout)
-
 
 if __name__ == "__main__":
     unittest.main()
