@@ -105,6 +105,7 @@ class Table:
         if not self.rules_engine.validate_bet_phase(bet, phase):
             return False, f"{bet.owner.name}'s {bet.bet_type} bet cannot be placed during the {phase} phase."
 
+        # Validate existing bet
         if self.has_existing_bet(bet.owner, bet.bet_type, bet.number):
             message = f"{bet.owner.name} already has an active {bet.bet_type} bet"
             if bet.number is not None:
@@ -116,16 +117,20 @@ class Table:
         minimum = self.house_rules.table_minimum if bet.bet_type in bets_with_table_minimums else 1
         maximum = self.house_rules.table_maximum
 
+        # Validate table minimum
         if bet.amount < minimum:
             return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) is below table minimum (${minimum})."
 
+        # Validate table maximum
         if bet.amount > maximum:
             return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) exceeds table maximum (${maximum})."
 
+        # Validate bet sizing
         unit = bet.unit or 1
         if bet.amount % unit != 0:
             return False, f"{bet.owner.name}'s {bet.bet_type} bet of ${bet.amount} must be in units of ${unit}."
 
+        # Validate sufficient bankroll
         total_risk = sum(b.amount for b in self.bets if b.owner == bet.owner)
         if bet.amount + total_risk > bet.owner.balance:
             return False, (

@@ -295,15 +295,21 @@ class CrapsEngine:
             if bet.bet_type == "Field":
                 bet.status = "active"
 
-            elif bet.bet_type in ["Place", "Buy", "Lay"]:
+            elif bet.bet_type in ["Place", "Buy", "Lay", "Don't Place"]:
                 if (self.game_state.phase == "point" or self.house_rules.leave_bets_working) and not is_turned_off:
                     bet.status = "active"
                 else:
                     bet.status = "inactive"
 
-            elif bet.bet_type in ["Hop", "Hardways", "Proposition"]:
+            elif bet.bet_type in ["Hop", "Proposition", "Hardways"]:
                 if bet.status == "won":
                     bet.status = "active"
+                    
+            elif bet.bet_type in ("All", "Tall", "Small"):  # Bets only active during the point
+                if self.game_state.phase == "point":
+                    bet.status = "active"
+                else:
+                    bet.status = "inactive"
 
         if self.stats and self.player_lineup:
             self.stats.update_player_risk(
