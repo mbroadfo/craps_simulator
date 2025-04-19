@@ -1,8 +1,10 @@
-from typing import List, Optional, Dict, Any, Tuple, Union
+from typing import Optional, Dict, Any, Tuple, Union, TYPE_CHECKING
 from craps.rules import BET_RULES, BET_PAYOUT
 from craps.bet import Bet
 from craps.game_state import GameState
 
+if TYPE_CHECKING:
+    from craps.play_by_play import PlayByPlay
 class RulesEngine:
     """A rules engine for handling bets based on the rules defined in rules.py."""
 
@@ -73,9 +75,49 @@ class RulesEngine:
         return 1  # Default fallback
 
     @staticmethod
+    def validate_bet(
+        bet: Bet,
+        phase: str,
+        table_minimum: int,
+        table_maximum: int
+    ) -> tuple[bool, Optional[str]]:
+        """
+        Validate a bet based on the game phase, table limits, and unit requirements.
+
+        :param bet: The bet to validate.
+        :param phase: The current game phase.
+        :param table_minimum: The table's minimum allowed bet.
+        :param table_maximum: The table's maximum allowed bet.
+        :return: (is_valid, message) — True if valid, False otherwise with a reason.
+        """
+        # ✅ 1. Phase validation
+        if phase not in bet.valid_phases:
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet cannot be placed during the {phase} phase."
+
+        # ✅ 2. Determine minimum
+        bets_with_table_minimums = [
+            "Pass", "Don't Pass", "Come", "Don't Come", "Place", "Buy", "Lay"
+        ]
+        minimum = table_minimum if bet.bet_type in bets_with_table_minimums else 1
+
+        # ✅ 3. Check against limits
+        if bet.amount < minimum:
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) is below table minimum (${minimum})."
+
+        if bet.amount > table_maximum:
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) exceeds table maximum (${table_maximum})."
+
+        # ✅ 4. Unit divisibility
+        unit = bet.unit or 1
+        if bet.amount % unit != 0:
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet of ${bet.amount} must be in units of ${unit}."
+
+        return True, None
+
+    @staticmethod
     def create_bet(bet_type: str, amount: int, owner: Any, number: Optional[Union[int, Tuple[int, int]]] = None, parent_bet: Optional[Bet] = None) -> Bet:
         """Create a bet based on the bet type."""
-        bet_rules = RulesEngine.get_bet_rules(bet_type)  # ✅ Unified retrieval
+        bet_rules = RulesEngine.get_bet_rules(bet_type)
 
         if not bet_rules:
             raise ValueError(f"Unknown bet type: {bet_type}")

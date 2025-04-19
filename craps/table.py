@@ -60,9 +60,10 @@ class Table:
         :return: True if the bet was placed successfully, False otherwise.
         """
         # Validate the bet before placing it
-        if not bet.validate_bet(phase, self.house_rules.table_minimum, self.house_rules.table_maximum, play_by_play):
-            message = f"  ❌ Invalid bet: {bet}"
-            self.play_by_play.write(message)
+        valid, message = self.rules_engine.validate_bet(bet, phase, self.house_rules.table_minimum, self.house_rules.table_maximum)
+        if not valid:
+            if self.play_by_play and message:
+                self.play_by_play.write(f"  🚫 {message}")
             return False
 
         # Place the bet on the table

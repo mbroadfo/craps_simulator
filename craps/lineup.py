@@ -56,7 +56,7 @@ class PlayerLineup:
             "RegressHalfPress": RegressThenPressStrategy(regression_strategy=PlaceRegressionStrategy(high_unit=10,low_unit=3, regression_factor=2, regress_units=5),press_style = PressStyle.HALF),
             "Lay Outside": LayBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="Outside"),
             "HardwayHighway": HardwayHighwayStrategy(table=self.table, rules_engine=self.rules_engine, play_by_play=self.play_by_play),
-            "AllTallSmall": AllTallSmallStrategy(table=self.table, rules_engine=self.rules_engine, play_by_play=self.play_by_play, ats_type="AllTallSmall"),
+            "AllTallSmall": AllTallSmallStrategy(table=self.table, rules_engine=self.rules_engine, play_by_play=self.play_by_play, ats_type="AllTallSmall", bet_amount=5),
         }
 
     def add_player(self, player: "Player") -> None:
