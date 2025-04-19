@@ -1,12 +1,13 @@
-from __future__ import annotations  # Enable forward references for type hints
+from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from craps.rules import BET_RULES
 import logging
 
 if TYPE_CHECKING:
-    from craps.player import Player  # Prevent circular imports
-    from craps.rules_engine import RulesEngine  # Ensure correct type hint for resolve method
+    from craps.player import Player
+    from craps.rules_engine import RulesEngine
     from craps.play_by_play import PlayByPlay
+    from craps.game_state import GameState
 
 class Bet:
     """Represents a single bet in the game of Craps."""
@@ -101,7 +102,7 @@ class Bet:
                 
         return True
 
-    def resolve(self, rules_engine: RulesEngine, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> None:
+    def resolve(self, rules_engine: RulesEngine, dice_outcome: Tuple[int, int], game_state: GameState) -> None:
         """
         Resolve the bet based on the dice outcome, phase, and point.
         Delegates resolution logic to the RulesEngine.
@@ -111,7 +112,7 @@ class Bet:
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
         """
-        self.resolved_payout = rules_engine.resolve_bet(self, dice_outcome, phase, point)
+        self.resolved_payout = rules_engine.resolve_bet(self, dice_outcome, game_state)
 
     def is_resolved(self) -> bool:
         """Check if the bet has been resolved (won, lost, or pushed)."""

@@ -166,7 +166,7 @@ class RulesEngine:
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
     @staticmethod
-    def resolve_bet(bet: Bet, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> int:
+    def resolve_bet(bet: Bet, dice_outcome: Tuple[int, int], game_state: GameState) -> int:
         """
         Resolves a bet based on the dice outcome, phase, and point.
         Uses a structured approach based on bet categories.
@@ -174,9 +174,12 @@ class RulesEngine:
         total = sum(dice_outcome)
         is_pair = dice_outcome[0] == dice_outcome[1]
         sorted_dice = tuple(sorted(dice_outcome))
-        bet_rules = RulesEngine.get_bet_rules(bet.bet_type)  # ✅ Unified retrieval
-        resolution_rules = bet_rules["resolution"]
+        phase = game_state.phase
+        point = game_state.point
         phase_key = phase.replace("-", "_")
+
+        bet_rules = RulesEngine.get_bet_rules(bet.bet_type)
+        resolution_rules = bet_rules["resolution"]
         winning_numbers = resolution_rules.get(f"{phase_key}_win", [])
         losing_numbers = resolution_rules.get(f"{phase_key}_lose", [])
 

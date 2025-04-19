@@ -217,7 +217,7 @@ class CrapsEngine:
             raise RuntimeError("Missing components for resolving bets.")
 
         # Step 1: Check active bets
-        self.table.check_bets(outcome, self.game_state.phase, self.game_state.point)
+        self.table.check_bets(outcome, self.game_state)
 
         # Step 2: Settle resolved bets
         resolved_bets = self.table.settle_resolved_bets()
@@ -419,5 +419,5 @@ class CrapsEngine:
                 )
                 bet_total = sum(b.amount for b in remaining_bets)
                 self.play_by_play.write(
-                    f"  📊 {player.name}'s remaining bets: {summary} | Total on table: ${bet_total} Bankroll: {player.balance}"
+                    f"  📊 {player.name}'s remaining bets: {summary} | Total on table: ${bet_total} Bankroll: ${player.balance}"
                 )

@@ -12,6 +12,7 @@ from craps.player import Player
 from craps.bet import Bet
 from craps.session_initializer import InitializeSession
 from craps.lineup import PlayerLineup
+from craps.game_state import GameState
 
 class CommonTableSetup:
     """Common setup for all craps tests, now using InitializeSession for consistency."""
@@ -74,7 +75,7 @@ class CommonTableSetup:
         self.table.place_bet(bet, phase)
         return bet
 
-    def simulate_roll(self, dice_outcome: Tuple[int, int], phase: str = "come-out", point: Optional[int] = None) -> List[Bet]:
+    def simulate_roll(self, dice_outcome: Tuple[int, int], game_state: GameState) -> List[Bet]:
         """
         Simulate a dice roll and resolve bets on the table.
 
@@ -83,7 +84,7 @@ class CommonTableSetup:
         :param point: The current point number (if in point phase).
         :return: A list of resolved bets.
         """
-        self.table.check_bets(dice_outcome, phase, point)
+        self.table.check_bets(dice_outcome, game_state)
         return self.table.settle_resolved_bets()
 
     def reset_table(self) -> None:

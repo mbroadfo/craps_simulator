@@ -4,10 +4,10 @@ from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
 from craps.rules_engine import RulesEngine
 from craps.lineup import PlayerLineup
+from craps.game_state import GameState
 
 if TYPE_CHECKING:
     from craps.player import Player
-    
 class Table:
     def __init__(self, house_rules: HouseRules, play_by_play: PlayByPlay, rules_engine: RulesEngine, player_lineup: PlayerLineup) -> None:
         """
@@ -70,7 +70,7 @@ class Table:
         self.bets.append(bet)
         return True
 
-    def check_bets(self, dice_outcome: Tuple[int, int], phase: str, point: Optional[int]) -> List[Bet]:
+    def check_bets(self, dice_outcome: Tuple[int, int], game_state: GameState) -> List[Bet]:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.
 
@@ -90,7 +90,7 @@ class Table:
             original_number = bet.number
             original_status = bet.status
 
-            bet.resolve(self.rules_engine, dice_outcome, phase, point)
+            bet.resolve(self.rules_engine, dice_outcome, game_state)
 
             if bet.status != original_status and bet.status in ("won", "lost"):
                 resolved_bets.append(bet)
