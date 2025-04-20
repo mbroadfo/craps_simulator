@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional
 from craps.strategies.free_odds_strategy import FreeOddsStrategy
+from craps.base_strategy import BaseStrategy
 
 if TYPE_CHECKING:
     from craps.table import Table
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
     from craps.player import Player
     from craps.bet import Bet
 
-class ThreePointDollyStrategy:
+class ThreePointDollyStrategy(BaseStrategy):
     """
     Betting strategy for the 3-Point Dolly system.
 
@@ -27,6 +28,7 @@ class ThreePointDollyStrategy:
         strategy_name: Optional[str] = None,
     ) -> None:
         
+        super().__init__(strategy_name or "ThreePointMolly")
         self.table = table
         self.bet_amount = bet_amount
         self.odds_strategy = FreeOddsStrategy(table, odds_type) if odds_type else None

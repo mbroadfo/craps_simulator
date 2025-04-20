@@ -23,7 +23,7 @@ class DoubleHopStrategy(BaseStrategy):
         self.rules_engine = rules_engine
         self.base_bet = base_bet
         self.pressed_once = False  # <-- track press state
-        self.press_adjuster = PressAdjuster(style=PressStyle.FULL),
+        self.press_adjuster = PressAdjuster(style=PressStyle.FULL)
         self.strategy_name = strategy_name or "DoubleHop"        
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
