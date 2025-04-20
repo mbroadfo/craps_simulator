@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from craps.api.api_session_controller import app  # FastAPI app lives here
+from craps.api.app import app
 from craps.api.api_session_manager import session_manager, CrapsSession
 
 client = TestClient(app)

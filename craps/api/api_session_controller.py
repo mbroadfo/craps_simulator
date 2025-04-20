@@ -4,8 +4,9 @@ from craps.craps_engine import CrapsEngine
 from craps.house_rules import HouseRules
 from craps.api.api_session_manager import CrapsSession, session_manager
 from craps.api.house_rules_api import router as house_rules_router
+from craps.api.players_api import router as players_router
 
-router = APIRouter(prefix="/api/session", tags=["Session Control"])
+router: APIRouter = APIRouter(prefix="/api/session", tags=["Session Control"])
 
 def start_new_session(rules: Optional[HouseRules] = None) -> CrapsSession:
     if rules is None:
@@ -38,7 +39,3 @@ def start_session(request: Request) -> dict:
             "shooter_index": 0
         }
     }
-
-app = FastAPI(title="Craps Simulator API")
-app.include_router(house_rules_router)
-app.include_router(router)

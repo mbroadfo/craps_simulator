@@ -1,12 +1,14 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from fastapi import Request, HTTPException
 from craps.house_rules import HouseRules
 from craps.craps_engine import CrapsEngine
+from craps.player import Player
 
 class CrapsSession:
     def __init__(self, rules: HouseRules) -> None:
         self.rules = rules
         self.engine: Optional[CrapsEngine] = None
+        self.players: List[Player] = []
 
 class SessionManager:
     def __init__(self) -> None:
