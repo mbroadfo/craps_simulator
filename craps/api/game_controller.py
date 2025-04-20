@@ -139,7 +139,9 @@ def get_game_status(request: Request) -> dict[str, Any]:
     if not engine:
         raise HTTPException(status_code=400, detail="Game has not been started")
 
-    return _snapshot_game_state(engine)
+    response = _snapshot_game_state(engine)
+    response["game_over"] = engine.shooter_index >= engine.stats.num_shooters if engine.stats else False
+    return response
 
 def _snapshot_game_state(engine: CrapsEngine) -> dict[str, Any]:
     if not engine.game_state or not engine.table:
