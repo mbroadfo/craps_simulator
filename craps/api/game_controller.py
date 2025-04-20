@@ -41,6 +41,34 @@ def start_game(request: Request) -> dict[str, Any]:
 
     return _snapshot_game_state(engine)
 
+@router.post("/reset")
+def reset_game(request: Request) -> dict[str, Any]:
+    session: CrapsSession = get_session_by_request(request)
+
+    if not session.players:
+        raise HTTPException(status_code=400, detail="No active players in session")
+
+    engine = CrapsEngine(quiet_mode=True)
+    session.engine = engine
+
+    engine.setup_session(
+        house_rules_dict=session.rules.__dict__,
+        num_shooters=session.rules.number_of_shooters,
+        num_players=len(session.players),
+        dice_mode=session.rules.dice_mode
+    )
+
+    if engine.player_lineup is not None:
+        engine.player_lineup.assign_strategies(session.players)
+
+    if engine.stats is not None:
+        engine.stats.initialize_player_stats(session.players)
+        engine.stats.num_players = len(session.players)
+
+    engine.assign_next_shooter()
+
+    return _snapshot_game_state(engine)
+
 @router.post("/roll")
 def roll_dice(request: Request, body: GameRollRequest) -> dict[str, Any]:
     session: CrapsSession = get_session_by_request(request)
