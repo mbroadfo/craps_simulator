@@ -5,7 +5,7 @@ from craps.statistics import Statistics
 from craps.simulation_runner import simulate_single_session
 from simulation_utils import get_dynamic_worker_count
 from craps.simulation_report import simulation_report
-from craps.high_roller import export_all_dice_histories
+from craps.high_roller import export_high_roller_histories
 import pickle
 import os
 
@@ -54,4 +54,4 @@ if __name__ == "__main__":
     sim.run_simulations()
     sim.save_results()
     simulation_report("output/aggregated_stats.pkl")
-    export_all_dice_histories(simulation_data={"sessions": sim.stats_results})
+    export_high_roller_histories(simulation_data={"sessions": sim.stats_results})
