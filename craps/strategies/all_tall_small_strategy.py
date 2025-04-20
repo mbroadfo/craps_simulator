@@ -24,7 +24,8 @@ class AllTallSmallStrategy(BaseStrategy):
         rules_engine: RulesEngine,
         play_by_play: Optional[PlayByPlay] = None,
         ats_type: str = "AllTallSmall",
-        bet_amount: Optional[int] = None
+        bet_amount: Optional[int] = None,
+        strategy_name: Optional[str] = None,
     ):
         super().__init__("AllTallSmall")
         
@@ -34,6 +35,7 @@ class AllTallSmallStrategy(BaseStrategy):
         self.ats_type = ats_type
         self.ats_components = ATS_TYPE_MAP[ats_type]
         self.bet_amount = bet_amount
+        self.strategy_name = strategy_name or "AllTallSmall"
 
     def place_bets(
         self, game_state: GameState, player: Player, table: "Table"
