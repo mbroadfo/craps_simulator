@@ -10,7 +10,12 @@ if TYPE_CHECKING:
 class FreeOddsStrategy:
     """Betting strategy for Free Odds on any active bet."""
 
-    def __init__(self, table: Table, odds_type: Optional[str] = None) -> None:
+    def __init__(
+            self, 
+            table: Table, 
+            odds_type: Optional[str] = None,
+            strategy_name: Optional[str] = None,
+        ) -> None:
         """
         Initialize the Free Odds strategy.
 
@@ -19,6 +24,7 @@ class FreeOddsStrategy:
         """
         self.table = table
         self.odds_type = odds_type
+        self.strategy_name = strategy_name or "FreeOdds"
 
     def get_odds_bet(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """

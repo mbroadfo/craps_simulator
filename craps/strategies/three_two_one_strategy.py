@@ -11,7 +11,14 @@ if TYPE_CHECKING:
     from craps.table import Table
 
 class ThreeTwoOneStrategy(BaseStrategy):
-    def __init__(self, rules_engine: RulesEngine, min_bet: int, odds_type: str = "2x") -> None:
+    def __init__(
+        self, 
+        rules_engine: RulesEngine, 
+        min_bet: int, 
+        odds_type: str = "2x",
+        strategy_name: Optional[str] = None,
+    ) -> None:
+        
         super().__init__("Three-Two-One")
         self.rules_engine = rules_engine
         self.min_bet = min_bet
@@ -19,6 +26,7 @@ class ThreeTwoOneStrategy(BaseStrategy):
         self.total_hits = 0
         self.adjuster = PressAdjuster()
         self.turned_off = False
+        self.strategy_name = strategy_name or "ThreeTwoOne"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         new_bets = []

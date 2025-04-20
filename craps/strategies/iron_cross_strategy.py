@@ -13,7 +13,14 @@ if TYPE_CHECKING:
 class IronCrossStrategy(BaseStrategy):
     """Betting strategy for Iron Cross."""
 
-    def __init__(self, table: Table, rules_engine: RulesEngine, min_bet: int, play_by_play: PlayByPlay) -> None:
+    def __init__(
+        self, 
+        table: Table, 
+        rules_engine: RulesEngine, 
+        min_bet: int, 
+        play_by_play: PlayByPlay,
+        strategy_name: Optional[str] = None,
+    ) -> None:
         """
         Initialize the Iron Cross strategy.
 
@@ -27,6 +34,7 @@ class IronCrossStrategy(BaseStrategy):
         self.rules_engine: RulesEngine = rules_engine
         self.min_bet: int = min_bet
         self.play_by_play: PlayByPlay = play_by_play
+        self.strategy_name = strategy_name or "IronCross"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """

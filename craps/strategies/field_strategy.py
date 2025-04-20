@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from craps.base_strategy import BaseStrategy
 
 if TYPE_CHECKING:
@@ -12,7 +12,11 @@ if TYPE_CHECKING:
 class FieldBetStrategy(BaseStrategy):
     """Betting strategy for Field bets."""
     
-    def __init__(self, min_bet: int) -> None:
+    def __init__(
+            self, 
+            min_bet: int,
+            strategy_name: Optional[str] = None,
+        ) -> None:
         """
         Initialize the Field Bet strategy.
         
@@ -20,6 +24,7 @@ class FieldBetStrategy(BaseStrategy):
         """
         super().__init__("Field")
         self.min_bet: int = min_bet
+        self.strategy_name = strategy_name or "Field"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """

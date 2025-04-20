@@ -17,7 +17,15 @@ class PlaceRegressionStrategy(BaseStrategy):
     - Switch to pressing after session profit buffer is met
     """
 
-    def __init__(self, high_unit: int = 10, low_unit: int = 2, regression_factor: int = 2, regress_units: int = 10) -> None:
+    def __init__(
+        self, 
+        high_unit: int = 10, 
+        low_unit: int = 2, 
+        regression_factor: int = 2, 
+        regress_units: int = 10,
+        strategy_name: Optional[str] = None,
+    ) -> None:
+        
         super().__init__("Place Regression")
 
         self.high_unit = high_unit
@@ -25,6 +33,7 @@ class PlaceRegressionStrategy(BaseStrategy):
         self.regression_factor = regression_factor
         self.regress_units = regress_units
         self.unit_levels: List[int] = self._generate_unit_levels()
+        self.strategy_name = strategy_name or "PlaceRegress"
 
         self.inside_numbers: Set[int] = {5, 6, 8, 9}
         self.original_exposure: int = self._calculate_total_exposure(self.high_unit)

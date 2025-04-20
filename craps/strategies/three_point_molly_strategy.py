@@ -12,7 +12,14 @@ if TYPE_CHECKING:
 class ThreePointMollyStrategy:
     """Betting strategy for the 3-Point Molly system."""
 
-    def __init__(self, table: Table, bet_amount: int, odds_type: Optional[str] = None, come_odds_working_on_come_out: bool = False) -> None:
+    def __init__(
+        self, 
+        table: Table, 
+        bet_amount: int, 
+        odds_type: Optional[str] = None, 
+        come_odds_working_on_come_out: bool = False,
+        strategy_name: Optional[str] = None,
+    ) -> None:
         """
         Initialize the 3-Point Molly strategy.
 
@@ -25,6 +32,7 @@ class ThreePointMollyStrategy:
         self.bet_amount = bet_amount
         self.odds_strategy = FreeOddsStrategy(table, odds_type) if odds_type else None
         self.come_odds_working_on_come_out = come_odds_working_on_come_out
+        self.strategy_name = strategy_name or "ThreePointDolly"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """

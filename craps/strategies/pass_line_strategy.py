@@ -12,7 +12,13 @@ if TYPE_CHECKING:
 class PassLineStrategy(BaseStrategy):
     """Pass Line betting strategy with optional odds."""
 
-    def __init__(self, bet_amount: int, table: Table, odds_type: Optional[str] = None) -> None:
+    def __init__(
+        self, 
+        bet_amount: int, 
+        table: Table, 
+        odds_type: Optional[str] = None,
+        strategy_name: Optional[str] = None,
+    ) -> None:
         """
         Initialize the Pass Line strategy.
 
@@ -24,6 +30,7 @@ class PassLineStrategy(BaseStrategy):
         self.bet_amount = bet_amount
         self.table = table
         self.odds_strategy = FreeOddsStrategy(table, odds_type) if odds_type else None
+        self.strategy_name = strategy_name or "PassLine"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """Place a Pass Line bet at the start of the come-out roll."""

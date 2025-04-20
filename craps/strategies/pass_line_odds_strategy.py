@@ -1,5 +1,5 @@
 from __future__ import annotations  # Enable forward references for type hints
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List, Union, Optional
 from craps.bet import Bet
 from craps.base_strategy import BaseStrategy
 
@@ -12,7 +12,13 @@ if TYPE_CHECKING:
 class PassLineOddsStrategy(BaseStrategy):
     """Betting strategy for Pass Line with Odds bets."""
 
-    def __init__(self, table: Table, rules_engine: RulesEngine, odds_multiple: Union[int, str] = 1) -> None:
+    def __init__(
+        self, 
+        table: Table, 
+        rules_engine: RulesEngine, 
+        odds_multiple: Union[int, str] = 1,
+        strategy_name: Optional[str] = None,
+    ) -> None:
         """
         Initialize the Pass Line Odds strategy.
 
@@ -24,7 +30,7 @@ class PassLineOddsStrategy(BaseStrategy):
         self.table: Table = table
         self.rules_engine: RulesEngine = rules_engine
         self.odds_multiple: Union[int, str] = odds_multiple
-
+        self.strategy_name = strategy_name or "PassOdds"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """

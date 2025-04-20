@@ -26,11 +26,19 @@ class HardwayHighwayStrategy(BaseStrategy):
     - Reset all bet levels on new shooter
     """
 
-    def __init__(self, table: Table, rules_engine: RulesEngine, play_by_play: Optional[PlayByPlay] = None, strategy_name: Optional[str] = None) -> None:
+    def __init__(
+            self, 
+            table: Table, 
+            rules_engine: RulesEngine, 
+            play_by_play: Optional[PlayByPlay] = None, 
+            strategy_name: Optional[str] = None,
+        ) -> None:
+        
         super().__init__(strategy_name or "HardwayHighway")
         self.table = table
         self.rules_engine = rules_engine
         self.play_by_play = play_by_play
+        self.strategy_name = strategy_name or "Hardways"
 
         self.place_levels: dict[int, int] = {6: 2, 8: 2}  # starts at 2 units
         self.hardway_units: dict[int, int] = {6: 1, 8: 1}  # starts at 1 unit

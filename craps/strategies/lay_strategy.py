@@ -12,7 +12,13 @@ if TYPE_CHECKING:
 class LayBetStrategy(BaseStrategy):
     """Betting strategy for Lay Bets against point numbers."""
 
-    def __init__(self, table: Table, rules_engine: RulesEngine, numbers_or_strategy: Union[str, List[int]]) -> None:
+    def __init__(
+        self, 
+        table: Table, 
+        rules_engine: RulesEngine, 
+        numbers_or_strategy: Union[str, List[int]],
+        strategy_name: Optional[str] = None,
+    ) -> None:
         """
         Initialize the Lay Bet strategy.
 
@@ -24,6 +30,7 @@ class LayBetStrategy(BaseStrategy):
         self.table: Table = table
         self.rules_engine: RulesEngine = rules_engine
         self.numbers_or_strategy: Union[str, List[int]] = numbers_or_strategy
+        self.strategy_name = strategy_name or "Lay"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """Place Lay bets on selected numbers after the point is established."""

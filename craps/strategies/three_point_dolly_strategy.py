@@ -23,12 +23,15 @@ class ThreePointDollyStrategy:
         table: Table,
         bet_amount: int,
         odds_type: Optional[str] = "3x4x5x",
-        dont_come_odds_working_on_come_out: bool = False
+        dont_come_odds_working_on_come_out: bool = False,
+        strategy_name: Optional[str] = None,
     ) -> None:
+        
         self.table = table
         self.bet_amount = bet_amount
         self.odds_strategy = FreeOddsStrategy(table, odds_type) if odds_type else None
         self.dont_come_odds_working_on_come_out = dont_come_odds_working_on_come_out
+        self.strategy_name = strategy_name or "ThreePointMolly"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         bets: List[Bet] = []

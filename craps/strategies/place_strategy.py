@@ -12,7 +12,13 @@ if TYPE_CHECKING:
 class PlaceBetStrategy(BaseStrategy):
     """Betting strategy for Place Bets."""
 
-    def __init__(self, table: Table, rules_engine: RulesEngine, numbers_or_strategy: Union[str, list[int]]) -> None:
+    def __init__(
+        self, 
+        table: Table, 
+        rules_engine: RulesEngine, 
+        numbers_or_strategy: Union[str, list[int]],
+        strategy_name: Optional[str] = None,
+    ) -> None:
         """
         Initialize the Place Bet strategy.
 
@@ -24,6 +30,7 @@ class PlaceBetStrategy(BaseStrategy):
         self.table: Table = table
         self.rules_engine: RulesEngine = rules_engine  # Use the existing RulesEngine
         self.numbers_or_strategy: Union[str, list[int]] = numbers_or_strategy
+        self.strategy_name = strategy_name or "Place"
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """Place Place Bets based on the strategy and game state."""

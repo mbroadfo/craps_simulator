@@ -14,12 +14,19 @@ class AdjusterOnlyStrategy(BaseStrategy):
     Used when bet placement is handled by another strategy.
     """
 
-    def __init__(self, name: str, adjuster: BetAdjuster):
+    def __init__(
+            self, 
+            name: str, 
+            adjuster: BetAdjuster,
+            #strategy_name: Optional[str] = None,
+            ) -> None:
+        
         super().__init__(name)
         self.adjuster = adjuster
         self.last_game_state: Optional["GameState"] = None
         self.last_player: Optional["Player"] = None
         self.last_table: Optional["Table"] = None
+        #self.strategy_name = strategy_name or "Adjuster"
 
     def place_bets(self, game_state: "GameState", player: "Player", table: "Table") -> List[Bet]:
         return []

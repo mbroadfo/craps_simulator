@@ -25,7 +25,13 @@ class RegressThenPressStrategy(BaseStrategy):
     then switches back to regression mode where the cycle repeats.
     """
 
-    def __init__(self, regression_strategy: BaseStrategy, press_style: Optional[PressStyle] = None) -> None:
+    def __init__(
+        self, 
+        regression_strategy: BaseStrategy, 
+        press_style: Optional[PressStyle] = None,
+        strategy_name: Optional[str] = None,
+    ) -> None:
+        
         super().__init__("Regress Then Press")
         self.regression = regression_strategy
         self.press = AdjusterOnlyStrategy(
@@ -35,6 +41,7 @@ class RegressThenPressStrategy(BaseStrategy):
         self.active_strategy = self.regression
         self.transitioned = False
         self.max_press_threshold: Optional[float] = None
+        self.strategy_name = strategy_name or "RegressThenPress"
 
     def on_new_shooter(self) -> None:
         self.regression.on_new_shooter()
