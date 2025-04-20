@@ -44,10 +44,19 @@ class AllTallSmallStrategy(BaseStrategy):
             return []
 
         bet_amount = self.bet_amount or self.rules_engine.get_minimum_bet("All", table)
-        
+
         for ats_type in self.ats_components:
+            # Skip if already completed this shooter
+            if ats_type == "All" and game_state.all_completed:
+                continue
+            if ats_type == "Tall" and game_state.tall_completed:
+                continue
+            if ats_type == "Small" and game_state.small_completed:
+                continue
+
             if not player.has_active_bet(table, ats_type):
                 bet = self.rules_engine.create_bet(ats_type, bet_amount, player)
                 placed_bets.append(bet)
 
         return placed_bets
+
