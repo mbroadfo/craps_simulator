@@ -9,15 +9,12 @@ from craps.player import Player
 
 router = APIRouter(prefix="/api/game", tags=["Game Control"])
 
-class GameStartRequest(BaseModel):
-    mode: Literal["manual", "auto"] = "auto"
-
 class GameRollRequest(BaseModel):
     dice: Optional[tuple[int, int]] = None
     mode: Literal["manual", "auto"] = "manual"
 
 @router.post("/start")
-def start_game(request: Request, body: GameStartRequest) -> dict[str, Any]:
+def start_game(request: Request) -> dict[str, Any]:
     session: CrapsSession = get_session_by_request(request)
 
     if not session.players:
@@ -74,6 +71,16 @@ def roll_dice(request: Request, body: GameRollRequest) -> dict[str, Any]:
         "summary": summary._asdict()
     })
     return response
+
+@router.get("/status")
+def get_game_status(request: Request) -> dict[str, Any]:
+    session: CrapsSession = get_session_by_request(request)
+    engine = session.engine
+
+    if not engine:
+        raise HTTPException(status_code=400, detail="Game has not been started")
+
+    return _snapshot_game_state(engine)
 
 def _snapshot_game_state(engine: CrapsEngine) -> dict[str, Any]:
     if not engine.game_state or not engine.table:
