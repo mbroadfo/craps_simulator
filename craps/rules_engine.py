@@ -86,22 +86,41 @@ class RulesEngine:
         return True, None
     
     @staticmethod
-    def validate_bet(bet: Bet, phase: str, table_minimum: int, table_maximum: int) -> tuple[bool, Optional[str]]:
+    def validate_bet(
+        bet: Bet,
+        phase: str,
+        table_minimum: int,
+        table_maximum: int,
+        game_state: Optional[GameState] = None
+    ) -> tuple[bool, Optional[str]]:
+        
+        # 🚫 Prevent betting in the wrong phase
         if phase not in bet.valid_phases:
             return False, f"{bet.owner.name}'s {bet.bet_type} bet cannot be placed during the {phase} phase."
 
+        # 🚫 Prevent bets smaller than table minimum
         bets_with_table_minimums = ["Pass", "Don't Pass", "Come", "Don't Come", "Place", "Buy", "Lay"]
         minimum = table_minimum if bet.bet_type in bets_with_table_minimums else 1
-
         if bet.amount < minimum:
             return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) is below table minimum (${minimum})."
 
+        # 🚫 Prevent bets larger than table maximum
         if bet.amount > table_maximum:
             return False, f"{bet.owner.name}'s {bet.bet_type} bet (${bet.amount}) exceeds table maximum (${table_maximum})."
 
+        # 🚫 Prevent bets of invalid size
         unit = bet.unit or 1
         if bet.amount % unit != 0:
             return False, f"{bet.owner.name}'s {bet.bet_type} bet of ${bet.amount} must be in units of ${unit}."
+
+        # 🚫 Prevent ATS re-bet after completion
+        if game_state:
+            if bet.bet_type == "All" and game_state.all_completed:
+                return False, f"{bet.owner.name} cannot remake All bet — already completed this shooter."
+            if bet.bet_type == "Tall" and game_state.tall_completed:
+                return False, f"{bet.owner.name} cannot remake Tall bet — already completed this shooter."
+            if bet.bet_type == "Small" and game_state.small_completed:
+                return False, f"{bet.owner.name} cannot remake Small bet — already completed this shooter."
 
         return True, None
 
@@ -270,16 +289,16 @@ class RulesEngine:
                 if game_state is None:
                     raise RuntimeError("GameState is required for ATS bet resolution.")
                 total = sum(dice_outcome)
+                
                 # Lose immediately on 7
                 if total == 7:
                     bet.status = "lost"
-                else:
-                    ats_status = game_state.check_ats_completion()
-                    if bet.bet_type == "All" and ats_status.get("all_complete"):
+                elif bet.status == "active":
+                    if bet.bet_type == "All" and game_state.all_completed:
                         bet.status = "won"
-                    elif bet.bet_type == "Tall" and ats_status.get("tall_complete"):
+                    elif bet.bet_type == "Tall" and game_state.tall_completed:
                         bet.status = "won"
-                    elif bet.bet_type == "Small" and ats_status.get("small_complete"):
+                    elif bet.bet_type == "Small" and game_state.small_completed:
                         bet.status = "won"
             else:
                 raise ValueError(f"Unknown contract bet: {bet.bet_type}")

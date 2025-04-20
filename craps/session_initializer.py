@@ -52,6 +52,7 @@ class InitializeSession:
         stats = Statistics(self.house_rules.table_minimum, num_shooters, num_players)
         game_state = GameState(stats, play_by_play=self.play_by_play)
         game_state.set_table(table)
+        table.set_game_state(game_state)
 
         # Delete the existing log file before starting the session
         self.log_manager.delete_log_file()

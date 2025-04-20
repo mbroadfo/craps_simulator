@@ -22,10 +22,14 @@ class Table:
         self.player_lineup = player_lineup
         self.bets: List[Bet] = []  # All bets on the table
         self.unit = self.house_rules.table_minimum // 5  # Unit for Place/Buy bets
+        self.game_state: Optional[GameState] = None
 
     def get_rules_engine(self) -> RulesEngine:
         """Expose RulesEngine for other classes to query."""
         return self.rules_engine
+
+    def set_game_state(self, game_state: GameState) -> None:
+        self.game_state = game_state
 
     def has_bet(self, bet: Bet) -> bool:
         """
@@ -76,9 +80,7 @@ class Table:
         :param phase: The current game phase ("come-out" or "point").
         :return: True if the bet was placed successfully, False otherwise.
         """
-        has_duplicate = self.has_existing_bet(bet.owner, bet.bet_type, bet.number)
-        at_risk = sum(b.amount for b in self.bets if b.owner == bet.owner)
-
+        # Validate bet
         valid, message = self.rules_engine.validate_bet_phase(bet=bet, phase=phase)
         if valid:
             valid, message = self.validate_bet(bet, phase)
@@ -137,7 +139,14 @@ class Table:
                 f"{bet.owner.name} cannot afford ${bet.amount} on {bet.bet_type} — "
                 f"balance ${bet.owner.balance}, already risking ${total_risk}."
             )
-
+        # ATS validation using GameState
+        if bet.bet_type == "All" and self.game_state and self.game_state.all_completed:
+            return False, f"{bet.owner.name} cannot remake All bet — already completed this shooter."
+        if bet.bet_type == "Tall" and self.game_state and self.game_state.tall_completed:
+            return False, f"{bet.owner.name} cannot remake Tall bet — already completed this shooter."
+        if bet.bet_type == "Small" and self.game_state and self.game_state.small_completed:
+            return False, f"{bet.owner.name} cannot remake Small bet — already completed this shooter."
+        
         return True, None
 
     def check_bets(self, dice_outcome: Tuple[int, int], game_state: GameState) -> List[Bet]:

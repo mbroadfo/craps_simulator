@@ -198,7 +198,8 @@ class CrapsEngine:
         self.stats.update_rolls(total=total, table_risk=self.table.total_risk())
         self.stats.update_shooter_stats(shooter)
 
-        roll_message = f"  🎲 Roll #{self.stats.session_rolls} → {outcome} = {total}"
+        puck_state = ("Puck OFF" if self.game_state.phase == "come-out" else f"Puck ON {self.game_state.point}")
+        roll_message = f"  🎲 Roll #{self.stats.session_rolls} → {outcome} = {total} ({puck_state})"
         self.play_by_play.write(roll_message)
 
         self.roll_history.append({

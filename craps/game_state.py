@@ -17,6 +17,7 @@ class GameState:
         self.shooter: Optional[Player] = None  # Store current shooter (now a Player)
         self.small_hits: Set[int] = set()
         self.tall_hits: Set[int] = set()
+        
 
     @property
     def point(self) -> Optional[int]:
@@ -40,6 +41,18 @@ class GameState:
         """Check if the puck should be 'ON' (point is set)."""
         return self._point is not None
 
+    @property
+    def small_completed(self) -> bool:
+        return all(n in self.small_hits for n in range(2, 7))
+
+    @property
+    def tall_completed(self) -> bool:
+        return all(n in self.tall_hits for n in range(8, 13))
+
+    @property
+    def all_completed(self) -> bool:
+        return self.small_completed and self.tall_completed
+
     def set_table(self, table: Any) -> None:
         """Set the table reference."""
         self.table = table
@@ -54,7 +67,16 @@ class GameState:
         self.shooter_num = shooter_num
         self.shooter.is_shooter = True  # Mark player as the shooter
         self.reset_ats_tracking()
+
+        # Print the fully dark ATS tracker
+        if self.play_by_play:
+            def build_button_line(hits: set[int], range_vals: range) -> str:
+                return "".join("⚫" for _ in range_vals)
+            small_display = build_button_line(self.small_hits, range(2, 7))
+            tall_display = build_button_line(self.tall_hits, range(8, 13))
+            self.play_by_play.write(f"  🔄 ATS Reset: {small_display} / {tall_display}")
         
+        # Next Shooter
         if self.play_by_play:
             self.play_by_play.write("==============================================================================")
             self.play_by_play.write(f"🎲🎲 Shooter #{shooter_num}: {self.shooter.name} steps up!")
@@ -85,15 +107,20 @@ class GameState:
         tall_new = self.tall_hits - tall_before
 
         if (small_new or tall_new):
-            # Build buttons: 🟢 = hit, ⚫ = not hit
-            def build_button_line(hits: set[int], range_vals: range) -> str:
-                return "".join("🟢" if n in hits else "⚫" for n in range_vals)
+            status = self.check_ats_completion()
 
-            small_display = build_button_line(self.small_hits, range(2, 7))
-            tall_display = build_button_line(self.tall_hits, range(8, 13))
+            # 🟣 = Section complete, 🟢 = hit, ⚫ = not hit
+            def build_button_line(hits: set[int], range_vals: range, complete: bool) -> str:
+                return "".join("🟣" if complete and n in hits else
+                            "🟢" if n in hits else
+                            "⚫"
+                            for n in range_vals)
+
+            small_display = build_button_line(self.small_hits, range(2, 7), status["small_complete"])
+            tall_display = build_button_line(self.tall_hits, range(8, 13), status["tall_complete"])
 
             message = f"  🎯 ATS Update: {small_display} / {tall_display}"
-        
+
         return message
 
     def check_ats_completion(self) -> dict[str, bool]:
