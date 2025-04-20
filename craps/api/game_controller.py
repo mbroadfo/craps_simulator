@@ -131,7 +131,7 @@ def adjust_bets(request: Request) -> dict[str, Any]:
 
     return _snapshot_game_state(engine)
 
-router.get("/status")
+@router.get("/status")
 def get_game_status(request: Request) -> dict[str, Any]:
     session: CrapsSession = get_session_by_request(request)
     engine = session.engine

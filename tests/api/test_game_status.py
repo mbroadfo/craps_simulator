@@ -16,7 +16,7 @@ def test_get_game_status_after_start():
     session.players.append(Player(name="StatMan", strategy_name="Field"))
 
     # Start game
-    start_response = client.post("/api/game/start", headers={"X-Session-ID": session_id}, json={"mode": "manual"})
+    start_response = client.post("/api/game/start", headers={"X-Session-ID": session_id})
     assert start_response.status_code == 200
 
     # GET /status
