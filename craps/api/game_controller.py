@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
-from typing import Literal, Any, Optional
+from typing import Literal, Any, Optional, List
 
 from craps.api.api_session_manager import get_session_by_request, CrapsSession
 from craps.craps_engine import CrapsEngine
@@ -12,6 +12,9 @@ router = APIRouter(prefix="/api/game", tags=["Game Control"])
 class GameRollRequest(BaseModel):
     dice: Optional[tuple[int, int]] = None
     mode: Literal["manual", "auto"] = "manual"
+
+class PlaceBetsRequest(BaseModel):
+    bets: List[dict] = []  # Placeholder for future interactive bets
 
 @router.post("/start")
 def start_game(request: Request) -> dict[str, Any]:
@@ -100,7 +103,35 @@ def roll_dice(request: Request, body: GameRollRequest) -> dict[str, Any]:
     })
     return response
 
-@router.get("/status")
+@router.post("/bets/place")
+def place_bets(request: Request, body: PlaceBetsRequest) -> dict[str, Any]:
+    session: CrapsSession = get_session_by_request(request)
+    engine = session.engine
+
+    if not engine:
+        raise HTTPException(status_code=400, detail="Game has not been started")
+
+    # TODO: Process body.bets for interactive players (currently unused)
+    engine.lock_session()
+    engine.accept_bets()
+
+
+    return _snapshot_game_state(engine)
+
+@router.post("/bets/adjust")
+def adjust_bets(request: Request) -> dict[str, Any]:
+    session: CrapsSession = get_session_by_request(request)
+    engine = session.engine
+
+    if not engine:
+        raise HTTPException(status_code=400, detail="Game has not been started")
+
+    # TODO: In the future, process manual bet adjustments from interactive player
+    engine.adjust_bets()
+
+    return _snapshot_game_state(engine)
+
+router.get("/status")
 def get_game_status(request: Request) -> dict[str, Any]:
     session: CrapsSession = get_session_by_request(request)
     engine = session.engine
