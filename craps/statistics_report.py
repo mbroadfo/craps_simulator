@@ -4,7 +4,6 @@ from craps.statistics import Statistics
 class StatisticsReport:
     def __init__(self, filepath: str = "output/statistics_report.txt") -> None:
         self.filepath = filepath
-        self.clear_statistics_file()
 
     def clear_statistics_file(self) -> None:
         if os.path.exists(self.filepath):

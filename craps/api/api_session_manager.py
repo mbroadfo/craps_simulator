@@ -20,15 +20,10 @@ class SessionManager:
         self.sessions[session_id] = CrapsSession(rules)
         return session_id
 
-    def get_session(self, session_id: str) -> CrapsSession:
-        if session_id not in self.sessions:
-            raise HTTPException(status_code=404, detail="Invalid session ID")
-        return self.sessions[session_id]
-
 session_manager = SessionManager()
 
 def get_session_by_request(request: Request) -> CrapsSession:
-    session_id = request.headers.get("X-Session-ID")
-    if not session_id:
-        raise HTTPException(status_code=400, detail="Missing session ID")
-    return session_manager.get_session(session_id)
+    session_key = request.headers.get("X-Session-Key")
+    if not session_key or session_key not in session_manager.sessions:
+        raise HTTPException(status_code=400, detail="Invalid or missing session key")
+    return session_manager.sessions[session_key]

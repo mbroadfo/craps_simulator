@@ -15,7 +15,7 @@ def test_start_game_manual_mode():
     # ✅ Use valid strategy-backed player
     session.players.append(Player(name="FieldTest", strategy_name="Field"))
 
-    response = client.post("/api/game/start", headers={"X-Session-ID": session_id}, json={"mode": "manual"})
+    response = client.post("/api/game/start", headers={"X-Session-Key": session_id}, json={"mode": "manual"})
     assert response.status_code == 200
     state = response.json()
 
@@ -37,7 +37,7 @@ def test_start_game_auto_mode():
     # ✅ Use valid strategy-backed player
     session.players.append(Player(name="PassTest", strategy_name="Pass-Line"))
 
-    response = client.post("/api/game/start", headers={"X-Session-ID": session_id}, json={"mode": "auto"})
+    response = client.post("/api/game/start", headers={"X-Session-Key": session_id}, json={"mode": "auto"})
     assert response.status_code == 200
     state = response.json()
 

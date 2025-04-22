@@ -7,7 +7,7 @@ client = TestClient(app)
 
 # Fake session manager with preloaded session ID
 SESSION_ID = "test-session-123"
-HEADERS = {"X-Session-ID": SESSION_ID}
+HEADERS = {"X-Session-Key": SESSION_ID}
 
 @pytest.fixture(autouse=True)
 def inject_test_session():

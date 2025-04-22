@@ -16,17 +16,17 @@ def test_reset_game():
     session.players.append(Player(name="ResetGuy", strategy_name="Pass-Line"))
 
     # Start game initially
-    start_resp = client.post("/api/game/start", headers={"X-Session-ID": session_id})
+    start_resp = client.post("/api/game/start", headers={"X-Session-Key": session_id})
     assert start_resp.status_code == 200
     print("🎮 Initial game started")
 
     # Perform a roll
-    roll_resp = client.post("/api/game/roll", headers={"X-Session-ID": session_id}, json={"mode": "auto"})
+    roll_resp = client.post("/api/game/roll", headers={"X-Session-Key": session_id}, json={"mode": "auto"})
     assert roll_resp.status_code == 200
     print(f"🎲 First roll: {roll_resp.json()['roll']}")
 
     # Reset game
-    reset_resp = client.post("/api/game/reset", headers={"X-Session-ID": session_id})
+    reset_resp = client.post("/api/game/reset", headers={"X-Session-Key": session_id})
     assert reset_resp.status_code == 200
     reset_state = reset_resp.json()
 

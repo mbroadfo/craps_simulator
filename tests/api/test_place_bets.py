@@ -16,10 +16,10 @@ def test_place_bets_for_strategy_players():
     session.players.append(Player(name="FieldTester", strategy_name="Field"))
 
     # Start the game
-    client.post("/api/game/start", headers={"X-Session-ID": session_id})
+    client.post("/api/game/start", headers={"X-Session-Key": session_id})
 
     # Place bets
-    response = client.post("/api/game/bets/place", headers={"X-Session-ID": session_id}, json={"bets": []})
+    response = client.post("/api/game/bets/place", headers={"X-Session-Key": session_id}, json={"bets": []})
     assert response.status_code == 200
     data = response.json()
 
@@ -39,11 +39,11 @@ def test_adjust_bets_for_strategy_players():
     session.players.append(Player(name="PressTester", strategy_name="Pass-Line w/ Odds"))
 
     # Start the game and place bets
-    client.post("/api/game/start", headers={"X-Session-ID": session_id})
-    client.post("/api/game/bets/place", headers={"X-Session-ID": session_id}, json={"bets": []})
+    client.post("/api/game/start", headers={"X-Session-Key": session_id})
+    client.post("/api/game/bets/place", headers={"X-Session-Key": session_id}, json={"bets": []})
 
     # Adjust bets
-    response = client.post("/api/game/bets/adjust", headers={"X-Session-ID": session_id}, json={"bets": []})
+    response = client.post("/api/game/bets/adjust", headers={"X-Session-Key": session_id}, json={"bets": []})
     assert response.status_code == 200
     data = response.json()
 

@@ -137,6 +137,7 @@ def get_game_status(request: Request) -> dict[str, Any]:
     engine = session.engine
 
     if not engine:
+        print("🚫 Game engine not initialized for session")
         raise HTTPException(status_code=400, detail="Game has not been started")
 
     response = _snapshot_game_state(engine)

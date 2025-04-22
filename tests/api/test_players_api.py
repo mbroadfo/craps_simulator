@@ -6,7 +6,7 @@ from craps.house_rules import HouseRules
 
 client = TestClient(app)
 SESSION_ID = "test-session-players"
-HEADERS = {"X-Session-ID": SESSION_ID}
+HEADERS = {"X-Session-Key": SESSION_ID}
 
 @pytest.fixture(autouse=True)
 def inject_test_session():

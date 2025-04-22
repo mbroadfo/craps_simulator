@@ -17,7 +17,8 @@ class InitializeSession:
         play_by_play: PlayByPlay, 
         rules_engine: RulesEngine, 
         player_lineup: PlayerLineup,
-        log_manager: Optional[LogManager] = None
+        log_manager: Optional[LogManager] = None,
+        quiet_mode: bool = False,
     ) -> None:
         """
         Initialize the session.
@@ -35,6 +36,7 @@ class InitializeSession:
         self.play_by_play: PlayByPlay = play_by_play
         self.rules_engine: RulesEngine = rules_engine
         self.player_lineup: PlayerLineup = player_lineup
+        self.quiet_mode = quiet_mode
 
     def prepare_session(
         self, num_shooters: int, num_players: int
@@ -54,13 +56,14 @@ class InitializeSession:
         game_state.set_table(table)
         table.set_game_state(game_state)
 
-        # Delete the existing log file before starting the session
-        self.log_manager.delete_log_file()
+        if not self.quiet_mode:
+            # Delete the existing log file before starting the session
+            self.log_manager.delete_log_file()
 
-        # Clear the play-by-play file before starting the session
-        self.play_by_play.clear_play_by_play_file()
+            # Clear the play-by-play file before starting the session
+            self.play_by_play.clear_play_by_play_file()
 
-        # Clear the Statistics Report before starting the session        
-        StatisticsReport().clear_statistics_file()
+            # Clear the Statistics Report before starting the session        
+            StatisticsReport().clear_statistics_file()
 
         return self.house_rules, table, self.roll_history_manager, self.log_manager, self.play_by_play, stats, game_state

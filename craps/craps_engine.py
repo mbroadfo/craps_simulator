@@ -97,7 +97,8 @@ class CrapsEngine:
             play_by_play=self.play_by_play,
             log_manager=self.log_manager,
             rules_engine=self.rules_engine,
-            player_lineup=self.player_lineup
+            player_lineup=self.player_lineup,
+            quiet_mode=self.quiet_mode
         )
 
         session_data = session_initializer.prepare_session(num_shooters, num_players)

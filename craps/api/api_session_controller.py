@@ -28,6 +28,8 @@ def start_session(request: Request) -> dict:
     session = start_new_session()
     session_id = session_manager.create_session(session.rules)
     session_manager.sessions[session_id] = session
+    print(f"🎲 Created session ID: {session_id}")
+
 
     return {
         "session_id": session_id,
