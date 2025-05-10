@@ -20,4 +20,4 @@ function Show-Tree {
 
 # Generate and save the tree
 $tree = Show-Tree -Files $files
-$tree | Out-File -FilePath "project_structure.txt" -Encoding UTF8
+$tree | Out-File -FilePath "output\project_structure.txt" -Encoding UTF8

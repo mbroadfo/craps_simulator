@@ -225,6 +225,12 @@ class Table:
                 bet.owner.win_bet(bet, self.play_by_play)
                 settled_bets.append(bet)
 
+                # 🔐 Remove ATS bets after win (only pay once per shooter)
+                if bet.bet_type in ["All", "Tall", "Small"]:
+                    self.bets.remove(bet)
+                    if (self.play_by_play):
+                        self.play_by_play.write(f"  🏆 {bet.owner.name}'s {bet.bet_type} bet returned after win.")
+            
                 # Also settle attached odds bets
                 for attached in list(self.bets):
                     if attached.parent_bet == bet:

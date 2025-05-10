@@ -285,24 +285,6 @@ class RulesEngine:
                 elif total in losing_numbers:
                     bet.status = "lost"
             
-            elif bet.bet_type in ("All", "Tall", "Small"):  #. All / Tall / Small
-                if game_state is None:
-                    raise RuntimeError("GameState is required for ATS bet resolution.")
-                total = sum(dice_outcome)
-                
-                # Lose immediately on 7
-                if total == 7:
-                    bet.status = "lost"
-                elif bet.status == "active":
-                    if bet.bet_type == "All" and game_state.all_completed:
-                        bet.status = "won"
-                    elif bet.bet_type == "Tall" and game_state.tall_completed:
-                        bet.status = "won"
-                    elif bet.bet_type == "Small" and game_state.small_completed:
-                        bet.status = "won"
-            else:
-                raise ValueError(f"Unknown contract bet: {bet.bet_type}")
-
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
             if total in winning_numbers:
@@ -376,6 +358,24 @@ class RulesEngine:
 
             elif bet.parent_bet and bet.parent_bet.status == "lost":
                 bet.status = "lost"
+
+        ### 🎯 **7. ALL TALL SMALL BETS**
+        elif bet.bet_type in ("All", "Tall", "Small"):  #. All / Tall / Small
+            if game_state is None:
+                raise RuntimeError("GameState is required for ATS bet resolution.")
+            total = sum(dice_outcome)
+            
+            # Lose immediately on 7
+            if total == 7:
+                bet.status = "lost"
+            elif bet.bet_type == "All" and game_state.all_completed:
+                bet.status = "won"
+            elif bet.bet_type == "Tall" and game_state.tall_completed:
+                bet.status = "won"
+            elif bet.bet_type == "Small" and game_state.small_completed:
+                bet.status = "won"
+        else:
+            raise ValueError(f"Unknown contract bet: {bet.bet_type}")
 
         ### 🎯 **Calculate Payout if Won**
         payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0

@@ -158,6 +158,8 @@ class GameState:
             if total in [7, 11]:  # Natural win
                 self.point = None  # Reset to come-out phase
                 message = f"  ⚫ Pass Line Winner! → Puck OFF."
+                if total == 7:   # ATS loss on a come-out 7
+                    self.reset_ats_tracking()
             elif total in [2, 3, 12]:  # Craps loss
                 self.point = None  # Stay in come-out phase
                 message = f"  ⚫ Craps! → Puck OFF."

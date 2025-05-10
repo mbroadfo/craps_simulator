@@ -313,12 +313,6 @@ class CrapsEngine:
                 if bet.status == "won":
                     bet.status = "active"
                     
-            elif bet.bet_type in ("All", "Tall", "Small"):  # Bets only active during the point
-                if self.game_state.phase == "point":
-                    bet.status = "active"
-                else:
-                    bet.status = "inactive"
-
         if self.stats and self.player_lineup:
             self.stats.update_player_risk(
                 self.player_lineup.get_active_players_list(),
