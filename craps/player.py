@@ -129,7 +129,7 @@ class Player:
 
         if play_by_play:
             play_by_play.write(
-                f"  ⚡{bet} WON ${winnings}! New Bankroll: ${self.balance}" 
+                f"  ⚡ {bet} WON ${winnings}! New Bankroll: ${self.balance}" 
             )
 
     def lose_bet(self, bet: Bet, play_by_play: Optional[Any] = None) -> None:
