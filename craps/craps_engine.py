@@ -437,7 +437,8 @@ class CrapsEngine:
             remaining_bets = [b for b in self.table.bets if b.owner == player]
             if remaining_bets:
                 summary = ", ".join(
-                    f"{b.bet_type} {b.number} (${b.amount} {b.status})" for b in remaining_bets
+                    f"{b.bet_type} {b.number} (${b.amount} {b.status})" if b.number is not None else f"{b.bet_type} (${b.amount} {b.status})"
+                    for b in remaining_bets
                 )
                 bet_total = sum(b.amount for b in remaining_bets)
                 self.play_by_play.write(

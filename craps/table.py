@@ -160,30 +160,31 @@ class Table:
         """
         resolved_bets: List[Bet] = []
 
-        for bet in self.bets:
-            # Skip bets that are inactive (e.g., 3-2-1 turned off Place bets)
-            if bet.status == "inactive":
-                continue
+        for bet in sorted(self.bets, key=lambda b: 0 if b.parent_bet is None else 1):
+            for bet in self.bets:
+                # Skip bets that are inactive (e.g., 3-2-1 turned off Place bets)
+                if bet.status == "inactive":
+                    continue
 
-            # Track Come/Don't Come movement
-            original_number = bet.number
-            original_status = bet.status
+                # Track Come/Don't Come movement
+                original_number = bet.number
+                original_status = bet.status
 
-            bet.resolve(self.rules_engine, dice_outcome, game_state)
+                bet.resolve(self.rules_engine, dice_outcome, game_state)
 
-            if bet.status != original_status and bet.status in ("won", "lost"):
-                resolved_bets.append(bet)
+                if bet.status != original_status and bet.status in ("won", "lost"):
+                    resolved_bets.append(bet)
 
-            # 🎯 Movement message for Come/Don't Come bets
-            if (
-                bet.bet_type in ["Come", "Don't Come"]
-                and original_number is None
-                and bet.number is not None
-                and bet.status == "active"
-            ):
-                self.play_by_play.write(f"  ⏫ {bet.owner.name}'s {bet.bet_type} bet moves to the {bet.number}.")
-            elif bet.status == "push":
-                self.play_by_play.write(f"  ⏸️ {bet.owner.name}'s {bet.bet_type} bet was barred and did not move.")
+                # 🎯 Movement message for Come/Don't Come bets
+                if (
+                    bet.bet_type in ["Come", "Don't Come"]
+                    and original_number is None
+                    and bet.number is not None
+                    and bet.status == "active"
+                ):
+                    self.play_by_play.write(f"  ⏫ {bet.owner.name}'s {bet.bet_type} bet moves to the {bet.number}.")
+                elif bet.status == "push":
+                    self.play_by_play.write(f"  ⏸️ {bet.owner.name}'s {bet.bet_type} bet was barred and did not move.")
 
         return resolved_bets
 
@@ -199,9 +200,10 @@ class Table:
         and are flipped to 'active' afterward by caller.
         """
         settled_bets: List[Bet] = []
+        resolved_bet_ids = set()
 
         for bet in list(self.bets):
-            # Skip odds bets — handled when parent resolves
+            # Skip odds bets — will be handled with their parent
             if bet.parent_bet is not None:
                 continue
 
@@ -211,6 +213,7 @@ class Table:
                 bet.owner.lose_bet(bet, self.play_by_play)
                 self.bets.remove(bet)
                 settled_bets.append(bet)
+                resolved_bet_ids.add(id(bet))
 
                 # Also settle attached odds bets
                 for attached in list(self.bets):
@@ -218,30 +221,30 @@ class Table:
                         attached.owner.lose_bet(attached, self.play_by_play)
                         self.bets.remove(attached)
                         settled_bets.append(attached)
+                        resolved_bet_ids.add(id(attached))
 
             # ✅ Handle Winning Bets
             elif bet.status == "won":
                 bet.hits += 1
                 bet.owner.win_bet(bet, self.play_by_play)
                 settled_bets.append(bet)
-                
-                # 🔐 Remove contract bets after win (only pay once per shooter)
+                resolved_bet_ids.add(id(bet))
+
                 if bet.is_contract_bet or not self.house_rules.leave_winning_bets_up:
                     self.bets.remove(bet)
 
-                # 🔐 Remove ATS bets after win (only pay once per shooter)
                 if bet.bet_type in ["All", "Tall", "Small"]:
                     self.bets.remove(bet)
-                    if (self.play_by_play):
+                    if self.play_by_play:
                         self.play_by_play.write(f"  🏆 {bet.owner.name}'s {bet.bet_type} bet returned after win.")
-            
-                # Also settle attached odds bets
+
                 for attached in list(self.bets):
                     if attached.parent_bet == bet:
                         attached.owner.win_bet(attached, self.play_by_play)
                         self.bets.remove(attached)
                         settled_bets.append(attached)
-            
+                        resolved_bet_ids.add(id(attached))
+
             # ✅ Handle Moved Bets
             elif bet.status.startswith("move "):
                 destination = int(bet.status.split()[1])
@@ -250,6 +253,17 @@ class Table:
 
             # ✅ Handle Returned Bets
             elif bet.status == "return":
+                self.bets.remove(bet)
+                settled_bets.append(bet)
+                resolved_bet_ids.add(id(bet))
+
+        # 🧹 Final pass: catch any orphaned odds bets whose parent was already removed
+        for bet in list(self.bets):
+            if bet.parent_bet and id(bet) not in resolved_bet_ids:
+                if bet.status in {"lost", "return"}:
+                    bet.owner.lose_bet(bet, self.play_by_play)
+                elif bet.status == "won":
+                    bet.owner.win_bet(bet, self.play_by_play)
                 self.bets.remove(bet)
                 settled_bets.append(bet)
 
