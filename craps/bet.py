@@ -86,4 +86,4 @@ class Bet:
         if self.number is not None:
             return f"{self.owner.name}'s {self.bet_type} {self.number} bet"
         else:
-            return f"{self.owner.name}'s {self.bet_type} bet"
+            return f"{self.owner.name}'s ${self.amount}  {self.bet_type} bet"

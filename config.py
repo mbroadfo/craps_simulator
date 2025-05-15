@@ -1,5 +1,5 @@
 ACTIVE_PLAYERS = {
-    "Molly": ("3-Point Molly", True),
+    "Molly": ("3-Point Molly", False),
     "Dolly": ("3-Point Dolly", True),
     "Linus": ("Pass-Line", False),
     "Odd Linus": ("Pass-Line w/ Odds", False),

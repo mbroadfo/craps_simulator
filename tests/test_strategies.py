@@ -206,7 +206,7 @@ class TestStrategies(unittest.TestCase):
         self.stats = Statistics(self.house_rules.table_minimum, num_shooters=1, num_players=1)
         self.game_state = GameState(stats=self.stats, play_by_play=self.play_by_play)
         self.game_state.set_table(self.table)
-        self.strategy = DoubleHopStrategy(hop_target=(1, 1), rules_engine=self.rules_engine, base_bet=10)
+        self.strategy = DoubleHopStrategy(hop_target=(2, 3), rules_engine=self.rules_engine, base_bet=10)
         self.player.betting_strategy = self.strategy
 
     def test_initial_placement(self):
@@ -216,7 +216,7 @@ class TestStrategies(unittest.TestCase):
 
         self.assertEqual(len(self.table.bets), 1)
         hop_bet = self.table.bets[0]
-        self.assertEqual(hop_bet.number, (1, 1))
+        self.assertEqual(hop_bet.number, (2, 3))
         self.assertEqual(hop_bet.amount, 10)
         self.assertEqual(hop_bet.bet_type, "Hop")
 

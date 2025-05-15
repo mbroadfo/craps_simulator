@@ -176,12 +176,11 @@ BET_RULES = {
         },
         "Hop": {
             "valid_numbers": [
-                (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6),
+                (1, 3), (1, 4), (1, 5), (1, 6),
                 (2, 2), (2, 3), (2, 4), (2, 5), (2, 6),
                 (3, 3), (3, 4), (3, 5), (3, 6),
                 (4, 4), (4, 5), (4, 6),
-                (5, 5), (5, 6),
-                (6, 6)
+                (5, 5)
             ],
             "valid_phases": ["come-out", "point"],
             "payout_ratio": "Hop",
@@ -223,6 +222,127 @@ BET_RULES = {
                 "lose_condition": [7],
             },
         },
+    },
+    "Combo Bets": {
+        "is_contract_bet": False,
+        "always_working": True,
+        "valid_numbers": None,
+        "Horn": {
+            "linked_bet": ["Proposition"],
+            "composition": [2, 3, 11, 12],
+            "payout_ratio": "Proposition",
+        },
+        "Horn High": {
+            "linked_bet": ["Proposition"],
+            "composition": [2, 3, 12, 11],
+            "payout_ratio": "Proposition",
+        },
+        "World": {
+            "linked_bet": ["Proposition"],
+            "composition": [2, 3, 7, 11, 12],
+            "payout_ratio": "World",
+        },
+    },
+    "Segmented Field Bets": {
+        "is_contract_bet": False,
+        "valid_numbers": None,
+        "Left Field": {
+            "payout_ratio": "Left Field",
+            "valid_phases": ["come-out", "point"],
+            "resolution": {
+                "come_out_win": [2, 3, 4],
+                "come_out_lose": ["any_other"],
+                "point_win": [2, 3, 4],
+                "point_lose": ["any_other"],
+            }
+        },
+        "Center Field": {
+            "payout_ratio": "Center Field",
+            "valid_phases": ["come-out", "point"],
+            "resolution": {
+                "come_out_win": [4, 9, 10],
+                "come_out_lose": ["any_other"],
+                "point_win": [4, 9, 10],
+                "point_lose": ["any_other"],
+            }
+        },
+        "Right Field": {
+            "payout_ratio": "Right Field",
+            "valid_phases": ["come-out", "point"],
+            "resolution": {
+                "come_out_win": [10, 11, 12],
+                "come_out_lose": ["any_other"],
+                "point_win": [10, 11, 12],
+                "point_lose": ["any_other"],
+            }
+        },
+    },
+    "Midway Bets": {
+        "is_contract_bet": False,
+        "valid_numbers": None,
+        "Midway": {
+            "payout_ratio": "Midway",
+            "valid_phases": ["come-out", "point"],
+            "resolution": {
+                "come_out_win": [6, 7, 8],
+                "come_out_lose": ["any_other"],
+                "point_win": [6, 7, 8],
+                "point_lose": ["any_other"],
+            }
+        },
+    },
+    "Challenge Bets": {
+        "is_contract_bet": True,
+        "valid_numbers": None,
+        "Point 7": {
+            "payout_ratio": "Point 7",
+            "valid_phases": ["come-out"],
+            "resolution": {
+                "win_condition": ["point_7out_next"],
+                "lose_condition": ["natural_or_longer"]
+            }
+        },
+        "7 Point 7": {
+            "payout_ratio": "7 Point 7",
+            "valid_phases": ["come-out"],
+            "resolution": {
+                "win_condition": ["co_7_or_point_7out"],
+                "lose_condition": ["craps_or_extended"]
+            }
+        },
+        "4 Rolls No 7": {
+            "payout_ratio": "Even Money",
+            "valid_phases": ["come-out", "point"],
+            "resolution": {
+                "win_condition": ["no_7_in_4_rolls"],
+                "lose_condition": [7]
+            }
+        },
+    },
+    "Repeater Bets": {
+        "is_contract_bet": False,
+        "valid_numbers": [2, 3, 4, 5, 6, 8, 9, 10, 11, 12],
+        "Repeater": {
+            "valid_phases": ["come-out", "point"],
+            "parameterized": True,
+            "payout_ratio_prefix": "Repeater",  # Combine with number dynamically
+            "repeat_targets": {
+                2: 2,
+                3: 3,
+                4: 4,
+                5: 5,
+                6: 6,
+                8: 6,
+                9: 5,
+                10: 4,
+                11: 3,
+                12: 2
+            },
+            "resolution": {
+                "win_condition": ["repeat_count_met"],
+                "lose_condition": [7]
+            }
+        }
     }
 }
 
@@ -289,9 +409,6 @@ BET_PAYOUT = {
         10: (7, 1),
     },
     "Hop": {
-        (1, 1): (30, 1),
-        (1, 2): (15, 1),
-        (1, 3): (15, 1),
         (2, 2): (30, 1),
         (2, 3): (15, 1),
         (2, 4): (15, 1),
@@ -302,12 +419,34 @@ BET_PAYOUT = {
         (4, 5): (15, 1),
         (4, 6): (15, 1),
         (5, 5): (30, 1),
-        (5, 6): (15, 1),
-        (6, 6): (30, 1),
     },
     "ATS-All": (175, 1),        
     "ATS-Tall": (34, 1),
     "ATS-Small": (34, 1),
+    "Left Field": (4, 1),
+    "Center Field": (2, 1),
+    "Right Field": (4, 1),
+    "Midway": {
+        (1, 5): (1, 1),  # Easy 6
+        (2, 4): (1, 1),  # Easy 6
+        (3, 3): (2, 1),  # Hard 6
+        7: (1, 1),       # Any 7
+        (2, 6): (1, 1),  # Easy 8
+        (3, 5): (1, 1),  # Easy 8
+        (4, 4): (2, 1),  # Hard 8
+    },
+    "Repeater": {
+        2: (40, 1),
+        3: (50, 1),
+        4: (65, 1),
+        5: (80, 1),
+        6: (90, 1),
+        8: (90, 1),
+        9: (80, 1),
+        10: (65, 1),
+        11: (50, 1),
+        12: (40, 1),
+    }
 }
 
 ODDS_MULTIPLIERS = {
