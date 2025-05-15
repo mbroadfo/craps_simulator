@@ -224,6 +224,13 @@ class Table:
                 bet.hits += 1
                 bet.owner.win_bet(bet, self.play_by_play)
                 settled_bets.append(bet)
+                
+                print(f"DEBUG: Settling winning bet: {bet.bet_type} on {bet.number} | Contract: {bet.is_contract_bet}")
+                
+                # 🔐 Remove contract bets after win (only pay once per shooter)
+                if bet.is_contract_bet or not self.house_rules.leave_winning_bets_up:
+                    print(f"DEBUG: Removing winning bet from table: {bet}")
+                    self.bets.remove(bet)
 
                 # 🔐 Remove ATS bets after win (only pay once per shooter)
                 if bet.bet_type in ["All", "Tall", "Small"]:
@@ -237,6 +244,17 @@ class Table:
                         attached.owner.win_bet(attached, self.play_by_play)
                         self.bets.remove(attached)
                         settled_bets.append(attached)
+            
+            # ✅ Handle Moved Bets
+            elif bet.status.startswith("move "):
+                destination = int(bet.status.split()[1])
+                bet.number = destination
+                bet.status = "active"
+
+            # ✅ Handle Returned Bets
+            elif bet.status == "return":
+                self.bets.remove(bet)
+                settled_bets.append(bet)
 
         return settled_bets
 

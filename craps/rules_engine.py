@@ -241,50 +241,53 @@ class RulesEngine:
         # ✅ Only resolve ACTIVE bets
         if bet.status != "active":
             return 0
-        
-        # 🎯 **1. LINE BETS (Pass Line, Don't Pass, Come, Don't Come)**
+
+        # 🎯 1. Contract Bets (Pass Line, Don't Pass, Come, Don't Come)
         if bet_rules.get("is_contract_bet", False):
-            # 🏆 **Come/Don't Come Special Case - Handle First Roll**
-            if bet.bet_type in ["Come", "Don't Come"]:
-                if bet.number is None:  # Come bet in come-out mode
-                    come_out_win = resolution_rules.get("come_out_win", [])
-                    come_out_lose = resolution_rules.get("come_out_lose", [])
-                    barred = bet_rules.get("barred_numbers", [])
+            is_come_bet = bet.bet_type in ["Come", "Don't Come"]
+            resolution_rules = bet_rules.get("resolution", {})
 
-                    if total in come_out_win:
+            # 🧩 Come/Don't Come on initial roll
+            if is_come_bet and bet.number is None:
+                come_out_win = resolution_rules.get("come_out_win", [])
+                come_out_lose = resolution_rules.get("come_out_lose", [])
+                barred = bet_rules.get("barred_numbers", [])
+
+                if total in come_out_win:
+                    bet.status = "won"
+                elif total in come_out_lose:
+                    bet.status = "lost"
+                elif total in barred:
+                    pass  # Barred → no resolution
+                else:
+                    bet.status = f"move {total}"
+
+            # ✅ Moved Come/Don't Come Bets
+            elif is_come_bet and bet.number is not None:
+                if bet.bet_type == "Come":
+                    if total == bet.number:
                         bet.status = "won"
-                    elif total in come_out_lose:
+                    elif total == 7:
                         bet.status = "lost"
-                    elif total in barred:
-                        pass # Bet is barred on this number
-                    else:
-                        bet.number = total  # Bet moved to number
-                else:  # Come bet in point mode
-                    if "number_hit" in winning_numbers and total == bet.number:
+                elif bet.bet_type == "Don't Come":
+                    if total == 7:
                         bet.status = "won"
-                    elif total in winning_numbers:
-                        bet.status = "won"
-                    elif "number_hit" in losing_numbers and total == bet.number:
-                        bet.status = "lost"
-                    elif total in losing_numbers:
+                    elif total == bet.number:
                         bet.status = "lost"
 
-            elif bet.bet_type in ("Pass Line", "Don't Pass"):  # Pass Line / Don't Pass logic
-                # Win conditions
-                if "number_hit" in winning_numbers and bet.number is not None and total == bet.number:
-                    bet.status = "won"
-                elif "point_made" in winning_numbers and point is not None and total == point:
-                    bet.status = "won"
-                elif total in winning_numbers:
-                    bet.status = "won"
-                # Loss conditions
-                elif "number_hit" in losing_numbers and bet.number is not None and total == bet.number:
-                    bet.status = "lost"
-                elif "point_made" in losing_numbers and point is not None and total == point:
-                    bet.status = "lost"
-                elif total in losing_numbers:
-                    bet.status = "lost"
-            
+            else:
+                # Regular Pass / Don't Pass
+                if phase == "come-out":
+                    if total in resolution_rules.get("come_out_win", []):
+                        bet.status = "won"
+                    elif total in resolution_rules.get("come_out_lose", []):
+                        bet.status = "lost"
+                elif phase == "point":
+                    if "point_made" in resolution_rules.get("point_win", []) and total == game_state.point:
+                        bet.status = "won"
+                    elif total in resolution_rules.get("point_lose", []):
+                        bet.status = "lost"
+
         ### 🎯 **2. FIELD BETS**
         elif bet.bet_type == "Field":
             if total in winning_numbers:
@@ -298,18 +301,15 @@ class RulesEngine:
             winning_numbers = resolution_rules.get(f"{phase_key}_win", [])
             losing_numbers = resolution_rules.get(f"{phase_key}_lose", [])
 
-            # ✅ Win if the rolled total matches the "number_hit" or is in "point_win"
             if "number_hit" in winning_numbers and total == bet.number:
                 bet.status = "won"
             elif total in winning_numbers:
                 bet.status = "won"
-
-            # ✅ Lose if total is in "point_lose"
             elif "number_hit" in losing_numbers and total == bet.number:
                 bet.status = "lost"
             elif total in losing_numbers:
                 bet.status = "lost"
-                
+
         ### 🎯 **4. PROPOSITION BETS**
         elif bet.bet_type == "Proposition":
             if "number_hit" in resolution_rules.get(f"{phase_key}_win", []) and total == bet.number:
@@ -322,22 +322,16 @@ class RulesEngine:
             if "hardway_win" in resolution_rules.get(f"{phase_key}_win", []):
                 if total == bet.number and is_pair:
                     bet.status = "won"
-
             if "hardway_lose" in resolution_rules.get(f"{phase_key}_lose", []):
-                if total == 7 or (total == bet.number and not is_pair):  # ✅ Easy way loses
+                if total == 7 or (total == bet.number and not is_pair):
                     bet.status = "lost"
 
         ### 🎯 **6. HOP BETS**
         elif bet.bet_type == "Hop":
             hop_payouts = BET_PAYOUT.get("Hop", {})
-
             if not isinstance(hop_payouts, dict):
                 raise TypeError(f"Expected dict for Hop payouts, got {type(hop_payouts)}")
 
-            # Normalize dice order for lookup
-            sorted_dice = tuple(sorted(dice_outcome))
-
-            # Ensure bet.number is a tuple and check both (X, Y) and (Y, X)
             if isinstance(bet.number, tuple):
                 if sorted_dice == tuple(sorted(bet.number)):
                     bet.status = "won"
@@ -348,24 +342,24 @@ class RulesEngine:
         elif bet.bet_type in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
             if bet.parent_bet and bet.parent_bet.status == "won":
                 bet.status = "won"
-
-                # 🧠 Assign number based on parent for correct payout ratio
                 if bet.number is None:
                     if bet.parent_bet.bet_type == "Pass Line":
-                        bet.number = point  # Set to the current point
+                        bet.number = point
                     elif bet.parent_bet.bet_type == "Come":
-                        bet.number = bet.parent_bet.number  # Set to the come number
+                        bet.number = bet.parent_bet.number
 
             elif bet.parent_bet and bet.parent_bet.status == "lost":
-                bet.status = "lost"
+                # Special case: Come Odds returned on come-out 7
+                if bet.bet_type == "Come Odds" and game_state.phase == "come-out":
+                    bet.status = "return"
+                else:
+                    bet.status = "lost"
 
-        ### 🎯 **7. ALL TALL SMALL BETS**
-        elif bet.bet_type in ("All", "Tall", "Small"):  #. All / Tall / Small
+        ### 🎯 **8. ALL TALL SMALL BETS**
+        elif bet.bet_type in ("All", "Tall", "Small"):
             if game_state is None:
                 raise RuntimeError("GameState is required for ATS bet resolution.")
             total = sum(dice_outcome)
-            
-            # Lose immediately on 7
             if total == 7:
                 bet.status = "lost"
             elif bet.bet_type == "All" and game_state.all_completed:
@@ -377,7 +371,6 @@ class RulesEngine:
         else:
             raise ValueError(f"Unknown contract bet: {bet.bet_type}")
 
-        ### 🎯 **Calculate Payout if Won**
         payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0
         return payout
 

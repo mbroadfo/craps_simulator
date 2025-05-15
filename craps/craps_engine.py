@@ -242,17 +242,11 @@ class CrapsEngine:
                 if strategy and hasattr(strategy, "notify_payout"):
                     strategy.notify_payout(payout)
 
-        # Step 5: Remove winning bets based on house rules
-        for bet in resolved_bets:
-            if bet.status == "won" and bet in self.table.bets:
-                if bet.is_contract_bet or not self.house_rules.leave_winning_bets_up:
-                    self.table.bets.remove(bet)
-        
-        # Step 6: Update game state
+        # Step 5: Update game state
         state_message = self.game_state.update_state(outcome)
         self.play_by_play.write(state_message)
 
-        # Step 7: Adjust strategy bets
+        # Step 6: Adjust strategy bets
         self.adjust_bets()
 
     def adjust_bets(self) -> None:
