@@ -1,10 +1,10 @@
 ACTIVE_PLAYERS = {
     "Molly": ("3-Point Molly", False),
-    "Dolly": ("3-Point Dolly", True),
+    "Dolly": ("3-Point Dolly", False),
     "Linus": ("Pass-Line", False),
     "Odd Linus": ("Pass-Line w/ Odds", False),
     "Fielder": ("Field", False),
-    "Crosstopher": ("Iron Cross", False),
+    "Crosstopher": ("Iron Cross", True),
     "Insider": ("Inside", False),
     "All Boxes": ("Across", False),
     "Six-Eight": ("Place 68", False),

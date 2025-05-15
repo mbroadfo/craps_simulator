@@ -45,7 +45,7 @@ class PlayerLineup:
             "Pass-Line": PassLineStrategy(bet_amount=self.house_rules.table_minimum, table=self.table),
             "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, rules_engine=self.rules_engine, odds_multiple="1x"),  # str or int
             "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
-            "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine),
+            "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine, play_pass_line=True, odds_type="3x-4x-5x"),
             "3-Point Molly": ThreePointMollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="3x-4x-5x"),
             "3-Point Dolly": ThreePointDollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="3x-4x-5x"),
             "Inside": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="inside",),

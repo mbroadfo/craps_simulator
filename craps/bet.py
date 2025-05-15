@@ -19,12 +19,12 @@ class Bet:
         bet_type: str,
         amount: int,
         owner: Player,
-        payout_ratio: Tuple[int, int],  # Updated to a tuple
+        payout_ratio: Tuple[int, int],
         locked: bool = False,
-        vig: bool = False,  # Updated to a boolean
+        vig: bool = False,
         unit: int = 1,
         valid_phases: Optional[List[str]] = None,
-        number: Optional[Union[int, Tuple[int, int]]] = None,  # ✅ Now supports tuples for Hop bets
+        number: Optional[Union[int, Tuple[int, int]]] = None,
         parent_bet: Optional[Bet] = None,
         linked_bet: Optional["Bet"] = None,
         is_contract_bet: bool = False,
@@ -49,7 +49,7 @@ class Bet:
         self.is_contract_bet: bool = is_contract_bet  # Whether the bet is a contract bet
         self.linked_bet: Optional[Bet] = linked_bet
         self.resolved_payout: int = 0
-        self.hits: int = 0
+        self.hits: int = hits
 
     def resolve(self, rules_engine: RulesEngine, dice_outcome: Tuple[int, int], game_state: GameState) -> None:
         """
@@ -86,4 +86,4 @@ class Bet:
         if self.number is not None:
             return f"{self.owner.name}'s {self.bet_type} {self.number} bet"
         else:
-            return f"{self.owner.name}'s ${self.amount}  {self.bet_type} bet"
+            return f"{self.owner.name}'s ${self.amount} {self.bet_type} bet"

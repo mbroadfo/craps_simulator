@@ -20,6 +20,8 @@ class IronCrossStrategy(BaseStrategy):
         min_bet: int, 
         play_by_play: PlayByPlay,
         strategy_name: Optional[str] = None,
+        play_pass_line: bool = True,
+        odds_type: Optional[str] = None,
     ) -> None:
         """
         Initialize the Iron Cross strategy.
@@ -35,6 +37,8 @@ class IronCrossStrategy(BaseStrategy):
         self.min_bet: int = min_bet
         self.play_by_play: PlayByPlay = play_by_play
         self.strategy_name = strategy_name or "IronCross"
+        self.play_pass_line = play_pass_line
+        self.odds_type = odds_type
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """
@@ -47,13 +51,32 @@ class IronCrossStrategy(BaseStrategy):
         """
         
         rules_engine = self.rules_engine
-
+        bets: List[Bet] = []
+        
         if game_state.phase == "come-out":
-            # Place a Pass Line bet during the come-out roll if no active bet exists
-            if not any(bet.owner == player and bet.bet_type == "Pass Line" for bet in table.bets):
-                return [rules_engine.create_bet("Pass Line", self.min_bet, player)]
+            if self.play_pass_line:
+                if not any(bet.owner == player and bet.bet_type == "Pass Line" for bet in table.bets):
+                    bets.append(rules_engine.create_bet("Pass Line", self.min_bet, player))
+            return bets
 
         elif game_state.phase == "point":
+            # If Pass Line is active and odds are allowed, place odds bet
+            if self.play_pass_line and self.odds_type:
+                pass_line_bet = next(
+                    (bet for bet in table.bets if bet.owner == player and bet.bet_type == "Pass Line"),
+                    None
+                )
+                if pass_line_bet and not any(
+                    bet.owner == player and bet.bet_type == "Pass Line Odds" for bet in table.bets
+                ):
+                    point = game_state.point
+                    multiplier = self.rules_engine.get_odds_multiplier(self.odds_type, point)
+                    if multiplier:
+                        odds_amount = self.min_bet * multiplier
+                        if player.balance >= odds_amount:
+                            bets.append(
+                                self.rules_engine.create_bet("Pass Line Odds", odds_amount, player)
+                            )
             # Reactivate inactive Place bets
             for bet in table.bets:
                 if bet.owner == player and bet.bet_type.startswith("Place") and bet.status == "inactive":
@@ -78,9 +101,8 @@ class IronCrossStrategy(BaseStrategy):
             ]
 
             # Use RulesEngine to create Place bets
-            bets: List[Bet] = []
             for number in numbers:
-                min_bet = rules_engine.get_minimum_bet("Place", table, number)  # ✅ Correct
+                min_bet = rules_engine.get_minimum_bet("Place", table, number)
                 bets.append(rules_engine.create_bet("Place", min_bet, player, number=number))
 
             # Add a Field bet if no active Field bet exists

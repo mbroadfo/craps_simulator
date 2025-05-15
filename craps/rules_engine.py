@@ -372,6 +372,10 @@ class RulesEngine:
             raise ValueError(f"Unknown contract bet: {bet.bet_type}")
 
         payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0
+        
+        if bet.bet_type == "Field" and bet.number is not None:
+            bet.number = None  # ✅ Reset number after resolution
+            
         return payout
 
     @staticmethod
@@ -435,3 +439,43 @@ class RulesEngine:
         if base_type == "Don't Come":
             return game_state.phase == "point" and bet.linked_bet.number is not None
         return False
+
+    @staticmethod
+    def adjust_bet(bet: Bet, action: str, *, units: Optional[int] = None) -> None:
+        """
+        Adjust an existing bet's state or amount in a rule-compliant way.
+
+        Supported actions:
+        - "press": Increase by 1 unit (or given units)
+        - "regress": Decrease by 1 unit (or given units)
+        - "turn_off": Set status to "inactive"
+        - "turn_on": Set status to "active"
+        - "reset": Reset amount to table minimum for this bet type
+        - "remove": Mark for removal (caller must remove from table)
+        
+        :param bet: The bet to adjust.
+        :param action: The type of adjustment.
+        :param units: Optional units to press/regress by.
+        """
+        if action == "press":
+            amount = bet.amount + (units or bet.unit)
+            bet.amount = amount
+
+        elif action == "regress":
+            new_amount = max(bet.unit, bet.amount - (units or bet.unit))
+            bet.amount = new_amount
+
+        elif action == "turn_off":
+            bet.status = "inactive"
+
+        elif action == "turn_on":
+            bet.status = "active"
+
+        elif action == "reset":
+            bet.amount = bet.unit
+
+        elif action == "remove":
+            bet.status = "to_remove"  # Caller will remove from table if needed
+
+        else:
+            raise ValueError(f"Unsupported adjustment action: {action}")
