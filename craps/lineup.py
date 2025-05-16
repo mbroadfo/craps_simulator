@@ -51,7 +51,7 @@ class PlayerLineup:
             "Inside": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="inside",),
             "Across": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="across",),
             "Place 68": PlaceBetStrategy(table=self.table, numbers_or_strategy=[6, 8], rules_engine=self.rules_engine),
-            "Double Aces": DoubleHopStrategy(base_bet=1, hop_target=(1, 1), rules_engine=rules_engine),
+            "Double Hop": DoubleHopStrategy(base_bet=1, hop_target=(3, 3), rules_engine=rules_engine),
             "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="1x"),
             "RegressHalfPress": RegressThenPressStrategy(regression_strategy=PlaceRegressionStrategy(high_unit=10,low_unit=3, regression_factor=2, regress_units=5),press_style = PressStyle.HALF),
             "Lay Outside": LayBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="Outside"),

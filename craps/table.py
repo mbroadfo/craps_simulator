@@ -152,21 +152,17 @@ class Table:
     def check_bets(self, dice_outcome: Tuple[int, int], game_state: GameState) -> List[Bet]:
         """
         Check and resolve all bets on the table based on the dice outcome, phase, and point.
-
         :param dice_outcome: The result of the dice roll (e.g., [3, 4]).
-        :param phase: The current game phase ("come-out" or "point").
-        :param point: The current point number (if in point phase).
+        :param game_state: The current GameState object.
         :return: List of bets that were resolved (won/lost)
         """
         resolved_bets: List[Bet] = []
 
-        for bet in sorted(self.bets, key=lambda b: 0 if b.parent_bet is None else 1):
-            for bet in self.bets:
-                # Skip bets that are inactive (e.g., 3-2-1 turned off Place bets)
-                if bet.status == "inactive":
-                    continue
-
-                # Track Come/Don't Come movement
+        # 🥇 First pass: resolve non-odds bets
+        for bet in self.bets:
+            if bet.status == "inactive":
+                continue
+            if bet.bet_type not in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
                 original_number = bet.number
                 original_status = bet.status
 
@@ -175,7 +171,6 @@ class Table:
                 if bet.status != original_status and bet.status in ("won", "lost"):
                     resolved_bets.append(bet)
 
-                # 🎯 Movement message for Come/Don't Come bets
                 if (
                     bet.bet_type in ["Come", "Don't Come"]
                     and original_number is None
@@ -185,6 +180,17 @@ class Table:
                     self.play_by_play.write(f"  ⏫ {bet.owner.name}'s {bet.bet_type} bet moves to the {bet.number}.")
                 elif bet.status == "push":
                     self.play_by_play.write(f"  ⏸️ {bet.owner.name}'s {bet.bet_type} bet was barred and did not move.")
+
+        # 🥈 Second pass: resolve odds bets (parent statuses are now reliable)
+        for bet in self.bets:
+            if bet.status == "inactive":
+                continue
+            if bet.bet_type in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
+                original_status = bet.status
+                bet.resolve(self.rules_engine, dice_outcome, game_state)
+
+                if bet.status != original_status and bet.status in ("won", "lost", "return"):
+                    resolved_bets.append(bet)
 
         return resolved_bets
 

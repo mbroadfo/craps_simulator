@@ -2,6 +2,7 @@ from __future__ import annotations  # Enable forward references for type hints
 from typing import TYPE_CHECKING, Optional, List
 from craps.bet import Bet
 from craps.base_strategy import BaseStrategy
+from craps.strategies.free_odds_strategy import FreeOddsStrategy
 
 if TYPE_CHECKING:
     from craps.table import Table  # Prevents circular imports
@@ -39,6 +40,7 @@ class IronCrossStrategy(BaseStrategy):
         self.strategy_name = strategy_name or "IronCross"
         self.play_pass_line = play_pass_line
         self.odds_type = odds_type
+        self.free_odds = FreeOddsStrategy(table, odds_type, strategy_name)
 
     def place_bets(self, game_state: GameState, player: Player, table: Table) -> List[Bet]:
         """
@@ -62,21 +64,10 @@ class IronCrossStrategy(BaseStrategy):
         elif game_state.phase == "point":
             # If Pass Line is active and odds are allowed, place odds bet
             if self.play_pass_line and self.odds_type:
-                pass_line_bet = next(
-                    (bet for bet in table.bets if bet.owner == player and bet.bet_type == "Pass Line"),
-                    None
-                )
-                if pass_line_bet and not any(
-                    bet.owner == player and bet.bet_type == "Pass Line Odds" for bet in table.bets
-                ):
-                    point = game_state.point
-                    multiplier = self.rules_engine.get_odds_multiplier(self.odds_type, point)
-                    if multiplier:
-                        odds_amount = self.min_bet * multiplier
-                        if player.balance >= odds_amount:
-                            bets.append(
-                                self.rules_engine.create_bet("Pass Line Odds", odds_amount, player)
-                            )
+                odds_bets = self.free_odds.get_odds_bet(game_state, player, table)
+                if odds_bets:
+                    bets.extend(odds_bets)
+
             # Reactivate inactive Place bets
             for bet in table.bets:
                 if bet.owner == player and bet.bet_type.startswith("Place") and bet.status == "inactive":
