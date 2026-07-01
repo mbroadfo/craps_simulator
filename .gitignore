@@ -6,8 +6,15 @@ __pycache__/
 *.pyd
 
 # Ignore virtual environments
+.venv/
 venv/
 env/
+
+# Ignore build and tool caches
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+output/
 
 # Ignore IDE-specific files
 .vscode/
