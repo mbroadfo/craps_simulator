@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any, Tuple, Union, TYPE_CHECKING
+from typing import Optional, Dict, Any, Tuple, Union, TYPE_CHECKING, cast
 from craps.rules import BET_RULES, BET_PAYOUT
 from craps.bet import Bet
 from craps.game_state import GameState
@@ -212,11 +212,11 @@ class RulesEngine:
 
                 # Case 3: If number is an integer (e.g., True Odds, Place Bets)
                 if isinstance(number, int):
-                    return payout_data.get(number, payout_data.get("default", (1, 1)))
+                    return cast(Tuple[int, int], payout_data.get(number, payout_data.get("default", (1, 1))))
 
                 # Case 4: If number is a tuple (e.g., Hop bets)
                 if isinstance(number, tuple):
-                    return payout_data.get(number, payout_data.get("default", (1, 1)))
+                    return cast(Tuple[int, int], payout_data.get(number, payout_data.get("default", (1, 1))))
 
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
