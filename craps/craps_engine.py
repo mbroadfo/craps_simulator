@@ -20,6 +20,18 @@ from craps.player import Player
 from craps.view_log import InteractiveLogViewer
 from craps.statistics_report import StatisticsReport
 from craps.visualizer import Visualizer
+from craps.events import (
+    EventBus,
+    SessionStarted,
+    ShooterAssigned,
+    BetPlaced,
+    DiceRolled,
+    BetResolved,
+    PointEstablished,
+    PointHit,
+    SevenOut,
+    SessionFinalized,
+)
 
 class PostRollSummary(NamedTuple):
     total: int
@@ -50,6 +62,7 @@ class CrapsEngine:
         self._visualizer: Optional[Visualizer] = None
         self._report_writer: Optional[StatisticsReport] = None
         self.play_by_play = PlayByPlay(engine=self)
+        self.events = EventBus()
         
     @property
     def quiet_mode(self) -> bool:
@@ -117,6 +130,7 @@ class CrapsEngine:
         ) = session_data
 
         self.initialized = True
+        self.events.publish(SessionStarted(num_shooters=num_shooters))
         return True
 
     def add_players_from_config(self) -> int:
@@ -179,6 +193,13 @@ class CrapsEngine:
                 )
                 if success:
                     total_bets += len(bets) if isinstance(bets, list) else 1
+                    for bet in bets:
+                        self.events.publish(BetPlaced(
+                            player_name=player.name,
+                            bet_type=bet.bet_type,
+                            amount=bet.amount,
+                            number=bet.number,
+                        ))
 
         return total_bets
 
@@ -212,6 +233,15 @@ class CrapsEngine:
             "point": self.game_state.point
         })
 
+        self.events.publish(DiceRolled(
+            shooter_index=self.shooter_index,
+            roll_number=self.stats.session_rolls,
+            dice=outcome,
+            total=total,
+            phase=self.game_state.phase,
+            point=self.game_state.point,
+        ))
+
         return outcome
 
     def resolve_bets(self, outcome: tuple[int, int]) -> None:
@@ -234,6 +264,14 @@ class CrapsEngine:
         # Step 3: Update win/loss stats
         for bet in resolved_bets:
             self.stats.update_win_loss(bet)
+            self.events.publish(BetResolved(
+                player_name=bet.owner.name,
+                bet_type=bet.bet_type,
+                amount=bet.amount,
+                number=bet.number,
+                status=bet.status,
+                payout=bet.resolved_payout,
+            ))
 
             # Step 4: Notify strategy if bet won
             if bet.status == "won":
@@ -285,6 +323,10 @@ class CrapsEngine:
         self.shooter_index += 1
         shooter = players[(self.shooter_index - 1) % len(players)]  # Use previous index for assignment
         self.game_state.assign_new_shooter(shooter, self.shooter_index)
+        self.events.publish(ShooterAssigned(
+            shooter_index=self.shooter_index,
+            shooter_name=shooter.name,
+        ))
 
     def refresh_bet_statuses(self) -> None:
         """Reset bet statuses based on game phase, house rules, and strategy preferences."""
@@ -335,7 +377,12 @@ class CrapsEngine:
         )
         transitioned = previous_phase != current_phase
         new_shooter_assigned = False
-        
+
+        if previous_phase == "come-out" and current_phase == "point" and self.game_state.point is not None:
+            self.events.publish(PointEstablished(point=self.game_state.point))
+        if point_was_hit and self.game_state.previous_point is not None:
+            self.events.publish(PointHit(point=self.game_state.previous_point))
+
         if seven_out:
             # Record shooter results into statistics
             if self.stats and self.player_lineup and hasattr(self, "_starting_bankroll_snapshot"):
@@ -351,6 +398,7 @@ class CrapsEngine:
                 del self._starting_bankroll_snapshot  # clean up
 
             self.stats.record_seven_out()
+            self.events.publish(SevenOut(shooter_index=self.shooter_index))
             self.game_state.clear_shooter()
             for player in self.player_lineup.get_active_players_list():
                 strategy = getattr(player, "betting_strategy", None)
@@ -410,6 +458,8 @@ class CrapsEngine:
 
         stats.session_high_roller = best
         stats.session_low_roller = worst
+
+        self.events.publish(SessionFinalized(session_rolls=stats.session_rolls))
         
         # Build the report, and display the statistics
         if not self.quiet_mode:
