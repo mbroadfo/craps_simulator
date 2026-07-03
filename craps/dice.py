@@ -5,13 +5,16 @@ from typing import Optional, List, Dict, Tuple, cast
 from collections import deque
 
 class Dice:
-    def __init__(self, roll_history_file: Optional[str] = None) -> None:
+    def __init__(self, roll_history_file: Optional[str] = None, seed: Optional[int] = None) -> None:
         """
         Initialize the Dice class.
-        
+
         :param roll_history_file: Path to a CSV file containing roll history. If None, rolls are random.
+        :param seed: Seed for a private RNG. Same seed → identical roll sequence.
+                     When None, rolls use the global random module (legacy behavior).
         """
         self.values: Tuple[int, int] = (1, 1)  # Ensure this is a fixed-size tuple
+        self._rng: Optional[random.Random] = random.Random(seed) if seed is not None else None
         self.roll_history_file: Optional[str] = roll_history_file
         self.roll_history: List[Dict[str, int | Tuple[int, int]]] = []
         self.current_roll_index: int = 0
@@ -64,6 +67,9 @@ class Dice:
             self.current_roll_index += 1
         else:
             """ Generate random rolls if no history is loaded """
-            self.values = (random.randint(1, 6), random.randint(1, 6))  # Ensure it's a tuple
+            if self._rng is not None:
+                self.values = (self._rng.randint(1, 6), self._rng.randint(1, 6))
+            else:
+                self.values = (random.randint(1, 6), random.randint(1, 6))  # Ensure it's a tuple
         
         return self.values
