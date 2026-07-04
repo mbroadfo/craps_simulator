@@ -20,8 +20,16 @@ roll distributions — plus full replay of any recorded session.
 - Three machine-checked gates (bankroll parity, stats goldens, edge
   convergence) protect the math while the UI grows around it.
 
-North-star design: `prototype/craps_observatory.jsx` *(not yet in repo —
-blocker for visual-fidelity work, not for the API steps)*.
+North-star design: `prototype/craps_observatory.jsx` ("The Rail") — in the
+repo as a frozen reference. Its visual vocabulary (felt cards, box numbers
+with the puck as an inverted tile, chip badges on place numbers, pip-accurate
+dice, 120-point bankroll sparklines with a dashed break-even line, the
+speed-control strip 1×/10×/100×/TURBO, and the leaderboard with max-drawdown
+and realized-edge columns) is the Step 2–3 fidelity target. Its simplified
+math is NOT — the real engine is the only source of game truth. Note the
+prototype computes realized edge as pnl/wagered where "wagered" counts only
+net new money placed; D5's definition (per amount bet at resolution) is the
+correct one and will differ — expected, not a bug.
 
 ## Architecture decisions (the redline targets)
 
