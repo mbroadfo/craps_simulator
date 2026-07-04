@@ -9,17 +9,17 @@ from craps.house_rules import HouseRules
 from craps.lineup import PlayerLineup
 from craps.player import Player
 from craps.game_state import GameState
-from craps.strategies.pass_line_strategy import PassLineStrategy
-from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
-from craps.strategies.iron_cross_strategy import IronCrossStrategy
-from craps.strategies.double_hop_strategy import DoubleHopStrategy
-from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
+from craps.strategies.legacy.pass_line_strategy import PassLineStrategy
+from craps.strategies.legacy.three_point_molly_strategy import ThreePointMollyStrategy
+from craps.strategies.legacy.iron_cross_strategy import IronCrossStrategy
+from craps.strategies.legacy.double_hop_strategy import DoubleHopStrategy
+from craps.strategies.legacy.three_two_one_strategy import ThreeTwoOneStrategy
 from craps.statistics import Statistics
-from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
-from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
+from craps.strategies.legacy.place_reggression_strategy import PlaceRegressionStrategy
+from craps.strategies.legacy.adjuster_only_strategy import AdjusterOnlyStrategy
 from craps.bet_adjusters import PressStyle, PressAdjuster
-from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
-from craps.strategies.hardway_highway_strategy import HardwayHighwayStrategy
+from craps.strategies.legacy.regress_then_press_strategy import RegressThenPressStrategy
+from craps.strategies.legacy.hardway_highway_strategy import HardwayHighwayStrategy
 from tests.test_utils import assert_contains_bet
 
 class FakeDice:
@@ -350,7 +350,7 @@ class TestStrategies(unittest.TestCase):
 
     def test_three_point_dolly(self):
         """Test Three-Point Dolly strategy places Don't Pass, Don't Come, and Lay Odds correctly."""
-        from craps.strategies.three_point_dolly_strategy import ThreePointDollyStrategy
+        from craps.strategies.legacy.three_point_dolly_strategy import ThreePointDollyStrategy
 
         strategy = ThreePointDollyStrategy(table=self.table, bet_amount=10, odds_type="3x-4x-5x")
         self.player.betting_strategy = strategy
@@ -400,7 +400,7 @@ class TestStrategies(unittest.TestCase):
 
     def test_lay_strategy_outside(self):
         """Test LayBetStrategy places correct Lay bets on 4 and 10 after point is established."""
-        from craps.strategies.lay_strategy import LayBetStrategy  # Ensure path matches your layout
+        from craps.strategies.legacy.lay_strategy import LayBetStrategy  # Ensure path matches your layout
 
         strategy = LayBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="outside")
         self.player.betting_strategy = strategy
