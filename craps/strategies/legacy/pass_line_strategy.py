@@ -2,7 +2,7 @@ from __future__ import annotations  # Enable forward references for type hints
 from typing import TYPE_CHECKING, List, Optional
 from craps.bet import Bet
 from craps.base_strategy import BaseStrategy
-from craps.strategies.free_odds_strategy import FreeOddsStrategy
+from craps.strategies.legacy.free_odds_strategy import FreeOddsStrategy
 
 if TYPE_CHECKING:
     from craps.game_state import GameState

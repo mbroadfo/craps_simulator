@@ -64,8 +64,12 @@ class Bet:
         self.resolved_payout = rules_engine.resolve_bet(self, dice_outcome, game_state)
 
     def is_resolved(self) -> bool:
-        """Check if the bet has been resolved (won, lost, or pushed)."""
-        return self.status in ["won", "lost", "pushed"]
+        """Check if the bet has been resolved (won, lost, or push).
+
+        Note: no resolver currently sets any push status — "push" is the
+        canonical spelling (matching table.py) should one ever appear.
+        """
+        return self.status in ["won", "lost", "push"]
 
     def payout(self) -> int:
         """

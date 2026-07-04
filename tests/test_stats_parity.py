@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from config import HOUSE_RULES
 from craps.craps_engine import CrapsEngine
 from craps.player import Player
-from craps.strategies.pass_line_strategy import PassLineStrategy
-from craps.strategies.iron_cross_strategy import IronCrossStrategy
-from craps.strategies.field_strategy import FieldBetStrategy
+from craps.strategies.legacy.pass_line_strategy import PassLineStrategy
+from craps.strategies.legacy.iron_cross_strategy import IronCrossStrategy
+from craps.strategies.legacy.field_strategy import FieldBetStrategy
 
 GOLDEN_DIR = os.path.join(os.path.dirname(__file__), "goldens")
 SEEDS = [11, 42]

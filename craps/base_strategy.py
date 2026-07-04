@@ -19,7 +19,12 @@ class BaseStrategy(ABC):
         pass
 
     def adjust_bets(self, game_state: GameState, player: Player, table: "Table") -> Optional[List[Bet]]:
-        """Modify existing bets (e.g., adding odds, pressing bets)."""
+        """Modify existing bets IN PLACE (e.g., pressing amounts).
+
+        The engine ignores the return value — returning newly created bets
+        does NOT place them (this silently dropped v1 PassLineStrategy's
+        odds). The return exists only for introspection/logging.
+        """
         return None  # Default to no adjustments
 
     def remove_bets(self, game_state: GameState, player: Player, table: "Table") -> Optional[List[Bet]]:
