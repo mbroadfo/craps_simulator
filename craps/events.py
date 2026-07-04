@@ -20,6 +20,11 @@ class ShooterAssigned(Event):
 
 
 @dataclass(frozen=True)
+class BetsRequested(Event):
+    """The engine is about to collect bets from strategies."""
+
+
+@dataclass(frozen=True)
 class BetPlaced(Event):
     player_name: str
     bet_type: str
@@ -35,6 +40,8 @@ class DiceRolled(Event):
     total: int
     phase: str
     point: Optional[int]
+    table_risk: int = 0
+    shooter_name: str = ""
 
 
 @dataclass(frozen=True)
@@ -45,6 +52,34 @@ class BetResolved(Event):
     number: Optional[Union[int, Tuple[int, int]]]
     status: str
     payout: int
+    #: Bet.payout() at resolution time — what the stats ledger credits on a
+    #: win (may include the returned stake for contract bets).
+    win_payout: int = 0
+
+
+@dataclass(frozen=True)
+class NumberHit(Event):
+    """ATS tracking recorded a number this roll (message pre-formatted)."""
+    total: int
+    message: str
+
+
+@dataclass(frozen=True)
+class GameStateChanged(Event):
+    """Phase/point transition after resolution (message pre-formatted)."""
+    message: str
+
+
+@dataclass(frozen=True)
+class BankrollsUpdated(Event):
+    """Per-player bankrolls after post-roll adjustments, in lineup order."""
+    bankrolls: Tuple[Tuple[str, int], ...]
+
+
+@dataclass(frozen=True)
+class RiskUpdated(Event):
+    """Per-player active amounts at risk after status refresh, in lineup order."""
+    at_risk: Tuple[Tuple[str, int], ...]
 
 
 @dataclass(frozen=True)
@@ -60,6 +95,8 @@ class PointHit(Event):
 @dataclass(frozen=True)
 class SevenOut(Event):
     shooter_index: int
+    #: Per-player bankroll delta over this shooter's hand, in lineup order.
+    shooter_results: Tuple[Tuple[str, int], ...] = ()
 
 
 @dataclass(frozen=True)
