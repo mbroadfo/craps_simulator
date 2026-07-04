@@ -42,9 +42,6 @@ class PlayerLineup:
 
         # Factories: each player gets a fresh adapter, so per-player memo
         # state never leaks between players sharing a strategy name.
-        # strategy_name values preserve v1 report labels exactly — including
-        # the v1 Molly/Dolly label swap (flagged in Step 4b, kept for output
-        # fidelity until a deliberate fix is approved).
         self.all_strategies: Dict[str, Callable[[], V2StrategyAdapter]] = {
             "Pass-Line": lambda: V2StrategyAdapter(
                 PassLineV2(bet_amount=tm), strategy_name="PassLine"),
@@ -57,10 +54,10 @@ class PlayerLineup:
                 strategy_name="IronCross"),
             "3-Point Molly": lambda: V2StrategyAdapter(
                 ThreePointMollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
-                strategy_name="ThreePointDolly"),
+                strategy_name="ThreePointMolly"),
             "3-Point Dolly": lambda: V2StrategyAdapter(
                 ThreePointDollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
-                strategy_name="ThreePointMolly"),
+                strategy_name="ThreePointDolly"),
             "Inside": lambda: V2StrategyAdapter(
                 PlaceV2("inside"), strategy_name="Place"),
             "Across": lambda: V2StrategyAdapter(
