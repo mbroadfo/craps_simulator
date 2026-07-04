@@ -19,12 +19,27 @@ from craps.strategies.field_strategy import FieldBetStrategy
 from craps.strategies.place_strategy import PlaceBetStrategy
 from craps.strategies.lay_strategy import LayBetStrategy
 from craps.strategies.pass_line_odds_strategy import PassLineOddsStrategy
+from craps.strategies.double_hop_strategy import DoubleHopStrategy
+from craps.strategies.hardway_highway_strategy import HardwayHighwayStrategy
+from craps.strategies.all_tall_small_strategy import AllTallSmallStrategy
+from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
+from craps.strategies.three_point_dolly_strategy import ThreePointDollyStrategy
+from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
+from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
+from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
+from craps.bet_adjusters import PressStyle
 from craps.strategies.pass_line_v2 import PassLineV2
 from craps.strategies.iron_cross_v2 import IronCrossV2
 from craps.strategies.field_v2 import FieldV2
 from craps.strategies.place_v2 import PlaceV2
 from craps.strategies.lay_v2 import LayV2
 from craps.strategies.pass_line_odds_v2 import PassLineOddsV2
+from craps.strategies.double_hop_v2 import DoubleHopV2
+from craps.strategies.hardway_highway_v2 import HardwayHighwayV2
+from craps.strategies.all_tall_small_v2 import AllTallSmallV2
+from craps.strategies.three_point_v2 import ThreePointMollyV2, ThreePointDollyV2
+from craps.strategies.three_two_one_v2 import ThreeTwoOneV2
+from craps.strategies.regress_press_v2 import RegressPressV2
 from craps.strategy_contract import V2StrategyAdapter
 
 MIN_BET = HOUSE_RULES["table_minimum"]
@@ -114,6 +129,38 @@ STRATEGY_PAIRS = {
     "PassLineOdds1x": (
         lambda e: PassLineOddsStrategy(table=None, rules_engine=e.rules_engine, odds_multiple="1x"),
         lambda e: V2StrategyAdapter(PassLineOddsV2(odds_multiple="1x")),
+    ),
+    "DoubleHop": (
+        lambda e: DoubleHopStrategy(base_bet=1, hop_target=(3, 3), rules_engine=e.rules_engine),
+        lambda e: V2StrategyAdapter(DoubleHopV2(hop_target=(3, 3), base_bet=1)),
+    ),
+    "HardwayHighway": (
+        lambda e: HardwayHighwayStrategy(table=None, rules_engine=e.rules_engine, play_by_play=e.play_by_play),
+        lambda e: V2StrategyAdapter(HardwayHighwayV2()),
+    ),
+    "AllTallSmall": (
+        lambda e: AllTallSmallStrategy(table=None, rules_engine=e.rules_engine, play_by_play=e.play_by_play,
+                                       ats_type="AllTallSmall", bet_amount=15),
+        lambda e: V2StrategyAdapter(AllTallSmallV2(ats_type="AllTallSmall", bet_amount=15)),
+    ),
+    "ThreePointMolly": (
+        lambda e: ThreePointMollyStrategy(table=None, bet_amount=MIN_BET, odds_type="3x-4x-5x"),
+        lambda e: V2StrategyAdapter(ThreePointMollyV2(bet_amount=MIN_BET, odds_type="3x-4x-5x")),
+    ),
+    "ThreePointDolly": (
+        lambda e: ThreePointDollyStrategy(table=None, bet_amount=MIN_BET, odds_type="3x-4x-5x"),
+        lambda e: V2StrategyAdapter(ThreePointDollyV2(bet_amount=MIN_BET, odds_type="3x-4x-5x")),
+    ),
+    "ThreeTwoOne": (
+        lambda e: ThreeTwoOneStrategy(rules_engine=e.rules_engine, min_bet=MIN_BET, odds_type="1x"),
+        lambda e: V2StrategyAdapter(ThreeTwoOneV2(min_bet=MIN_BET, odds_type="1x")),
+    ),
+    "RegressHalfPress": (
+        lambda e: RegressThenPressStrategy(
+            regression_strategy=PlaceRegressionStrategy(high_unit=10, low_unit=3, regression_factor=2, regress_units=5),
+            press_style=PressStyle.HALF,
+        ),
+        lambda e: V2StrategyAdapter(RegressPressV2(high_unit=10, low_unit=3, regression_factor=2, regress_units=5)),
     ),
 }
 
