@@ -71,14 +71,18 @@ possible. The UI prototype lives in `prototype/` as the north star.
 - **`run_simulation.py` CLI keeps working unchanged** through the whole phase.
 - **Quality bar:** mypy clean, pytest green, small commits.
 
-## PR breakdown
+## Step breakdown
 
-| PR | Scope | Merge gate |
-|----|-------|-----------|
+Roadmap steps are called "Step N" — never "PR #N", to avoid colliding with
+GitHub pull numbers (Step 0 = pull #2, Step 1 = pull #3, Step 2 = pull #4).
+
+| Step | Scope | Merge gate |
+| ---- | ----- | ---------- |
+| 0 | Reproducible env (pyproject, pinned deps) + CI on Windows/Ubuntu | Fresh clone → pytest green → CI badge green |
 | 1 | Event types + event bus; engine emits events alongside existing behavior (parallel-run, nothing consumes yet) | Existing tests green; events fire for every roll |
-| 2 | Strategy contract v2 (`wants(state)`), engine-side layout diff/funding; port `PassLineStrategy` + `IronCrossStrategy`; seeded-RNG regression harness | Harness proves identical bankrolls old-vs-new for both strategies over ≥10k forced rolls |
-| 3 | Port remaining 14 strategies to v2 | Harness passes for every strategy |
-| 4 | Convert `statistics`, `play_by_play`, roll history, FastAPI layer to event consumers; delete direct calls | `run_simulation.py` output unchanged; house-edge convergence test (1M rolls: pass line −1.41% ±0.15, field −2.78% ±0.2, place 6/8 −1.52% ±0.15) |
+| 2 | Strategy contract v2 (`wants(view, memo)`) + `V2StrategyAdapter`; dice seed injection; port `PassLineStrategy` + `IronCrossStrategy`; seeded regression harness | Harness proves identical per-roll bankrolls v1-vs-v2 |
+| 3 | Port remaining strategies to v2 | Harness passes for every strategy |
+| 4 | Convert `statistics`, `play_by_play`, roll history, FastAPI layer to event stream consumers; delete direct calls; fix dead `adjust_bets` return channel | `run_simulation.py` output unchanged; house-edge convergence test (1M rolls: pass line −1.41% ±0.15, field −2.78% ±0.2, place 6/8 −1.52% ±0.15) |
 
 ## Working agreement
 
