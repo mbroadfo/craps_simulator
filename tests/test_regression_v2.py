@@ -15,8 +15,16 @@ from craps.dice import Dice
 from craps.player import Player
 from craps.strategies.pass_line_strategy import PassLineStrategy
 from craps.strategies.iron_cross_strategy import IronCrossStrategy
+from craps.strategies.field_strategy import FieldBetStrategy
+from craps.strategies.place_strategy import PlaceBetStrategy
+from craps.strategies.lay_strategy import LayBetStrategy
+from craps.strategies.pass_line_odds_strategy import PassLineOddsStrategy
 from craps.strategies.pass_line_v2 import PassLineV2
 from craps.strategies.iron_cross_v2 import IronCrossV2
+from craps.strategies.field_v2 import FieldV2
+from craps.strategies.place_v2 import PlaceV2
+from craps.strategies.lay_v2 import LayV2
+from craps.strategies.pass_line_odds_v2 import PassLineOddsV2
 from craps.strategy_contract import V2StrategyAdapter
 
 MIN_BET = HOUSE_RULES["table_minimum"]
@@ -79,6 +87,37 @@ def new_iron_cross(engine):
     return V2StrategyAdapter(IronCrossV2(min_bet=MIN_BET, play_pass_line=True, odds_type="3x-4x-5x"))
 
 
+# Each entry: name -> (v1 factory, v2 factory), mirroring the lineup configs.
+STRATEGY_PAIRS = {
+    "PassLine": (old_pass_line, new_pass_line),
+    "IronCross": (old_iron_cross, new_iron_cross),
+    "Field": (
+        lambda e: FieldBetStrategy(min_bet=MIN_BET),
+        lambda e: V2StrategyAdapter(FieldV2(min_bet=MIN_BET)),
+    ),
+    "Inside": (
+        lambda e: PlaceBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy="inside"),
+        lambda e: V2StrategyAdapter(PlaceV2("inside")),
+    ),
+    "Across": (
+        lambda e: PlaceBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy="across"),
+        lambda e: V2StrategyAdapter(PlaceV2("across")),
+    ),
+    "Place68": (
+        lambda e: PlaceBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy=[6, 8]),
+        lambda e: V2StrategyAdapter(PlaceV2([6, 8])),
+    ),
+    "LayOutside": (
+        lambda e: LayBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy="Outside"),
+        lambda e: V2StrategyAdapter(LayV2("Outside")),
+    ),
+    "PassLineOdds1x": (
+        lambda e: PassLineOddsStrategy(table=None, rules_engine=e.rules_engine, odds_multiple="1x"),
+        lambda e: V2StrategyAdapter(PassLineOddsV2(odds_multiple="1x")),
+    ),
+}
+
+
 class TestV2RegressionParity(unittest.TestCase):
 
     def assert_parity(self, old_factory, new_factory):
@@ -97,11 +136,10 @@ class TestV2RegressionParity(unittest.TestCase):
                 total_rolls += len(old_trace)
         self.assertGreater(total_rolls, 2000, "Harness did not exercise enough rolls")
 
-    def test_pass_line_parity(self):
-        self.assert_parity(old_pass_line, new_pass_line)
-
-    def test_iron_cross_parity(self):
-        self.assert_parity(old_iron_cross, new_iron_cross)
+    def test_parity_all_ported_strategies(self):
+        for name, (old_factory, new_factory) in STRATEGY_PAIRS.items():
+            with self.subTest(strategy=name):
+                self.assert_parity(old_factory, new_factory)
 
 
 class TestSeededDice(unittest.TestCase):
