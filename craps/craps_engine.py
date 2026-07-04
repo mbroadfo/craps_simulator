@@ -24,14 +24,20 @@ from craps.events import (
     EventBus,
     SessionStarted,
     ShooterAssigned,
+    BetsRequested,
     BetPlaced,
     DiceRolled,
     BetResolved,
+    NumberHit,
+    GameStateChanged,
+    BankrollsUpdated,
+    RiskUpdated,
     PointEstablished,
     PointHit,
     SevenOut,
     SessionFinalized,
 )
+from craps.consumers import attach_default_consumers
 
 class PostRollSummary(NamedTuple):
     total: int
@@ -130,6 +136,10 @@ class CrapsEngine:
             self.game_state
         ) = session_data
 
+        if not getattr(self, "_consumers_attached", False):
+            attach_default_consumers(self)
+            self._consumers_attached = True
+
         self.initialized = True
         self.events.publish(SessionStarted(num_shooters=num_shooters))
         return True
@@ -172,7 +182,7 @@ class CrapsEngine:
         if not self.play_by_play or not self.game_state or not self.table or not self.player_lineup:
             return 0
 
-        self.play_by_play.write("  ---------- Place Your Bets! -------------")
+        self.events.publish(BetsRequested())
         total_bets = 0
 
         for player in self.player_lineup.get_active_players_list():
@@ -208,39 +218,21 @@ class CrapsEngine:
         if not (self.dice and self.stats and self.table and self.play_by_play and self.roll_history_manager and self.game_state and self.player_lineup):
             raise RuntimeError("SessionManager missing required components for rolling dice.")
 
-        # 📣 Visual separator with shooter context
         shooter_name = self.game_state.shooter.name if self.game_state.shooter else f"Shooter {self.shooter_index + 1}"
         roll_num = self.stats.session_rolls + 1  # next roll
-        self.play_by_play.write(f"  ---------- Shooter {self.shooter_index} ({shooter_name}) — Roll #{roll_num} ----------")
 
         outcome = self.dice.roll()
         total = sum(outcome)
 
-        players = self.player_lineup.get_active_players_list()
-        shooter = players[self.shooter_index % len(players)]
-        self.stats.update_rolls(total=total, table_risk=self.table.total_risk())
-        self.stats.update_shooter_stats(shooter)
-
-        puck_state = ("Puck OFF" if self.game_state.phase == "come-out" else f"Puck ON {self.game_state.point}")
-        roll_message = f"  🎲 Roll #{self.stats.session_rolls} → {outcome} = {total} ({puck_state})"
-        self.play_by_play.write(roll_message)
-
-        self.roll_history.append({
-            "shooter_num": self.shooter_index + 1,
-            "roll_number": self.stats.session_rolls,
-            "dice": list(outcome),
-            "total": total,
-            "phase": self.game_state.phase,
-            "point": self.game_state.point
-        })
-
         self.events.publish(DiceRolled(
             shooter_index=self.shooter_index,
-            roll_number=self.stats.session_rolls,
+            roll_number=roll_num,
             dice=outcome,
             total=total,
             phase=self.game_state.phase,
             point=self.game_state.point,
+            table_risk=self.table.total_risk(),
+            shooter_name=shooter_name,
         ))
 
         return outcome
@@ -254,7 +246,7 @@ class CrapsEngine:
         if total != 7:
             ats_message = self.game_state.record_number_hit(total)
             if ats_message:
-                self.play_by_play.write(ats_message)
+                self.events.publish(NumberHit(total=total, message=ats_message))
         
         # Step 1: Check active bets
         self.table.check_bets(outcome, self.game_state)
@@ -262,9 +254,8 @@ class CrapsEngine:
         # Step 2: Settle resolved bets
         resolved_bets = self.table.settle_resolved_bets()
 
-        # Step 3: Update win/loss stats
+        # Step 3: Publish resolutions (stats consumer keeps the ledger)
         for bet in resolved_bets:
-            self.stats.update_win_loss(bet)
             self.events.publish(BetResolved(
                 player_name=bet.owner.name,
                 bet_type=bet.bet_type,
@@ -272,6 +263,7 @@ class CrapsEngine:
                 number=bet.number,
                 status=bet.status,
                 payout=bet.resolved_payout,
+                win_payout=bet.payout(),
             ))
 
             # Step 4: Notify strategy if bet won
@@ -283,7 +275,7 @@ class CrapsEngine:
 
         # Step 5: Update game state
         state_message = self.game_state.update_state(outcome)
-        self.play_by_play.write(state_message)
+        self.events.publish(GameStateChanged(message=state_message))
 
         # Step 6: Adjust strategy bets
         self.adjust_bets()
@@ -293,13 +285,16 @@ class CrapsEngine:
         if not self.game_state or not self.player_lineup or not self.table:
             raise RuntimeError("Missing game components for adjusting bets.")
 
-        for player in self.player_lineup.get_active_players_list():
+        players = self.player_lineup.get_active_players_list()
+        for player in players:
             strategy = getattr(player, "betting_strategy", None)
             if strategy and hasattr(strategy, "adjust_bets"):
                 strategy.adjust_bets(self.game_state, player, self.table)
-        
+
         if self.stats:
-            self.stats.update_player_bankrolls(self.player_lineup.get_active_players_list())
+            self.events.publish(BankrollsUpdated(
+                bankrolls=tuple((p.name, p.balance) for p in players),
+            ))
 
     def assign_next_shooter(self) -> None:
         if not self.game_state or not self.player_lineup:
@@ -352,10 +347,13 @@ class CrapsEngine:
                     bet.status = "active"
                     
         if self.stats and self.player_lineup:
-            self.stats.update_player_risk(
-                self.player_lineup.get_active_players_list(),
-                self.table
-            )
+            self.events.publish(RiskUpdated(at_risk=tuple(
+                (
+                    player.name,
+                    sum(b.amount for b in self.table.bets if b.owner == player and b.status == "active"),
+                )
+                for player in self.player_lineup.get_active_players_list()
+            )))
 
     def handle_post_roll(self, outcome: tuple[int, int], previous_phase: str) -> PostRollSummary:
         if not self.game_state or not self.stats:
@@ -385,21 +383,23 @@ class CrapsEngine:
             self.events.publish(PointHit(point=self.game_state.previous_point))
 
         if seven_out:
-            # Record shooter results into statistics
+            # Compute shooter results for the event (stats consumer records them)
+            shooter_results: tuple[tuple[str, int], ...] = ()
             if self.stats and self.player_lineup and hasattr(self, "_starting_bankroll_snapshot"):
                 ending_snapshot = {
                     player.name: player.balance
                     for player in self.player_lineup.get_active_players_list()
                 }
-                result = {
-                    name: ending_snapshot[name] - starting_balance
+                shooter_results = tuple(
+                    (name, ending_snapshot[name] - starting_balance)
                     for name, starting_balance in self._starting_bankroll_snapshot.items()
-                }
-                self.stats.shooter_stats[self.shooter_index] = result
+                )
                 del self._starting_bankroll_snapshot  # clean up
 
-            self.stats.record_seven_out()
-            self.events.publish(SevenOut(shooter_index=self.shooter_index))
+            self.events.publish(SevenOut(
+                shooter_index=self.shooter_index,
+                shooter_results=shooter_results,
+            ))
             self.game_state.clear_shooter()
             for player in self.player_lineup.get_active_players_list():
                 strategy = getattr(player, "betting_strategy", None)
