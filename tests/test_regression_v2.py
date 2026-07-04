@@ -15,8 +15,31 @@ from craps.dice import Dice
 from craps.player import Player
 from craps.strategies.pass_line_strategy import PassLineStrategy
 from craps.strategies.iron_cross_strategy import IronCrossStrategy
+from craps.strategies.field_strategy import FieldBetStrategy
+from craps.strategies.place_strategy import PlaceBetStrategy
+from craps.strategies.lay_strategy import LayBetStrategy
+from craps.strategies.pass_line_odds_strategy import PassLineOddsStrategy
+from craps.strategies.double_hop_strategy import DoubleHopStrategy
+from craps.strategies.hardway_highway_strategy import HardwayHighwayStrategy
+from craps.strategies.all_tall_small_strategy import AllTallSmallStrategy
+from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
+from craps.strategies.three_point_dolly_strategy import ThreePointDollyStrategy
+from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
+from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
+from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
+from craps.bet_adjusters import PressStyle
 from craps.strategies.pass_line_v2 import PassLineV2
 from craps.strategies.iron_cross_v2 import IronCrossV2
+from craps.strategies.field_v2 import FieldV2
+from craps.strategies.place_v2 import PlaceV2
+from craps.strategies.lay_v2 import LayV2
+from craps.strategies.pass_line_odds_v2 import PassLineOddsV2
+from craps.strategies.double_hop_v2 import DoubleHopV2
+from craps.strategies.hardway_highway_v2 import HardwayHighwayV2
+from craps.strategies.all_tall_small_v2 import AllTallSmallV2
+from craps.strategies.three_point_v2 import ThreePointMollyV2, ThreePointDollyV2
+from craps.strategies.three_two_one_v2 import ThreeTwoOneV2
+from craps.strategies.regress_press_v2 import RegressPressV2
 from craps.strategy_contract import V2StrategyAdapter
 
 MIN_BET = HOUSE_RULES["table_minimum"]
@@ -79,6 +102,69 @@ def new_iron_cross(engine):
     return V2StrategyAdapter(IronCrossV2(min_bet=MIN_BET, play_pass_line=True, odds_type="3x-4x-5x"))
 
 
+# Each entry: name -> (v1 factory, v2 factory), mirroring the lineup configs.
+STRATEGY_PAIRS = {
+    "PassLine": (old_pass_line, new_pass_line),
+    "IronCross": (old_iron_cross, new_iron_cross),
+    "Field": (
+        lambda e: FieldBetStrategy(min_bet=MIN_BET),
+        lambda e: V2StrategyAdapter(FieldV2(min_bet=MIN_BET)),
+    ),
+    "Inside": (
+        lambda e: PlaceBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy="inside"),
+        lambda e: V2StrategyAdapter(PlaceV2("inside")),
+    ),
+    "Across": (
+        lambda e: PlaceBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy="across"),
+        lambda e: V2StrategyAdapter(PlaceV2("across")),
+    ),
+    "Place68": (
+        lambda e: PlaceBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy=[6, 8]),
+        lambda e: V2StrategyAdapter(PlaceV2([6, 8])),
+    ),
+    "LayOutside": (
+        lambda e: LayBetStrategy(table=None, rules_engine=e.rules_engine, numbers_or_strategy="Outside"),
+        lambda e: V2StrategyAdapter(LayV2("Outside")),
+    ),
+    "PassLineOdds1x": (
+        lambda e: PassLineOddsStrategy(table=None, rules_engine=e.rules_engine, odds_multiple="1x"),
+        lambda e: V2StrategyAdapter(PassLineOddsV2(odds_multiple="1x")),
+    ),
+    "DoubleHop": (
+        lambda e: DoubleHopStrategy(base_bet=1, hop_target=(3, 3), rules_engine=e.rules_engine),
+        lambda e: V2StrategyAdapter(DoubleHopV2(hop_target=(3, 3), base_bet=1)),
+    ),
+    "HardwayHighway": (
+        lambda e: HardwayHighwayStrategy(table=None, rules_engine=e.rules_engine, play_by_play=e.play_by_play),
+        lambda e: V2StrategyAdapter(HardwayHighwayV2()),
+    ),
+    "AllTallSmall": (
+        lambda e: AllTallSmallStrategy(table=None, rules_engine=e.rules_engine, play_by_play=e.play_by_play,
+                                       ats_type="AllTallSmall", bet_amount=15),
+        lambda e: V2StrategyAdapter(AllTallSmallV2(ats_type="AllTallSmall", bet_amount=15)),
+    ),
+    "ThreePointMolly": (
+        lambda e: ThreePointMollyStrategy(table=None, bet_amount=MIN_BET, odds_type="3x-4x-5x"),
+        lambda e: V2StrategyAdapter(ThreePointMollyV2(bet_amount=MIN_BET, odds_type="3x-4x-5x")),
+    ),
+    "ThreePointDolly": (
+        lambda e: ThreePointDollyStrategy(table=None, bet_amount=MIN_BET, odds_type="3x-4x-5x"),
+        lambda e: V2StrategyAdapter(ThreePointDollyV2(bet_amount=MIN_BET, odds_type="3x-4x-5x")),
+    ),
+    "ThreeTwoOne": (
+        lambda e: ThreeTwoOneStrategy(rules_engine=e.rules_engine, min_bet=MIN_BET, odds_type="1x"),
+        lambda e: V2StrategyAdapter(ThreeTwoOneV2(min_bet=MIN_BET, odds_type="1x")),
+    ),
+    "RegressHalfPress": (
+        lambda e: RegressThenPressStrategy(
+            regression_strategy=PlaceRegressionStrategy(high_unit=10, low_unit=3, regression_factor=2, regress_units=5),
+            press_style=PressStyle.HALF,
+        ),
+        lambda e: V2StrategyAdapter(RegressPressV2(high_unit=10, low_unit=3, regression_factor=2, regress_units=5)),
+    ),
+}
+
+
 class TestV2RegressionParity(unittest.TestCase):
 
     def assert_parity(self, old_factory, new_factory):
@@ -97,11 +183,10 @@ class TestV2RegressionParity(unittest.TestCase):
                 total_rolls += len(old_trace)
         self.assertGreater(total_rolls, 2000, "Harness did not exercise enough rolls")
 
-    def test_pass_line_parity(self):
-        self.assert_parity(old_pass_line, new_pass_line)
-
-    def test_iron_cross_parity(self):
-        self.assert_parity(old_iron_cross, new_iron_cross)
+    def test_parity_all_ported_strategies(self):
+        for name, (old_factory, new_factory) in STRATEGY_PAIRS.items():
+            with self.subTest(strategy=name):
+                self.assert_parity(old_factory, new_factory)
 
 
 class TestSeededDice(unittest.TestCase):

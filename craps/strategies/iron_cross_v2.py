@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Any, List, Optional, Tuple
 
 from craps.rules import ODDS_MULTIPLIERS
-from craps.strategy_contract import BetSpec, ContractStrategy, Layout, TableView
+from craps.strategy_contract import BetSpec, ContractStrategy, Layout, TableView, flat_bet_minimum
 
 
 def _odds_multiplier(odds_type: str, point: Optional[int]) -> Optional[int]:
@@ -13,20 +13,11 @@ def _odds_multiplier(odds_type: str, point: Optional[int]) -> Optional[int]:
     return data
 
 
-def _place_amount(table_minimum: int, number: int) -> int:
-    """Place-bet minimum per RulesEngine.get_minimum_bet: 6/8 bet in units of
-    table_min + table_min//5 (e.g. $12 on a $10 table), others at table min."""
-    if number in (6, 8):
-        return table_minimum + (table_minimum // 5)
-    return table_minimum
-
-
 class IronCrossV2(ContractStrategy):
     """v2 port of IronCrossStrategy: pass line (+odds) with Place 5/6/8
     around the point and a perpetual Field bet during the point phase."""
 
     name = "Iron Cross v2"
-    reactivates_place_bets = True
 
     def __init__(
         self,
@@ -46,7 +37,11 @@ class IronCrossV2(ContractStrategy):
                 specs.append(BetSpec("Pass Line", self.min_bet))
             return tuple(specs), memo
 
-        # Point phase
+        # Point phase — reactivate any of our inactive Place bets (v1 behavior)
+        for b in view.bets:
+            if b.bet_type.startswith("Place") and b.status == "inactive":
+                specs.append(BetSpec(b.bet_type, b.amount, number=b.number, set_status="active"))
+
         if self.play_pass_line and self.odds_type and not view.has("Pass Line Odds"):
             pass_line = view.get("Pass Line")
             if pass_line is not None:
@@ -62,7 +57,7 @@ class IronCrossV2(ContractStrategy):
                 for b in view.bets
             )
             if not already_covered:
-                specs.append(BetSpec("Place", _place_amount(view.table_minimum, number), number=number))
+                specs.append(BetSpec("Place", flat_bet_minimum(view.table_minimum, number), number=number))
 
         if not view.has("Field"):
             specs.append(BetSpec("Field", self.min_bet))
