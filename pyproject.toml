@@ -27,3 +27,9 @@ dev = [
 
 [tool.setuptools.packages.find]
 include = ["craps*"]
+
+[tool.pytest.ini_options]
+markers = [
+    "convergence: ~1M-roll house-edge convergence checks (excluded from the default run; use -m convergence)",
+]
+addopts = "-m \"not convergence\""
