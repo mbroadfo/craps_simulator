@@ -1,6 +1,10 @@
+import matplotlib
 import matplotlib.pyplot as plt
 from typing import Any
 import os
+
+#: Seconds the bankroll chart stays on screen before auto-closing.
+CHART_DISPLAY_SECONDS = 5
 
 class Visualizer:
     def __init__(self, stats: Any) -> None:
@@ -96,5 +100,9 @@ class Visualizer:
         os.makedirs("output", exist_ok=True)
         plt.savefig("output/session_visualizer.png")
 
-        # Also display it
-        plt.show()
+        # Show briefly without blocking the session: the old plt.show()
+        # froze everything until the window was closed by hand.
+        if matplotlib.get_backend().lower() != "agg":
+            plt.show(block=False)
+            plt.pause(CHART_DISPLAY_SECONDS)
+        plt.close("all")
