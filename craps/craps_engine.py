@@ -87,6 +87,7 @@ class CrapsEngine:
         num_players: int = 0,
         dice_mode: str = "live", # "live" or "history"
         roll_history_file: Optional[str] = None,
+        dice_seed: Optional[int] = None,
     ) -> bool:
         """
         Initializes core game components and prepares the session.
@@ -101,7 +102,7 @@ class CrapsEngine:
         if dice_mode == "history" and roll_history_file:
             self.dice = Dice(roll_history_file)
         else:
-            self.dice = Dice()
+            self.dice = Dice(seed=dice_seed)
 
         # ✅ Initialize Session
         session_initializer = InitializeSession(
