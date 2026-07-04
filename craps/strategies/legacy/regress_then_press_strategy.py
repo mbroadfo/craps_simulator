@@ -2,7 +2,7 @@ from typing import List, Optional, TYPE_CHECKING
 from craps.base_strategy import BaseStrategy
 from craps.bet import Bet
 from craps.bet_adjusters import PressAdjuster, PressStyle
-from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
+from craps.strategies.legacy.adjuster_only_strategy import AdjusterOnlyStrategy
 
 if TYPE_CHECKING:
     from craps.table import Table

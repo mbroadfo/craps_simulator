@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional
-from craps.strategies.free_odds_strategy import FreeOddsStrategy
+from craps.strategies.legacy.free_odds_strategy import FreeOddsStrategy
 from craps.base_strategy import BaseStrategy
 
 if TYPE_CHECKING:
