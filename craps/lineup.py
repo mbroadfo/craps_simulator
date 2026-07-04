@@ -1,21 +1,19 @@
-from typing import Dict, Optional, List, Any, TYPE_CHECKING
-from craps.strategies.pass_line_strategy import PassLineStrategy
-from craps.strategies.pass_line_odds_strategy import PassLineOddsStrategy
-from craps.strategies.place_strategy import PlaceBetStrategy
-from craps.strategies.field_strategy import FieldBetStrategy
-from craps.strategies.iron_cross_strategy import IronCrossStrategy
-from craps.strategies.three_point_molly_strategy import ThreePointMollyStrategy
-from craps.strategies.three_point_dolly_strategy import ThreePointDollyStrategy
-from craps.strategies.double_hop_strategy import DoubleHopStrategy
-from craps.strategies.three_two_one_strategy import ThreeTwoOneStrategy
-from craps.strategies.place_reggression_strategy import PlaceRegressionStrategy
-from craps.strategies.regress_then_press_strategy import RegressThenPressStrategy
-from craps.strategies.lay_strategy import LayBetStrategy
-from craps.strategies.hardway_highway_strategy import HardwayHighwayStrategy
-from craps.strategies.all_tall_small_strategy import AllTallSmallStrategy
-from craps.strategies.adjuster_only_strategy import AdjusterOnlyStrategy
-from craps.bet_adjusters import PressAdjuster, PressStyle
+from typing import Any, Callable, Dict, Optional, List, TYPE_CHECKING
+
 from craps.rules_engine import RulesEngine
+from craps.strategy_contract import V2StrategyAdapter
+from craps.strategies.pass_line_v2 import PassLineV2
+from craps.strategies.pass_line_odds_v2 import PassLineOddsV2
+from craps.strategies.field_v2 import FieldV2
+from craps.strategies.iron_cross_v2 import IronCrossV2
+from craps.strategies.place_v2 import PlaceV2
+from craps.strategies.lay_v2 import LayV2
+from craps.strategies.double_hop_v2 import DoubleHopV2
+from craps.strategies.hardway_highway_v2 import HardwayHighwayV2
+from craps.strategies.all_tall_small_v2 import AllTallSmallV2
+from craps.strategies.three_point_v2 import ThreePointMollyV2, ThreePointDollyV2
+from craps.strategies.three_two_one_v2 import ThreeTwoOneV2
+from craps.strategies.regress_press_v2 import RegressPressV2
 
 if TYPE_CHECKING:
     from craps.player import Player
@@ -40,23 +38,49 @@ class PlayerLineup:
         # Store actual Player instances
         self.players: List["Player"] = []
 
-        # Define all supported strategies
-        self.all_strategies: Dict[str, Any] = {
-            "Pass-Line": PassLineStrategy(bet_amount=self.house_rules.table_minimum, table=self.table),
-            "Pass-Line w/ Odds": PassLineOddsStrategy(table=self.table, rules_engine=self.rules_engine, odds_multiple="1x"),  # str or int
-            "Field": FieldBetStrategy(min_bet=self.house_rules.table_minimum),
-            "Iron Cross": IronCrossStrategy(table=self.table, min_bet=self.house_rules.table_minimum, play_by_play=self.play_by_play, rules_engine=self.rules_engine, play_pass_line=True, odds_type="3x-4x-5x"),
-            "3-Point Molly": ThreePointMollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="3x-4x-5x"),
-            "3-Point Dolly": ThreePointDollyStrategy(table=self.table, bet_amount=self.house_rules.table_minimum, odds_type="3x-4x-5x"),
-            "Inside": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="inside",),
-            "Across": PlaceBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="across",),
-            "Place 68": PlaceBetStrategy(table=self.table, numbers_or_strategy=[6, 8], rules_engine=self.rules_engine),
-            "Double Hop": DoubleHopStrategy(base_bet=1, hop_target=(3, 3), rules_engine=rules_engine),
-            "Three-Two-One": ThreeTwoOneStrategy(rules_engine=self.rules_engine, min_bet=self.house_rules.table_minimum, odds_type="1x"),
-            "RegressHalfPress": RegressThenPressStrategy(regression_strategy=PlaceRegressionStrategy(high_unit=10,low_unit=3, regression_factor=2, regress_units=5),press_style = PressStyle.HALF),
-            "Lay Outside": LayBetStrategy(table=self.table, rules_engine=self.rules_engine, numbers_or_strategy="Outside"),
-            "HardwayHighway": HardwayHighwayStrategy(table=self.table, rules_engine=self.rules_engine, play_by_play=self.play_by_play),
-            "AllTallSmall": AllTallSmallStrategy(table=self.table, rules_engine=self.rules_engine, play_by_play=self.play_by_play, ats_type="AllTallSmall", bet_amount=15),
+        tm = self.house_rules.table_minimum
+
+        # Factories: each player gets a fresh adapter, so per-player memo
+        # state never leaks between players sharing a strategy name.
+        # strategy_name values preserve v1 report labels exactly — including
+        # the v1 Molly/Dolly label swap (flagged in Step 4b, kept for output
+        # fidelity until a deliberate fix is approved).
+        self.all_strategies: Dict[str, Callable[[], V2StrategyAdapter]] = {
+            "Pass-Line": lambda: V2StrategyAdapter(
+                PassLineV2(bet_amount=tm), strategy_name="PassLine"),
+            "Pass-Line w/ Odds": lambda: V2StrategyAdapter(
+                PassLineOddsV2(odds_multiple="1x"), strategy_name="PassOdds"),
+            "Field": lambda: V2StrategyAdapter(
+                FieldV2(min_bet=tm), strategy_name="Field"),
+            "Iron Cross": lambda: V2StrategyAdapter(
+                IronCrossV2(min_bet=tm, play_pass_line=True, odds_type="3x-4x-5x"),
+                strategy_name="IronCross"),
+            "3-Point Molly": lambda: V2StrategyAdapter(
+                ThreePointMollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
+                strategy_name="ThreePointDolly"),
+            "3-Point Dolly": lambda: V2StrategyAdapter(
+                ThreePointDollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
+                strategy_name="ThreePointMolly"),
+            "Inside": lambda: V2StrategyAdapter(
+                PlaceV2("inside"), strategy_name="Place"),
+            "Across": lambda: V2StrategyAdapter(
+                PlaceV2("across"), strategy_name="Place"),
+            "Place 68": lambda: V2StrategyAdapter(
+                PlaceV2([6, 8]), strategy_name="Place"),
+            "Double Hop": lambda: V2StrategyAdapter(
+                DoubleHopV2(hop_target=(3, 3), base_bet=1), strategy_name="DoubleHop"),
+            "Three-Two-One": lambda: V2StrategyAdapter(
+                ThreeTwoOneV2(min_bet=tm, odds_type="1x"), strategy_name="ThreeTwoOne"),
+            "RegressHalfPress": lambda: V2StrategyAdapter(
+                RegressPressV2(high_unit=10, low_unit=3, regression_factor=2, regress_units=5),
+                strategy_name="RegressThenPress"),
+            "Lay Outside": lambda: V2StrategyAdapter(
+                LayV2("Outside"), strategy_name="Lay"),
+            "HardwayHighway": lambda: V2StrategyAdapter(
+                HardwayHighwayV2(), strategy_name="Hardways"),
+            "AllTallSmall": lambda: V2StrategyAdapter(
+                AllTallSmallV2(ats_type="AllTallSmall", bet_amount=15),
+                strategy_name="AllTallSmall"),
         }
 
     def add_player(self, player: "Player") -> None:
@@ -66,7 +90,7 @@ class PlayerLineup:
     def get_active_players_list(self) -> List["Player"]:
         """Retrieve a list of active player objects."""
         return self.players  # ✅ Return actual Player instances
-    
+
     def get_strategy_for_player(self, player: "Player") -> Optional[Any]:
         """Retrieve the strategy for a given player."""
         return player.betting_strategy if player in self.players else None
@@ -92,11 +116,12 @@ class PlayerLineup:
 
     def assign_strategies(self, players: List["Player"]) -> None:
         """
-        Assigns betting strategies to players based on their name and adds them to the lineup.
+        Assigns a fresh betting strategy instance to each player by name
+        and adds them to the lineup.
         """
         for player in players:
             if player.strategy_name in self.all_strategies:
-                player.betting_strategy = self.all_strategies[player.strategy_name]
+                player.betting_strategy = self.all_strategies[player.strategy_name]()
                 self.add_player(player)
             else:
                 raise ValueError(f"No strategy found for player '{player.name}'")
