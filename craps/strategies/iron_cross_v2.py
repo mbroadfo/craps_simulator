@@ -18,7 +18,6 @@ class IronCrossV2(ContractStrategy):
     around the point and a perpetual Field bet during the point phase."""
 
     name = "Iron Cross v2"
-    reactivates_place_bets = True
 
     def __init__(
         self,
@@ -38,7 +37,11 @@ class IronCrossV2(ContractStrategy):
                 specs.append(BetSpec("Pass Line", self.min_bet))
             return tuple(specs), memo
 
-        # Point phase
+        # Point phase — reactivate any of our inactive Place bets (v1 behavior)
+        for b in view.bets:
+            if b.bet_type.startswith("Place") and b.status == "inactive":
+                specs.append(BetSpec(b.bet_type, b.amount, number=b.number, set_status="active"))
+
         if self.play_pass_line and self.odds_type and not view.has("Pass Line Odds"):
             pass_line = view.get("Pass Line")
             if pass_line is not None:
