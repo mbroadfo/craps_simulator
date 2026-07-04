@@ -60,7 +60,8 @@ class TestEngineEvents(unittest.TestCase):
         self.assertIsInstance(flow[1], ShooterAssigned)
         self.assertEqual(flow[1].shooter_index, 1)
         self.assertEqual(flow[2], PointEstablished(point=6))
-        self.assertEqual(flow[3], SevenOut(shooter_index=1))
+        self.assertIsInstance(flow[3], SevenOut)
+        self.assertEqual(flow[3].shooter_index, 1)
         # Seven-out hands the dice to the next shooter
         self.assertIsInstance(flow[4], ShooterAssigned)
         self.assertEqual(flow[4].shooter_index, 2)

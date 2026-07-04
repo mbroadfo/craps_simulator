@@ -5,7 +5,9 @@ from craps.dice import Dice
 
 class TestDice(unittest.TestCase):
     def test_roll(self):
-        dice = Dice()
+        # Seeded: same stream every run, so the tolerance check is
+        # deterministic instead of a ~4-sigma coin flip once in a while.
+        dice = Dice(seed=1234)
         num_rolls = 1_000_000  # Number of rolls to simulate
         tolerance = 0.001  # Tolerance for probability comparison
 
