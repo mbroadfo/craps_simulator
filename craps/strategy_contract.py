@@ -40,7 +40,14 @@ class BetView:
 
 @dataclass(frozen=True)
 class TableView:
-    """Immutable snapshot of everything a strategy may consider."""
+    """Immutable snapshot of everything a strategy may consider.
+
+    ``stage`` is "place" when the engine is accepting new bets before a roll
+    and "adjust" after resolution (the v1 ``adjust_bets`` hook). In the
+    adjust stage the adapter only applies amount changes to live bets —
+    new bets returned there are ignored, mirroring the v1 engine, which
+    discards ``adjust_bets`` return values.
+    """
     phase: str
     point: Optional[int]
     previous_point: Optional[int]
@@ -48,6 +55,7 @@ class TableView:
     bets: Tuple[BetView, ...]
     table_minimum: int
     table_maximum: int
+    stage: str = "place"
 
     def has(self, bet_type: str, number: Optional[int] = None) -> bool:
         """Mirror of Player.has_active_bet against the snapshot."""
@@ -76,6 +84,15 @@ class BetSpec:
 Layout = Tuple[BetSpec, ...]
 
 
+def flat_bet_minimum(table_minimum: int, number: Optional[int]) -> int:
+    """Place/Buy/Lay minimum per RulesEngine.get_minimum_bet: 6 and 8 bet in
+    units of table_min + table_min//5 (e.g. $12 on a $10 table), others at
+    the table minimum."""
+    if number in (6, 8):
+        return table_minimum + (table_minimum // 5)
+    return table_minimum
+
+
 class ContractStrategy(ABC):
     """Base class for v2 strategies. Implementations must be pure: no I/O,
     no engine object access — state across rolls travels in the memo."""
@@ -91,7 +108,7 @@ class ContractStrategy(ABC):
         """Return the bets to place this call and the next memo."""
 
 
-def build_table_view(game_state: GameState, player: Player, table: "Table") -> TableView:
+def build_table_view(game_state: GameState, player: Player, table: "Table", stage: str = "place") -> TableView:
     own_bets = tuple(
         BetView(
             bet_type=b.bet_type,
@@ -110,6 +127,7 @@ def build_table_view(game_state: GameState, player: Player, table: "Table") -> T
         bets=own_bets,
         table_minimum=table.house_rules.table_minimum,
         table_maximum=table.house_rules.table_maximum,
+        stage=stage,
     )
 
 
@@ -148,6 +166,29 @@ class V2StrategyAdapter(BaseStrategy):
                 spec.bet_type, spec.amount, player, number=spec.number, parent_bet=parent,
             ))
         return bets
+
+    def adjust_bets(self, game_state: GameState, player: Player, table: "Table") -> Optional[List[Bet]]:
+        """v1 adjust_bets hook: apply amount changes to live bets.
+
+        Specs that match a live bet (type + number) with a different amount
+        are applied in place — the v1 pressing/regression mechanic. Specs
+        with no live match are ignored, mirroring the v1 engine discarding
+        adjust_bets return values.
+        """
+        view = build_table_view(game_state, player, table, stage="adjust")
+        layout, self._memo = self.contract.wants(view, self._memo)
+
+        changed: List[Bet] = []
+        for spec in layout:
+            live = next(
+                (b for b in table.bets
+                 if b.owner == player and b.bet_type == spec.bet_type and b.number == spec.number),
+                None,
+            )
+            if live is not None and live.amount != spec.amount:
+                live.amount = spec.amount
+                changed.append(live)
+        return changed or None
 
     def on_new_shooter(self) -> None:
         pass  # memo persists across shooters unless the strategy resets it via wants()

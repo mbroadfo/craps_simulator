@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Any, List, Optional, Tuple
 
 from craps.rules import ODDS_MULTIPLIERS
-from craps.strategy_contract import BetSpec, ContractStrategy, Layout, TableView
+from craps.strategy_contract import BetSpec, ContractStrategy, Layout, TableView, flat_bet_minimum
 
 
 def _odds_multiplier(odds_type: str, point: Optional[int]) -> Optional[int]:
@@ -11,14 +11,6 @@ def _odds_multiplier(odds_type: str, point: Optional[int]) -> Optional[int]:
     if isinstance(data, dict):
         return data.get(point) if point is not None else None
     return data
-
-
-def _place_amount(table_minimum: int, number: int) -> int:
-    """Place-bet minimum per RulesEngine.get_minimum_bet: 6/8 bet in units of
-    table_min + table_min//5 (e.g. $12 on a $10 table), others at table min."""
-    if number in (6, 8):
-        return table_minimum + (table_minimum // 5)
-    return table_minimum
 
 
 class IronCrossV2(ContractStrategy):
@@ -62,7 +54,7 @@ class IronCrossV2(ContractStrategy):
                 for b in view.bets
             )
             if not already_covered:
-                specs.append(BetSpec("Place", _place_amount(view.table_minimum, number), number=number))
+                specs.append(BetSpec("Place", flat_bet_minimum(view.table_minimum, number), number=number))
 
         if not view.has("Field"):
             specs.append(BetSpec("Field", self.min_bet))
