@@ -15,6 +15,7 @@ env/
 .mypy_cache/
 .pytest_cache/
 output/
+sessions/
 
 # Ignore IDE-specific files
 .vscode/
