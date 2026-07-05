@@ -1,0 +1,1306 @@
+{"seq":0,"table_id":"fixture","type":"SessionStarted","num_shooters":8}
+{"seq":1,"table_id":"fixture","type":"ShooterAssigned","shooter_index":1,"shooter_name":"Molly"}
+{"seq":2,"table_id":"fixture","type":"BetsRequested"}
+{"seq":3,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":4,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":5,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":6,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":7,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":8,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":1,"dice":[5,3],"total":8,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Molly"}
+{"seq":9,"table_id":"fixture","type":"NumberHit","total":8,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \ud83d\udfe2\u26ab\u26ab\u26ab\u26ab"}
+{"seq":10,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":11,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":12,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 8 \u2192 Puck ON"}
+{"seq":13,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",500],["Go Big",500],["Hardy",495],["Fielder",490]]}
+{"seq":14,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",15],["Fielder",0]]}
+{"seq":15,"table_id":"fixture","type":"PointEstablished","point":8}
+{"seq":16,"table_id":"fixture","type":"BetsRequested"}
+{"seq":17,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":18,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":19,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":20,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":21,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":22,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":23,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":24,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":25,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":26,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":27,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":2,"dice":[5,3],"total":8,"phase":"point","point":8,"table_risk":344,"shooter_name":"Molly"}
+{"seq":28,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":8}
+{"seq":29,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":30,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":8,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":31,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":32,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":8,"status":"won","payout":70,"win_payout":70,"removed":false}
+{"seq":33,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":34,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"won","payout":14,"win_payout":14,"removed":false}
+{"seq":35,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":36,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Point Hit: 8! \u2192 Puck OFF"}
+{"seq":37,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"won"}
+{"seq":38,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"active"}
+{"seq":39,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"active"}
+{"seq":40,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"active"}
+{"seq":41,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":18,"number":8,"status":"won"}
+{"seq":42,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",570],["Go Big",570],["Hardy",514],["Fielder",480]]}
+{"seq":43,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":44,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"inactive"}
+{"seq":45,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"inactive"}
+{"seq":46,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":47,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":48,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":49,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",5],["Fielder",0]]}
+{"seq":50,"table_id":"fixture","type":"PointHit","point":8}
+{"seq":51,"table_id":"fixture","type":"BetsRequested"}
+{"seq":52,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":53,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":54,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":55,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":56,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":3,"dice":[2,3],"total":5,"phase":"come-out","point":null,"table_risk":190,"shooter_name":"Molly"}
+{"seq":57,"table_id":"fixture","type":"NumberHit","total":5,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\u26ab / \ud83d\udfe2\u26ab\u26ab\u26ab\u26ab"}
+{"seq":58,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":59,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 5 \u2192 Puck ON"}
+{"seq":60,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",570],["Go Big",570],["Hardy",514],["Fielder",470]]}
+{"seq":61,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":62,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":63,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":64,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":65,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":66,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":67,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",110],["Hardy",50],["Fielder",0]]}
+{"seq":68,"table_id":"fixture","type":"PointEstablished","point":5}
+{"seq":69,"table_id":"fixture","type":"BetsRequested"}
+{"seq":70,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":71,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":72,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":40,"number":null}
+{"seq":73,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":74,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":4,"dice":[4,1],"total":5,"phase":"point","point":5,"table_risk":290,"shooter_name":"Molly"}
+{"seq":75,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":76,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won","payout":35,"win_payout":35,"removed":false}
+{"seq":77,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":78,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":40,"number":5,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":79,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":80,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":81,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":82,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Point Hit: 5! \u2192 Puck OFF"}
+{"seq":83,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"active"}
+{"seq":84,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"active"}
+{"seq":85,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won"}
+{"seq":86,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"active"}
+{"seq":87,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",640],["Go Big",605],["Hardy",524],["Fielder",460]]}
+{"seq":88,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":89,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"inactive"}
+{"seq":90,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"inactive"}
+{"seq":91,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":92,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":93,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":94,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",0],["Hardy",10],["Fielder",0]]}
+{"seq":95,"table_id":"fixture","type":"PointHit","point":5}
+{"seq":96,"table_id":"fixture","type":"BetsRequested"}
+{"seq":97,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":98,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":99,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":100,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":5,"dice":[2,1],"total":3,"phase":"come-out","point":null,"table_risk":156,"shooter_name":"Molly"}
+{"seq":101,"table_id":"fixture","type":"NumberHit","total":3,"message":"  \ud83c\udfaf ATS Update: \u26ab\ud83d\udfe2\u26ab\ud83d\udfe2\u26ab / \ud83d\udfe2\u26ab\u26ab\u26ab\u26ab"}
+{"seq":102,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":103,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":104,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":105,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Craps! \u2192 Puck OFF."}
+{"seq":106,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",630],["Go Big",605],["Hardy",514],["Fielder",470]]}
+{"seq":107,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":108,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",0],["Hardy",10],["Fielder",10]]}
+{"seq":109,"table_id":"fixture","type":"BetsRequested"}
+{"seq":110,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":111,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":112,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":6,"dice":[2,5],"total":7,"phase":"come-out","point":null,"table_risk":156,"shooter_name":"Molly"}
+{"seq":113,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":114,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":115,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":116,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":117,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":118,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":119,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":120,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Pass Line Winner! \u2192 Puck OFF."}
+{"seq":121,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",620],["Go Big",605],["Hardy",514],["Fielder",460]]}
+{"seq":122,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":123,"table_id":"fixture","type":"BetsRequested"}
+{"seq":124,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":125,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":126,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":127,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":128,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":129,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":7,"dice":[4,6],"total":10,"phase":"come-out","point":null,"table_risk":136,"shooter_name":"Molly"}
+{"seq":130,"table_id":"fixture","type":"NumberHit","total":10,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \u26ab\u26ab\ud83d\udfe2\u26ab\u26ab"}
+{"seq":131,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":132,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 10 \u2192 Puck ON"}
+{"seq":133,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",620],["Go Big",605],["Hardy",514],["Fielder",470]]}
+{"seq":134,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":135,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":136,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":137,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":138,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":139,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":140,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":141,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",66],["Hardy",50],["Fielder",10]]}
+{"seq":142,"table_id":"fixture","type":"PointEstablished","point":10}
+{"seq":143,"table_id":"fixture","type":"BetsRequested"}
+{"seq":144,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":145,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":146,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":8,"dice":[2,6],"total":8,"phase":"point","point":10,"table_risk":176,"shooter_name":"Molly"}
+{"seq":147,"table_id":"fixture","type":"NumberHit","total":8,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \ud83d\udfe2\u26ab\ud83d\udfe2\u26ab\u26ab"}
+{"seq":148,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":8}
+{"seq":149,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":150,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":18,"number":8,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":151,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":152,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":153,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":154,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":155,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":24,"number":8,"status":"won"}
+{"seq":156,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":24,"number":8,"status":"won"}
+{"seq":157,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",620],["Go Big",626],["Hardy",530],["Fielder",460]]}
+{"seq":158,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":159,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":160,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",72],["Hardy",51],["Fielder",0]]}
+{"seq":161,"table_id":"fixture","type":"BetsRequested"}
+{"seq":162,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":163,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":164,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":165,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":166,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":167,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":9,"dice":[2,6],"total":8,"phase":"point","point":10,"table_risk":248,"shooter_name":"Molly"}
+{"seq":168,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":8}
+{"seq":169,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":24,"number":8,"status":"won","payout":28,"win_payout":28,"removed":false}
+{"seq":170,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":24,"number":8,"status":"won","payout":28,"win_payout":28,"removed":false}
+{"seq":171,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":8,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":172,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":173,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":174,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":175,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":176,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":177,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":36,"number":8,"status":"won"}
+{"seq":178,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":30,"number":8,"status":"won"}
+{"seq":179,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",654],["Hardy",553],["Fielder",450]]}
+{"seq":180,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":181,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":182,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",84],["Hardy",57],["Fielder",0]]}
+{"seq":183,"table_id":"fixture","type":"BetsRequested"}
+{"seq":184,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":185,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":186,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":187,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":188,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":189,"table_id":"fixture","type":"DiceRolled","shooter_index":1,"roll_number":10,"dice":[1,6],"total":7,"phase":"point","point":10,"table_risk":266,"shooter_name":"Molly"}
+{"seq":190,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":36,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":191,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":192,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":193,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":194,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":195,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":30,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":196,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":197,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":198,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":199,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":200,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":201,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":202,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":203,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":204,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":205,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":206,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",600],["Go Big",570],["Hardy",491],["Fielder",440]]}
+{"seq":207,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":208,"table_id":"fixture","type":"SevenOut","shooter_index":1,"shooter_results":[["Molly",100],["Go Big",70],["Hardy",-9],["Fielder",-60]]}
+{"seq":209,"table_id":"fixture","type":"ShooterAssigned","shooter_index":2,"shooter_name":"Go Big"}
+{"seq":210,"table_id":"fixture","type":"BetsRequested"}
+{"seq":211,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":212,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":213,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":214,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":215,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":216,"table_id":"fixture","type":"DiceRolled","shooter_index":2,"roll_number":11,"dice":[5,1],"total":6,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Go Big"}
+{"seq":217,"table_id":"fixture","type":"NumberHit","total":6,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\ud83d\udfe2 / \u26ab\u26ab\u26ab\u26ab\u26ab"}
+{"seq":218,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":219,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":220,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 6 \u2192 Puck ON"}
+{"seq":221,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",600],["Go Big",570],["Hardy",486],["Fielder",430]]}
+{"seq":222,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",15],["Fielder",0]]}
+{"seq":223,"table_id":"fixture","type":"PointEstablished","point":6}
+{"seq":224,"table_id":"fixture","type":"BetsRequested"}
+{"seq":225,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":226,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":227,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":228,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":229,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":230,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":231,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":232,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":233,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":234,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":235,"table_id":"fixture","type":"DiceRolled","shooter_index":2,"roll_number":12,"dice":[3,2],"total":5,"phase":"point","point":6,"table_risk":344,"shooter_name":"Go Big"}
+{"seq":236,"table_id":"fixture","type":"NumberHit","total":5,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\u26ab\u26ab\u26ab\u26ab"}
+{"seq":237,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":238,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":5,"status":"won","payout":70,"win_payout":70,"removed":false}
+{"seq":239,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":240,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":241,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":242,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"active"}
+{"seq":243,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"active"}
+{"seq":244,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won"}
+{"seq":245,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"active"}
+{"seq":246,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",600],["Go Big",640],["Hardy",486],["Fielder",420]]}
+{"seq":247,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":248,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",110],["Hardy",44],["Fielder",0]]}
+{"seq":249,"table_id":"fixture","type":"BetsRequested"}
+{"seq":250,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":251,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":252,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":253,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":254,"table_id":"fixture","type":"DiceRolled","shooter_index":2,"roll_number":13,"dice":[1,4],"total":5,"phase":"point","point":6,"table_risk":284,"shooter_name":"Go Big"}
+{"seq":255,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":256,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":257,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":258,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won","payout":35,"win_payout":35,"removed":false}
+{"seq":259,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":260,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":261,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":262,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"active"}
+{"seq":263,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"active"}
+{"seq":264,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won"}
+{"seq":265,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"active"}
+{"seq":266,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",670],["Go Big",675],["Hardy",486],["Fielder",410]]}
+{"seq":267,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":268,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",66],["Hardy",44],["Fielder",0]]}
+{"seq":269,"table_id":"fixture","type":"BetsRequested"}
+{"seq":270,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":271,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":272,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":273,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":274,"table_id":"fixture","type":"DiceRolled","shooter_index":2,"roll_number":14,"dice":[4,5],"total":9,"phase":"point","point":6,"table_risk":240,"shooter_name":"Go Big"}
+{"seq":275,"table_id":"fixture","type":"NumberHit","total":9,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\u26ab\u26ab\u26ab"}
+{"seq":276,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":9}
+{"seq":277,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":278,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":279,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":280,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":281,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":282,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"won"}
+{"seq":283,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",670],["Go Big",696],["Hardy",486],["Fielder",420]]}
+{"seq":284,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":285,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":286,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",76],["Hardy",44],["Fielder",10]]}
+{"seq":287,"table_id":"fixture","type":"BetsRequested"}
+{"seq":288,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":289,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":290,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":291,"table_id":"fixture","type":"DiceRolled","shooter_index":2,"roll_number":15,"dice":[1,4],"total":5,"phase":"point","point":6,"table_risk":290,"shooter_name":"Go Big"}
+{"seq":292,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":293,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":294,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":295,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":296,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":297,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":298,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":299,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won"}
+{"seq":300,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",740],["Go Big",717],["Hardy",486],["Fielder",410]]}
+{"seq":301,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":302,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",86],["Hardy",44],["Fielder",0]]}
+{"seq":303,"table_id":"fixture","type":"BetsRequested"}
+{"seq":304,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":305,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":306,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":307,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":308,"table_id":"fixture","type":"DiceRolled","shooter_index":2,"roll_number":16,"dice":[3,1],"total":4,"phase":"point","point":6,"table_risk":260,"shooter_name":"Go Big"}
+{"seq":309,"table_id":"fixture","type":"NumberHit","total":4,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\ud83d\udfe2\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\u26ab\u26ab\u26ab"}
+{"seq":310,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":4}
+{"seq":311,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":312,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":313,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":314,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":315,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",740],["Go Big",717],["Hardy",486],["Fielder",420]]}
+{"seq":316,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":317,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",86],["Hardy",44],["Fielder",10]]}
+{"seq":318,"table_id":"fixture","type":"BetsRequested"}
+{"seq":319,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":320,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":321,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4}
+{"seq":322,"table_id":"fixture","type":"DiceRolled","shooter_index":2,"roll_number":17,"dice":[6,1],"total":7,"phase":"point","point":6,"table_risk":290,"shooter_name":"Go Big"}
+{"seq":323,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":324,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":325,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":326,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":327,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":328,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":329,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":330,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":331,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":332,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":333,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":334,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":335,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":336,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":4,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":337,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":338,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":339,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":340,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",590],["Go Big",631],["Hardy",442],["Fielder",410]]}
+{"seq":341,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":342,"table_id":"fixture","type":"SevenOut","shooter_index":2,"shooter_results":[["Molly",-10],["Go Big",61],["Hardy",-49],["Fielder",-30]]}
+{"seq":343,"table_id":"fixture","type":"ShooterAssigned","shooter_index":3,"shooter_name":"Hardy"}
+{"seq":344,"table_id":"fixture","type":"BetsRequested"}
+{"seq":345,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":346,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":347,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":348,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":349,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":350,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":18,"dice":[4,5],"total":9,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Hardy"}
+{"seq":351,"table_id":"fixture","type":"NumberHit","total":9,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \u26ab\ud83d\udfe2\u26ab\u26ab\u26ab"}
+{"seq":352,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":353,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 9 \u2192 Puck ON"}
+{"seq":354,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",590],["Go Big",631],["Hardy",442],["Fielder",420]]}
+{"seq":355,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":356,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",20],["Fielder",10]]}
+{"seq":357,"table_id":"fixture","type":"PointEstablished","point":9}
+{"seq":358,"table_id":"fixture","type":"BetsRequested"}
+{"seq":359,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":360,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":40,"number":null}
+{"seq":361,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":362,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":363,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":364,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":365,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":366,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":367,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":19,"dice":[4,5],"total":9,"phase":"point","point":9,"table_risk":334,"shooter_name":"Hardy"}
+{"seq":368,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":9}
+{"seq":369,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":370,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":40,"number":9,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":371,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":372,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":373,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":9,"status":"won","payout":70,"win_payout":70,"removed":false}
+{"seq":374,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Point Hit: 9! \u2192 Puck OFF"}
+{"seq":375,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"active"}
+{"seq":376,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"won"}
+{"seq":377,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"active"}
+{"seq":378,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"active"}
+{"seq":379,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",660],["Go Big",701],["Hardy",452],["Fielder",430]]}
+{"seq":380,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":381,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":382,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"inactive"}
+{"seq":383,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"inactive"}
+{"seq":384,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":385,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":386,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":387,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",10],["Fielder",10]]}
+{"seq":388,"table_id":"fixture","type":"PointHit","point":9}
+{"seq":389,"table_id":"fixture","type":"BetsRequested"}
+{"seq":390,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":391,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":392,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":20,"dice":[3,3],"total":6,"phase":"come-out","point":null,"table_risk":184,"shooter_name":"Hardy"}
+{"seq":393,"table_id":"fixture","type":"NumberHit","total":6,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\ud83d\udfe2 / \u26ab\ud83d\udfe2\u26ab\u26ab\u26ab"}
+{"seq":394,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"won","payout":45,"win_payout":45,"removed":false}
+{"seq":395,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":396,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 6 \u2192 Puck ON"}
+{"seq":397,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",660],["Go Big",701],["Hardy",497],["Fielder",420]]}
+{"seq":398,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Hardways","number":6,"status":"active"}
+{"seq":399,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":400,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":401,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":402,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":403,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":404,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":405,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",110],["Hardy",44],["Fielder",0]]}
+{"seq":406,"table_id":"fixture","type":"PointEstablished","point":6}
+{"seq":407,"table_id":"fixture","type":"BetsRequested"}
+{"seq":408,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":409,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":410,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":411,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":412,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":21,"dice":[1,4],"total":5,"phase":"point","point":6,"table_risk":284,"shooter_name":"Hardy"}
+{"seq":413,"table_id":"fixture","type":"NumberHit","total":5,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\u26ab\u26ab\u26ab"}
+{"seq":414,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":415,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won","payout":35,"win_payout":35,"removed":false}
+{"seq":416,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":417,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":418,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":419,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":420,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"active"}
+{"seq":421,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"active"}
+{"seq":422,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won"}
+{"seq":423,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"active"}
+{"seq":424,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",660],["Go Big",736],["Hardy",497],["Fielder",410]]}
+{"seq":425,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":426,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",66],["Hardy",44],["Fielder",0]]}
+{"seq":427,"table_id":"fixture","type":"BetsRequested"}
+{"seq":428,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":429,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":430,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":431,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":432,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":22,"dice":[4,5],"total":9,"phase":"point","point":6,"table_risk":280,"shooter_name":"Hardy"}
+{"seq":433,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":9,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":434,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":435,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":436,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":437,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":438,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":439,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":440,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"won"}
+{"seq":441,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",730],["Go Big",757],["Hardy",497],["Fielder",420]]}
+{"seq":442,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":443,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":444,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",76],["Hardy",44],["Fielder",10]]}
+{"seq":445,"table_id":"fixture","type":"BetsRequested"}
+{"seq":446,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":447,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":448,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":449,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":23,"dice":[4,1],"total":5,"phase":"point","point":6,"table_risk":250,"shooter_name":"Hardy"}
+{"seq":450,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":451,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":452,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":453,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":454,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":455,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":456,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":457,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won"}
+{"seq":458,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",800],["Go Big",778],["Hardy",497],["Fielder",410]]}
+{"seq":459,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":460,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",86],["Hardy",44],["Fielder",0]]}
+{"seq":461,"table_id":"fixture","type":"BetsRequested"}
+{"seq":462,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":463,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":464,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":465,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":466,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":24,"dice":[6,5],"total":11,"phase":"point","point":6,"table_risk":260,"shooter_name":"Hardy"}
+{"seq":467,"table_id":"fixture","type":"NumberHit","total":11,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\u26ab\ud83d\udfe2\u26ab"}
+{"seq":468,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":469,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":470,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":471,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":472,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":473,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",810],["Go Big",778],["Hardy",497],["Fielder",420]]}
+{"seq":474,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":475,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",86],["Hardy",44],["Fielder",10]]}
+{"seq":476,"table_id":"fixture","type":"BetsRequested"}
+{"seq":477,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":478,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":479,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":480,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":25,"dice":[5,6],"total":11,"phase":"point","point":6,"table_risk":260,"shooter_name":"Hardy"}
+{"seq":481,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":482,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":483,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":484,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":485,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":486,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",820],["Go Big",778],["Hardy",497],["Fielder",430]]}
+{"seq":487,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":488,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",86],["Hardy",44],["Fielder",10]]}
+{"seq":489,"table_id":"fixture","type":"BetsRequested"}
+{"seq":490,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":491,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":492,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":493,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":26,"dice":[1,1],"total":2,"phase":"point","point":6,"table_risk":260,"shooter_name":"Hardy"}
+{"seq":494,"table_id":"fixture","type":"NumberHit","total":2,"message":"  \ud83c\udfaf ATS Update: \ud83d\udfe2\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\u26ab\ud83d\udfe2\u26ab"}
+{"seq":495,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":20,"win_payout":20,"removed":false}
+{"seq":496,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":497,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":498,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":499,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":500,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",810],["Go Big",778],["Hardy",497],["Fielder",450]]}
+{"seq":501,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":502,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",86],["Hardy",44],["Fielder",10]]}
+{"seq":503,"table_id":"fixture","type":"BetsRequested"}
+{"seq":504,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":505,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":506,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":507,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":27,"dice":[3,1],"total":4,"phase":"point","point":6,"table_risk":260,"shooter_name":"Hardy"}
+{"seq":508,"table_id":"fixture","type":"NumberHit","total":4,"message":"  \ud83c\udfaf ATS Update: \ud83d\udfe2\u26ab\ud83d\udfe2\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\u26ab\ud83d\udfe2\u26ab"}
+{"seq":509,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":4}
+{"seq":510,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":511,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":512,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":513,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":514,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",810],["Go Big",778],["Hardy",497],["Fielder",460]]}
+{"seq":515,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":516,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",86],["Hardy",44],["Fielder",10]]}
+{"seq":517,"table_id":"fixture","type":"BetsRequested"}
+{"seq":518,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":519,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":520,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4}
+{"seq":521,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":28,"dice":[5,6],"total":11,"phase":"point","point":6,"table_risk":290,"shooter_name":"Hardy"}
+{"seq":522,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":523,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":524,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":525,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":526,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":527,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",810],["Go Big",778],["Hardy",497],["Fielder",470]]}
+{"seq":528,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":529,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",86],["Hardy",44],["Fielder",10]]}
+{"seq":530,"table_id":"fixture","type":"BetsRequested"}
+{"seq":531,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":532,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":533,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4}
+{"seq":534,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":29,"dice":[6,2],"total":8,"phase":"point","point":6,"table_risk":290,"shooter_name":"Hardy"}
+{"seq":535,"table_id":"fixture","type":"NumberHit","total":8,"message":"  \ud83c\udfaf ATS Update: \ud83d\udfe2\u26ab\ud83d\udfe2\ud83d\udfe2\ud83d\udfe2 / \ud83d\udfe2\ud83d\udfe2\u26ab\ud83d\udfe2\u26ab"}
+{"seq":536,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":537,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":538,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"won","payout":14,"win_payout":14,"removed":false}
+{"seq":539,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":540,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":541,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":542,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":543,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":544,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":24,"number":8,"status":"won"}
+{"seq":545,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":18,"number":8,"status":"won"}
+{"seq":546,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",810],["Go Big",799],["Hardy",506],["Fielder",460]]}
+{"seq":547,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":548,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":549,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",92],["Hardy",45],["Fielder",0]]}
+{"seq":550,"table_id":"fixture","type":"BetsRequested"}
+{"seq":551,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":552,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":553,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4}
+{"seq":554,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":10,"number":8}
+{"seq":555,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":556,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":30,"dice":[3,3],"total":6,"phase":"point","point":6,"table_risk":307,"shooter_name":"Hardy"}
+{"seq":557,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"won","payout":45,"win_payout":45,"removed":false}
+{"seq":558,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":559,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"won","payout":14,"win_payout":14,"removed":false}
+{"seq":560,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":561,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":562,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":563,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":564,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":565,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":566,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Point Hit: 6! \u2192 Puck OFF"}
+{"seq":567,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":24,"number":6,"status":"won"}
+{"seq":568,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":18,"number":6,"status":"won"}
+{"seq":569,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",880],["Go Big",820],["Hardy",575],["Fielder",450]]}
+{"seq":570,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Hardways","number":6,"status":"active"}
+{"seq":571,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":572,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"inactive"}
+{"seq":573,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"inactive"}
+{"seq":574,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":575,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":576,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":577,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",0],["Hardy",15],["Fielder",0]]}
+{"seq":578,"table_id":"fixture","type":"PointHit","point":6}
+{"seq":579,"table_id":"fixture","type":"BetsRequested"}
+{"seq":580,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":581,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":582,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":583,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":31,"dice":[2,2],"total":4,"phase":"come-out","point":null,"table_risk":199,"shooter_name":"Hardy"}
+{"seq":584,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":4,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":585,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":586,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 4 \u2192 Puck ON"}
+{"seq":587,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",890],["Go Big",820],["Hardy",575],["Fielder",460]]}
+{"seq":588,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":589,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":590,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":591,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":592,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":593,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":594,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":595,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",98],["Hardy",61],["Fielder",10]]}
+{"seq":596,"table_id":"fixture","type":"PointEstablished","point":4}
+{"seq":597,"table_id":"fixture","type":"BetsRequested"}
+{"seq":598,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":599,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":600,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":601,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":32,"dice":[6,2],"total":8,"phase":"point","point":4,"table_risk":269,"shooter_name":"Hardy"}
+{"seq":602,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":8}
+{"seq":603,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":24,"number":8,"status":"won","payout":28,"win_payout":28,"removed":false}
+{"seq":604,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":18,"number":8,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":605,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":10,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":606,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":607,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":608,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":609,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":610,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"won"}
+{"seq":611,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"active"}
+{"seq":612,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":24,"number":8,"status":"won"}
+{"seq":613,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",890],["Go Big",848],["Hardy",586],["Fielder",450]]}
+{"seq":614,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":615,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":616,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",110],["Hardy",57],["Fielder",0]]}
+{"seq":617,"table_id":"fixture","type":"BetsRequested"}
+{"seq":618,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":619,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":620,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":621,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":10,"number":8}
+{"seq":622,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":623,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":33,"dice":[1,1],"total":2,"phase":"point","point":4,"table_risk":337,"shooter_name":"Hardy"}
+{"seq":624,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":20,"win_payout":20,"removed":false}
+{"seq":625,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":626,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":627,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":628,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":629,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",890],["Go Big",848],["Hardy",586],["Fielder",470]]}
+{"seq":630,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":631,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",110],["Hardy",67],["Fielder",10]]}
+{"seq":632,"table_id":"fixture","type":"BetsRequested"}
+{"seq":633,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":634,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":635,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":636,"table_id":"fixture","type":"DiceRolled","shooter_index":3,"roll_number":34,"dice":[1,6],"total":7,"phase":"point","point":4,"table_risk":337,"shooter_name":"Hardy"}
+{"seq":637,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":638,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":639,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":640,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":641,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":642,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":18,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":643,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":24,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":644,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":645,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":646,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":647,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":648,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":649,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":650,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":651,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":10,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":652,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":653,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":654,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",740],["Go Big",738],["Hardy",519],["Fielder",460]]}
+{"seq":655,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":656,"table_id":"fixture","type":"SevenOut","shooter_index":3,"shooter_results":[["Molly",150],["Go Big",107],["Hardy",77],["Fielder",50]]}
+{"seq":657,"table_id":"fixture","type":"ShooterAssigned","shooter_index":4,"shooter_name":"Fielder"}
+{"seq":658,"table_id":"fixture","type":"BetsRequested"}
+{"seq":659,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":660,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":661,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":662,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":663,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":664,"table_id":"fixture","type":"DiceRolled","shooter_index":4,"roll_number":35,"dice":[3,3],"total":6,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Fielder"}
+{"seq":665,"table_id":"fixture","type":"NumberHit","total":6,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\ud83d\udfe2 / \u26ab\u26ab\u26ab\u26ab\u26ab"}
+{"seq":666,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"won","payout":45,"win_payout":45,"removed":false}
+{"seq":667,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":668,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 6 \u2192 Puck ON"}
+{"seq":669,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",740],["Go Big",738],["Hardy",564],["Fielder",450]]}
+{"seq":670,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Hardways","number":6,"status":"active"}
+{"seq":671,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",20],["Fielder",0]]}
+{"seq":672,"table_id":"fixture","type":"PointEstablished","point":6}
+{"seq":673,"table_id":"fixture","type":"BetsRequested"}
+{"seq":674,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":675,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":676,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":677,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":678,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":679,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":680,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":681,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":682,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":683,"table_id":"fixture","type":"DiceRolled","shooter_index":4,"roll_number":36,"dice":[2,5],"total":7,"phase":"point","point":6,"table_risk":344,"shooter_name":"Fielder"}
+{"seq":684,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":685,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":686,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":687,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":688,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":689,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":690,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":691,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":692,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":693,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":694,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":695,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":696,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":697,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":698,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",518],["Hardy",520],["Fielder",440]]}
+{"seq":699,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":700,"table_id":"fixture","type":"SevenOut","shooter_index":4,"shooter_results":[["Molly",-50],["Go Big",-220],["Hardy",1],["Fielder",-20]]}
+{"seq":701,"table_id":"fixture","type":"ShooterAssigned","shooter_index":5,"shooter_name":"Molly"}
+{"seq":702,"table_id":"fixture","type":"BetsRequested"}
+{"seq":703,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":704,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":705,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":706,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":707,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":708,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":37,"dice":[6,4],"total":10,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Molly"}
+{"seq":709,"table_id":"fixture","type":"NumberHit","total":10,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \u26ab\u26ab\ud83d\udfe2\u26ab\u26ab"}
+{"seq":710,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":711,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 10 \u2192 Puck ON"}
+{"seq":712,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",518],["Hardy",520],["Fielder",450]]}
+{"seq":713,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":714,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",20],["Fielder",10]]}
+{"seq":715,"table_id":"fixture","type":"PointEstablished","point":10}
+{"seq":716,"table_id":"fixture","type":"BetsRequested"}
+{"seq":717,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":718,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":719,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":720,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":721,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":722,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":723,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":724,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":725,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":38,"dice":[3,3],"total":6,"phase":"point","point":10,"table_risk":324,"shooter_name":"Molly"}
+{"seq":726,"table_id":"fixture","type":"NumberHit","total":6,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\ud83d\udfe2 / \u26ab\u26ab\ud83d\udfe2\u26ab\u26ab"}
+{"seq":727,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":6}
+{"seq":728,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"won","payout":45,"win_payout":45,"removed":false}
+{"seq":729,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":730,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":6,"status":"won","payout":70,"win_payout":70,"removed":false}
+{"seq":731,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"won","payout":14,"win_payout":14,"removed":false}
+{"seq":732,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":733,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":734,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"active"}
+{"seq":735,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"active"}
+{"seq":736,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"active"}
+{"seq":737,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"won"}
+{"seq":738,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":18,"number":6,"status":"won"}
+{"seq":739,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",588],["Hardy",579],["Fielder",440]]}
+{"seq":740,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Hardways","number":6,"status":"active"}
+{"seq":741,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":742,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":743,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",110],["Hardy",50],["Fielder",0]]}
+{"seq":744,"table_id":"fixture","type":"BetsRequested"}
+{"seq":745,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":746,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":747,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":748,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":749,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":39,"dice":[4,1],"total":5,"phase":"point","point":10,"table_risk":280,"shooter_name":"Molly"}
+{"seq":750,"table_id":"fixture","type":"NumberHit","total":5,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\u26ab\ud83d\udfe2\u26ab\u26ab"}
+{"seq":751,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":752,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won","payout":35,"win_payout":35,"removed":false}
+{"seq":753,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":754,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":755,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":756,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":757,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"active"}
+{"seq":758,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"active"}
+{"seq":759,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won"}
+{"seq":760,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"active"}
+{"seq":761,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",623],["Hardy",579],["Fielder",430]]}
+{"seq":762,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":763,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",66],["Hardy",50],["Fielder",0]]}
+{"seq":764,"table_id":"fixture","type":"BetsRequested"}
+{"seq":765,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":766,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":767,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":768,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":769,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":40,"dice":[4,1],"total":5,"phase":"point","point":10,"table_risk":276,"shooter_name":"Molly"}
+{"seq":770,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":771,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":772,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":773,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":774,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":775,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":776,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":777,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won"}
+{"seq":778,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",760],["Go Big",644],["Hardy",579],["Fielder",420]]}
+{"seq":779,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":780,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",76],["Hardy",50],["Fielder",0]]}
+{"seq":781,"table_id":"fixture","type":"BetsRequested"}
+{"seq":782,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":783,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":784,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":785,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":786,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":41,"dice":[6,3],"total":9,"phase":"point","point":10,"table_risk":246,"shooter_name":"Molly"}
+{"seq":787,"table_id":"fixture","type":"NumberHit","total":9,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\ud83d\udfe2\u26ab\u26ab"}
+{"seq":788,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":9}
+{"seq":789,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":790,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":791,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":792,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":793,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":794,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"won"}
+{"seq":795,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",760],["Go Big",665],["Hardy",579],["Fielder",430]]}
+{"seq":796,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":797,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":798,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",86],["Hardy",50],["Fielder",10]]}
+{"seq":799,"table_id":"fixture","type":"BetsRequested"}
+{"seq":800,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":801,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":802,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":803,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":42,"dice":[2,1],"total":3,"phase":"point","point":10,"table_risk":296,"shooter_name":"Molly"}
+{"seq":804,"table_id":"fixture","type":"NumberHit","total":3,"message":"  \ud83c\udfaf ATS Update: \u26ab\ud83d\udfe2\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\ud83d\udfe2\ud83d\udfe2\u26ab\u26ab"}
+{"seq":805,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":806,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":807,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":808,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":809,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":810,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",760],["Go Big",665],["Hardy",579],["Fielder",440]]}
+{"seq":811,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":812,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",86],["Hardy",50],["Fielder",10]]}
+{"seq":813,"table_id":"fixture","type":"BetsRequested"}
+{"seq":814,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":815,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":816,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":817,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":43,"dice":[2,3],"total":5,"phase":"point","point":10,"table_risk":296,"shooter_name":"Molly"}
+{"seq":818,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won","payout":35,"win_payout":35,"removed":false}
+{"seq":819,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":820,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":821,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":822,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":823,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":824,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":40,"number":5,"status":"won"}
+{"seq":825,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",760],["Go Big",700],["Hardy",579],["Fielder",430]]}
+{"seq":826,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":827,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",101],["Hardy",50],["Fielder",0]]}
+{"seq":828,"table_id":"fixture","type":"BetsRequested"}
+{"seq":829,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":830,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":831,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":832,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":833,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":44,"dice":[2,1],"total":3,"phase":"point","point":10,"table_risk":311,"shooter_name":"Molly"}
+{"seq":834,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":835,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":836,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":837,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":838,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":839,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",760],["Go Big",700],["Hardy",579],["Fielder",440]]}
+{"seq":840,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":841,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",101],["Hardy",50],["Fielder",10]]}
+{"seq":842,"table_id":"fixture","type":"BetsRequested"}
+{"seq":843,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":844,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":845,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":846,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":45,"dice":[3,3],"total":6,"phase":"point","point":10,"table_risk":311,"shooter_name":"Molly"}
+{"seq":847,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"won","payout":45,"win_payout":45,"removed":false}
+{"seq":848,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":6,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":849,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":850,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":851,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":18,"number":6,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":852,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":853,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":854,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":855,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":856,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":24,"number":6,"status":"won"}
+{"seq":857,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":24,"number":6,"status":"won"}
+{"seq":858,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",830],["Go Big",721],["Hardy",645],["Fielder",430]]}
+{"seq":859,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Hardways","number":6,"status":"active"}
+{"seq":860,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":861,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":862,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",107],["Hardy",56],["Fielder",0]]}
+{"seq":863,"table_id":"fixture","type":"BetsRequested"}
+{"seq":864,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":865,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":866,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":867,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":868,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":46,"dice":[4,1],"total":5,"phase":"point","point":10,"table_risk":273,"shooter_name":"Molly"}
+{"seq":869,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":870,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":40,"number":5,"status":"won","payout":56,"win_payout":56,"removed":false}
+{"seq":871,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":872,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":873,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":874,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":875,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won"}
+{"seq":876,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"active"}
+{"seq":877,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"active"}
+{"seq":878,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",830],["Go Big",777],["Hardy",645],["Fielder",420]]}
+{"seq":879,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":880,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",110],["Hardy",56],["Fielder",0]]}
+{"seq":881,"table_id":"fixture","type":"BetsRequested"}
+{"seq":882,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":883,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9}
+{"seq":884,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":885,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":886,"table_id":"fixture","type":"DiceRolled","shooter_index":5,"roll_number":47,"dice":[1,6],"total":7,"phase":"point","point":10,"table_risk":316,"shooter_name":"Molly"}
+{"seq":887,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":888,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":889,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":890,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":891,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":892,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":893,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":894,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":895,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":896,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":24,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":897,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":898,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":899,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":900,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":901,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":902,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":903,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":904,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",667],["Hardy",589],["Fielder",410]]}
+{"seq":905,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":906,"table_id":"fixture","type":"SevenOut","shooter_index":5,"shooter_results":[["Molly",0],["Go Big",149],["Hardy",69],["Fielder",-30]]}
+{"seq":907,"table_id":"fixture","type":"ShooterAssigned","shooter_index":6,"shooter_name":"Go Big"}
+{"seq":908,"table_id":"fixture","type":"BetsRequested"}
+{"seq":909,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":910,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":911,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":912,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":913,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":914,"table_id":"fixture","type":"DiceRolled","shooter_index":6,"roll_number":48,"dice":[2,5],"total":7,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Go Big"}
+{"seq":915,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":916,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":917,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":918,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":919,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":920,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Pass Line Winner! \u2192 Puck OFF."}
+{"seq":921,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",700],["Go Big",667],["Hardy",589],["Fielder",400]]}
+{"seq":922,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":923,"table_id":"fixture","type":"BetsRequested"}
+{"seq":924,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":925,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":926,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":927,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":928,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":929,"table_id":"fixture","type":"DiceRolled","shooter_index":6,"roll_number":49,"dice":[6,6],"total":12,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Go Big"}
+{"seq":930,"table_id":"fixture","type":"NumberHit","total":12,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \u26ab\u26ab\u26ab\u26ab\ud83d\udfe2"}
+{"seq":931,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":932,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":933,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":30,"win_payout":30,"removed":false}
+{"seq":934,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Craps! \u2192 Puck OFF."}
+{"seq":935,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",667],["Hardy",579],["Fielder",430]]}
+{"seq":936,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":937,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",10],["Fielder",10]]}
+{"seq":938,"table_id":"fixture","type":"BetsRequested"}
+{"seq":939,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":940,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":941,"table_id":"fixture","type":"DiceRolled","shooter_index":6,"roll_number":50,"dice":[1,3],"total":4,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Go Big"}
+{"seq":942,"table_id":"fixture","type":"NumberHit","total":4,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\ud83d\udfe2\u26ab\u26ab / \u26ab\u26ab\u26ab\u26ab\ud83d\udfe2"}
+{"seq":943,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":944,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 4 \u2192 Puck ON"}
+{"seq":945,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",690],["Go Big",667],["Hardy",579],["Fielder",440]]}
+{"seq":946,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":947,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",20],["Fielder",10]]}
+{"seq":948,"table_id":"fixture","type":"PointEstablished","point":4}
+{"seq":949,"table_id":"fixture","type":"BetsRequested"}
+{"seq":950,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":951,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":952,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":953,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":954,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":955,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":956,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":957,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":958,"table_id":"fixture","type":"DiceRolled","shooter_index":6,"roll_number":51,"dice":[1,6],"total":7,"phase":"point","point":4,"table_risk":324,"shooter_name":"Go Big"}
+{"seq":959,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":960,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":961,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":962,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":963,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":964,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":965,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":966,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":967,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":968,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":969,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":970,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":971,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":972,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":973,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",660],["Go Big",447],["Hardy",535],["Fielder",430]]}
+{"seq":974,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":975,"table_id":"fixture","type":"SevenOut","shooter_index":6,"shooter_results":[["Molly",-30],["Go Big",-220],["Hardy",-54],["Fielder",20]]}
+{"seq":976,"table_id":"fixture","type":"ShooterAssigned","shooter_index":7,"shooter_name":"Hardy"}
+{"seq":977,"table_id":"fixture","type":"BetsRequested"}
+{"seq":978,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":979,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":980,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":981,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":982,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":983,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":52,"dice":[3,1],"total":4,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Hardy"}
+{"seq":984,"table_id":"fixture","type":"NumberHit","total":4,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\ud83d\udfe2\u26ab\u26ab / \u26ab\u26ab\u26ab\u26ab\u26ab"}
+{"seq":985,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":986,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 4 \u2192 Puck ON"}
+{"seq":987,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",660],["Go Big",447],["Hardy",535],["Fielder",440]]}
+{"seq":988,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":989,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",20],["Fielder",10]]}
+{"seq":990,"table_id":"fixture","type":"PointEstablished","point":4}
+{"seq":991,"table_id":"fixture","type":"BetsRequested"}
+{"seq":992,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":993,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":994,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":995,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":996,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":997,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":998,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":999,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":1000,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":53,"dice":[6,2],"total":8,"phase":"point","point":4,"table_risk":324,"shooter_name":"Hardy"}
+{"seq":1001,"table_id":"fixture","type":"NumberHit","total":8,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\ud83d\udfe2\u26ab\u26ab / \ud83d\udfe2\u26ab\u26ab\u26ab\u26ab"}
+{"seq":1002,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":8}
+{"seq":1003,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1004,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1005,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":8,"status":"won","payout":70,"win_payout":70,"removed":false}
+{"seq":1006,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"won","payout":14,"win_payout":14,"removed":false}
+{"seq":1007,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1008,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":1009,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"won"}
+{"seq":1010,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"active"}
+{"seq":1011,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"active"}
+{"seq":1012,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"active"}
+{"seq":1013,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":18,"number":8,"status":"won"}
+{"seq":1014,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",660],["Go Big",517],["Hardy",544],["Fielder",430]]}
+{"seq":1015,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":1016,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":1017,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",110],["Hardy",45],["Fielder",0]]}
+{"seq":1018,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1019,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":1020,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":1021,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":1022,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":1023,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1024,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":54,"dice":[4,2],"total":6,"phase":"point","point":4,"table_risk":280,"shooter_name":"Hardy"}
+{"seq":1025,"table_id":"fixture","type":"NumberHit","total":6,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\ud83d\udfe2\u26ab\ud83d\udfe2 / \ud83d\udfe2\u26ab\u26ab\u26ab\u26ab"}
+{"seq":1026,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":6}
+{"seq":1027,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1028,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"won","payout":35,"win_payout":35,"removed":false}
+{"seq":1029,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"won","payout":14,"win_payout":14,"removed":false}
+{"seq":1030,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1031,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1032,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1033,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":1034,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":8,"status":"active"}
+{"seq":1035,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":9,"status":"active"}
+{"seq":1036,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"active"}
+{"seq":1037,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"won"}
+{"seq":1038,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":18,"number":6,"status":"won"}
+{"seq":1039,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",660],["Go Big",552],["Hardy",553],["Fielder",420]]}
+{"seq":1040,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":1041,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":1042,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",66],["Hardy",51],["Fielder",0]]}
+{"seq":1043,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1044,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":1045,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":1046,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":1047,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1048,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1049,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":55,"dice":[4,2],"total":6,"phase":"point","point":4,"table_risk":292,"shooter_name":"Hardy"}
+{"seq":1050,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":18,"number":6,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":1051,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":18,"number":6,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":1052,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":6,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1053,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":1054,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1055,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1056,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1057,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1058,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":1059,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":24,"number":6,"status":"won"}
+{"seq":1060,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":24,"number":6,"status":"won"}
+{"seq":1061,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",730],["Go Big",573],["Hardy",569],["Fielder",410]]}
+{"seq":1062,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":1063,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":1064,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",72],["Hardy",57],["Fielder",0]]}
+{"seq":1065,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1066,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":1067,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":1068,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":1069,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1070,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1071,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":56,"dice":[2,4],"total":6,"phase":"point","point":4,"table_risk":254,"shooter_name":"Hardy"}
+{"seq":1072,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":6}
+{"seq":1073,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":24,"number":6,"status":"won","payout":28,"win_payout":28,"removed":false}
+{"seq":1074,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":24,"number":6,"status":"won","payout":28,"win_payout":28,"removed":false}
+{"seq":1075,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1076,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1077,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1078,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1079,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":1080,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":36,"number":6,"status":"won"}
+{"seq":1081,"table_id":"fixture","type":"BetAdjusted","player_name":"Hardy","bet_type":"Place","amount":30,"number":6,"status":"won"}
+{"seq":1082,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",730],["Go Big",601],["Hardy",592],["Fielder",400]]}
+{"seq":1083,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":1084,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":1085,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",84],["Hardy",63],["Fielder",0]]}
+{"seq":1086,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1087,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":1088,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8}
+{"seq":1089,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":1090,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1091,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1092,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":57,"dice":[2,2],"total":4,"phase":"point","point":4,"table_risk":322,"shooter_name":"Hardy"}
+{"seq":1093,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1094,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":4,"status":"won","payout":60,"win_payout":60,"removed":true}
+{"seq":1095,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1096,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":1097,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":8,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1098,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1099,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Point Hit: 4! \u2192 Puck OFF"}
+{"seq":1100,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",800],["Go Big",601],["Hardy",602],["Fielder",410]]}
+{"seq":1101,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":1102,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"inactive"}
+{"seq":1103,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"inactive"}
+{"seq":1104,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":1105,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"inactive"}
+{"seq":1106,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"inactive"}
+{"seq":1107,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":1108,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",0],["Hardy",10],["Fielder",10]]}
+{"seq":1109,"table_id":"fixture","type":"PointHit","point":4}
+{"seq":1110,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1111,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1112,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1113,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":58,"dice":[3,4],"total":7,"phase":"come-out","point":null,"table_risk":192,"shooter_name":"Hardy"}
+{"seq":1114,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1115,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1116,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1117,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1118,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1119,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1120,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1121,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Pass Line Winner! \u2192 Puck OFF."}
+{"seq":1122,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",790],["Go Big",601],["Hardy",602],["Fielder",400]]}
+{"seq":1123,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":1124,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1125,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1126,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1127,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1128,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":1129,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1130,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":59,"dice":[2,1],"total":3,"phase":"come-out","point":null,"table_risk":172,"shooter_name":"Hardy"}
+{"seq":1131,"table_id":"fixture","type":"NumberHit","total":3,"message":"  \ud83c\udfaf ATS Update: \u26ab\ud83d\udfe2\u26ab\u26ab\u26ab / \u26ab\u26ab\u26ab\u26ab\u26ab"}
+{"seq":1132,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1133,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1134,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":1135,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Craps! \u2192 Puck OFF."}
+{"seq":1136,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",780],["Go Big",601],["Hardy",592],["Fielder",410]]}
+{"seq":1137,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":1138,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",10],["Fielder",10]]}
+{"seq":1139,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1140,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1141,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1142,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":60,"dice":[1,6],"total":7,"phase":"come-out","point":null,"table_risk":172,"shooter_name":"Hardy"}
+{"seq":1143,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1144,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1145,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1146,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1147,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1148,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Pass Line Winner! \u2192 Puck OFF."}
+{"seq":1149,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",790],["Go Big",601],["Hardy",592],["Fielder",400]]}
+{"seq":1150,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":1151,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1152,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1153,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1154,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1155,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":1156,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1157,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":61,"dice":[5,6],"total":11,"phase":"come-out","point":null,"table_risk":172,"shooter_name":"Hardy"}
+{"seq":1158,"table_id":"fixture","type":"NumberHit","total":11,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \u26ab\u26ab\u26ab\ud83d\udfe2\u26ab"}
+{"seq":1159,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1160,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1161,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":1162,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab Pass Line Winner! \u2192 Puck OFF."}
+{"seq":1163,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",800],["Go Big",601],["Hardy",602],["Fielder",410]]}
+{"seq":1164,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":1165,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",10],["Fielder",10]]}
+{"seq":1166,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1167,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1168,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1169,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":62,"dice":[5,5],"total":10,"phase":"come-out","point":null,"table_risk":172,"shooter_name":"Hardy"}
+{"seq":1170,"table_id":"fixture","type":"NumberHit","total":10,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\u26ab / \u26ab\u26ab\ud83d\udfe2\ud83d\udfe2\u26ab"}
+{"seq":1171,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":1172,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 10 \u2192 Puck ON"}
+{"seq":1173,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",800],["Go Big",601],["Hardy",602],["Fielder",420]]}
+{"seq":1174,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":8,"status":"active"}
+{"seq":1175,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":9,"status":"active"}
+{"seq":1176,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":1177,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":1178,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":1179,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":8,"status":"active"}
+{"seq":1180,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":1181,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",84],["Hardy",68],["Fielder",10]]}
+{"seq":1182,"table_id":"fixture","type":"PointEstablished","point":10}
+{"seq":1183,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1184,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":1185,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":1186,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":63,"dice":[4,1],"total":5,"phase":"point","point":10,"table_risk":212,"shooter_name":"Hardy"}
+{"seq":1187,"table_id":"fixture","type":"NumberHit","total":5,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\u26ab / \u26ab\u26ab\ud83d\udfe2\ud83d\udfe2\u26ab"}
+{"seq":1188,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":5}
+{"seq":1189,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":15,"number":5,"status":"won","payout":21,"win_payout":21,"removed":false}
+{"seq":1190,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1191,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1192,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":1193,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"won"}
+{"seq":1194,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",800],["Go Big",622],["Hardy",602],["Fielder",410]]}
+{"seq":1195,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":5,"status":"active"}
+{"seq":1196,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",94],["Hardy",68],["Fielder",0]]}
+{"seq":1197,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1198,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":1199,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":1200,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":1201,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1202,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":64,"dice":[4,2],"total":6,"phase":"point","point":10,"table_risk":272,"shooter_name":"Hardy"}
+{"seq":1203,"table_id":"fixture","type":"NumberHit","total":6,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\ud83d\udfe2\ud83d\udfe2 / \u26ab\u26ab\ud83d\udfe2\ud83d\udfe2\u26ab"}
+{"seq":1204,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":6}
+{"seq":1205,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":36,"number":6,"status":"won","payout":42,"win_payout":42,"removed":false}
+{"seq":1206,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":30,"number":6,"status":"won","payout":35,"win_payout":35,"removed":false}
+{"seq":1207,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1208,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1209,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1210,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1211,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":1212,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"won"}
+{"seq":1213,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"active"}
+{"seq":1214,"table_id":"fixture","type":"BetAdjusted","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"active"}
+{"seq":1215,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",800],["Go Big",664],["Hardy",632],["Fielder",400]]}
+{"seq":1216,"table_id":"fixture","type":"BetStatusChanged","player_name":"Go Big","bet_type":"Place","number":6,"status":"active"}
+{"seq":1217,"table_id":"fixture","type":"BetStatusChanged","player_name":"Hardy","bet_type":"Place","number":6,"status":"active"}
+{"seq":1218,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",30],["Go Big",110],["Hardy",63],["Fielder",0]]}
+{"seq":1219,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1220,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":null}
+{"seq":1221,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5}
+{"seq":1222,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6}
+{"seq":1223,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1224,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1225,"table_id":"fixture","type":"DiceRolled","shooter_index":7,"roll_number":65,"dice":[5,2],"total":7,"phase":"point","point":10,"table_risk":338,"shooter_name":"Hardy"}
+{"seq":1226,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":30,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1227,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1228,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":25,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1229,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":30,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1230,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":30,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1231,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":18,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1232,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1233,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1234,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":30,"number":10,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1235,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1236,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1237,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":40,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1238,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1239,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":50,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1240,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1241,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1242,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":1243,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",650],["Go Big",554],["Hardy",564],["Fielder",390]]}
+{"seq":1244,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":1245,"table_id":"fixture","type":"SevenOut","shooter_index":7,"shooter_results":[["Molly",-10],["Go Big",107],["Hardy",29],["Fielder",-40]]}
+{"seq":1246,"table_id":"fixture","type":"ShooterAssigned","shooter_index":8,"shooter_name":"Fielder"}
+{"seq":1247,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1248,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1249,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null}
+{"seq":1250,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1251,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8}
+{"seq":1252,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1253,"table_id":"fixture","type":"DiceRolled","shooter_index":8,"roll_number":66,"dice":[4,2],"total":6,"phase":"come-out","point":null,"table_risk":40,"shooter_name":"Fielder"}
+{"seq":1254,"table_id":"fixture","type":"NumberHit","total":6,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\u26ab\u26ab\ud83d\udfe2 / \u26ab\u26ab\u26ab\u26ab\u26ab"}
+{"seq":1255,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1256,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1257,"table_id":"fixture","type":"GameStateChanged","message":"  \u26aa Point Set to 6 \u2192 Puck ON"}
+{"seq":1258,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",650],["Go Big",554],["Hardy",559],["Fielder",380]]}
+{"seq":1259,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",10],["Go Big",0],["Hardy",15],["Fielder",0]]}
+{"seq":1260,"table_id":"fixture","type":"PointEstablished","point":6}
+{"seq":1261,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1262,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":1263,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":1264,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":8}
+{"seq":1265,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":9}
+{"seq":1266,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":50,"number":5}
+{"seq":1267,"table_id":"fixture","type":"BetPlaced","player_name":"Go Big","bet_type":"Place","amount":60,"number":6}
+{"seq":1268,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6}
+{"seq":1269,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":6}
+{"seq":1270,"table_id":"fixture","type":"BetPlaced","player_name":"Hardy","bet_type":"Place","amount":12,"number":8}
+{"seq":1271,"table_id":"fixture","type":"BetPlaced","player_name":"Fielder","bet_type":"Field","amount":10,"number":null}
+{"seq":1272,"table_id":"fixture","type":"DiceRolled","shooter_index":8,"roll_number":67,"dice":[2,2],"total":4,"phase":"point","point":6,"table_risk":344,"shooter_name":"Fielder"}
+{"seq":1273,"table_id":"fixture","type":"NumberHit","total":4,"message":"  \ud83c\udfaf ATS Update: \u26ab\u26ab\ud83d\udfe2\u26ab\ud83d\udfe2 / \u26ab\u26ab\u26ab\u26ab\u26ab"}
+{"seq":1274,"table_id":"fixture","type":"BetMoved","player_name":"Molly","bet_type":"Come","amount":10,"number":4}
+{"seq":1275,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":false}
+{"seq":1276,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"active","payout":0,"win_payout":0,"removed":true}
+{"seq":1277,"table_id":"fixture","type":"GameStateChanged","message":"  No change in game state."}
+{"seq":1278,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",650],["Go Big",554],["Hardy",559],["Fielder",390]]}
+{"seq":1279,"table_id":"fixture","type":"BetStatusChanged","player_name":"Fielder","bet_type":"Field","number":null,"status":"active"}
+{"seq":1280,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",20],["Go Big",220],["Hardy",44],["Fielder",10]]}
+{"seq":1281,"table_id":"fixture","type":"BetsRequested"}
+{"seq":1282,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come","amount":10,"number":null}
+{"seq":1283,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":null}
+{"seq":1284,"table_id":"fixture","type":"BetPlaced","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4}
+{"seq":1285,"table_id":"fixture","type":"DiceRolled","shooter_index":8,"roll_number":68,"dice":[6,1],"total":7,"phase":"point","point":6,"table_risk":384,"shooter_name":"Fielder"}
+{"seq":1286,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1287,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Pass Line Odds","amount":50,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1288,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Pass Line","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1289,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1290,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":4,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1291,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come Odds","amount":30,"number":4,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1292,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1293,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":9,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1294,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":50,"number":5,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1295,"table_id":"fixture","type":"BetResolved","player_name":"Go Big","bet_type":"Place","amount":60,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1296,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Hardways","amount":5,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1297,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":6,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1298,"table_id":"fixture","type":"BetResolved","player_name":"Hardy","bet_type":"Place","amount":12,"number":8,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1299,"table_id":"fixture","type":"BetResolved","player_name":"Fielder","bet_type":"Field","amount":10,"number":null,"status":"lost","payout":0,"win_payout":0,"removed":true}
+{"seq":1300,"table_id":"fixture","type":"BetResolved","player_name":"Molly","bet_type":"Come","amount":10,"number":null,"status":"won","payout":10,"win_payout":10,"removed":true}
+{"seq":1301,"table_id":"fixture","type":"GameStateChanged","message":"  \u26ab 7-Out \u2192 Puck OFF."}
+{"seq":1302,"table_id":"fixture","type":"BankrollsUpdated","bankrolls":[["Molly",560],["Go Big",334],["Hardy",515],["Fielder",380]]}
+{"seq":1303,"table_id":"fixture","type":"RiskUpdated","at_risk":[["Molly",0],["Go Big",0],["Hardy",0],["Fielder",0]]}
+{"seq":1304,"table_id":"fixture","type":"SevenOut","shooter_index":8,"shooter_results":[["Molly",-90],["Go Big",-220],["Hardy",-49],["Fielder",-10]]}
+{"seq":1305,"table_id":"fixture","type":"SessionFinalized","session_rolls":68}
