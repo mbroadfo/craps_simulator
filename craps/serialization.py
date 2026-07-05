@@ -62,7 +62,16 @@ def deserialize_event(envelope: Dict[str, Any]) -> Tuple[int, str, Event]:
     for name, value in data.items():
         if isinstance(value, list):
             if name in _PAIR_LIST_FIELDS:
-                data[name] = tuple(tuple(pair) for pair in value)
+                data[name] = _to_pair_tuples(value)
             elif name in _PAIR_FIELDS:
-                data[name] = tuple(value)
+                data[name] = _to_int_pair(value)
     return seq, table_id, cls(**data)
+
+
+def _to_int_pair(value: Any) -> Tuple[int, int]:
+    first, second = value
+    return (int(first), int(second))
+
+
+def _to_pair_tuples(value: Any) -> Tuple[Tuple[str, int], ...]:
+    return tuple((str(name), int(amount)) for name, amount in value)
