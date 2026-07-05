@@ -20,6 +20,14 @@ class HouseRules:
         self.leave_winning_bets_up: bool = config.get("leave_winning_bets_up", True)
         self.leave_bets_working: bool = config.get("leave_bets_working", False)
 
+        # D6 availability flags: what this table offers. Default-open, so
+        # every existing config behaves exactly as before. The felt renders
+        # only what these enable; Table.validate_bet enforces the same set.
+        self.ats_enabled: bool = config.get("ats_enabled", True)
+        self.hardways_enabled: bool = config.get("hardways_enabled", True)
+        self.hop_bets_enabled: bool = config.get("hop_bets_enabled", True)
+        self.prop_bets_enabled: bool = config.get("prop_bets_enabled", True)
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "number_of_shooters": self.number_of_shooters,
@@ -32,4 +40,8 @@ class HouseRules:
             "vig_on_win": self.vig_on_win,
             "leave_winning_bets_up": self.leave_winning_bets_up,
             "leave_bets_working": self.leave_bets_working,
+            "ats_enabled": self.ats_enabled,
+            "hardways_enabled": self.hardways_enabled,
+            "hop_bets_enabled": self.hop_bets_enabled,
+            "prop_bets_enabled": self.prop_bets_enabled,
         }
