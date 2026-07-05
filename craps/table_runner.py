@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
-from craps.craps_engine import CrapsEngine
+from craps.craps_engine import CrapsEngine, PostRollSummary
 from craps.player import Player
 from craps.session_recorder import SessionRecorder
 from craps.statistics import Statistics
@@ -49,7 +49,8 @@ class TableRunner:
             recorder.subscribe(self.engine.events)
             self.recorder = recorder
 
-    def run(self) -> Statistics:
+    def start_session(self) -> None:
+        """Initialize the engine, seat the lineup, and assign the first shooter."""
         engine = self.engine
         if not engine.setup_session(
             house_rules_dict=self.house_rules,
@@ -67,6 +68,26 @@ class TableRunner:
         engine.lock_session()
         engine.assign_next_shooter()
 
+    def roll_once(self) -> PostRollSummary:
+        """One complete roll cycle: accept → roll → resolve → refresh → post-roll.
+
+        The single place the per-roll sequence lives; the sync run() loop
+        and the async TableSession driver both call it.
+        """
+        engine = self.engine
+        engine.accept_bets()
+        outcome = engine.roll_dice()
+        if engine.game_state is None:
+            raise RuntimeError("Game state not initialized")
+        prev_phase = engine.game_state.phase
+        engine.resolve_bets(outcome)
+        engine.refresh_bet_statuses()
+        engine.log_player_bets()
+        return engine.handle_post_roll(outcome, prev_phase)
+
+    def run(self) -> Statistics:
+        self.start_session()
+
         rolls = 0
         roll_limit_hit = False
         try:
@@ -74,15 +95,7 @@ class TableRunner:
                 while True:
                     if self.roll_delay_ms:
                         time.sleep(self.roll_delay_ms / 1000)
-                    engine.accept_bets()
-                    outcome = engine.roll_dice()
-                    if engine.game_state is None:
-                        raise RuntimeError("Game state not initialized")
-                    prev_phase = engine.game_state.phase
-                    engine.resolve_bets(outcome)
-                    engine.refresh_bet_statuses()
-                    engine.log_player_bets()
-                    summary = engine.handle_post_roll(outcome, prev_phase)
+                    summary = self.roll_once()
                     rolls += 1
                     if self.max_rolls is not None and rolls >= self.max_rolls:
                         roll_limit_hit = True
@@ -94,7 +107,7 @@ class TableRunner:
         except KeyboardInterrupt:
             pass  # stop cleanly; finalize what we have
 
-        return self._finalize()
+        return self.finalize()
 
     def _add_players(self) -> None:
         engine = self.engine
@@ -110,7 +123,7 @@ class TableRunner:
             engine.stats.initialize_player_stats(players)
             engine.stats.num_players = len(players)
 
-    def _finalize(self) -> Statistics:
+    def finalize(self) -> Statistics:
         engine = self.engine
         try:
             if engine.stats is None:

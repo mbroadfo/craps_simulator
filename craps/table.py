@@ -107,6 +107,18 @@ class Table:
         if not self.rules_engine.validate_bet_phase(bet, phase):
             return False, f"{bet.owner.name}'s {bet.bet_type} bet cannot be placed during the {phase} phase."
 
+        # D6 availability: reject bets this table doesn't offer.
+        availability = {
+            "All": self.house_rules.ats_enabled,
+            "Tall": self.house_rules.ats_enabled,
+            "Small": self.house_rules.ats_enabled,
+            "Hardways": self.house_rules.hardways_enabled,
+            "Hop": self.house_rules.hop_bets_enabled,
+            "Proposition": self.house_rules.prop_bets_enabled,
+        }
+        if not availability.get(bet.bet_type, True):
+            return False, f"{bet.owner.name}'s {bet.bet_type} bet refused — this table does not offer {bet.bet_type} bets."
+
         # Validate existing bet
         if self.has_existing_bet(bet.owner, bet.bet_type, bet.number):
             message = f"{bet.owner.name} already has an active {bet.bet_type} bet"
