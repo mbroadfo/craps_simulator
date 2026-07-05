@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
-import verify_replay  # noqa: E402
+import verify_replay  # noqa: E402  # pyright: ignore[reportMissingImports] — scripts/ path added above
 
 from craps.session_recorder import load_session  # noqa: E402
 from craps.table_runner import TableRunner  # noqa: E402
