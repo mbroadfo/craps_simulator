@@ -5,8 +5,11 @@ import pytest
 
 from craps.events import (
     BankrollsUpdated,
+    BetAdjusted,
+    BetMoved,
     BetPlaced,
     BetResolved,
+    BetStatusChanged,
     BetsRequested,
     DiceRolled,
     Event,
@@ -56,6 +59,15 @@ ONE_OF_EACH = [
         status="won",
         payout=30,
         win_payout=31,
+        removed=True,
+    ),
+    BetMoved(player_name="Molly", bet_type="Come", amount=10, number=6),
+    BetAdjusted(
+        player_name="Go Big", bet_type="Place", amount=12, number=6,
+        status="active",
+    ),
+    BetStatusChanged(
+        player_name="Sixer", bet_type="Place", number=8, status="inactive",
     ),
     NumberHit(total=6, message="  🎯 6 recorded"),
     GameStateChanged(message="  ➡️ point established"),

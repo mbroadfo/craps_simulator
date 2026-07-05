@@ -26,6 +26,9 @@ from craps.events import (
     ShooterAssigned,
     BetsRequested,
     BetPlaced,
+    BetMoved,
+    BetAdjusted,
+    BetStatusChanged,
     DiceRolled,
     BetResolved,
     NumberHit,
@@ -37,6 +40,14 @@ from craps.events import (
     SevenOut,
     SessionFinalized,
 )
+
+#: Bet types whose ``number`` is assigned after placement (Come/Don't Come
+#: travel; odds attaching to the point). Field also mutates ``number`` on a
+#: win, but there it records the rolled total, not a position — excluded.
+_NUMBER_FILL_BET_TYPES = frozenset({
+    "Come", "Don't Come",
+    "Pass Line Odds", "Don't Pass Odds", "Come Odds", "Don't Come Odds",
+})
 from craps.consumers import attach_default_consumers
 
 class PostRollSummary(NamedTuple):
@@ -185,6 +196,10 @@ class CrapsEngine:
         self.events.publish(BetsRequested())
         total_bets = 0
 
+        # Strategy status specs at collection time reshape live bets in
+        # place (e.g. hardway reactivation) without going through place_bet.
+        statuses_before = [(bet, bet.status) for bet in self.table.bets]
+
         for player in self.player_lineup.get_active_players_list():
             if not player.betting_strategy:
                 continue
@@ -196,6 +211,7 @@ class CrapsEngine:
             )
 
             if bets:
+                on_table_before = {id(b) for b in self.table.bets}
                 success = player.place_bet(
                     bets,
                     table=self.table,
@@ -204,13 +220,26 @@ class CrapsEngine:
                 )
                 if success:
                     total_bets += len(bets) if isinstance(bets, list) else 1
-                    for bet in bets:
+                # Publish what actually landed, not what was requested:
+                # place_bet aborts mid-list on a failure without rolling
+                # back the bets already placed, and those chips are live.
+                for bet in self.table.bets:
+                    if id(bet) not in on_table_before:
                         self.events.publish(BetPlaced(
                             player_name=player.name,
                             bet_type=bet.bet_type,
                             amount=bet.amount,
                             number=bet.number,
                         ))
+
+        for bet, old_status in statuses_before:
+            if bet.status != old_status:
+                self.events.publish(BetStatusChanged(
+                    player_name=bet.owner.name,
+                    bet_type=bet.bet_type,
+                    number=bet.number,
+                    status=bet.status,
+                ))
 
         return total_bets
 
@@ -248,11 +277,30 @@ class CrapsEngine:
             if ats_message:
                 self.events.publish(NumberHit(total=total, message=ats_message))
         
+        # Snapshot number-fill candidates so travel is observable after
+        # settlement (the mutation itself happens deep in resolution).
+        unfilled_numbers = {
+            id(bet)
+            for bet in self.table.bets
+            if bet.bet_type in _NUMBER_FILL_BET_TYPES and bet.number is None
+        }
+
         # Step 1: Check active bets
         self.table.check_bets(outcome, self.game_state)
 
         # Step 2: Settle resolved bets
         resolved_bets = self.table.settle_resolved_bets()
+
+        # Step 2b: Publish bets that acquired their number and stayed up
+        # (Come/Don't Come travel, odds attaching to the point).
+        for bet in self.table.bets:
+            if id(bet) in unfilled_numbers and isinstance(bet.number, int):
+                self.events.publish(BetMoved(
+                    player_name=bet.owner.name,
+                    bet_type=bet.bet_type,
+                    amount=bet.amount,
+                    number=bet.number,
+                ))
 
         # Step 3: Publish resolutions (stats consumer keeps the ledger)
         for bet in resolved_bets:
@@ -264,6 +312,7 @@ class CrapsEngine:
                 status=bet.status,
                 payout=bet.resolved_payout,
                 win_payout=bet.payout(),
+                removed=not any(b is bet for b in self.table.bets),
             ))
 
             # Step 4: Notify strategy if bet won
@@ -289,7 +338,15 @@ class CrapsEngine:
         for player in players:
             strategy = getattr(player, "betting_strategy", None)
             if strategy and hasattr(strategy, "adjust_bets"):
-                strategy.adjust_bets(self.game_state, player, self.table)
+                changed = strategy.adjust_bets(self.game_state, player, self.table)
+                for bet in changed or ():
+                    self.events.publish(BetAdjusted(
+                        player_name=bet.owner.name,
+                        bet_type=bet.bet_type,
+                        amount=bet.amount,
+                        number=bet.number,
+                        status=bet.status,
+                    ))
 
         if self.stats:
             self.events.publish(BankrollsUpdated(
@@ -329,6 +386,8 @@ class CrapsEngine:
         if not self.table or not self.game_state or not self.house_rules:
             return
 
+        statuses_before = [(bet, bet.status) for bet in self.table.bets]
+
         for bet in self.table.bets:
             strategy = getattr(bet.owner, "betting_strategy", None)
             is_turned_off = getattr(strategy, "turned_off", False)
@@ -345,7 +404,16 @@ class CrapsEngine:
             elif bet.bet_type in ["Hop", "Proposition", "Hardways"]:
                 if bet.status == "won":
                     bet.status = "active"
-                    
+
+        for bet, old_status in statuses_before:
+            if bet.status != old_status:
+                self.events.publish(BetStatusChanged(
+                    player_name=bet.owner.name,
+                    bet_type=bet.bet_type,
+                    number=bet.number,
+                    status=bet.status,
+                ))
+
         if self.stats and self.player_lineup:
             self.events.publish(RiskUpdated(at_risk=tuple(
                 (

@@ -55,6 +55,41 @@ class BetResolved(Event):
     #: Bet.payout() at resolution time — what the stats ledger credits on a
     #: win (may include the returned stake for contract bets).
     win_payout: int = 0
+    #: Whether settlement took the bet off the table. Winning non-contract
+    #: bets can stay up ("if it pays, it stays" per house rules); the felt
+    #: must not have to know that rule — the engine states the fact.
+    removed: bool = False
+
+
+@dataclass(frozen=True)
+class BetMoved(Event):
+    """A bet acquired its number after placement: Come/Don't Come travel,
+    or an odds bet attaching to the established point."""
+    player_name: str
+    bet_type: str
+    amount: int
+    number: int
+
+
+@dataclass(frozen=True)
+class BetAdjusted(Event):
+    """A live bet was reshaped between rolls (pressing/regression or an
+    on/off flip requested by the strategy)."""
+    player_name: str
+    bet_type: str
+    amount: int
+    number: Optional[Union[int, Tuple[int, int]]]
+    status: str
+
+
+@dataclass(frozen=True)
+class BetStatusChanged(Event):
+    """A live bet's working status changed outside resolution (phase
+    refresh or a strategy status spec at bet-collection time)."""
+    player_name: str
+    bet_type: str
+    number: Optional[Union[int, Tuple[int, int]]]
+    status: str
 
 
 @dataclass(frozen=True)

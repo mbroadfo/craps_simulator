@@ -91,6 +91,15 @@ def test_create_start_finish_and_stats(client):
     assert recordings[0]["name"].startswith("t1_")
 
 
+def test_strategy_list_matches_lineup_vocabulary(client):
+    strategies = client.get("/tables/strategies").json()
+    assert "Pass-Line" in strategies
+    assert "Iron Cross" in strategies
+    assert strategies == sorted(strategies)
+    # the route must not be shadowed by /tables/{table_id}
+    assert isinstance(strategies, list)
+
+
 def test_validation_errors(client):
     create_table(client)
     # duplicate table_id
