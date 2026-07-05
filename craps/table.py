@@ -93,6 +93,16 @@ class Table:
         # Place the bet on the table
         bet.resolved_payout = 0  # Reset in case reused
         self.bets.append(bet)
+
+        # Upfront commission (vig_on_win=False tables): charged at
+        # placement, non-refundable.
+        if bet.vig and not self.house_rules.vig_on_win:
+            commission = RulesEngine.calculate_vig(bet.bet_type, bet.amount, bet.number)
+            bet.owner.balance -= commission
+            if self.play_by_play:
+                self.play_by_play.write(
+                    f"  💸 {bet.owner.name} pays ${commission} commission to place the {bet.bet_type}."
+                )
         return True
 
     def validate_bet(self, bet: Bet, phase: str) -> Tuple[bool, Optional[str]]:
@@ -115,6 +125,7 @@ class Table:
             "Hardways": self.house_rules.hardways_enabled,
             "Hop": self.house_rules.hop_bets_enabled,
             "Proposition": self.house_rules.prop_bets_enabled,
+            "Any Craps": self.house_rules.prop_bets_enabled,
         }
         if not availability.get(bet.bet_type, True):
             return False, f"{bet.owner.name}'s {bet.bet_type} bet refused — this table does not offer {bet.bet_type} bets."
@@ -178,7 +189,7 @@ class Table:
                 original_number = bet.number
                 original_status = bet.status
 
-                bet.resolve(self.rules_engine, dice_outcome, game_state)
+                bet.resolve(self.rules_engine, dice_outcome, game_state, self.house_rules)
 
                 if bet.status != original_status and bet.status in ("won", "lost"):
                     resolved_bets.append(bet)
@@ -199,7 +210,7 @@ class Table:
                 continue
             if bet.bet_type in ["Pass Line Odds", "Come Odds", "Don't Pass Odds", "Don't Come Odds"]:
                 original_status = bet.status
-                bet.resolve(self.rules_engine, dice_outcome, game_state)
+                bet.resolve(self.rules_engine, dice_outcome, game_state, self.house_rules)
 
                 if bet.status != original_status and bet.status in ("won", "lost", "return"):
                     resolved_bets.append(bet)
@@ -244,6 +255,20 @@ class Table:
             # ✅ Handle Winning Bets
             elif bet.status == "won":
                 bet.hits += 1
+                if bet.vig and self.house_rules.vig_on_win:
+                    # 5% commission collected from the winnings (never
+                    # more than leaves $1 — protects payout()'s
+                    # resolved_payout-is-set convention).
+                    commission = min(
+                        RulesEngine.calculate_vig(bet.bet_type, bet.amount, bet.number),
+                        max(0, bet.resolved_payout - 1),
+                    )
+                    if commission > 0:
+                        bet.resolved_payout -= commission
+                        if self.play_by_play:
+                            self.play_by_play.write(
+                                f"  💸 {bet.owner.name} pays ${commission} commission on the winning {bet.bet_type}."
+                            )
                 bet.owner.win_bet(bet, self.play_by_play)
                 settled_bets.append(bet)
                 resolved_bet_ids.add(id(bet))

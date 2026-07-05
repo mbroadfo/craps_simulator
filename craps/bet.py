@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
 from craps.rules import BET_RULES
 import logging
 
@@ -51,7 +51,13 @@ class Bet:
         self.resolved_payout: int = 0
         self.hits: int = hits
 
-    def resolve(self, rules_engine: RulesEngine, dice_outcome: Tuple[int, int], game_state: GameState) -> None:
+    def resolve(
+        self,
+        rules_engine: RulesEngine,
+        dice_outcome: Tuple[int, int],
+        game_state: GameState,
+        house_rules: Optional[Any] = None,
+    ) -> None:
         """
         Resolve the bet based on the dice outcome, phase, and point.
         Delegates resolution logic to the RulesEngine.
@@ -61,7 +67,7 @@ class Bet:
         :param phase: The current game phase ("come-out" or "point").
         :param point: The current point number (if in point phase).
         """
-        self.resolved_payout = rules_engine.resolve_bet(self, dice_outcome, game_state)
+        self.resolved_payout = rules_engine.resolve_bet(self, dice_outcome, game_state, house_rules)
 
     def is_resolved(self) -> bool:
         """Check if the bet has been resolved (won, lost, or push).

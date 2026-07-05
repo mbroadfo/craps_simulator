@@ -221,10 +221,18 @@ class RulesEngine:
         raise ValueError(f"Invalid payout type {payout_key} for bet {bet_type} (number={number})")
 
     @staticmethod
-    def resolve_bet(bet: Bet, dice_outcome: Tuple[int, int], game_state: GameState) -> int:
+    def resolve_bet(
+        bet: Bet,
+        dice_outcome: Tuple[int, int],
+        game_state: GameState,
+        house_rules: Optional[Any] = None,
+    ) -> int:
         """
         Resolves a bet based on the dice outcome, phase, and point.
         Uses a structured approach based on bet categories.
+
+        house_rules, when provided (Table threads its own), lets payouts
+        honor table configuration (Field 2/12 double vs triple).
         """
         total = sum(dice_outcome)
         is_pair = dice_outcome[0] == dice_outcome[1]
@@ -317,6 +325,13 @@ class RulesEngine:
             elif "any_other" in resolution_rules.get(f"{phase_key}_lose", []) and total != bet.number:
                 bet.status = "lost"
 
+        ### 🎯 **4b. ANY CRAPS (one-roll, wins on 2/3/12)**
+        elif bet.bet_type == "Any Craps":
+            if total in winning_numbers:
+                bet.status = "won"
+            elif "any_other" in losing_numbers:
+                bet.status = "lost"
+
         ### 🎯 **5. HARDWAYS**
         elif bet.bet_type == "Hardways":
             if "hardway_win" in resolution_rules.get(f"{phase_key}_win", []):
@@ -387,17 +402,24 @@ class RulesEngine:
         else:
             raise ValueError(f"Unknown contract bet: {bet.bet_type}")
 
-        payout = RulesEngine.calculate_payout(bet, total) if bet.status == "won" else 0
-        
+        payout = RulesEngine.calculate_payout(bet, total, house_rules) if bet.status == "won" else 0
+
         if bet.bet_type == "Field" and bet.number is not None:
             bet.number = None  # ✅ Reset number after resolution
-            
+
         return payout
 
     @staticmethod
-    def calculate_payout(bet: Bet, roll: Optional[int] = None) -> int:
+    def calculate_payout(
+        bet: Bet,
+        roll: Optional[int] = None,
+        house_rules: Optional[Any] = None,
+    ) -> int:
         """
         Calculate the payout for a resolved bet.
+
+        When house_rules is provided, Field 2/12 pay the configured
+        multiple (double vs triple); otherwise the static table applies.
         """
         if bet.status != "won":
             return 0  # ✅ No payout if the bet didn't win
@@ -414,11 +436,29 @@ class RulesEngine:
         if bet.bet_type == "Field" and number not in field_payouts:
             return 0  # ✅ If the number isn't a winning Field number, payout is $0
 
+        # Table-configured Field 2/12 (T4/D6: double vs triple field)
+        if bet.bet_type == "Field" and house_rules is not None:
+            if number == 2:
+                return bet.amount * house_rules.field_bet_payout_2
+            if number == 12:
+                return bet.amount * house_rules.field_bet_payout_12
+
         payout_ratio = RulesEngine.get_payout_ratio(bet.bet_type, number)
         numerator, denominator = payout_ratio
         profit = (bet.amount * numerator) // denominator
 
         return profit
+
+    @staticmethod
+    def calculate_vig(bet_type: str, amount: int, number: Optional[Union[int, Tuple[int, int]]]) -> int:
+        """5% commission, minimum $1: on the buy amount for Buy, on the
+        potential win for Lay (standard casino practice)."""
+        if bet_type == "Lay":
+            numerator, denominator = RulesEngine.get_payout_ratio("Lay", number)
+            base = (amount * numerator) // denominator
+        else:
+            base = amount
+        return max(1, base // 20)
 
     @staticmethod
     def has_vig(bet_type: str) -> bool:

@@ -114,6 +114,9 @@ BET_RULES = {
         },
         "Buy": {
             "linked_bet": None,
+            # No buy on 6/8: place pays 7:6 at a 1.52% edge, strictly
+            # better than true odds minus the vig. Nobody buys the 6.
+            "valid_numbers": [4, 5, 9, 10],
             "valid_phases": ["point"],
             "payout_ratio": "True Odds",
             "has_vig": True,
@@ -191,6 +194,16 @@ BET_RULES = {
                 "point_lose": ["hop_lose"],
             },
         },
+        "Any Craps": {
+            "valid_phases": ["come-out", "point"],
+            "payout_ratio": "Any Craps",
+            "resolution": {
+                "come_out_win": [2, 3, 12],
+                "come_out_lose": ["any_other"],
+                "point_win": [2, 3, 12],
+                "point_lose": ["any_other"],
+            },
+        },
     },
     "All Tall Small Bets": {
         "is_contract_bet": False,
@@ -221,26 +234,6 @@ BET_RULES = {
                 "win_condition": ["small_complete"],
                 "lose_condition": [7],
             },
-        },
-    },
-    "Combo Bets": {
-        "is_contract_bet": False,
-        "always_working": True,
-        "valid_numbers": None,
-        "Horn": {
-            "linked_bet": ["Proposition"],
-            "composition": [2, 3, 11, 12],
-            "payout_ratio": "Proposition",
-        },
-        "Horn High": {
-            "linked_bet": ["Proposition"],
-            "composition": [2, 3, 12, 11],
-            "payout_ratio": "Proposition",
-        },
-        "World": {
-            "linked_bet": ["Proposition"],
-            "composition": [2, 3, 7, 11, 12],
-            "payout_ratio": "World",
         },
     },
     "Segmented Field Bets": {
@@ -420,7 +413,8 @@ BET_PAYOUT = {
         (4, 6): (15, 1),
         (5, 5): (30, 1),
     },
-    "ATS-All": (175, 1),        
+    "Any Craps": (7, 1),
+    "ATS-All": (175, 1),
     "ATS-Tall": (34, 1),
     "ATS-Small": (34, 1),
     "Left Field": (4, 1),
