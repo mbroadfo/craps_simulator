@@ -46,6 +46,12 @@ def _session(request: Request, table_id: str) -> TableSession:
     return session
 
 
+@tables_router.get("/strategies")
+async def list_strategies() -> List[str]:
+    """Strategy names PlayerLineup can seat — the lineup-picker vocabulary."""
+    return sorted(VALID_STRATEGIES)
+
+
 @tables_router.post("", status_code=201)
 async def create_table(request: Request, body: CreateTableRequest) -> Dict[str, Any]:
     unknown = [p.strategy for p in body.players if p.strategy not in VALID_STRATEGIES]
