@@ -1,6 +1,17 @@
 from typing import Any
 
 
+def _payout_multiple(value: Any) -> int:
+    """Normalize a field payout config to its N-to-1 multiple.
+
+    Accepts a bare int (2 = double, 3 = triple) or the legacy (N, 1)
+    ratio pair used by config.py and the API schema.
+    """
+    if isinstance(value, (tuple, list)):
+        return int(value[0])
+    return int(value)
+
+
 class HouseRules:
     """Class representing house rules for payouts, table limits, and session behavior."""
 
@@ -8,8 +19,8 @@ class HouseRules:
         self.number_of_shooters: int = config.get("number_of_shooters", 3)
         self.dice_mode: str = config.get("dice_mode", "live")
 
-        self.field_bet_payout_2: int = config.get("field_bet_payout_2", 2)
-        self.field_bet_payout_12: int = config.get("field_bet_payout_12", 3)
+        self.field_bet_payout_2: int = _payout_multiple(config.get("field_bet_payout_2", 2))
+        self.field_bet_payout_12: int = _payout_multiple(config.get("field_bet_payout_12", 3))
 
         self.table_minimum: int = config.get("table_minimum", 10)
         self.table_maximum: int = config.get("table_maximum", 5000)
