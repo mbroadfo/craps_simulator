@@ -63,4 +63,37 @@ export const api = {
   stop: (id: string) => post<TableSnapshot>(`/tables/${id}/stop`),
   setPace: (id: string, rollDelayMs: number) =>
     post<TableSnapshot>(`/tables/${id}/pace`, { roll_delay_ms: rollDelayMs }),
+  listRecordings: () => request<RecordingInfo[]>('/recordings'),
+  recordingEvents: (name: string, afterSeq = -1, limit = 1000) =>
+    request<RecordingEventsPage>(
+      `/recordings/${encodeURIComponent(name)}/events?after_seq=${afterSeq}&limit=${limit}`,
+    ),
+}
+
+export interface RecordingInfo {
+  name: string
+  size_bytes: number
+  modified: number
+}
+
+export interface RecordingEventsPage {
+  name: string
+  events: import('./events').Envelope[]
+  next_after_seq: number
+  total: number
+}
+
+/** Page through a recording until the whole stream is in hand. */
+export async function loadRecordingEvents(
+  name: string,
+  pageSize = 2000,
+): Promise<import('./events').Envelope[]> {
+  const all: import('./events').Envelope[] = []
+  let after = -1
+  for (;;) {
+    const page = await api.recordingEvents(name, after, pageSize)
+    if (page.events.length === 0) return all
+    all.push(...page.events)
+    after = page.next_after_seq
+  }
 }

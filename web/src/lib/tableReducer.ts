@@ -60,6 +60,8 @@ export interface TableState {
   players: Map<string, PlayerState>
   /** BetResolved animations; the view drains what it has shown */
   fadeUps: FadeUp[]
+  /** rollCounts[total] = times rolled, totals 2..12 (Step 3 panel) */
+  rollCounts: Record<number, number>
   finished: boolean
   orphans: Envelope[]
 }
@@ -78,6 +80,7 @@ export function initialState(): TableState {
     chips: new Map(),
     players: new Map(),
     fadeUps: [],
+    rollCounts: {},
     finished: false,
     orphans: [],
   }
@@ -150,6 +153,10 @@ export function tableReducer(state: TableState, e: Envelope): TableState {
         point: e.point,
         puckOn: e.phase === 'point',
         shooterName: e.shooter_name,
+        rollCounts: {
+          ...state.rollCounts,
+          [e.total]: (state.rollCounts[e.total] ?? 0) + 1,
+        },
       }
 
     case 'PointEstablished':
