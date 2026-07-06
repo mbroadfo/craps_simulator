@@ -86,6 +86,15 @@ def test_create_start_finish_and_stats(client):
     assert set(stats["bankroll_history"]) == {"Linus", "Fielder"}
     assert stats["total_amount_bet"] > 0
 
+    # D5: per-player realized vs theoretical edge rides the stats payload
+    edges = stats["edges"]
+    assert edges["Fielder"]["theoretical_edge_pct"] == pytest.approx(-100 / 36)
+    for edge_snapshot in edges.values():
+        assert edge_snapshot["wagered"] > 0
+        assert edge_snapshot["edge_delta_pct"] == pytest.approx(
+            edge_snapshot["realized_edge_pct"] - edge_snapshot["theoretical_edge_pct"]
+        )
+
     recordings = client.get("/recordings").json()
     assert len(recordings) == 1
     assert recordings[0]["name"].startswith("t1_")
