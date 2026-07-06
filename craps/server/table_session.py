@@ -12,6 +12,7 @@ import asyncio
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
+from craps.edge import EdgeTracker
 from craps.server.broadcaster import Broadcaster
 from craps.statistics import Statistics
 from craps.table_runner import LineupConfig, TableRunner
@@ -47,6 +48,9 @@ class TableSession:
         self.broadcaster = Broadcaster(table_id)
         # Before start_session(), so SessionStarted reaches subscribers.
         self.broadcaster.subscribe(self.runner.engine.events)
+        # D5 ledger: realized vs theoretical edge per player.
+        self.edge_tracker = EdgeTracker(lambda: self.runner.engine.house_rules)
+        self.edge_tracker.subscribe(self.runner.engine.events)
         self.stats: Optional[Statistics] = None
         self._task: Optional["asyncio.Task[None]"] = None
         self._gate = asyncio.Event()
@@ -164,4 +168,5 @@ class TableSession:
             },
             "bankroll_history": stats.bankroll_history,
             "at_risk_history": stats.at_risk_history,
+            "edges": self.edge_tracker.snapshot(),
         }
