@@ -62,6 +62,10 @@ class RulesEngine:
 
     @staticmethod
     def get_bet_unit(bet_type: str, number: Optional[Union[int, Tuple[int, int]]]) -> int:
+        if bet_type == "Horn":
+            return 4  # four-way split: 2, 3, 11, 12
+        if bet_type == "World":
+            return 5  # horn plus Any Seven
         if bet_type == "Place":
             if number in [6, 8]:
                 return 6
@@ -332,6 +336,15 @@ class RulesEngine:
             elif "any_other" in losing_numbers:
                 bet.status = "lost"
 
+        ### 🎯 **4c. HORN / WORLD (one-roll on 2/3/11/12; World pushes on 7)**
+        elif bet.bet_type in ("Horn", "World"):
+            if total in winning_numbers:
+                bet.status = "won"
+            elif bet.bet_type == "World" and total == 7:
+                bet.status = "return"  # Any-Seven leg covers the horn: push
+            elif "any_other" in losing_numbers:
+                bet.status = "lost"
+
         ### 🎯 **5. HARDWAYS**
         elif bet.bet_type == "Hardways":
             if "hardway_win" in resolution_rules.get(f"{phase_key}_win", []):
@@ -424,8 +437,9 @@ class RulesEngine:
         if bet.status != "won":
             return 0  # ✅ No payout if the bet didn't win
 
-        # Ensure the correct roll value is used for bets that depend on it (e.g., Field)
-        number = roll if bet.bet_type == "Field" else bet.number
+        # Ensure the correct roll value is used for bets that depend on it
+        # (Field, and the Horn/World splits, pay by the rolled total)
+        number = roll if bet.bet_type in ("Field", "Horn", "World") else bet.number
 
         # ✅ Field bets should only request payout if they actually won
         field_payouts = BET_PAYOUT.get("Field", {})

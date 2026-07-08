@@ -204,6 +204,31 @@ BET_RULES = {
                 "point_lose": ["any_other"],
             },
         },
+        "Horn": {
+            # One-roll four-way split on 2/3/11/12; bet in $4 units.
+            # Winning quarter pays 30:1 (2/12) or 15:1 (3/11); the other
+            # three quarters lose — net (27,4) and (12,4) per whole bet.
+            "valid_phases": ["come-out", "point"],
+            "payout_ratio": "Horn",
+            "resolution": {
+                "come_out_win": [2, 3, 11, 12],
+                "come_out_lose": ["any_other"],
+                "point_win": [2, 3, 11, 12],
+                "point_lose": ["any_other"],
+            },
+        },
+        "World": {
+            # Horn + Any Seven in $5 units: horn hits net (26,5)/(11,5);
+            # a 7 pushes (the Any-Seven leg covers the horn losses).
+            "valid_phases": ["come-out", "point"],
+            "payout_ratio": "World",
+            "resolution": {
+                "come_out_win": [2, 3, 11, 12],
+                "come_out_lose": ["any_other"],
+                "point_win": [2, 3, 11, 12],
+                "point_lose": ["any_other"],
+            },
+        },
     },
     "All Tall Small Bets": {
         "is_contract_bet": False,
@@ -414,6 +439,8 @@ BET_PAYOUT = {
         (5, 5): (30, 1),
     },
     "Any Craps": (7, 1),
+    "Horn": {2: (27, 4), 3: (12, 4), 11: (12, 4), 12: (27, 4)},
+    "World": {2: (26, 5), 3: (11, 5), 11: (11, 5), 12: (26, 5)},
     "ATS-All": (175, 1),
     "ATS-Tall": (34, 1),
     "ATS-Small": (34, 1),

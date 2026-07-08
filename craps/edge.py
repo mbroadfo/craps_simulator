@@ -124,6 +124,16 @@ def theoretical_edge(
     if bet_type == "Any Craps":
         return _one_roll_edge(Fraction(4, 36), Fraction(7))
 
+    if bet_type == "Horn":
+        # Per 4 units: 2/12 net +27 (1 way each), 3/11 net +12 (2 ways
+        # each), else -4. EV = (27+27+24+24-30*4)/(36*4) = -1/8.
+        return Fraction(1, 8)  # 12.5%
+
+    if bet_type == "World":
+        # Per 5 units: 2/12 net +26, 3/11 net +11, 7 pushes (6 ways),
+        # else -5. EV = (26+26+22+22+0-24*5)/(36*5) = -2/15.
+        return Fraction(2, 15)  # 13.33%
+
     if bet_type == "Hop" and isinstance(number, tuple):
         is_pair = number[0] == number[1]
         p = Fraction(1 if is_pair else 2, 36)

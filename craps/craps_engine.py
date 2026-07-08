@@ -401,7 +401,7 @@ class CrapsEngine:
                 else:
                     bet.status = "inactive"
 
-            elif bet.bet_type in ["Hop", "Proposition", "Hardways", "Any Craps"]:
+            elif bet.bet_type in ["Hop", "Proposition", "Hardways", "Any Craps", "Horn", "World"]:
                 if bet.status == "won":
                     bet.status = "active"
 
