@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Parametric Felt — ColorUp Study v2</title>
+<title>Parametric Felt — ColorUp Study v3</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,9 +22,7 @@
     border-radius: 3px; padding: 2px 8px;
   }
   .controls button.on { background: #c9a84c; color: #14100a; border-color: #c9a84c; font-weight: 700; }
-  #readout {
-    font-size: 11px; color: #c9a84c; min-height: 16px; letter-spacing: 0.5px;
-  }
+  #readout { font-size: 11px; color: #c9a84c; min-height: 16px; letter-spacing: 0.5px; }
   .caption { font-size: 10px; letter-spacing: 3px; opacity: .45; text-transform: uppercase; }
 </style>
 </head>
@@ -49,22 +47,16 @@
 </div>
 
 <svg id="felt" width="1240" height="740" viewBox="0 0 1240 740" xmlns="http://www.w3.org/2000/svg"
-     aria-label="Craps table — parametric felt study, ColorUp idiom">
+     aria-label="Craps table — parametric felt study v3, ColorUp idiom">
   <defs>
-    <!-- Near-black felt with a faint warm center: ColorUp idiom -->
     <radialGradient id="felt-bg" cx="42%" cy="42%" r="78%" gradientUnits="objectBoundingBox">
       <stop offset="0%" stop-color="#121317"/>
       <stop offset="100%" stop-color="#07080a"/>
     </radialGradient>
-    <!-- Ember numeral gradient: gold crown to orange root -->
     <linearGradient id="ember" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#f3ce74"/>
       <stop offset="55%" stop-color="#e8a04a"/>
       <stop offset="100%" stop-color="#d9622b"/>
-    </linearGradient>
-    <linearGradient id="ember-dim" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#7a6a45"/>
-      <stop offset="100%" stop-color="#6b4530"/>
     </linearGradient>
   </defs>
 
@@ -73,37 +65,41 @@
   <rect width="1240" height="740" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
   <rect x="3" y="3" width="1234" height="734" rx="14" fill="none" stroke="#a07030" stroke-width="1" stroke-opacity="0.5"/>
 
-  <!-- ================= BAND GEOMETRY (adopted skeleton) =================
-       Pass Line  55px: right x=[1185,1240] bottom y=[685,740]
-       Don't Pass 42px: right x=[1143,1185] bottom y=[643,685]
-       Shared curve r=45 center (1140,640); outer corner r=100.
-       Interior playing field: x=[0,1143] y=[0,643].               -->
-  <path d="M 1185,0 L 1185,640 A 45,45 0 0,1 1140,685 L 0,685 L 0,740 L 1140,740 A 100,100 0 0,1 1240,640 L 1240,0 Z"
-        fill="#0d1210" data-zone="Pass Line" data-info="PASS LINE — even money · edge 1.41%"/>
-  <path d="M 1185,0 L 1185,640 A 45,45 0 0,1 1140,685 L 0,685 L 0,643 L 1143,643 L 1143,0 Z"
-        fill="#100e14" data-zone="Don't Pass" data-info="DON'T PASS BAR 12 — even money · edge 1.36%"/>
-  <path d="M 1185,0 L 1185,640 A 45,45 0 0,1 1140,685 L 0,685" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <path d="M 1143,0 L 1143,643 L 0,643" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <line x1="1143" y1="0.75" x2="1240" y2="0.75" stroke="#c9a84c" stroke-width="1.5"/>
+  <!-- ================= BANDS v3 =================
+       Pass Line 70px : right x=[1170,1240] bottom y=[670,740]
+       Don't Pass 50px: right x=[1120,1170] bottom y=[620,670]
+       Corner center (1140,640): outer r=100, pass-inner/DP-outer r=30,
+       DP inner corner rounded r=24 at (1120,620) so the color flows
+       through the whole arc. Bands terminate at y=166 (Don't Come row);
+       they do not continue past it.                              -->
+  <path d="M 1170,166 L 1170,640 A 30,30 0 0 1 1140,670 L 0,670 L 0,740 L 1140,740 A 100,100 0 0 1 1240,640 L 1240,166 Z"
+        fill="#12301e" data-zone="pass"/>
+  <path d="M 1120,166 L 1120,596 A 24,24 0 0 1 1096,620 L 0,620 L 0,670 L 1140,670 A 30,30 0 0 0 1170,640 L 1170,166 Z"
+        fill="#241019" data-zone="dontpass"/>
+
+  <!-- gold separators -->
+  <path d="M 1170,166 L 1170,640 A 30,30 0 0 1 1140,670 L 0,670" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1120,166 L 1120,596 A 24,24 0 0 1 1096,620 L 0,620" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="1120" y1="166" x2="1240" y2="166" stroke="#c9a84c" stroke-width="1.5"/>
 
   <!-- band labels -->
-  <text x="560" y="713" text-anchor="middle" dominant-baseline="middle" class="band-label"
-        font-family="'Barlow Condensed', sans-serif" font-size="26" font-weight="700"
-        letter-spacing="14" fill="url(#ember)">PASS LINE</text>
+  <text x="540" y="706" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Barlow Condensed', sans-serif" font-size="30" font-weight="700"
+        letter-spacing="16" fill="url(#ember)">PASS LINE</text>
   <text text-anchor="middle" dominant-baseline="middle"
-        font-family="'Barlow Condensed', sans-serif" font-size="26" font-weight="700"
-        letter-spacing="14" fill="url(#ember)" transform="translate(1212,320) rotate(-90)">PASS LINE</text>
+        font-family="'Barlow Condensed', sans-serif" font-size="30" font-weight="700"
+        letter-spacing="16" fill="url(#ember)" transform="translate(1205,400) rotate(-90)">PASS LINE</text>
 
-  <g font-family="'Barlow Condensed', sans-serif" font-size="15" font-weight="600" letter-spacing="4" fill="#d8cfae">
-    <text x="520" y="664" text-anchor="middle" dominant-baseline="middle">DON'T PASS BAR</text>
-    <g transform="translate(648,664)">
-      <circle r="10" fill="none" stroke="#d8cfae" stroke-width="1.2"/>
-      <text text-anchor="middle" dominant-baseline="middle" font-size="10" letter-spacing="0">12</text>
+  <g font-family="'Barlow Condensed', sans-serif" font-size="16" font-weight="600" letter-spacing="4" fill="#d8cfae">
+    <text x="500" y="645" text-anchor="middle" dominant-baseline="middle">DON'T PASS BAR</text>
+    <g transform="translate(632,645)">
+      <circle r="11" fill="none" stroke="#d8cfae" stroke-width="1.2"/>
+      <text text-anchor="middle" dominant-baseline="middle" font-size="11" letter-spacing="0">12</text>
     </g>
-    <text text-anchor="middle" dominant-baseline="middle" transform="translate(1164,360) rotate(-90)">DON'T PASS BAR</text>
-    <g transform="translate(1164,230)">
-      <circle r="10" fill="none" stroke="#d8cfae" stroke-width="1.2"/>
-      <text text-anchor="middle" dominant-baseline="middle" font-size="10" letter-spacing="0">12</text>
+    <text text-anchor="middle" dominant-baseline="middle" transform="translate(1145,430) rotate(-90)">DON'T PASS BAR</text>
+    <g transform="translate(1145,290)">
+      <circle r="11" fill="none" stroke="#d8cfae" stroke-width="1.2"/>
+      <text text-anchor="middle" dominant-baseline="middle" font-size="11" letter-spacing="0">12</text>
     </g>
   </g>
 
@@ -112,15 +108,15 @@
 </svg>
 
 <div id="readout">hover a zone…</div>
-<p class="caption">Parametric felt v2 — geometry &amp; props study · no chips yet · 1240 × 740</p>
+<p class="caption">Parametric felt v3 — geometry &amp; props study · no chips yet · 1240 × 740</p>
 
 <script>
 "use strict";
 // ============================================================
-// Config (the parametric part — mirrors TableOptions / D6)
+// Config (mirrors TableOptions / D6)
 // ============================================================
 const cfg = {
-  puck: null,          // null = OFF, else 4/5/6/8/9/10
+  puck: null,
   field2: 2, field12: 3,
   hops: true, props: true, ats: true,
   atsLit: { ALL: false, TALL: false, SMALL: false },
@@ -138,25 +134,35 @@ const EDGE = {
 const SVG = "http://www.w3.org/2000/svg";
 const interior = document.getElementById("interior");
 const readout = document.getElementById("readout");
+const barlow = "'Barlow Condensed', sans-serif";
+const mono = "'IBM Plex Mono', monospace";
 
-// Geometry constants (interior = x[0,1143] y[0,643])
-const M = 16;
-const DC = { x: M, y: M, w: 134, h: 150 };                    // Don't Come
-const BOX = { x0: 158, y: M, w: 156, h: 150, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
-const COME = { x: 158, y: 172, w: 966, h: 96 };
-const FIELD = { x: 158, y: 274, w: 966, h: 98 };
-const ATS = { x: M, y: 172, w: 134, h: 200 };
-const PROPS = { x: M, y: 380, w: 470 - M, h: 247 };
-const HOPS = { x: 478, y: 380, w: 646, h: 247 };
+// ============================================================
+// Geometry v3 — interior right boundary is the DP inner edge (x=1120)
+//   Left column x=[16,376]: ATS / HOP BETS / PROPS stacked, no gaps
+//   Right block  x=[384,1113]: box row + Don't Come, Come, Field
+// ============================================================
+const LEFT = { x: 16, w: 360 };
+const ATS = { x: 16, y: 16, w: 360, h: 80 };
+const HOPS = { x: 16, y: 104, w: 360, h: 332 };
+const PROPS = { x: 16, y: 444, w: 360, h: 168 };
 
-const BOX_WORD = { 6: "SIX", 9: "NINE" };
-const HOP_COMBOS = {                       // unordered pairs; hard pairs embedded
-  4: [[1, 3], [2, 2]],
-  5: [[1, 4], [2, 3]],
-  6: [[1, 5], [2, 4], [3, 3]],
-  8: [[2, 6], [3, 5], [4, 4]],
-  9: [[3, 6], [4, 5]],
-  10: [[4, 6], [5, 5]],
+const RIGHT = { x: 384, xEnd: 1113 };
+const BOX = { x0: 384, y: 16, w: 100, h: 150, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
+const DC = { x: 1020, y: 16, w: 93, h: 150 };
+const COME = { x: 384, y: 172, w: 729, h: 90 };
+const FIELD = { x: 384, y: 268, w: 729, h: 132 };
+
+const BOX_WORD = { 6: "SIX", 8: "EIGHT", 9: "NINE" };
+
+// Redline #4 — exact ordered combos per number (hard pair last)
+const HOP_COMBOS = {
+  4: [[1, 3], [3, 1], [2, 2]],
+  5: [[1, 4], [4, 1], [2, 3], [3, 2]],
+  6: [[1, 5], [5, 1], [2, 4], [4, 2], [3, 3]],
+  8: [[2, 6], [6, 2], [3, 5], [5, 3], [4, 4]],
+  9: [[3, 6], [6, 3], [4, 5], [5, 4]],
+  10: [[4, 6], [6, 4], [5, 5]],
 };
 
 function el(name, attrs, parent) {
@@ -174,126 +180,10 @@ function zone(node, info) {
   node.addEventListener("mouseenter", () => { readout.textContent = info; });
   node.addEventListener("mouseleave", () => { readout.textContent = "hover a zone…"; });
 }
-const barlow = "'Barlow Condensed', sans-serif";
-const mono = "'IBM Plex Mono', monospace";
 
 // ============================================================
-// Sections
+// Left column
 // ============================================================
-function drawDontCome() {
-  const g = el("g", {});
-  const r = el("rect", { x: DC.x, y: DC.y, width: DC.w, height: DC.h, rx: 6,
-                         fill: "#100e14", stroke: "#d8cfae", "stroke-width": 1.2 }, g);
-  txt("DON'T", { x: DC.x + DC.w / 2, y: DC.y + 44, "text-anchor": "middle", fill: "#d8cfae",
-                 "font-family": barlow, "font-size": 24, "font-weight": 600, "letter-spacing": 4 }, g);
-  txt("COME", { x: DC.x + DC.w / 2, y: DC.y + 74, "text-anchor": "middle", fill: "#d8cfae",
-                "font-family": barlow, "font-size": 24, "font-weight": 600, "letter-spacing": 4 }, g);
-  const c = el("g", { transform: `translate(${DC.x + DC.w / 2},${DC.y + 108})` }, g);
-  el("circle", { r: 11, fill: "none", stroke: "#d8cfae", "stroke-width": 1.2 }, c);
-  txt("12", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#d8cfae",
-              "font-family": barlow, "font-size": 12 }, c);
-  txt("BAR", { x: DC.x + DC.w / 2, y: DC.y + 138, "text-anchor": "middle", fill: "#8a8171",
-               "font-family": barlow, "font-size": 12, "letter-spacing": 3 }, g);
-  zone(r, "DON'T COME — even money once behind a number · edge 1.36%");
-}
-
-function drawBoxes() {
-  BOX.nums.forEach((n, i) => {
-    const x = BOX.x0 + i * (BOX.w + BOX.gap);
-    const g = el("g", {});
-    const outer = el("rect", { x, y: BOX.y, width: BOX.w, height: BOX.h, rx: 4,
-                               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.4 }, g);
-
-    // Redline #2 — three horizontal strips with subtle dividers
-    const topH = 36, botH = 38;
-    const y1 = BOX.y + topH, y2 = BOX.y + BOX.h - botH;
-    el("line", { x1: x, y1, x2: x + BOX.w, y2: y1, stroke: "#c9a84c",
-                 "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
-    el("line", { x1: x, y1: y2, x2: x + BOX.w, y2: y2, stroke: "#c9a84c",
-                 "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
-
-    // top strip: Place / Buy
-    const buyable = [4, 5, 9, 10].includes(n);
-    txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: BOX.y + 23, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 13, "letter-spacing": 3 }, g);
-
-    // center: ember numeral (SIX / NINE as words per ColorUp)
-    const label = BOX_WORD[n] || String(n);
-    txt(label, { x: x + BOX.w / 2, y: BOX.y + topH + (BOX.h - topH - botH) / 2 + 1,
-                 "text-anchor": "middle", "dominant-baseline": "middle", fill: "url(#ember)",
-                 "font-family": barlow, "font-size": label.length > 2 ? 44 : 58, "font-weight": 700,
-                 "letter-spacing": label.length > 2 ? 2 : 0 }, g);
-    txt("COME POINT · ODDS", { x: x + BOX.w / 2, y: y2 - 8, "text-anchor": "middle",
-        fill: "#5d5648", "font-family": barlow, "font-size": 10, "letter-spacing": 2 }, g);
-
-    // bottom strip: Lay / Don't Come
-    txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: y2 + 24, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 13, "letter-spacing": 2.5 }, g);
-
-    // puck
-    if (cfg.puck === n) {
-      const p = el("g", { transform: `translate(${x + BOX.w - 24},${BOX.y + 22})` }, g);
-      el("circle", { r: 15, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, p);
-      txt("ON", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#20180f",
-                  "font-family": barlow, "font-size": 12, "font-weight": 700 }, p);
-    }
-    const info = `${label} — place ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
-      + (buyable ? ` · buy true odds −5% vig (edge ${EDGE.buy_on_win[n]})` : "")
-      + " · top: place/buy · center: come point + odds · bottom: lay/don't-come";
-    zone(outer, info);
-  });
-
-  // OFF puck parked left of the box row when no point
-  if (cfg.puck === null) {
-    const p = el("g", { transform: `translate(${BOX.x0 - 28},${BOX.y + 22})` });
-    el("circle", { r: 15, fill: "#14100a", stroke: "#4a3a1d", "stroke-width": 2 }, p);
-    txt("OFF", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#8a8171",
-                 "font-family": barlow, "font-size": 10, "font-weight": 700 }, p);
-  }
-}
-
-function drawCome() {
-  const g = el("g", {});
-  const r = el("rect", { x: COME.x, y: COME.y, width: COME.w, height: COME.h, rx: 4,
-                         fill: "#0d1210", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
-  // Redline #3: the Come band holds ONLY the script Come.
-  txt("Come", { x: COME.x + COME.w / 2, y: COME.y + COME.h / 2 + 2, "text-anchor": "middle",
-                "dominant-baseline": "middle", fill: "#c8412f",
-                "font-family": "Georgia, serif", "font-style": "italic",
-                "font-size": 56, "font-weight": 700, "letter-spacing": 6 }, g);
-  zone(r, "COME — even money, travels to the rolled number · edge 1.41%");
-}
-
-function drawField() {
-  const g = el("g", {});
-  const r = el("rect", { x: FIELD.x, y: FIELD.y, width: FIELD.w, height: FIELD.h, rx: 4,
-                         fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
-  txt("FIELD", { x: FIELD.x + 14, y: FIELD.y + FIELD.h / 2, "dominant-baseline": "middle",
-                 fill: "#8a8171", "font-family": barlow, "font-size": 20, "font-weight": 600,
-                 "letter-spacing": 6, transform: `rotate(-90 ${FIELD.x + 14} ${FIELD.y + FIELD.h / 2})` }, g);
-
-  const nums = [2, 3, 4, 9, 10, 11, 12];
-  const cw = (FIELD.w - 80) / nums.length;
-  nums.forEach((n, i) => {
-    const cx = FIELD.x + 56 + i * cw + cw / 2;
-    const cy = FIELD.y + 44;
-    const mult = n === 2 ? cfg.field2 : n === 12 ? cfg.field12 : null;
-    if (mult && mult >= 2) {
-      el("circle", { cx, cy, r: 24, fill: "none", stroke: "#d8cfae",
-                     "stroke-width": mult === 3 ? 2 : 1.2,
-                     "stroke-dasharray": mult === 3 ? "" : "4 3" }, g);
-    }
-    txt(String(n), { x: cx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
-                     fill: "url(#ember)", "font-family": barlow, "font-size": 34, "font-weight": 700 }, g);
-    if (mult) {
-      txt(`PAYS ${mult === 3 ? "TRIPLE" : "DOUBLE"}`, { x: cx, y: cy + 40, "text-anchor": "middle",
-          fill: "#8a8171", "font-family": barlow, "font-size": 10, "letter-spacing": 2 }, g);
-    }
-  });
-  const edge = ((6 - cfg.field2 - cfg.field12) / 36 * 100).toFixed(2);
-  zone(r, `FIELD — 3·4·9·10·11 even, 2 pays ${cfg.field2}×, 12 pays ${cfg.field12}× · edge ${edge}%`);
-}
-
 function drawAts() {
   const g = el("g", {});
   const r = el("rect", { x: ATS.x, y: ATS.y, width: ATS.w, height: ATS.h, rx: 6,
@@ -305,69 +195,31 @@ function drawAts() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  txt("ALL · TALL · SMALL", { x: ATS.x + ATS.w / 2, y: ATS.y + 22, "text-anchor": "middle",
-      fill: "#d8cfae", "font-family": barlow, "font-size": 13, "font-weight": 600, "letter-spacing": 1.5 }, g);
-
-  // Redline #6: three indicator lights, dim by default, amber when hit
-  const rows = [["ALL", "2–12", EDGE.atsAll, 34], ["TALL", "8–12", EDGE.atsTS, 34], ["SMALL", "2–6", EDGE.atsTS, 34]];
-  rows.forEach(([name, span, edge], i) => {
-    const y = ATS.y + 60 + i * 44;
+  const groups = [["ALL", "175:1"], ["TALL", "34:1"], ["SMALL", "34:1"]];
+  const gw = ATS.w / 3;
+  groups.forEach(([name, pays], i) => {
+    const cx = ATS.x + gw * i + gw / 2;
     const lit = cfg.atsLit[name];
-    el("circle", { cx: ATS.x + 26, cy: y, r: 8,
+    el("circle", { cx: cx - 34, cy: ATS.y + ATS.h / 2, r: 9,
                    fill: lit ? "#e8a04a" : "#1a1712",
                    stroke: lit ? "#f3ce74" : "#4a3a1d", "stroke-width": 1.5,
-                   ...(lit ? { filter: "drop-shadow(0 0 4px #e8a04a)" } : {}) }, g);
-    txt(name, { x: ATS.x + 44, y: y - 2, fill: lit ? "#f3ce74" : "#8a8171",
-                "font-family": barlow, "font-size": 16, "font-weight": 700, "letter-spacing": 2 }, g);
-    txt(`${span} · ${name === "ALL" ? "175:1" : "34:1"}`, { x: ATS.x + 44, y: y + 13, fill: "#5d5648",
-                "font-family": barlow, "font-size": 10, "letter-spacing": 1 }, g);
+                   ...(lit ? { filter: "drop-shadow(0 0 5px #e8a04a)" } : {}) }, g);
+    txt(name, { x: cx - 18, y: ATS.y + ATS.h / 2 - 4, fill: lit ? "#f3ce74" : "#d8cfae",
+                "font-family": barlow, "font-size": 17, "font-weight": 700, "letter-spacing": 1.5 }, g);
+    txt(pays, { x: cx - 18, y: ATS.y + ATS.h / 2 + 14, fill: "#5d5648",
+                "font-family": barlow, "font-size": 11, "letter-spacing": 1 }, g);
   });
-  zone(r, `ALL·TALL·SMALL — All 175:1 (edge ${EDGE.atsAll}) · Tall/Small 34:1 (edge ${EDGE.atsTS}) · lights mark completions this shooter`);
+  zone(r, `ALL·TALL·SMALL — All 175:1 (edge ${EDGE.atsAll}) · Tall/Small 34:1 (edge ${EDGE.atsTS}) · lamps mark completions this shooter`);
 }
 
-function propCell(g, x, y, w, h, title, lines, info, enabled) {
-  const r = el("rect", { x, y, width: w, height: h, rx: 6,
-                         fill: enabled ? "#0c0d11" : "#08090b",
-                         stroke: enabled ? "#c9a84c" : "#2a251e", "stroke-width": 1.2 }, g);
-  if (!enabled) {
-    txt("NOT OFFERED", { x: x + w / 2, y: y + h / 2, "text-anchor": "middle", "dominant-baseline": "middle",
-        fill: "#3c362c", "font-family": barlow, "font-size": 11, "letter-spacing": 2 }, g);
-    return;
-  }
-  txt(title, { x: x + w / 2, y: y + 26, "text-anchor": "middle", fill: "url(#ember)",
-               "font-family": barlow, "font-size": 22, "font-weight": 700, "letter-spacing": 3 }, g);
-  lines.forEach((line, i) => {
-    txt(line, { x: x + w / 2, y: y + 50 + i * 18, "text-anchor": "middle", fill: "#d8cfae",
-                "font-family": barlow, "font-size": 13, "letter-spacing": 1.5 }, g);
-  });
-  zone(r, info);
-}
-
-function drawProps() {
-  const g = el("g", {});
-  const colW = (PROPS.w - 8) / 2, rowH = (PROPS.h - 8) / 2;
-  const cells = [
-    ["ANY SEVEN", ["PAYS 4:1"], `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`, PROPS.x, PROPS.y],
-    ["ANY CRAPS", ["2 · 3 · 12 PAYS 7:1"], `ANY CRAPS — one roll · 7:1 · edge ${EDGE.anyCraps}`, PROPS.x + colW + 8, PROPS.y],
-    // Redline #5: Horn and World are different bets in different cells
-    ["HORN", ["2 · 3 · 11 · 12 — $4 UNITS", "2/12 PAYS 30:1 · 3/11 PAYS 15:1"],
-      `HORN — 4-way split, $4 units · nets 27:4 on 2/12, 12:4 on 3/11 · edge ${EDGE.horn}`, PROPS.x, PROPS.y + rowH + 8],
-    ["WORLD", ["HORN + ANY SEVEN — $5 UNITS", "2/12: 26:5 · 3/11: 11:5 · 7: PUSH"],
-      `WORLD — horn + any seven, $5 units · pushes on 7 · edge ${EDGE.world}`, PROPS.x + colW + 8, PROPS.y + rowH + 8],
-  ];
-  cells.forEach(([title, lines, info, x, y]) =>
-    propCell(g, x, y, colW, rowH, title, lines, info, cfg.props));
-}
-
-// Redline #4: hop grid — box numbers only, every combo as pip pairs
 function miniDie(g, cx, cy, v, hard) {
-  const s = 24, rr = 4;
-  el("rect", { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: rr,
+  const s = 18;
+  el("rect", { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: 3,
                fill: hard ? "#f3ce74" : "#efe7d3", stroke: "#20180f", "stroke-width": 1 }, g);
   const P = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]],
               4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]],
               6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
-  P[v].forEach(([dx, dy]) => el("circle", { cx: cx + dx * 6, cy: cy + dy * 6, r: 2.4, fill: "#20180f" }, g));
+  P[v].forEach(([dx, dy]) => el("circle", { cx: cx + dx * 4.6, cy: cy + dy * 4.6, r: 1.9, fill: "#20180f" }, g));
 }
 
 function drawHops() {
@@ -385,29 +237,185 @@ function drawHops() {
       fill: "#d8cfae", "font-family": barlow, "font-size": 14, "font-weight": 700, "letter-spacing": 4 }, g);
 
   const nums = BOX.nums;
-  const colW = (HOPS.w - 24) / nums.length;
+  const colW = (HOPS.w - 16) / nums.length;
   nums.forEach((n, i) => {
-    const x = HOPS.x + 12 + i * colW;
+    const x = HOPS.x + 8 + i * colW;
     txt(String(n), { x: x + colW / 2, y: HOPS.y + 46, "text-anchor": "middle",
-        fill: "url(#ember)", "font-family": barlow, "font-size": 24, "font-weight": 700 }, g);
-    if (i > 0) el("line", { x1: x, y1: HOPS.y + 32, x2: x, y2: HOPS.y + HOPS.h - 10,
+        fill: "url(#ember)", "font-family": barlow, "font-size": 22, "font-weight": 700 }, g);
+    if (i > 0) el("line", { x1: x, y1: HOPS.y + 30, x2: x, y2: HOPS.y + HOPS.h - 8,
                             stroke: "#c9a84c", "stroke-width": 0.5, "stroke-opacity": 0.3 }, g);
 
     HOP_COMBOS[n].forEach(([a, b], j) => {
-      const cy = HOPS.y + 84 + j * 62;
+      const cy = HOPS.y + 74 + j * 53;
       const hard = a === b;
       const cellG = el("g", {}, g);
-      miniDie(cellG, x + colW / 2 - 15, cy, a, hard);
-      miniDie(cellG, x + colW / 2 + 15, cy, b, hard);
-      txt(hard ? "30:1" : "15:1", { x: x + colW / 2, y: cy + 27, "text-anchor": "middle",
+      miniDie(cellG, x + colW / 2 - 11, cy, a, hard);
+      miniDie(cellG, x + colW / 2 + 11, cy, b, hard);
+      txt(hard ? "30:1" : "15:1", { x: x + colW / 2, y: cy + 22, "text-anchor": "middle",
           fill: hard ? "#f3ce74" : "#8a8171", "font-family": mono,
-          "font-size": 11, "font-weight": hard ? 700 : 400 }, cellG);
-      const hit = el("rect", { x: x + 4, y: cy - 18, width: colW - 8, height: 52,
+          "font-size": 10, "font-weight": hard ? 700 : 400 }, cellG);
+      const hit = el("rect", { x: x + 2, y: cy - 14, width: colW - 4, height: 44,
                                fill: "transparent" }, cellG);
       zone(hit, `HOP ${a}-${b}${hard ? " (hard)" : " (easy)"} — one roll · ${hard ? "30:1" : "15:1"} · edge ${hard ? EDGE.hopHard : EDGE.hopEasy}`);
     });
   });
-  zone(frame, "HOP BETS — box numbers only; 2/3/11/12 belong to the HORN · hardways live here as the pair combos");
+  zone(frame, "HOP BETS — box numbers only; 2/3/11/12 belong to the HORN");
+}
+
+function propCell(g, x, y, w, h, title, lines, info, enabled) {
+  const r = el("rect", { x, y, width: w, height: h, rx: 6,
+                         fill: enabled ? "#0c0d11" : "#08090b",
+                         stroke: enabled ? "#c9a84c" : "#2a251e", "stroke-width": 1.2 }, g);
+  if (!enabled) {
+    txt("NOT OFFERED", { x: x + w / 2, y: y + h / 2, "text-anchor": "middle", "dominant-baseline": "middle",
+        fill: "#3c362c", "font-family": barlow, "font-size": 10, "letter-spacing": 2 }, g);
+    return;
+  }
+  txt(title, { x: x + w / 2, y: y + 22, "text-anchor": "middle", fill: "url(#ember)",
+               "font-family": barlow, "font-size": 18, "font-weight": 700, "letter-spacing": 2.5 }, g);
+  lines.forEach((line, i) => {
+    txt(line, { x: x + w / 2, y: y + 42 + i * 15, "text-anchor": "middle", fill: "#d8cfae",
+                "font-family": barlow, "font-size": 11.5, "letter-spacing": 1 }, g);
+  });
+  zone(r, info);
+}
+
+function drawProps() {
+  const g = el("g", {});
+  const colW = (PROPS.w - 8) / 2, rowH = (PROPS.h - 8) / 2;
+  const cells = [
+    ["ANY SEVEN", ["PAYS 4:1"],
+      `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`, PROPS.x, PROPS.y],
+    ["ANY CRAPS", ["2 · 3 · 12 PAYS 7:1"],
+      `ANY CRAPS — one roll · 7:1 · edge ${EDGE.anyCraps}`, PROPS.x + colW + 8, PROPS.y],
+    // Redline #5: Horn payouts shown separately
+    ["HORN", ["2 & 12 PAY 30:1", "3 & 11 PAY 15:1", "$4 UNITS"],
+      `HORN — 4-way split, $4 units · 2/12 quarter pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`,
+      PROPS.x, PROPS.y + rowH + 8],
+    ["WORLD", ["HORN + ANY SEVEN — $5 UNITS", "2/12: 26:5 · 3/11: 11:5 · 7: PUSH"],
+      `WORLD — horn + any seven, $5 units · pushes on 7 · edge ${EDGE.world}`,
+      PROPS.x + colW + 8, PROPS.y + rowH + 8],
+  ];
+  cells.forEach(([title, lines, info, x, y]) =>
+    propCell(g, x, y, colW, rowH, title, lines, info, cfg.props));
+}
+
+// ============================================================
+// Right block
+// ============================================================
+function drawBoxes() {
+  BOX.nums.forEach((n, i) => {
+    const x = BOX.x0 + i * (BOX.w + BOX.gap);
+    const g = el("g", {});
+    const outer = el("rect", { x, y: BOX.y, width: BOX.w, height: BOX.h, rx: 4,
+                               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.4 }, g);
+
+    const topH = 34, botH = 36;
+    const y1 = BOX.y + topH, y2 = BOX.y + BOX.h - botH;
+    el("line", { x1: x, y1, x2: x + BOX.w, y2: y1, stroke: "#c9a84c",
+                 "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
+    el("line", { x1: x, y1: y2, x2: x + BOX.w, y2: y2, stroke: "#c9a84c",
+                 "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
+
+    const buyable = [4, 5, 9, 10].includes(n);
+    txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: BOX.y + 22, "text-anchor": "middle",
+        fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
+
+    // Redline #3: 4 · 5 · Six · Eight · Nine · 10
+    const label = BOX_WORD[n] || String(n);
+    const isWord = label.length > 2;
+    txt(label, { x: x + BOX.w / 2, y: BOX.y + topH + (BOX.h - topH - botH) / 2 + 1,
+                 "text-anchor": "middle", "dominant-baseline": "middle", fill: "url(#ember)",
+                 "font-family": barlow, "font-size": isWord ? 30 : 52, "font-weight": 700,
+                 "letter-spacing": isWord ? 1 : 0 }, g);
+    txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 7, "text-anchor": "middle",
+        fill: "#5d5648", "font-family": barlow, "font-size": 9, "letter-spacing": 1.5 }, g);
+    txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: y2 + 22, "text-anchor": "middle",
+        fill: "#8a8171", "font-family": barlow, "font-size": 11, "letter-spacing": 1.2 }, g);
+
+    if (cfg.puck === n) {
+      const p = el("g", { transform: `translate(${x + BOX.w - 20},${BOX.y + 20})` }, g);
+      el("circle", { r: 14, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, p);
+      txt("ON", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#20180f",
+                  "font-family": barlow, "font-size": 11, "font-weight": 700 }, p);
+    }
+    const info = `${label} — place ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
+      + (buyable ? ` · buy true odds −5% vig (edge ${EDGE.buy_on_win[n]})` : "")
+      + " · top: place/buy · center: come point + odds · bottom: lay/don't-come";
+    zone(outer, info);
+  });
+
+  if (cfg.puck === null) {
+    const p = el("g", { transform: `translate(${COME.x + 24},${COME.y + 24})` });
+    el("circle", { r: 14, fill: "#14100a", stroke: "#4a3a1d", "stroke-width": 2 }, p);
+    txt("OFF", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#8a8171",
+                 "font-family": barlow, "font-size": 10, "font-weight": 700 }, p);
+  }
+}
+
+// Redline #7: compact transit box, right of the Ten
+function drawDontCome() {
+  const g = el("g", {});
+  const r = el("rect", { x: DC.x, y: DC.y, width: DC.w, height: DC.h, rx: 4,
+                         fill: "#100e14", stroke: "#d8cfae", "stroke-width": 1.2 }, g);
+  txt("DON'T", { x: DC.x + DC.w / 2, y: DC.y + 42, "text-anchor": "middle", fill: "#d8cfae",
+                 "font-family": barlow, "font-size": 19, "font-weight": 600, "letter-spacing": 2.5 }, g);
+  txt("COME", { x: DC.x + DC.w / 2, y: DC.y + 66, "text-anchor": "middle", fill: "#d8cfae",
+                "font-family": barlow, "font-size": 19, "font-weight": 600, "letter-spacing": 2.5 }, g);
+  const c = el("g", { transform: `translate(${DC.x + DC.w / 2},${DC.y + 100})` }, g);
+  el("circle", { r: 10, fill: "none", stroke: "#d8cfae", "stroke-width": 1.2 }, c);
+  txt("12", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#d8cfae",
+              "font-family": barlow, "font-size": 11 }, c);
+  txt("BAR", { x: DC.x + DC.w / 2, y: DC.y + 128, "text-anchor": "middle", fill: "#8a8171",
+               "font-family": barlow, "font-size": 11, "letter-spacing": 2.5 }, g);
+  zone(r, "DON'T COME — even money once behind a number · bar 12 · edge 1.36%");
+}
+
+function drawCome() {
+  const g = el("g", {});
+  const r = el("rect", { x: COME.x, y: COME.y, width: COME.w, height: COME.h, rx: 4,
+                         fill: "#0d1210", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
+  txt("Come", { x: COME.x + COME.w / 2, y: COME.y + COME.h / 2 + 2, "text-anchor": "middle",
+                "dominant-baseline": "middle", fill: "#c8412f",
+                "font-family": "Georgia, serif", "font-style": "italic",
+                "font-size": 52, "font-weight": 700, "letter-spacing": 6 }, g);
+  zone(r, "COME — even money, travels to the rolled number · edge 1.41%");
+}
+
+// Redlines #2/#8: field wins only — 2·3·4·9·10·11·12 — on a gentle arc.
+// (5, 6, 8 LOSE in the field; printing them would promise payouts the
+//  engine refuses. Flagged for Mike.)
+function drawField() {
+  const g = el("g", {});
+  const r = el("rect", { x: FIELD.x, y: FIELD.y, width: FIELD.w, height: FIELD.h, rx: 4,
+                         fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
+
+  const nums = [2, 3, 4, 9, 10, 11, 12];
+  const pad = 60;
+  const span = FIELD.w - pad * 2;
+  nums.forEach((n, i) => {
+    const t = i / (nums.length - 1);
+    const cx = FIELD.x + pad + t * span;
+    const cy = FIELD.y + 62 - 24 * Math.sin(Math.PI * t);   // gentle arc
+    const mult = n === 2 ? cfg.field2 : n === 12 ? cfg.field12 : null;
+    if (mult && mult >= 2) {
+      el("circle", { cx, cy, r: 25, fill: "none", stroke: "#d8cfae",
+                     "stroke-width": mult === 3 ? 2 : 1.2,
+                     "stroke-dasharray": mult === 3 ? "" : "4 3" }, g);
+    }
+    txt(String(n), { x: cx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+                     fill: "url(#ember)", "font-family": barlow, "font-size": 36, "font-weight": 700 }, g);
+    if (mult) {
+      txt(`PAYS ${mult === 3 ? "TRIPLE" : "DOUBLE"}`, { x: cx, y: cy + 41, "text-anchor": "middle",
+          fill: "#8a8171", "font-family": barlow, "font-size": 10, "letter-spacing": 1.5 }, g);
+    }
+  });
+
+  txt("FIELD", { x: FIELD.x + FIELD.w / 2, y: FIELD.y + FIELD.h - 20, "text-anchor": "middle",
+                 fill: "#d8cfae", "font-family": barlow, "font-size": 24, "font-weight": 700,
+                 "letter-spacing": 14 }, g);
+  const edge = ((6 - cfg.field2 - cfg.field12) / 36 * 100).toFixed(2);
+  zone(r, `FIELD — one roll · 3·4·9·10·11 even, 2 pays ${cfg.field2}×, 12 pays ${cfg.field12}× · edge ${edge}%`);
 }
 
 // ============================================================
@@ -415,13 +423,13 @@ function drawHops() {
 // ============================================================
 function render() {
   interior.replaceChildren();
-  drawDontCome();
+  drawAts();
+  drawHops();
+  drawProps();
   drawBoxes();
+  drawDontCome();
   drawCome();
   drawField();
-  drawAts();
-  drawProps();
-  drawHops();
 }
 
 document.querySelectorAll("[data-puck]").forEach(b => {
