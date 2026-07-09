@@ -390,62 +390,68 @@ function drawProps() {
   }
   const cx = PROPS.x + PROPS.w / 2;
 
-  // TOP BAND — Any Seven
-  const topBand = el("rect", { x: PROPS.x + 4, y: PROPS.y + 6, width: PROPS.w - 8, height: 30, rx: 4,
-                               fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
-                               "stroke-opacity": 0.5 }, g);
-  txt("ANY SEVEN", { x: cx, y: PROPS.y + 19, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": display, "font-size": 13, "font-weight": 700, "letter-spacing": 1.5 }, g);
-  txt("4 TO 1", { x: cx, y: PROPS.y + 32, "text-anchor": "middle", fill: "#8a8171",
-      "font-family": mono, "font-size": 9, "letter-spacing": 1 }, g);
-  zone(topBand, `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
-
-  // MIDDLE — hardway pairs flanking the Horn
-  const midY = PROPS.y + 44;
-  const hardCell = (hx, a, pays, name, edge, row) => {
-    const hy = midY + row * 72;
-    const cg = el("g", {});
-    miniDie(cg, hx - 10, hy + 10, a, { s: 16, face: "#e8a04a" });
-    miniDie(cg, hx + 10, hy + 10, a, { s: 16, face: "#e8a04a" });
-    txt(pays, { x: hx, y: hy + 30, "text-anchor": "middle", fill: "#d8cfae",
-        "font-family": mono, "font-size": 11, "letter-spacing": 0 }, cg);
-    const hit = el("rect", { x: hx - 24, y: hy - 4, width: 48, height: 44, fill: "transparent" }, cg);
-    zone(hit, `${name} — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`);
+  // Single-line band: NAME in Playfair + payout in mono, both larger
+  const band = (y, name, pays, info) => {
+    const b = el("rect", { x: PROPS.x + 4, y, width: PROPS.w - 8, height: 30, rx: 4,
+                           fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
+                           "stroke-opacity": 0.5 }, g);
+    txt(name, { x: cx - 8, y: y + 16, "text-anchor": "end", "dominant-baseline": "middle",
+        fill: "url(#ember)", "font-family": display, "font-size": 17, "font-weight": 700,
+        "letter-spacing": 1.5 }, g);
+    txt(pays, { x: cx + 8, y: y + 16, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: "#d8cfae", "font-family": mono, "font-size": 13, "font-weight": 700 }, g);
+    zone(b, info);
   };
-  hardCell(PROPS.x + 72, 3, "PAYS 9:1", "HARD 6 (3-3)", EDGE.hard68, 0);
-  hardCell(PROPS.x + 72, 2, "PAYS 7:1", "HARD 4 (2-2)", EDGE.hard410, 1);
-  hardCell(PROPS.x + PROPS.w - 72, 4, "PAYS 9:1", "HARD 8 (4-4)", EDGE.hard68, 0);
-  hardCell(PROPS.x + PROPS.w - 72, 5, "PAYS 7:1", "HARD 10 (5-5)", EDGE.hard410, 1);
+  band(PROPS.y + 6, "ANY SEVEN", "4 TO 1",
+       `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
+  band(PROPS.y + PROPS.h - 36, "ANY CRAPS", "7 TO 1",
+       `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 
-  // center: Horn Bet — the four horn numbers as pip pairs (ColorUp)
+  // MIDDLE — Hardways 2x2 grid (left) and Horn 2x2 grid (right)
+  const midY = PROPS.y + 44;
+  const leftCx = PROPS.x + 98, rightCx = PROPS.x + PROPS.w - 98;
+
+  // Hardways
+  txt("Hardways", { x: leftCx, y: midY + 16, "text-anchor": "middle", fill: "url(#ember)",
+      "font-family": script, "font-style": "italic", "font-size": 17, "font-weight": 700 }, g);
+  const hardPairs = [
+    [3, "9:1", -42, 0, "HARD 6", EDGE.hard68], [4, "9:1", 42, 0, "HARD 8", EDGE.hard68],
+    [2, "7:1", -42, 1, "HARD 4", EDGE.hard410], [5, "7:1", 42, 1, "HARD 10", EDGE.hard410],
+  ];
+  hardPairs.forEach(([a, pays, dx, row, name, edge]) => {
+    const hx = leftCx + dx, hy = midY + 44 + row * 56;
+    const cg = el("g", {});
+    miniDie(cg, hx - 10, hy, a, { s: 17, face: "#e8a04a" });
+    miniDie(cg, hx + 10, hy, a, { s: 17, face: "#e8a04a" });
+    txt(pays, { x: hx, y: hy + 24, "text-anchor": "middle", fill: "#d8cfae",
+        "font-family": mono, "font-size": 11, "font-weight": 700 }, cg);
+    const hit = el("rect", { x: hx - 26, y: hy - 14, width: 52, height: 46, fill: "transparent" }, cg);
+    zone(hit, `${name} (${a}-${a}) — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`);
+  });
+
+  // Horn — four pip pairs with the Horn square overlaying the center
   const hornG = el("g", {});
-  txt("Horn Bet", { x: cx, y: midY + 18, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": script, "font-style": "italic", "font-size": 17, "font-weight": 700 }, hornG);
   const hornPairs = [
-    [1, 1, "30:1", -34, 0], [1, 2, "15:1", 34, 0],
-    [5, 6, "15:1", -34, 1], [6, 6, "30:1", 34, 1],
+    [1, 1, "30:1", -42, 0], [1, 2, "15:1", 42, 0],
+    [5, 6, "15:1", -42, 1], [6, 6, "30:1", 42, 1],
   ];
   hornPairs.forEach(([a, b, pays, dx, row]) => {
-    const hx = cx + dx, hy = midY + 46 + row * 50;
-    miniDie(hornG, hx - 8.5, hy, a, { s: 14, face: "#d95f4c" });
-    miniDie(hornG, hx + 8.5, hy, b, { s: 14, face: "#d95f4c" });
-    txt(pays, { x: hx, y: hy + 20, "text-anchor": "middle", fill: "#f3ce74",
-        "font-family": mono, "font-size": 9, "font-weight": 700 }, hornG);
+    const hx = rightCx + dx, hy = midY + 44 + row * 56;
+    miniDie(hornG, hx - 9, hy, a, { s: 15, face: "#d95f4c" });
+    miniDie(hornG, hx + 9, hy, b, { s: 15, face: "#d95f4c" });
+    txt(pays, { x: hx, y: hy + 24, "text-anchor": "middle", fill: "#f3ce74",
+        "font-family": mono, "font-size": 11, "font-weight": 700 }, hornG);
   });
-  txt("$4 UNITS", { x: cx, y: midY + 146, "text-anchor": "middle", fill: "#5d5648",
+  // the Horn square, overlaying the grid center
+  el("rect", { x: rightCx - 34, y: midY + 54, width: 68, height: 36, rx: 5,
+               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1 }, hornG);
+  txt("Horn", { x: rightCx, y: midY + 73, "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "url(#ember)", "font-family": script, "font-style": "italic",
+      "font-size": 18, "font-weight": 700 }, hornG);
+  txt("$4 UNITS", { x: rightCx, y: midY + 142, "text-anchor": "middle", fill: "#5d5648",
       "font-family": mono, "font-size": 8, "letter-spacing": 0.5 }, hornG);
-  const hornHit = el("rect", { x: cx - 62, y: midY + 4, width: 124, height: 146, fill: "transparent" }, hornG);
+  const hornHit = el("rect", { x: rightCx - 70, y: midY + 22, width: 140, height: 122, fill: "transparent" }, hornG);
   zone(hornHit, `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`);
-
-  // BOTTOM BAND — Any Craps
-  const botBand = el("rect", { x: PROPS.x + 4, y: PROPS.y + PROPS.h - 36, width: PROPS.w - 8, height: 30, rx: 4,
-                               fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
-                               "stroke-opacity": 0.5 }, g);
-  txt("ANY CRAPS", { x: cx, y: PROPS.y + PROPS.h - 23, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": display, "font-size": 13, "font-weight": 700, "letter-spacing": 1.5 }, g);
-  txt("7 TO 1", { x: cx, y: PROPS.y + PROPS.h - 10, "text-anchor": "middle", fill: "#8a8171",
-      "font-family": mono, "font-size": 9, "letter-spacing": 1 }, g);
-  zone(botBand, `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 }
 
 function drawWorld() {
