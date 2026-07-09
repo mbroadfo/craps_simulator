@@ -236,7 +236,9 @@ function drawDpLabels() {
   const rb = el("g", { transform: "translate(1298,330) rotate(-90)" }, g);
   txt("Bar", { "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "#d8cfae", "font-family": script, "font-style": "italic", "font-size": 16 }, rb);
-  barTwelve(g, 1298, 293, 15);
+  // Dice stacked along the lane, rotated for the player standing table-right
+  const rd = el("g", { transform: "translate(1298,290) rotate(-90)" }, g);
+  barTwelve(rd, 0, 0, 15);
 }
 
 // ============================================================
