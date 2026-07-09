@@ -154,8 +154,7 @@ const display = "'Playfair Display', Georgia, serif";
 const RAIL = { x: 16, w: 390 };                       // left column
 const ATS = { x: 16, y: 16, w: 390, h: 140 };
 const HOPS = { x: 16, y: 164, w: 390, h: 228 };
-const PROPS = { x: 16, y: 400, w: 390, h: 234 };
-const WORLD = { x: 16, y: 642, w: 390, h: 68 };
+const PROPS = { x: 16, y: 400, w: 390, h: 310 };  // fills the rail to the bottom
 
 // Box row spans exactly the Come band width (x 414..1272)
 const BOX = { x0: 414, y: 16, w: (858 - 5 * 6) / 6, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
@@ -407,68 +406,51 @@ function drawProps() {
   band(PROPS.y + PROPS.h - 36, "ANY CRAPS", "7 TO 1",
        `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 
-  // MIDDLE — Hardways 2x2 grid (left) and Horn 2x2 grid (right)
+  // MIDDLE — Hardways 2x2 grid (left) and Horn 2x2 grid (right),
+  // payouts inline to the right of each dice pair
   const midY = PROPS.y + 44;
   const leftCx = PROPS.x + 98, rightCx = PROPS.x + PROPS.w - 98;
 
-  // Hardways
-  txt("Hardways", { x: leftCx, y: midY + 16, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": script, "font-style": "italic", "font-size": 17, "font-weight": 700 }, g);
   const hardPairs = [
-    [3, "9:1", -42, 0, "HARD 6", EDGE.hard68], [4, "9:1", 42, 0, "HARD 8", EDGE.hard68],
-    [2, "7:1", -42, 1, "HARD 4", EDGE.hard410], [5, "7:1", 42, 1, "HARD 10", EDGE.hard410],
+    [3, "9:1", -50, 0, "HARD 6", EDGE.hard68], [4, "9:1", 46, 0, "HARD 8", EDGE.hard68],
+    [2, "7:1", -50, 1, "HARD 4", EDGE.hard410], [5, "7:1", 46, 1, "HARD 10", EDGE.hard410],
   ];
   hardPairs.forEach(([a, pays, dx, row, name, edge]) => {
-    const hx = leftCx + dx, hy = midY + 44 + row * 56;
+    const hx = leftCx + dx, hy = midY + 44 + row * 80;
     const cg = el("g", {});
-    miniDie(cg, hx - 10, hy, a, { s: 17, face: "#e8a04a" });
-    miniDie(cg, hx + 10, hy, a, { s: 17, face: "#e8a04a" });
-    txt(pays, { x: hx, y: hy + 24, "text-anchor": "middle", fill: "#d8cfae",
-        "font-family": mono, "font-size": 11, "font-weight": 700 }, cg);
-    const hit = el("rect", { x: hx - 26, y: hy - 14, width: 52, height: 46, fill: "transparent" }, cg);
+    miniDie(cg, hx - 19, hy, a, { s: 17, face: "#e8a04a" });
+    miniDie(cg, hx + 1, hy, a, { s: 17, face: "#e8a04a" });
+    txt(pays, { x: hx + 15, y: hy, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: "#d8cfae", "font-family": mono, "font-size": 11, "font-weight": 700 }, cg);
+    const hit = el("rect", { x: hx - 30, y: hy - 14, width: 76, height: 30, fill: "transparent" }, cg);
     zone(hit, `${name} (${a}-${a}) — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`);
   });
 
   // Horn — four pip pairs with the Horn square overlaying the center
   const hornG = el("g", {});
   const hornPairs = [
-    [1, 1, "30:1", -42, 0], [1, 2, "15:1", 42, 0],
-    [5, 6, "15:1", -42, 1], [6, 6, "30:1", 42, 1],
+    [1, 1, "30:1", -50, 0], [1, 2, "15:1", 46, 0],
+    [5, 6, "15:1", -50, 1], [6, 6, "30:1", 46, 1],
   ];
   hornPairs.forEach(([a, b, pays, dx, row]) => {
-    const hx = rightCx + dx, hy = midY + 44 + row * 56;
-    miniDie(hornG, hx - 9, hy, a, { s: 15, face: "#d95f4c" });
-    miniDie(hornG, hx + 9, hy, b, { s: 15, face: "#d95f4c" });
-    txt(pays, { x: hx, y: hy + 24, "text-anchor": "middle", fill: "#f3ce74",
-        "font-family": mono, "font-size": 11, "font-weight": 700 }, hornG);
+    const hx = rightCx + dx, hy = midY + 44 + row * 80;
+    miniDie(hornG, hx - 18, hy, a, { s: 15, face: "#d95f4c" });
+    miniDie(hornG, hx, hy, b, { s: 15, face: "#d95f4c" });
+    txt(pays, { x: hx + 13, y: hy, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: "#f3ce74", "font-family": mono, "font-size": 11, "font-weight": 700 }, hornG);
   });
   // the Horn square, overlaying the grid center
-  el("rect", { x: rightCx - 34, y: midY + 54, width: 68, height: 36, rx: 5,
+  el("rect", { x: rightCx - 34, y: midY + 66, width: 68, height: 36, rx: 5,
                fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1 }, hornG);
-  txt("Horn", { x: rightCx, y: midY + 73, "text-anchor": "middle", "dominant-baseline": "middle",
+  txt("Horn", { x: rightCx, y: midY + 85, "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "url(#ember)", "font-family": script, "font-style": "italic",
       "font-size": 18, "font-weight": 700 }, hornG);
-  txt("$4 UNITS", { x: rightCx, y: midY + 142, "text-anchor": "middle", fill: "#5d5648",
+  txt("$4 UNITS", { x: rightCx, y: midY + 180, "text-anchor": "middle", fill: "#5d5648",
       "font-family": mono, "font-size": 8, "letter-spacing": 0.5 }, hornG);
-  const hornHit = el("rect", { x: rightCx - 70, y: midY + 22, width: 140, height: 122, fill: "transparent" }, hornG);
+  const hornHit = el("rect", { x: rightCx - 78, y: midY + 22, width: 156, height: 168, fill: "transparent" }, hornG);
   zone(hornHit, `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`);
 }
 
-function drawWorld() {
-  const g = el("g", {});
-  const r = el("rect", { x: WORLD.x, y: WORLD.y, width: WORLD.w, height: WORLD.h, rx: 6,
-                         fill: cfg.props ? "#0c0d11" : "#08090b",
-                         stroke: cfg.props ? "#c9a84c" : "#2a251e", "stroke-width": 1.2 }, g);
-  if (!cfg.props) return;
-  const cx = WORLD.x + WORLD.w / 2;
-  txt("World", { x: cx, y: WORLD.y + 22, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": script, "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
-  txt("2/12: 26:5 · 3/11: 11:5", { x: cx, y: WORLD.y + 40, "text-anchor": "middle", fill: "#d8cfae",
-      "font-family": mono, "font-size": 9, "letter-spacing": 0 }, g);
-  txt("7: PUSH · $5 UNITS", { x: cx, y: WORLD.y + 55, "text-anchor": "middle", fill: "#5d5648",
-      "font-family": mono, "font-size": 8.5, "letter-spacing": 0.5 }, g);
-  zone(r, `WORLD — horn + any seven, $5 units · pushes on 7 · edge ${EDGE.world}`);
-}
 
 // ============================================================
 // Play area
@@ -624,7 +606,6 @@ function render() {
   drawAts();
   drawHops();
   drawProps();
-  drawWorld();
   drawBoxes();
   drawDontCome();
   drawCome();
