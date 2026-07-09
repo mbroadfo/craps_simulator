@@ -246,6 +246,8 @@ function drawDpLabels() {
   const dpFill = document.getElementById("dontpass-fill");
   passFill.setAttribute("fill", cfg.passDontPass ? "#12301e" : "#08090b");
   dpFill.setAttribute("fill", cfg.passDontPass ? "#241019" : "#08090b");
+  passFill.setAttribute("stroke", cfg.passDontPass ? "#c9a84c" : "#2a251e");
+  dpFill.setAttribute("stroke", cfg.passDontPass ? "#c9a84c" : "#2a251e");
   if (!cfg.passDontPass) {
     const g = el("g", {}, dpLabels);
     txt("PASS / DON'T PASS OFF", { x: 900, y: 690, "text-anchor": "middle",
