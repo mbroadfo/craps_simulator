@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Parametric Felt — ColorUp Study v5</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: #04060a;
@@ -105,10 +105,10 @@
 
   <!-- band labels -->
   <text x="795" y="694" text-anchor="middle" dominant-baseline="middle"
-        font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" font-weight="700"
+        font-family="'Playfair Display', Georgia, serif" font-size="30" font-weight="700"
         letter-spacing="14" fill="url(#ember)">PASS LINE</text>
   <text text-anchor="middle" dominant-baseline="middle"
-        font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="24" font-weight="700"
+        font-family="'Playfair Display', Georgia, serif" font-size="24" font-weight="700"
         letter-spacing="9" fill="url(#ember)" transform="translate(1351,440) rotate(-90)">PASS LINE</text>
 
   <g id="dp-labels"></g>
@@ -146,6 +146,7 @@ const readout = document.getElementById("readout");
 const barlow = "'Barlow Condensed', sans-serif";
 const mono = "'IBM Plex Mono', monospace";
 const script = "Georgia, 'Times New Roman', serif";
+const display = "'Playfair Display', Georgia, serif";
 
 // ============================================================
 // Geometry v5 — narrow prop rail (120px), wide play area
@@ -217,7 +218,7 @@ function drawDpLabels() {
   const g = el("g", {}, dpLabels);
   // The bet…
   txt("DON'T PASS", { x: 680, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#d8cfae", "font-family": script, "font-style": "italic",
+      fill: "#d8cfae", "font-family": display,
       "font-size": 17, "font-weight": 700, "letter-spacing": 4 }, g);
   // …and, well apart, the constraint
   txt("Bar", { x: 920, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
@@ -226,7 +227,7 @@ function drawDpLabels() {
 
   const rg = el("g", { transform: "translate(1298,400) rotate(-90)" }, g);
   txt("DON'T PASS", { "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#d8cfae", "font-family": script, "font-style": "italic",
+      fill: "#d8cfae", "font-family": display,
       "font-size": 14, "font-weight": 700, "letter-spacing": 3 }, rg);
   const rb = el("g", { transform: "translate(1298,540) rotate(-90)" }, g);
   txt("Bar", { "text-anchor": "middle", "dominant-baseline": "middle",
@@ -261,14 +262,14 @@ function drawAts() {
                    stroke: lit ? "#f3ce74" : "#4a3a1d", "stroke-width": 1.4,
                    ...(lit ? { filter: "drop-shadow(0 0 4px #e8a04a)" } : {}) }, g);
     txt(name, { x: cx, y: ATS.y + 38, "text-anchor": "middle", fill: lit ? "#f3ce74" : "#8a8171",
-                "font-family": barlow, "font-size": 9, "letter-spacing": 0.5 }, g);
+                "font-family": display, "font-size": 10, "font-weight": 700, "letter-spacing": 0.5 }, g);
   });
   // progress trackers: TALL 8..12, SMALL 2..6
   const rows = [["TALL", TALL_NUMS, "TALL"], ["SMALL", SMALL_NUMS, "SMALL"]];
   rows.forEach(([label, nums, key], rI) => {
     const cy = ATS.y + 66 + rI * 34;
-    txt(label, { x: ATS.x + 8, y: cy + 3, fill: "#5d5648", "font-family": barlow,
-                 "font-size": 8, "letter-spacing": 1 }, g);
+    txt(label, { x: ATS.x + 8, y: cy + 3, fill: "#5d5648", "font-family": mono,
+                 "font-size": 8.5, "letter-spacing": 0.5 }, g);
     nums.forEach((n, i) => {
       const cx = ATS.x + 78 + i * 46;
       const lit = cfg.atsLit[key];   // event-driven per number later; demo lights the row
@@ -279,7 +280,7 @@ function drawAts() {
     });
   });
   txt("ALL 175:1 · T/S 34:1", { x: ATS.x + ATS.w / 2, y: ATS.y + ATS.h - 8, "text-anchor": "middle",
-      fill: "#5d5648", "font-family": barlow, "font-size": 8.5, "letter-spacing": 0.5 }, g);
+      fill: "#5d5648", "font-family": mono, "font-size": 8.5, "letter-spacing": 0.5 }, g);
   zone(r, `ALL·TALL·SMALL — All 175:1 (edge ${EDGE.atsAll}) · Tall/Small 34:1 (edge ${EDGE.atsTS}) · circles track numbers hit this shooter`);
 }
 
@@ -294,13 +295,13 @@ function drawHops() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  txt("Hop Bets", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 22, "text-anchor": "middle",
-      fill: "url(#ember)", "font-family": script, "font-style": "italic",
-      "font-size": 17, "font-weight": 700 }, g);
-  txt("Pays 30:1", { x: HOPS.x + 62, y: HOPS.y + 40, "text-anchor": "middle",
-      fill: "#f3ce74", "font-family": barlow, "font-size": 9, "letter-spacing": 0.5 }, g);
-  txt("Pays 15:1", { x: HOPS.x + HOPS.w - 62, y: HOPS.y + 40, "text-anchor": "middle",
-      fill: "#8a8171", "font-family": barlow, "font-size": 9, "letter-spacing": 0.5 }, g);
+  txt("HOP BETS", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 22, "text-anchor": "middle",
+      fill: "url(#ember)", "font-family": display,
+      "font-size": 15, "font-weight": 700, "letter-spacing": 2 }, g);
+  txt("PAYS 30:1", { x: HOPS.x + 62, y: HOPS.y + 40, "text-anchor": "middle",
+      fill: "#f3ce74", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
+  txt("PAYS 15:1", { x: HOPS.x + HOPS.w - 62, y: HOPS.y + 40, "text-anchor": "middle",
+      fill: "#8a8171", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
 
   // top row: the four hardway pairs (amber)
   HOP_HARD.forEach(([a, b], i) => {
@@ -331,10 +332,10 @@ function drawProps() {
   const topBand = el("rect", { x: PROPS.x + 4, y: PROPS.y + 6, width: PROPS.w - 8, height: 30, rx: 4,
                                fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
                                "stroke-opacity": 0.5 }, g);
-  txt("Any Seven", { x: cx, y: PROPS.y + 19, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": script, "font-style": "italic", "font-size": 14, "font-weight": 700 }, g);
+  txt("ANY SEVEN", { x: cx, y: PROPS.y + 19, "text-anchor": "middle", fill: "url(#ember)",
+      "font-family": display, "font-size": 13, "font-weight": 700, "letter-spacing": 1.5 }, g);
   txt("4 TO 1", { x: cx, y: PROPS.y + 32, "text-anchor": "middle", fill: "#8a8171",
-      "font-family": barlow, "font-size": 9, "letter-spacing": 2 }, g);
+      "font-family": mono, "font-size": 9, "letter-spacing": 1 }, g);
   zone(topBand, `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
 
   // MIDDLE — hardway pairs flanking the Horn
@@ -345,7 +346,7 @@ function drawProps() {
     miniDie(cg, hx - 10, hy + 10, a, { s: 16, face: "#e8a04a" });
     miniDie(cg, hx + 10, hy + 10, a, { s: 16, face: "#e8a04a" });
     txt(pays, { x: hx, y: hy + 30, "text-anchor": "middle", fill: "#d8cfae",
-        "font-family": barlow, "font-size": 12, "letter-spacing": 0.5 }, cg);
+        "font-family": mono, "font-size": 11, "letter-spacing": 0 }, cg);
     const hit = el("rect", { x: hx - 24, y: hy - 4, width: 48, height: 44, fill: "transparent" }, cg);
     zone(hit, `${name} — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`);
   };
@@ -369,7 +370,7 @@ function drawProps() {
   txt("15:1", { x: cx, y: midY + 102, "text-anchor": "middle", fill: "#f3ce74",
       "font-family": mono, "font-size": 9, "font-weight": 700 }, hornG);
   txt("$4 UNITS", { x: cx, y: midY + 118, "text-anchor": "middle", fill: "#5d5648",
-      "font-family": barlow, "font-size": 8, "letter-spacing": 1 }, hornG);
+      "font-family": mono, "font-size": 8, "letter-spacing": 0.5 }, hornG);
   const hornHit = el("rect", { x: cx - 34, y: midY + 8, width: 68, height: 114, fill: "transparent" }, hornG);
   zone(hornHit, `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`);
 
@@ -377,10 +378,10 @@ function drawProps() {
   const botBand = el("rect", { x: PROPS.x + 4, y: PROPS.y + PROPS.h - 36, width: PROPS.w - 8, height: 30, rx: 4,
                                fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
                                "stroke-opacity": 0.5 }, g);
-  txt("Any Craps", { x: cx, y: PROPS.y + PROPS.h - 23, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": script, "font-style": "italic", "font-size": 14, "font-weight": 700 }, g);
+  txt("ANY CRAPS", { x: cx, y: PROPS.y + PROPS.h - 23, "text-anchor": "middle", fill: "url(#ember)",
+      "font-family": display, "font-size": 13, "font-weight": 700, "letter-spacing": 1.5 }, g);
   txt("7 TO 1", { x: cx, y: PROPS.y + PROPS.h - 10, "text-anchor": "middle", fill: "#8a8171",
-      "font-family": barlow, "font-size": 9, "letter-spacing": 2 }, g);
+      "font-family": mono, "font-size": 9, "letter-spacing": 1 }, g);
   zone(botBand, `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 }
 
@@ -394,9 +395,9 @@ function drawWorld() {
   txt("World", { x: cx, y: WORLD.y + 22, "text-anchor": "middle", fill: "url(#ember)",
       "font-family": script, "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
   txt("2/12: 26:5 · 3/11: 11:5", { x: cx, y: WORLD.y + 40, "text-anchor": "middle", fill: "#d8cfae",
-      "font-family": barlow, "font-size": 9.5, "letter-spacing": 0.3 }, g);
+      "font-family": mono, "font-size": 9, "letter-spacing": 0 }, g);
   txt("7: PUSH · $5 UNITS", { x: cx, y: WORLD.y + 55, "text-anchor": "middle", fill: "#5d5648",
-      "font-family": barlow, "font-size": 8.5, "letter-spacing": 1 }, g);
+      "font-family": mono, "font-size": 8.5, "letter-spacing": 0.5 }, g);
   zone(r, `WORLD — horn + any seven, $5 units · pushes on 7 · edge ${EDGE.world}`);
 }
 
@@ -421,7 +422,7 @@ function drawBoxes() {
     // In front (bottom, player side): place / buy.
     const buyable = [4, 5, 9, 10].includes(n);
     txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: BOX.y + 26, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 1.2 }, g);
+        fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 0.5 }, g);
 
     const word = BOX_WORD[n];
     const midY = BOX.y + topH + (BOX.h - topH - botH) / 2 + 2;
@@ -431,12 +432,12 @@ function drawBoxes() {
                   "font-size": 56, "font-weight": 700 }, g);
     } else {
       txt(String(n), { x: x + BOX.w / 2, y: midY, "text-anchor": "middle", "dominant-baseline": "middle",
-                       fill: "url(#ember)", "font-family": barlow, "font-size": 96, "font-weight": 700 }, g);
+                       fill: "url(#ember)", "font-family": display, "font-size": 96, "font-weight": 700 }, g);
     }
     txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 9, "text-anchor": "middle",
-        fill: "#5d5648", "font-family": barlow, "font-size": 10, "letter-spacing": 1.5 }, g);
+        fill: "#5d5648", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
     txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: y2 + 26, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 13, "letter-spacing": 2 }, g);
+        fill: "#8a8171", "font-family": mono, "font-size": 10.5, "letter-spacing": 0.5 }, g);
 
     if (cfg.puck === n) {
       const p = el("g", { transform: `translate(${x + BOX.w - 24},${BOX.y + 24})` }, g);
@@ -463,9 +464,9 @@ function drawDontCome() {
                  "font-family": barlow, "font-size": 12, "font-weight": 700, "letter-spacing": 1 }, p);
   }
   txt("DON'T", { x: DC.x + DC.w / 2, y: DC.y + 104, "text-anchor": "middle", fill: "#d8cfae",
-                 "font-family": barlow, "font-size": 19, "font-weight": 600, "letter-spacing": 2 }, g);
+                 "font-family": display, "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
   txt("COME", { x: DC.x + DC.w / 2, y: DC.y + 130, "text-anchor": "middle", fill: "#d8cfae",
-                "font-family": barlow, "font-size": 19, "font-weight": 600, "letter-spacing": 2 }, g);
+                "font-family": display, "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
   txt("Bar", { x: DC.x + DC.w / 2, y: DC.y + 176, "text-anchor": "middle", fill: "#d8cfae",
                "font-family": script, "font-style": "italic", "font-size": 17 }, g);
   barTwelve(g, DC.x + DC.w / 2, DC.y + 204, 14);
@@ -499,7 +500,7 @@ function drawField() {
   txt("2", { x: leftCx, y: yAt(0), "text-anchor": "middle", "dominant-baseline": "middle",
              fill: "url(#ember)", "font-family": barlow, "font-size": 52, "font-weight": 700 }, g);
   txt(`PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: leftCx, y: yAt(0) - 52, "text-anchor": "middle",
-      fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
+      fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
 
   const m12 = cfg.field12;
   el("circle", { cx: rightCx, cy: yAt(1), r: 36, fill: "none", stroke: "#d8cfae",
@@ -507,7 +508,7 @@ function drawField() {
   txt("12", { x: rightCx, y: yAt(1), "text-anchor": "middle", "dominant-baseline": "middle",
               fill: "url(#ember)", "font-family": barlow, "font-size": 46, "font-weight": 700 }, g);
   txt(`PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: rightCx, y: yAt(1) - 52, "text-anchor": "middle",
-      fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
+      fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
 
   const mids = [3, 4, 9, 10, 11];
   mids.forEach((n, i) => {
@@ -522,7 +523,7 @@ function drawField() {
   });
 
   txt("FIELD", { x: FIELD.x + FIELD.w / 2, y: FIELD.y + FIELD.h - 38, "text-anchor": "middle",
-                 fill: "url(#ember)", "font-family": barlow, "font-size": 40, "font-weight": 700,
+                 fill: "url(#ember)", "font-family": display, "font-size": 40, "font-weight": 700,
                  "letter-spacing": 22 }, g);
   const edge = ((6 - cfg.field2 - cfg.field12) / 36 * 100).toFixed(2);
   zone(r, `FIELD — one roll · 3·4·9·10·11 even, 2 pays ${cfg.field2}×, 12 pays ${cfg.field12}× · edge ${edge}%`);
