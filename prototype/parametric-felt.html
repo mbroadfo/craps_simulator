@@ -208,13 +208,15 @@ const HOP_STYLE = {
   easy:  { fill: "#111214", ring: "#8a8171", text: "#d8cfae", pays: "15:1", payFill: "#8a8171" },
   seven: { fill: "#2a0f0c", ring: "#d95f4c", text: "#e8938a", pays: "15:1", payFill: "#d95f4c" },
 };
+const HOP_FACE = { hard: "#e8a04a", easy: "#efe7d3", seven: "#d95f4c" };
 function hopCell(g, x, y, w, h, a, b, kind) {
   const st = HOP_STYLE[kind];
   const c = el("rect", { x, y, width: w, height: h,
                          fill: st.fill, stroke: st.ring, "stroke-width": 1 }, g);
-  txt(`${a}-${b}`, { x: x + w / 2, y: y + h / 2 - 8, "text-anchor": "middle",
-      "dominant-baseline": "middle", fill: st.text, "font-family": mono, "font-size": 11 }, g);
-  txt(st.pays, { x: x + w / 2, y: y + h / 2 + 12, "text-anchor": "middle",
+  const dieY = y + h / 2 - 7, s = 15;
+  miniDie(g, x + w / 2 - (s / 2 + 1.5), dieY, a, { s, face: HOP_FACE[kind] });
+  miniDie(g, x + w / 2 + (s / 2 + 1.5), dieY, b, { s, face: HOP_FACE[kind] });
+  txt(st.pays, { x: x + w / 2, y: y + h / 2 + 15, "text-anchor": "middle",
       fill: st.payFill, "font-family": mono, "font-size": 9,
       "font-weight": kind === "easy" ? 400 : 700 }, g);
   const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
@@ -315,8 +317,8 @@ function drawHops() {
     return;
   }
   // A connected 6-column grid of cells (no floating tokens, no header)
-  const gx = HOPS.x + 8, gy = HOPS.y + 8;
-  const cw = (HOPS.w - 16) / 6, ch = (HOPS.h - 16) / 4;
+  const gx = HOPS.x + 3, gy = HOPS.y + 3;
+  const cw = (HOPS.w - 6) / 6, ch = (HOPS.h - 6) / 4;
 
   // ROW 1 — hop the 7: three merged cells of two columns each
   HOP_SEVEN.forEach(([a, b], i) => {
