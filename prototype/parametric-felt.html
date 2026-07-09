@@ -219,7 +219,7 @@ const HOP_FACE = { hard: "#e8a04a", easy: "#efe7d3", seven: "#d95f4c" };
 function hopCell(g, x, y, w, h, a, b, kind) {
   const st = HOP_STYLE[kind];
   // Neutral cell — the color coding lives on the dice, not the felt
-  const c = el("rect", { x, y, width: w, height: h,
+  const c = el("rect", { x, y, width: w, height: h, rx: 3,
                          fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 0.8 }, g);
   const s = 24;  // uniform: hop-7 pairs match the hardway pairs below
   const dieY = y + h / 2 - 10;
@@ -373,7 +373,7 @@ function drawHops() {
   // ROW 4 — corners merged into HOP / BET, 6 and 8 third combos centered
   const r4y = gy + ch * 3;
   const labelCell = (x, w, label) => {
-    el("rect", { x, y: r4y, width: w, height: ch,
+    el("rect", { x, y: r4y, width: w, height: ch, rx: 3,
                  fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 0.8 }, g);
     txt(label, { x: x + w / 2, y: r4y + ch / 2 + 1, "text-anchor": "middle",
         "dominant-baseline": "middle", fill: "url(#ember)", "font-family": script,
@@ -429,7 +429,7 @@ function drawProps() {
   const cellW = gw / 2, cellH = 54;
 
   const pairCell = (x, y, a, b, pays, face, payFill, info, ox = 0, oy = 0) => {
-    const c = el("rect", { x, y, width: cellW, height: cellH,
+    const c = el("rect", { x, y, width: cellW, height: cellH, rx: 3,
                            fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1,
                            "stroke-opacity": 0.8 }, g);
     const ccx = x + cellW / 2 + ox, ccy = y + cellH / 2 + oy;
