@@ -418,7 +418,7 @@ function drawProps() {
         fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": 12, "font-weight": 700 }, g);
     zone(b, info);
   };
-  band(PROPS.y + 6, "ANY SEVEN", "4 TO 1",
+  band(PROPS.y + 8, "ANY SEVEN", "4 TO 1",
        `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
   band(PROPS.y + PROPS.h - (BAND_H + 6), "ANY CRAPS", "7 TO 1",
        `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
@@ -443,7 +443,7 @@ function drawProps() {
   };
 
   // Hardways 2x2
-  const hardY = PROPS.y + 44;
+  const hardY = PROPS.y + 46;
   const hards = [
     [3, "9:1", 0, 0, "HARD 6", EDGE.hard68], [4, "9:1", 1, 0, "HARD 8", EDGE.hard68],
     [2, "7:1", 0, 1, "HARD 4", EDGE.hard410], [5, "7:1", 1, 1, "HARD 10", EDGE.hard410],
