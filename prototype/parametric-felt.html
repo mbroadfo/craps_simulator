@@ -81,16 +81,23 @@
   <!-- The Don't Come box caps the vertical rails: it occupies the far
        top-right corner over the band lanes (x 1118-1224, y 16-256),
        and the bands terminate at its bottom edge.                  -->
-  <path d="M 1318,264 L 1318,634 A 24,24 0 0 1 1294,658 L 296,658 L 296,724 L 1384,724 L 1384,264 Z"
-        fill="#12301e"/>
-  <path d="M 1278,264 L 1278,598 A 20,20 0 0 1 1258,618 L 296,618 L 296,658 L 1294,658 A 24,24 0 0 0 1318,634 L 1318,264 Z"
-        fill="#241019"/>
-
-  <!-- gold separators (inner boundaries only — outer edge is the rail) -->
-  <path d="M 1318,264 L 1318,634 A 24,24 0 0 1 1294,658 L 296,658" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <path d="M 1278,264 L 1278,598 A 20,20 0 0 1 1258,618 L 296,618" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <line x1="296" y1="618" x2="296" y2="724" stroke="#c9a84c" stroke-width="1.5"/>
-  <line x1="1278" y1="264" x2="1384" y2="264" stroke="#c9a84c" stroke-width="1.5"/>
+  <!-- Both bands are rounded cards like every other section:
+       small radii at their ends, a broad sweep at the outer corner,
+       and the shared curve keeps them nested. -->
+  <path d="M 1328,264 L 1374,264 A 10,10 0 0 1 1384,274
+           L 1384,676 A 48,48 0 0 1 1336,724
+           L 306,724 A 10,10 0 0 1 296,714
+           L 296,668 A 10,10 0 0 1 306,658
+           L 1294,658 A 24,24 0 0 0 1318,634
+           L 1318,274 A 10,10 0 0 1 1328,264 Z"
+        fill="#12301e" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1286,264 L 1310,264 A 8,8 0 0 1 1318,272
+           L 1318,634 A 24,24 0 0 1 1294,658
+           L 304,658 A 8,8 0 0 1 296,650
+           L 296,626 A 8,8 0 0 1 304,618
+           L 1258,618 A 20,20 0 0 0 1278,598
+           L 1278,272 A 8,8 0 0 1 1286,264 Z"
+        fill="#241019" stroke="#c9a84c" stroke-width="1.5"/>
 
   <!-- rail on top so band fills tuck under it cleanly -->
   <rect width="1400" height="740" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
