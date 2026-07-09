@@ -219,7 +219,7 @@ function hopCell(g, x, y, w, h, a, b, kind) {
   // Neutral cell — the color coding lives on the dice, not the felt
   const c = el("rect", { x, y, width: w, height: h,
                          fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 0.8 }, g);
-  const s = kind === "seven" ? 26 : 22;
+  const s = 24;  // uniform: hop-7 pairs match the hardway pairs below
   const dieY = y + h / 2 - 10;
   miniDie(g, x + w / 2 - (s / 2 + 2), dieY, a, { s, face: HOP_FACE[kind] });
   miniDie(g, x + w / 2 + (s / 2 + 2), dieY, b, { s, face: HOP_FACE[kind] });
@@ -292,13 +292,14 @@ function drawAts() {
       return;
     }
     const lit = cfg.atsLit[v];
+    // Direct SVG attributes only — nothing can override the dim border
     const c = el("circle", { cx, cy: trackY, r: 14,
-                   fill: lit ? "#4caf7d" : "#1a1a1a",
-                   stroke: lit ? "#7fd6a4" : "#4a4035", "stroke-width": 1.5,
+                   fill: lit ? "#4caf7d" : "#111111",
+                   stroke: lit ? "#7fd6a4" : "#7a6a40", "stroke-width": 1.5,
                    cursor: "pointer" }, g);
     txt(String(v), { x: cx, y: trackY + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
-        fill: lit ? "#0a2f1c" : "#4a4035", "font-family": display, "font-size": 12,
-        "font-weight": 700, "pointer-events": "none" }, g);
+        fill: lit ? "#0a2f1c" : "#7a6a40", "font-family": display,
+        "font-size": lit ? 12 : 11, "font-weight": 700, "pointer-events": "none" }, g);
     c.addEventListener("click", () => { cfg.atsLit[v] = !cfg.atsLit[v]; render(); });
     zone(c, `ATS tracker — ${v} ${lit ? "hit" : "not hit"} this shooter (click to toggle)`);
   });
@@ -339,9 +340,11 @@ function drawHops() {
   }
   // A connected 6-column grid of cells with a Big Red banner label
   const gx = HOPS.x + 3;
-  txt("Hop Big Red", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 15, "text-anchor": "middle",
-      fill: "#d95f4c", "font-family": script, "font-style": "italic",
-      "font-size": 14, "font-weight": 700 }, g);
+  txt("HOP 7", { x: HOPS.x + HOPS.w / 2 - 6, y: HOPS.y + 15, "text-anchor": "end",
+      fill: "url(#ember)", "font-family": display, "font-size": 14, "font-weight": 700,
+      "letter-spacing": 1.5 }, g);
+  txt("· 15:1", { x: HOPS.x + HOPS.w / 2 + 2, y: HOPS.y + 15, "text-anchor": "start",
+      fill: "#a08d5f", "font-family": mono, "font-size": 10 }, g);
   const gy = HOPS.y + 22;
   const cw = (HOPS.w - 6) / 6, ch = (HOPS.h - 25) / 4;
 
