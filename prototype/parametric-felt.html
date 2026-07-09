@@ -311,7 +311,7 @@ function drawAts() {
   // TOP — ten tracker circles with a gold "/" between small and tall
   const slots = [...SMALL_NUMS, "/", ...TALL_NUMS];
   const step = (ATS.w - 20) / slots.length;
-  const trackY = ATS.y + 26;
+  const trackY = ATS.y + 20;
   slots.forEach((v, i) => {
     const cx = ATS.x + 10 + step * (i + 0.5);
     if (v === "/") {
@@ -442,8 +442,8 @@ function drawProps() {
         fill: "#e8938a", "font-family": mono, "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
     zone(b, info);
   };
-  band(PROPS.y + 2, "ANY SEVEN", "4:1",
-       `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
+  band(PROPS.y + 2, "BIG RED", "4:1",
+       `BIG RED (ANY SEVEN) — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
   band(PROPS.y + PROPS.h - (BAND_H + 6), "ANY CRAPS", "7:1",
        `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 
@@ -473,8 +473,12 @@ function drawProps() {
     [2, "7:1", 0, 1, "HARD 4", EDGE.hard410], [5, "7:1", 1, 1, "HARD 10", EDGE.hard410],
   ];
   hards.forEach(([a, pays, col, row, name, edge]) => {
+    // Right column shifts right ~10px: the shared per-cell offset formula
+    // (dice left, payout trailing right) leaves a bigger outer margin on
+    // the right than the left has otherwise — this equalizes them.
+    const ox = col === 1 ? 10 : 0;
     pairCell(gx2 + col * cellW, hardY + row * cellH, a, a, pays, "#e8a04a", "#d8cfae",
-             `${name} (${a}-${a}) — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`);
+             `${name} (${a}-${a}) — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`, ox);
   });
 
   // Horn 2x2 beneath, with the Horn square overlaying its center
@@ -485,9 +489,12 @@ function drawProps() {
   ];
   horns.forEach(([a, b, pays, col, row]) => {
     // dice stay centered in their cells, same as the hardways grid above —
-    // the Horn Bet square below deliberately overlays the seam, not the dice
+    // the Horn Bet square below deliberately overlays the seam, not the dice.
+    // Right column (3, 12) shifts right ~10px to match the left column's
+    // outer margin, same reasoning as the hardways grid.
+    const ox = col === 1 ? 10 : 0;
     pairCell(gx2 + col * cellW, hornY + row * cellH, a, b, pays, "#d95f4c", "#f3ce74",
-             `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`);
+             `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`, ox);
   });
   // Taller and narrower, "Horn" over "Bet" — reads as a placard sitting
   // atop the grid rather than a wide label bar
