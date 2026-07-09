@@ -81,15 +81,16 @@
   <!-- The Don't Come box caps the vertical rails: it occupies the far
        top-right corner over the band lanes (x 1118-1224, y 16-256),
        and the bands terminate at its bottom edge.                  -->
-  <path d="M 1158,256 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658 L 136,724 L 1224,724 L 1224,256 Z"
+  <path d="M 1158,264 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658 L 136,724 L 1224,724 L 1224,264 Z"
         fill="#12301e"/>
-  <path d="M 1118,256 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618 L 136,658 L 1134,658 A 24,24 0 0 0 1158,634 L 1158,256 Z"
+  <path d="M 1118,264 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618 L 136,658 L 1134,658 A 24,24 0 0 0 1158,634 L 1158,264 Z"
         fill="#241019"/>
 
   <!-- gold separators (inner boundaries only — outer edge is the rail) -->
-  <path d="M 1158,256 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <path d="M 1118,256 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1158,264 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1118,264 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
   <line x1="136" y1="618" x2="136" y2="724" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="1118" y1="264" x2="1224" y2="264" stroke="#c9a84c" stroke-width="1.5"/>
 
   <!-- rail on top so band fills tuck under it cleanly -->
   <rect width="1240" height="740" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
@@ -148,7 +149,8 @@ const HOPS = { x: 16, y: 164, w: 120, h: 228 };
 const PROPS = { x: 16, y: 400, w: 120, h: 234 };
 const WORLD = { x: 16, y: 642, w: 120, h: 68 };
 
-const BOX = { x0: 144, y: 16, w: 140, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
+// Box row spans exactly the Come band width (x 144..1112)
+const BOX = { x0: 144, y: 16, w: (968 - 5 * 6) / 6, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
 const DC = { x: 1118, y: 16, w: 106, h: 240 };  // caps the vertical rails in the far top-right corner
 const COME = { x: 144, y: 262, w: 968, h: 142 };
 const FIELD = { x: 144, y: 410, w: 968, h: 200 };
