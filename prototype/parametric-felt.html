@@ -48,6 +48,7 @@
     <button id="tHops" class="on">HOPS</button>
     <button id="tProps" class="on">PROPS</button>
     <button id="tAts" class="on">ATS</button>
+    <button id="tLabels" class="on">LABELS</button>
   </div>
   <div class="grp"><label>ATS demo</label>
     <button id="aAll">ALL</button><button id="aTall">TALL</button><button id="aSmall">SMALL</button>
@@ -119,7 +120,7 @@
 const cfg = {
   puck: null,
   field2: 2, field12: 3,
-  hops: true, props: true, ats: true,
+  hops: true, props: true, ats: true, labels: true,
   atsLit: { ALL: false, TALL: false, SMALL: false },
 };
 
@@ -223,18 +224,19 @@ function drawDpLabels() {
       fill: "#d8cfae", "font-family": display,
       "font-size": 17, "font-weight": 700, "letter-spacing": 4 }, g);
   // …and, well apart, the constraint
-  txt("Bar", { x: 920, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#d8cfae", "font-family": script, "font-style": "italic", "font-size": 15 }, g);
-  barTwelve(g, 965, 638, 15);
+  txt("Bar", { x: 915, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "#d8cfae", "font-family": script, "font-style": "italic", "font-size": 18 }, g);
+  barTwelve(g, 968, 638, 19);
 
-  const rg = el("g", { transform: "translate(1298,400) rotate(-90)" }, g);
+  const rg = el("g", { transform: "translate(1298,440) rotate(-90)" }, g);
   txt("DON'T PASS", { "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "#d8cfae", "font-family": display,
       "font-size": 14, "font-weight": 700, "letter-spacing": 3 }, rg);
-  const rb = el("g", { transform: "translate(1298,540) rotate(-90)" }, g);
+  // Reading up the rail, Bar 12 continues AFTER Don't Pass (above it)
+  const rb = el("g", { transform: "translate(1298,330) rotate(-90)" }, g);
   txt("Bar", { "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#d8cfae", "font-family": script, "font-style": "italic", "font-size": 13 }, rb);
-  barTwelve(g, 1298, 580, 12);
+      fill: "#d8cfae", "font-family": script, "font-style": "italic", "font-size": 16 }, rb);
+  barTwelve(g, 1298, 293, 15);
 }
 
 // ============================================================
@@ -416,15 +418,17 @@ function drawBoxes() {
     const topH = 42, botH = 42;
     const y1 = BOX.y + topH, y2 = BOX.y + BOX.h - botH;
     el("line", { x1: x, y1, x2: x + BOX.w, y2: y1, stroke: "#c9a84c",
-                 "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
+                 "stroke-width": 1.4, "stroke-opacity": 0.75 }, g);
     el("line", { x1: x, y1: y2, x2: x + BOX.w, y2: y2, stroke: "#c9a84c",
-                 "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
+                 "stroke-width": 1.4, "stroke-opacity": 0.75 }, g);
 
     // Behind the number (top, dealer side): lay / don't-come points.
     // In front (bottom, player side): place / buy.
     const buyable = [4, 5, 9, 10].includes(n);
-    txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: BOX.y + 26, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 0.5 }, g);
+    if (cfg.labels) {
+      txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: BOX.y + 26, "text-anchor": "middle",
+          fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 0.5 }, g);
+    }
 
     const word = BOX_WORD[n];
     const midY = BOX.y + topH + (BOX.h - topH - botH) / 2 + 2;
@@ -438,10 +442,12 @@ function drawBoxes() {
       txt(String(n), { x: x + BOX.w / 2, y: midY, "text-anchor": "middle", "dominant-baseline": "middle",
                        fill: "url(#ember)", "font-family": display, "font-size": 96, "font-weight": 700 }, g);
     }
-    txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 9, "text-anchor": "middle",
-        fill: "#5d5648", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
-    txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: y2 + 26, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": mono, "font-size": 10.5, "letter-spacing": 0.5 }, g);
+    if (cfg.labels) {
+      txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 9, "text-anchor": "middle",
+          fill: "#5d5648", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
+      txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: y2 + 26, "text-anchor": "middle",
+          fill: "#8a8171", "font-family": mono, "font-size": 10.5, "letter-spacing": 0.5 }, g);
+    }
 
     if (cfg.puck === n) {
       const p = el("g", { transform: `translate(${x + BOX.w - 24},${BOX.y + 24})` }, g);
@@ -473,7 +479,7 @@ function drawDontCome() {
                 "font-family": display, "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
   txt("Bar", { x: DC.x + DC.w / 2, y: DC.y + 176, "text-anchor": "middle", fill: "#d8cfae",
                "font-family": script, "font-style": "italic", "font-size": 17 }, g);
-  barTwelve(g, DC.x + DC.w / 2, DC.y + 204, 14);
+  barTwelve(g, DC.x + DC.w / 2, DC.y + 204, 18);
   zone(r, "DON'T COME — even money once behind a number · bar 12 · edge 1.36%");
 }
 
@@ -486,6 +492,19 @@ function drawCome() {
                 "font-family": script, "font-style": "italic",
                 "font-size": 84, "font-weight": 700, "letter-spacing": 8 }, g);
   zone(r, "COME — even money, travels to the rolled number · edge 1.41%");
+}
+
+// "PAYS DOUBLE/TRIPLE" arched under a field circle, hugging its rim
+function arcLabel(g, id, cx, cy, label) {
+  el("path", { id, d: `M ${cx - 44},${cy + 22} A 48,48 0 0 0 ${cx + 44},${cy + 22}`,
+               fill: "none" }, g);
+  const t = el("text", { fill: "#8a8171", "font-family": mono, "font-size": 10,
+                         "letter-spacing": 1, "text-anchor": "middle" }, g);
+  const tp = document.createElementNS(SVG, "textPath");
+  tp.setAttribute("href", `#${id}`);
+  tp.setAttribute("startOffset", "50%");
+  tp.textContent = label;
+  t.appendChild(tp);
 }
 
 function drawField() {
@@ -503,16 +522,14 @@ function drawField() {
                  "stroke-width": m2 === 3 ? 2.2 : 1.4 }, g);
   txt("2", { x: leftCx, y: yAt(0), "text-anchor": "middle", "dominant-baseline": "middle",
              fill: "url(#ember)", "font-family": display, "font-size": 52, "font-weight": 900 }, g);
-  txt(`PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: leftCx, y: yAt(0) - 52, "text-anchor": "middle",
-      fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
+  arcLabel(g, "field-arc-2", leftCx, yAt(0), `PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`);
 
   const m12 = cfg.field12;
   el("circle", { cx: rightCx, cy: yAt(1), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m12 === 3 ? 2.2 : 1.4 }, g);
   txt("12", { x: rightCx, y: yAt(1), "text-anchor": "middle", "dominant-baseline": "middle",
               fill: "url(#ember)", "font-family": display, "font-size": 46, "font-weight": 900 }, g);
-  txt(`PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: rightCx, y: yAt(1) - 52, "text-anchor": "middle",
-      fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
+  arcLabel(g, "field-arc-12", rightCx, yAt(1), `PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`);
 
   const mids = [3, 4, 9, 10, 11];
   mids.forEach((n, i) => {
@@ -562,7 +579,7 @@ const f2 = document.getElementById("f2"), f12 = document.getElementById("f12");
 f2.addEventListener("click", () => { cfg.field2 = cfg.field2 === 2 ? 3 : 2; f2.textContent = cfg.field2 + "×"; render(); });
 f12.addEventListener("click", () => { cfg.field12 = cfg.field12 === 3 ? 2 : 3; f12.textContent = cfg.field12 + "×"; render(); });
 
-[["tHops", "hops"], ["tProps", "props"], ["tAts", "ats"]].forEach(([id, key]) => {
+[["tHops", "hops"], ["tProps", "props"], ["tAts", "ats"], ["tLabels", "labels"]].forEach(([id, key]) => {
   const b = document.getElementById(id);
   b.addEventListener("click", () => { cfg[key] = !cfg[key]; b.classList.toggle("on", cfg[key]); render(); });
 });
