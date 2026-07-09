@@ -433,11 +433,13 @@ function drawProps() {
                            fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
                            "stroke-opacity": 0.5 }, g);
     const midY = y + BAND_H / 2;
+    // Red, not ember: both bands are one-roll bets, same accent as
+    // Hop-the-7 and the Horn numbers use for the same reason
     txt(name, { x: cx - 8, y: midY, "text-anchor": "end", "dominant-baseline": "middle",
-        fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 14, "font-weight": 700,
+        fill: "#d95f4c", "font-family": display, "font-style": "italic", "font-size": 14, "font-weight": 700,
         "letter-spacing": 1.5 }, g);
     txt(pays, { x: cx + 10, y: midY, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
+        fill: "#e8938a", "font-family": mono, "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
     zone(b, info);
   };
   band(PROPS.y + 2, "ANY SEVEN", "4:1",
