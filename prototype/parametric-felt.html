@@ -146,8 +146,9 @@ const readout = document.getElementById("readout");
 const barlow = "'Barlow Condensed', sans-serif";
 const mono = "'IBM Plex Mono', monospace";
 const script = "Georgia, 'Times New Roman', serif";
-// Display face: Times New Roman — no webfont dependency, renders instantly
-const display = "'Times New Roman', Times, serif";
+// Display face: Georgia italic — same voice as Come/Six/Nine/Horn Bet
+const display = "Georgia, 'Times New Roman', serif";
+const displayStyle = "font-family:Georgia,'Times New Roman',serif;font-style:italic;";
 
 // ============================================================
 // Geometry v5 — narrow prop rail (120px), wide play area
@@ -234,15 +235,15 @@ function drawDpLabels() {
   const g = el("g", {}, dpLabels);
   // PASS LINE — bottom strip and rotated right rail
   txt("PASS LINE", { x: 795, y: 694, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "url(#ember)", "font-family": display, "font-size": 30, "font-weight": 700,
+      fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 30, "font-weight": 700,
       "letter-spacing": 14 }, g);
   const pr = el("g", { transform: "translate(1351,440) rotate(-90)" }, g);
   txt("PASS LINE", { "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "url(#ember)", "font-family": display, "font-size": 24, "font-weight": 700,
+      fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 24, "font-weight": 700,
       "letter-spacing": 9 }, pr);
   // The bet…
   txt("DON'T PASS", { x: 680, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#d8cfae", "font-family": display,
+      fill: "#d8cfae", "font-family": display, "font-style": "italic",
       "font-size": 17, "font-weight": 700, "letter-spacing": 4 }, g);
   // …and, well apart, the constraint
   txt("Bar", { x: 915, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
@@ -251,7 +252,7 @@ function drawDpLabels() {
 
   const rg = el("g", { transform: "translate(1298,440) rotate(-90)" }, g);
   txt("DON'T PASS", { "text-anchor": "middle", "dominant-baseline": "central",
-      fill: "#d8cfae", "font-family": display,
+      fill: "#d8cfae", "font-family": display, "font-style": "italic",
       "font-size": 18, "font-weight": 700, "letter-spacing": 3 }, rg);
   // Reading up the rail, Bar 12 continues AFTER Don't Pass (above it)
   const rb = el("g", { transform: "translate(1298,330) rotate(-90)" }, g);
@@ -288,7 +289,7 @@ function drawAts() {
     const cx = ATS.x + 10 + step * (i + 0.5);
     if (v === "/") {
       txt("/", { x: cx, y: trackY + 1, "text-anchor": "middle", "dominant-baseline": "middle",
-          fill: "#c9a84c", "font-family": display, "font-size": 22, "font-weight": 700 }, g);
+          fill: "#c9a84c", "font-family": display, "font-style": "italic", "font-size": 22, "font-weight": 700 }, g);
       return;
     }
     const lit = cfg.atsLit[v];
@@ -298,7 +299,7 @@ function drawAts() {
                    stroke: lit ? "#7fd6a4" : "#7a6a40", "stroke-width": 2,
                    cursor: "pointer" }, g);
     txt(String(v), { x: cx, y: trackY + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
-        fill: lit ? "#0a2f1c" : "#7a6a40", "font-family": display,
+        fill: lit ? "#0a2f1c" : "#7a6a40", "font-family": display, "font-style": "italic",
         "font-size": lit ? 12 : 11, "font-weight": 700, "pointer-events": "none" }, g);
     c.addEventListener("click", () => { cfg.atsLit[v] = !cfg.atsLit[v]; render(); });
     zone(c, `ATS tracker — ${v} ${lit ? "hit" : "not hit"} this shooter (click to toggle)`);
@@ -320,14 +321,14 @@ function drawAts() {
     xCursor += cw;
     const cell = el("rect", { x, y: gy, width: cw, height: chh,
                               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 0.8 }, g);
-    const pf = "font-family:'Times New Roman',Times,serif;font-weight:700;";
+    const pf = displayStyle + "font-weight:700;";
     txt(name, { x: x + cw / 2, y: gy + 22, "text-anchor": "middle",
-        fill: "#e8a04a", "font-family": display, "font-size": i === 1 ? 16 : 13,
+        fill: "#e8a04a", "font-family": display, "font-style": "italic", "font-size": i === 1 ? 16 : 13,
         "font-weight": 700, "letter-spacing": 1, style: pf }, g);
     txt(nums, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
         fill: "#a08d5f", "font-family": mono, "font-size": nums.length > 12 ? 11 : 10.5 }, g);
     txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
-        fill: "url(#ember-soft)", "font-family": display, "font-size": i === 1 ? 22 : 18,
+        fill: "url(#ember-soft)", "font-family": display, "font-style": "italic", "font-size": i === 1 ? 22 : 18,
         "font-weight": 700, style: pf }, g);
     zone(cell, `${name} — ${pays} · edge ${edge} · every number (${nums}) must hit before a 7`);
   });
@@ -400,7 +401,7 @@ function drawProps() {
                            fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
                            "stroke-opacity": 0.5 }, g);
     txt(name, { x: cx - 8, y: y + 16, "text-anchor": "end", "dominant-baseline": "middle",
-        fill: "url(#ember)", "font-family": display, "font-size": 13, "font-weight": 700,
+        fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 13, "font-weight": 700,
         "letter-spacing": 1.5 }, g);
     txt(pays, { x: cx + 10, y: y + 16, "text-anchor": "start", "dominant-baseline": "middle",
         fill: "#a08d5f", "font-family": mono, "font-size": 11, "font-weight": 700 }, g);
@@ -497,7 +498,7 @@ function drawBoxes() {
                   "font-size": 56, "font-weight": 700 }, g);
     } else {
       txt(String(n), { x: x + BOX.w / 2, y: midY, "text-anchor": "middle", "dominant-baseline": "middle",
-                       fill: "url(#ember)", "font-family": display, "font-size": 96, "font-weight": 700 }, g);
+                       fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 96, "font-weight": 700 }, g);
     }
     if (cfg.labels) {
       txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 9, "text-anchor": "middle",
@@ -510,7 +511,7 @@ function drawBoxes() {
       const p = el("g", { transform: `translate(${x + BOX.w - 24},${BOX.y + 24})` }, g);
       el("circle", { r: 16, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, p);
       txt("ON", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#20180f",
-                  "font-family": display, "font-size": 13, "font-weight": 700 }, p);
+                  "font-family": display, "font-style": "italic", "font-size": 13, "font-weight": 700 }, p);
     }
     const label = word || String(n);
     const info = `${label.toUpperCase()} — place ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
@@ -528,12 +529,12 @@ function drawDontCome() {
     const p = el("g", { transform: `translate(${DC.x + DC.w / 2},${DC.y + 42})` }, g);
     el("circle", { r: 18, fill: "#14100a", stroke: "#efe7d3", "stroke-width": 2 }, p);
     txt("OFF", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#efe7d3",
-                 "font-family": display, "font-size": 12, "font-weight": 700, "letter-spacing": 1 }, p);
+                 "font-family": display, "font-style": "italic", "font-size": 12, "font-weight": 700, "letter-spacing": 1 }, p);
   }
   txt("DON'T", { x: DC.x + DC.w / 2, y: DC.y + 104, "text-anchor": "middle", fill: "#d8cfae",
-                 "font-family": display, "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
+                 "font-family": display, "font-style": "italic", "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
   txt("COME", { x: DC.x + DC.w / 2, y: DC.y + 130, "text-anchor": "middle", fill: "#d8cfae",
-                "font-family": display, "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
+                "font-family": display, "font-style": "italic", "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
   txt("Bar", { x: DC.x + DC.w / 2, y: DC.y + 176, "text-anchor": "middle", fill: "#d8cfae",
                "font-family": script, "font-style": "italic", "font-size": 17 }, g);
   barTwelve(g, DC.x + DC.w / 2, DC.y + 204, 18);
@@ -578,30 +579,30 @@ function drawField() {
   el("circle", { cx: leftCx, cy: yAt(0), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m2 === 3 ? 2.2 : 1.4 }, g);
   txt("2", { x: leftCx, y: yAt(0), "text-anchor": "middle", "dominant-baseline": "middle",
-             fill: "url(#ember)", "font-family": display, "font-size": 52, "font-weight": 900 }, g);
+             fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 52, "font-weight": 900 }, g);
   arcLabel(g, "field-arc-2", leftCx, yAt(0), `PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`);
 
   const m12 = cfg.field12;
   el("circle", { cx: rightCx, cy: yAt(1), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m12 === 3 ? 2.2 : 1.4 }, g);
   txt("12", { x: rightCx, y: yAt(1), "text-anchor": "middle", "dominant-baseline": "middle",
-              fill: "url(#ember)", "font-family": display, "font-size": 46, "font-weight": 900 }, g);
+              fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 46, "font-weight": 900 }, g);
   arcLabel(g, "field-arc-12", rightCx, yAt(1), `PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`);
 
   const mids = [3, 4, 9, 10, 11];
   mids.forEach((n, i) => {
     const t = (i + 1) / 6;
     txt(String(n), { x: xAt(t), y: yAt(t), "text-anchor": "middle", "dominant-baseline": "middle",
-                     fill: "url(#ember)", "font-family": display, "font-size": 56, "font-weight": 900 }, g);
+                     fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 56, "font-weight": 900 }, g);
     if (i < mids.length - 1) {
       const tm = (i + 1.5) / 6;
       txt("·", { x: xAt(tm), y: yAt(tm), "text-anchor": "middle", "dominant-baseline": "middle",
-                 fill: "#d8cfae", "font-family": display, "font-size": 40 }, g);
+                 fill: "#d8cfae", "font-family": display, "font-style": "italic", "font-size": 40 }, g);
     }
   });
 
   txt("FIELD", { x: FIELD.x + FIELD.w / 2, y: FIELD.y + FIELD.h - 38, "text-anchor": "middle",
-                 fill: "url(#ember)", "font-family": display, "font-size": 40, "font-weight": 700,
+                 fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 40, "font-weight": 700,
                  "letter-spacing": 22 }, g);
   const edge = ((6 - cfg.field2 - cfg.field12) / 36 * 100).toFixed(2);
   zone(r, `FIELD — one roll · 3·4·9·10·11 even, 2 pays ${cfg.field2}×, 12 pays ${cfg.field12}× · edge ${edge}%`);
