@@ -310,18 +310,24 @@ function drawAts() {
     ["ALL TALL", "8·9·10·11·12", "34 to 1", EDGE.atsTS],
   ];
   const gx = ATS.x + 3, gy = ATS.y + 48;
-  const cw = (ATS.w - 6) / 3, chh = ATS.h - 51;
+  const chh = ATS.h - 51;
+  // Make'Em All gets the wide middle column
+  const widths = [104, (ATS.w - 6) - 208, 104];
+  let xCursor = gx;
   cells.forEach(([name, nums, pays, edge], i) => {
-    const x = gx + i * cw;
+    const x = xCursor, cw = widths[i];
+    xCursor += cw;
     const cell = el("rect", { x, y: gy, width: cw, height: chh,
                               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 0.8 }, g);
+    const pf = "font-family:'Playfair Display',Georgia,serif;font-weight:700;";
     txt(name, { x: x + cw / 2, y: gy + 22, "text-anchor": "middle",
-        fill: "#e8a04a", "font-family": display, "font-size": 13, "font-weight": 700,
-        "letter-spacing": 1 }, g);
+        fill: "#e8a04a", "font-family": display, "font-size": i === 1 ? 16 : 13,
+        "font-weight": 700, "letter-spacing": 1, style: pf }, g);
     txt(nums, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-size": nums.length > 12 ? 9.5 : 11 }, g);
+        fill: "#a08d5f", "font-family": mono, "font-size": nums.length > 12 ? 11 : 10.5 }, g);
     txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
-        fill: "url(#ember-soft)", "font-family": display, "font-size": 19, "font-weight": 700 }, g);
+        fill: "url(#ember-soft)", "font-family": display, "font-size": i === 1 ? 22 : 18,
+        "font-weight": 700, style: pf }, g);
     zone(cell, `${name} — ${pays} · edge ${edge} · every number (${nums}) must hit before a 7`);
   });
 }
@@ -339,11 +345,9 @@ function drawHops() {
   }
   // A connected 6-column grid of cells with a Big Red banner label
   const gx = HOPS.x + 3;
-  txt("HOP 7", { x: HOPS.x + HOPS.w / 2 - 6, y: HOPS.y + 15, "text-anchor": "end",
-      fill: "url(#ember)", "font-family": display, "font-size": 14, "font-weight": 700,
-      "letter-spacing": 1.5 }, g);
-  txt("· 15:1", { x: HOPS.x + HOPS.w / 2 + 2, y: HOPS.y + 15, "text-anchor": "start",
-      fill: "#a08d5f", "font-family": mono, "font-size": 10 }, g);
+  txt("Hop the Seven  15:1", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 15, "text-anchor": "middle",
+      fill: "#d95f4c", "font-family": script, "font-style": "italic",
+      "font-size": 15, "font-weight": 700 }, g);
   const gy = HOPS.y + 22;
   const cw = (HOPS.w - 6) / 6, ch = (HOPS.h - 25) / 4;
 
@@ -395,15 +399,16 @@ function drawProps() {
                            fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
                            "stroke-opacity": 0.5 }, g);
     txt(name, { x: cx - 8, y: y + 16, "text-anchor": "end", "dominant-baseline": "middle",
-        fill: "url(#ember)", "font-family": display, "font-size": 17, "font-weight": 700,
-        "letter-spacing": 1.5 }, g);
-    txt(pays, { x: cx + 8, y: y + 16, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: "#d8cfae", "font-family": mono, "font-size": 13, "font-weight": 700 }, g);
+        fill: "url(#ember)", "font-family": script, "font-style": "italic",
+        "font-size": 19, "font-weight": 700 }, g);
+    txt(pays, { x: cx + 10, y: y + 16, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: "#d8cfae", "font-family": script, "font-style": "italic",
+        "font-size": 15, "font-weight": 700 }, g);
     zone(b, info);
   };
-  band(PROPS.y + 6, "ANY SEVEN", "4 TO 1",
+  band(PROPS.y + 6, "Any Seven", "4 to 1",
        `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
-  band(PROPS.y + PROPS.h - 36, "ANY CRAPS", "7 TO 1",
+  band(PROPS.y + PROPS.h - 36, "Any Craps", "7 to 1",
        `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 
   // MIDDLE — Hardways grid (2x2, full width) with the Horn grid
@@ -411,10 +416,10 @@ function drawProps() {
   const gx2 = PROPS.x + 4, gw = PROPS.w - 8;
   const cellW = gw / 2, cellH = 54;
 
-  const pairCell = (x, y, a, b, pays, face, payFill, info) => {
+  const pairCell = (x, y, a, b, pays, face, payFill, info, ox = 0, oy = 0) => {
     const c = el("rect", { x, y, width: cellW, height: cellH,
                            fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 0.8 }, g);
-    const ccx = x + cellW / 2, ccy = y + cellH / 2;
+    const ccx = x + cellW / 2 + ox, ccy = y + cellH / 2 + oy;
     miniDie(g, ccx - 32, ccy, a, { s: 18, face });
     miniDie(g, ccx - 11, ccy, b, { s: 18, face });
     txt(pays, { x: ccx + 6, y: ccy, "text-anchor": "start", "dominant-baseline": "middle",
@@ -440,14 +445,17 @@ function drawProps() {
     [5, 6, "15:1", 0, 1], [6, 6, "30:1", 1, 1],
   ];
   horns.forEach(([a, b, pays, col, row]) => {
+    // push each pair toward its outer corner, clearing the Horn square
+    const ox = col === 0 ? -22 : 22, oy = row === 0 ? -6 : 6;
     pairCell(gx2 + col * cellW, hornY + row * cellH, a, b, pays, "#d95f4c", "#f3ce74",
-             `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`);
+             `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`,
+             ox, oy);
   });
-  el("rect", { x: cx - 36, y: hornY + cellH - 17, width: 72, height: 34, rx: 5,
-               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1 }, g);
+  el("rect", { x: cx - 46, y: hornY + cellH - 23, width: 92, height: 46, rx: 6,
+               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
   txt("Horn", { x: cx, y: hornY + cellH + 1, "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "url(#ember)", "font-family": script, "font-style": "italic",
-      "font-size": 18, "font-weight": 700 }, g);
+      "font-size": 22, "font-weight": 700 }, g);
 }
 
 
