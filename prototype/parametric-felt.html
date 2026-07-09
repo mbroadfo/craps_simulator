@@ -160,14 +160,17 @@ const FIELD = { x: 304, y: 410, w: 968, h: 200 };
 
 const BOX_WORD = { 6: "Six", 9: "Nine" };            // only Six and Nine
 
-// Hop combos grouped by payout (ColorUp card style, unordered tokens)
-const HOP_HARD = [[2, 2], [3, 3], [4, 4], [5, 5]];
-const HOP_EASY = [
-  [1, 3], [1, 4], [2, 3], [1, 5],
-  [2, 4], [2, 6], [3, 5], [3, 6],
-  [4, 5], [4, 6], [1, 6], [2, 5],
-  [3, 4],
+// Hop grid: unordered pairs only, arranged by point-number column.
+// kind: "hard" (amber 30:1) | "easy" (bone 15:1) | "seven" (red 15:1)
+const HOP_SEVEN = [[1, 6], [2, 5], [3, 4]];
+const HOP_GRID = [
+  // row 2 — hardways where the number has one
+  [[2, 2, "hard"], [1, 4, "easy"], [3, 3, "hard"], [4, 4, "hard"], [4, 5, "easy"], [5, 5, "hard"]],
+  // row 3 — easy ways
+  [[3, 1, "easy"], [2, 3, "easy"], [2, 4, "easy"], [3, 5, "easy"], [3, 6, "easy"], [4, 6, "easy"]],
 ];
+// row 4: cols 4/5 merge into "HOP", 6 & 8 third combos, cols 9/10 merge into "BET"
+const HOP_ROW4 = { six: [1, 5], eight: [2, 6] };
 
 function el(name, attrs, parent) {
   const n = document.createElementNS(SVG, name);
@@ -198,14 +201,22 @@ function barTwelve(g, cx, cy, s) {
   miniDie(g, cx - (s / 2 + 2), cy, 6, { s });
   miniDie(g, cx + (s / 2 + 2), cy, 6, { s });
 }
-// ColorUp hop token: small circle with "a-b" text, amber ring for hards
-function hopToken(g, cx, cy, a, b, hard) {
-  const c = el("circle", { cx, cy, r: 14,
-                           fill: hard ? "#2a1c08" : "#111214",
-                           stroke: hard ? "#e8a04a" : "#8a8171", "stroke-width": 1.2 }, g);
+// Hop token: small circle with "a-b" text. Amber = hard, bone = easy,
+// red tint = hop-the-seven.
+const HOP_STYLE = {
+  hard:  { fill: "#2a1c08", ring: "#e8a04a", text: "#f3ce74", pays: "30:1", payFill: "#f3ce74" },
+  easy:  { fill: "#111214", ring: "#8a8171", text: "#d8cfae", pays: "15:1", payFill: "#8a8171" },
+  seven: { fill: "#2a0f0c", ring: "#d95f4c", text: "#e8938a", pays: "15:1", payFill: "#d95f4c" },
+};
+function hopToken(g, cx, cy, a, b, kind) {
+  const st = HOP_STYLE[kind];
+  const c = el("circle", { cx, cy, r: 14, fill: st.fill, stroke: st.ring, "stroke-width": 1.2 }, g);
   txt(`${a}-${b}`, { x: cx, y: cy + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: hard ? "#f3ce74" : "#d8cfae", "font-family": mono, "font-size": 10 }, g);
-  zone(c, `HOP ${a}-${b}${hard ? " (hard)" : " (easy)"} — one roll · ${hard ? "30:1" : "15:1"} · edge ${hard ? EDGE.hopHard : EDGE.hopEasy}`);
+      fill: st.text, "font-family": mono, "font-size": 10 }, g);
+  txt(st.pays, { x: cx, y: cy + 24, "text-anchor": "middle", fill: st.payFill,
+      "font-family": mono, "font-size": 8.5, "font-weight": kind === "easy" ? 400 : 700 }, g);
+  const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
+  zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`);
 }
 
 function drawDpLabels() {
@@ -301,24 +312,39 @@ function drawHops() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  txt("HOP BETS", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 22, "text-anchor": "middle",
+  txt("HOP BETS", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 20, "text-anchor": "middle",
       fill: "url(#ember)", "font-family": display,
       "font-size": 15, "font-weight": 700, "letter-spacing": 2 }, g);
-  txt("PAYS 30:1", { x: HOPS.x + 62, y: HOPS.y + 40, "text-anchor": "middle",
-      fill: "#f3ce74", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
-  txt("PAYS 15:1", { x: HOPS.x + HOPS.w - 62, y: HOPS.y + 40, "text-anchor": "middle",
-      fill: "#8a8171", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
 
-  // top row: the four hardway pairs (amber)
-  HOP_HARD.forEach(([a, b], i) => {
-    hopToken(g, HOPS.x + 44 + i * 64, HOPS.y + 64, a, b, true);
+  // Column centers for the 6 point-number columns (4 5 6 8 9 10)
+  const colCx = (i) => HOPS.x + 30 + i * 44;
+
+  // ROW 1 — full width: HOP THE 7 (red tint), three combos
+  txt("HOP THE 7", { x: HOPS.x + 14, y: HOPS.y + 52, fill: "#d95f4c",
+      "font-family": mono, "font-size": 9, "letter-spacing": 1 }, g);
+  HOP_SEVEN.forEach(([a, b], i) => {
+    hopToken(g, colCx(3 + i), HOPS.y + 56, a, b, "seven");
   });
-  // remaining rows: easy ways, 4 columns
-  HOP_EASY.forEach(([a, b], i) => {
-    const col = i % 4, row = Math.floor(i / 4);
-    hopToken(g, HOPS.x + 44 + col * 64, HOPS.y + 100 + row * 33, a, b, false);
+
+  // ROWS 2-3 — one combo per point-number column
+  HOP_GRID.forEach((row, r) => {
+    row.forEach(([a, b, kind], i) => {
+      hopToken(g, colCx(i), HOPS.y + 104 + r * 48, a, b, kind);
+    });
   });
-  zone(frame, "HOP BETS — hard pairs 30:1 (amber), easy ways 15:1 · one roll");
+
+  // ROW 4 — corners merged, 6 and 8 third combos in the middle
+  const row4Y = HOPS.y + 200;
+  txt("HOP", { x: (colCx(0) + colCx(1)) / 2, y: row4Y + 5, "text-anchor": "middle",
+      fill: "url(#ember)", "font-family": display, "font-size": 16, "font-weight": 700,
+      "letter-spacing": 3 }, g);
+  hopToken(g, colCx(2), row4Y, HOP_ROW4.six[0], HOP_ROW4.six[1], "easy");
+  hopToken(g, colCx(3), row4Y, HOP_ROW4.eight[0], HOP_ROW4.eight[1], "easy");
+  txt("BET", { x: (colCx(4) + colCx(5)) / 2, y: row4Y + 5, "text-anchor": "middle",
+      fill: "url(#ember)", "font-family": display, "font-size": 16, "font-weight": 700,
+      "letter-spacing": 3 }, g);
+
+  zone(frame, "HOP BETS — hardways 30:1 (amber), easy ways 15:1, hop the 7 in red · one roll");
 }
 
 function drawProps() {
