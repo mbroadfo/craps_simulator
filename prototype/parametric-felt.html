@@ -105,11 +105,11 @@
 
   <!-- band labels -->
   <text x="795" y="694" text-anchor="middle" dominant-baseline="middle"
-        font-family="'Barlow Condensed', sans-serif" font-size="32" font-weight="700"
-        letter-spacing="18" fill="url(#ember)">PASS LINE</text>
+        font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700"
+        letter-spacing="14" fill="url(#ember)">PASS LINE</text>
   <text text-anchor="middle" dominant-baseline="middle"
-        font-family="'Barlow Condensed', sans-serif" font-size="26" font-weight="700"
-        letter-spacing="12" fill="url(#ember)" transform="translate(1351,440) rotate(-90)">PASS LINE</text>
+        font-family="Georgia, 'Times New Roman', serif" font-size="24" font-weight="700"
+        letter-spacing="9" fill="url(#ember)" transform="translate(1351,440) rotate(-90)">PASS LINE</text>
 
   <g id="dp-labels"></g>
 
@@ -215,13 +215,13 @@ function hopToken(g, cx, cy, a, b, hard) {
 function drawDpLabels() {
   dpLabels.replaceChildren();
   const g = el("g", {}, dpLabels);
-  txt("DON'T PASS BAR", { x: 740, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#d8cfae", "font-family": barlow, "font-size": 17, "font-weight": 600, "letter-spacing": 5 }, g);
-  barTwelve(g, 870, 638, 16);
-  const rg = el("g", { transform: "translate(1298,420) rotate(-90)" }, g);
+  txt("DON'T PASS BAR", { x: 730, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "#d8cfae", "font-family": script, "font-size": 16, "font-weight": 700, "letter-spacing": 4 }, g);
+  barTwelve(g, 905, 638, 16);
+  const rg = el("g", { transform: "translate(1298,410) rotate(-90)" }, g);
   txt("DON'T PASS BAR", { "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#d8cfae", "font-family": barlow, "font-size": 15, "font-weight": 600, "letter-spacing": 4 }, rg);
-  barTwelve(g, 1298, 545, 13);
+      fill: "#d8cfae", "font-family": script, "font-size": 14, "font-weight": 700, "letter-spacing": 3 }, rg);
+  barTwelve(g, 1298, 572, 13);
 }
 
 // ============================================================
