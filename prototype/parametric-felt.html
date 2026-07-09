@@ -420,10 +420,11 @@ function drawProps() {
     const c = el("rect", { x, y, width: cellW, height: cellH,
                            fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 0.8 }, g);
     const ccx = x + cellW / 2 + ox, ccy = y + cellH / 2 + oy;
-    miniDie(g, ccx - 32, ccy, a, { s: 18, face });
-    miniDie(g, ccx - 11, ccy, b, { s: 18, face });
-    txt(pays, { x: ccx + 6, y: ccy, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: payFill, "font-family": mono, "font-size": 12, "font-weight": 700 }, g);
+    // Same metrics as the hop grid: 24px dice, 11px bold mono payouts
+    miniDie(g, ccx - 40, ccy, a, { s: 24, face });
+    miniDie(g, ccx - 13, ccy, b, { s: 24, face });
+    txt(pays, { x: ccx + 4, y: ccy, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: payFill, "font-family": mono, "font-size": 11, "font-weight": 700 }, g);
     zone(c, info);
   };
 
