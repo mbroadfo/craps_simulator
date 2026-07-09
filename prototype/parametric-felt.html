@@ -427,7 +427,9 @@ function drawBoxes() {
     const word = BOX_WORD[n];
     const midY = BOX.y + topH + (BOX.h - topH - botH) / 2 + 2;
     if (word) {
-      txt(word, { x: x + BOX.w / 2, y: midY, "text-anchor": "middle", "dominant-baseline": "middle",
+      // Georgia italic has a higher optical center than Playfair digits;
+      // +8px drops Six/Nine onto the numerals' visual baseline.
+      txt(word, { x: x + BOX.w / 2, y: midY + 8, "text-anchor": "middle", "dominant-baseline": "middle",
                   fill: "url(#ember)", "font-family": script, "font-style": "italic",
                   "font-size": 56, "font-weight": 700 }, g);
     } else {
@@ -443,7 +445,7 @@ function drawBoxes() {
       const p = el("g", { transform: `translate(${x + BOX.w - 24},${BOX.y + 24})` }, g);
       el("circle", { r: 16, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, p);
       txt("ON", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#20180f",
-                  "font-family": barlow, "font-size": 13, "font-weight": 700 }, p);
+                  "font-family": display, "font-size": 13, "font-weight": 700 }, p);
     }
     const label = word || String(n);
     const info = `${label.toUpperCase()} — place ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
@@ -461,7 +463,7 @@ function drawDontCome() {
     const p = el("g", { transform: `translate(${DC.x + DC.w / 2},${DC.y + 42})` }, g);
     el("circle", { r: 18, fill: "#14100a", stroke: "#efe7d3", "stroke-width": 2 }, p);
     txt("OFF", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#efe7d3",
-                 "font-family": barlow, "font-size": 12, "font-weight": 700, "letter-spacing": 1 }, p);
+                 "font-family": display, "font-size": 12, "font-weight": 700, "letter-spacing": 1 }, p);
   }
   txt("DON'T", { x: DC.x + DC.w / 2, y: DC.y + 104, "text-anchor": "middle", fill: "#d8cfae",
                  "font-family": display, "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
@@ -498,7 +500,7 @@ function drawField() {
   el("circle", { cx: leftCx, cy: yAt(0), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m2 === 3 ? 2.2 : 1.4 }, g);
   txt("2", { x: leftCx, y: yAt(0), "text-anchor": "middle", "dominant-baseline": "middle",
-             fill: "url(#ember)", "font-family": barlow, "font-size": 52, "font-weight": 700 }, g);
+             fill: "url(#ember)", "font-family": display, "font-size": 52, "font-weight": 700 }, g);
   txt(`PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: leftCx, y: yAt(0) - 52, "text-anchor": "middle",
       fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
 
@@ -506,7 +508,7 @@ function drawField() {
   el("circle", { cx: rightCx, cy: yAt(1), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m12 === 3 ? 2.2 : 1.4 }, g);
   txt("12", { x: rightCx, y: yAt(1), "text-anchor": "middle", "dominant-baseline": "middle",
-              fill: "url(#ember)", "font-family": barlow, "font-size": 46, "font-weight": 700 }, g);
+              fill: "url(#ember)", "font-family": display, "font-size": 46, "font-weight": 700 }, g);
   txt(`PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: rightCx, y: yAt(1) - 52, "text-anchor": "middle",
       fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
 
@@ -514,11 +516,11 @@ function drawField() {
   mids.forEach((n, i) => {
     const t = (i + 1) / 6;
     txt(String(n), { x: xAt(t), y: yAt(t), "text-anchor": "middle", "dominant-baseline": "middle",
-                     fill: "url(#ember)", "font-family": barlow, "font-size": 56, "font-weight": 700 }, g);
+                     fill: "url(#ember)", "font-family": display, "font-size": 56, "font-weight": 700 }, g);
     if (i < mids.length - 1) {
       const tm = (i + 1.5) / 6;
       txt("·", { x: xAt(tm), y: yAt(tm), "text-anchor": "middle", "dominant-baseline": "middle",
-                 fill: "#d8cfae", "font-family": barlow, "font-size": 40 }, g);
+                 fill: "#d8cfae", "font-family": display, "font-size": 40 }, g);
     }
   });
 
