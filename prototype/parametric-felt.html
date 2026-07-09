@@ -24,9 +24,14 @@
   .controls button.on { background: #c9a84c; color: #14100a; border-color: #c9a84c; font-weight: 700; }
   #readout { font-size: 11px; color: #c9a84c; min-height: 16px; letter-spacing: 0.5px; }
   .caption { font-size: 10px; letter-spacing: 3px; opacity: .45; text-transform: uppercase; }
-  /* Fill the page: the SVG scales off its viewBox, so the whole felt
-     grows proportionally to the window width. */
-  #felt { width: 96vw; max-width: 1900px; height: auto; }
+  /* Fill the page but always fit: sized by whichever is tighter —
+     window width, or window height minus the controls/readout chrome
+     (~160px) converted through the 1240:740 aspect ratio. */
+  #felt {
+    width: min(96vw, calc((100vh - 160px) * 1.676));
+    max-width: 1900px;
+    height: auto;
+  }
 </style>
 </head>
 <body>
