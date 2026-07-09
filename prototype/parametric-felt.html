@@ -211,15 +211,15 @@ const HOP_STYLE = {
 const HOP_FACE = { hard: "#e8a04a", easy: "#efe7d3", seven: "#d95f4c" };
 function hopCell(g, x, y, w, h, a, b, kind) {
   const st = HOP_STYLE[kind];
+  // Neutral cell — the color coding lives on the dice, not the felt
   const c = el("rect", { x, y, width: w, height: h,
-                         fill: st.fill, stroke: st.ring, "stroke-width": 1 }, g);
+                         fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 0.8 }, g);
   const s = kind === "seven" ? 26 : 22;
-  const dieY = y + h / 2 - 9;
+  const dieY = y + h / 2 - 10;
   miniDie(g, x + w / 2 - (s / 2 + 2), dieY, a, { s, face: HOP_FACE[kind] });
   miniDie(g, x + w / 2 + (s / 2 + 2), dieY, b, { s, face: HOP_FACE[kind] });
-  txt(st.pays, { x: x + w / 2, y: y + h / 2 + 17, "text-anchor": "middle",
-      fill: st.payFill, "font-family": mono, "font-size": 8,
-      "font-weight": kind === "easy" ? 400 : 700 }, g);
+  txt(st.pays, { x: x + w / 2, y: y + h / 2 + 19, "text-anchor": "middle",
+      fill: st.payFill, "font-family": mono, "font-size": 11, "font-weight": 700 }, g);
   const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
   zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`);
 }
@@ -337,15 +337,15 @@ function drawHops() {
   const r4y = gy + ch * 3;
   const labelCell = (x, w, label) => {
     el("rect", { x, y: r4y, width: w, height: ch,
-                 fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 1 }, g);
+                 fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 0.8 }, g);
     txt(label, { x: x + w / 2, y: r4y + ch / 2 + 1, "text-anchor": "middle",
-        "dominant-baseline": "middle", fill: "url(#ember)", "font-family": display,
-        "font-size": 17, "font-weight": 700, "letter-spacing": 3 }, g);
+        "dominant-baseline": "middle", fill: "url(#ember)", "font-family": script,
+        "font-style": "italic", "font-size": 22, "font-weight": 700 }, g);
   };
-  labelCell(gx, cw * 2, "HOP");
+  labelCell(gx, cw * 2, "Hop");
   hopCell(g, gx + cw * 2, r4y, cw, ch, HOP_ROW4.six[0], HOP_ROW4.six[1], "easy");
   hopCell(g, gx + cw * 3, r4y, cw, ch, HOP_ROW4.eight[0], HOP_ROW4.eight[1], "easy");
-  labelCell(gx + cw * 4, cw * 2, "BET");
+  labelCell(gx + cw * 4, cw * 2, "Bet");
 
   zone(frame, "HOP BETS — hardways 30:1 (amber), easy ways 15:1, hop the 7 in red · one roll");
 }
