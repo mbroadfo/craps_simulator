@@ -86,15 +86,15 @@
        and the shared curve keeps them nested. -->
   <path d="M 1328,264 L 1374,264 A 10,10 0 0 1 1384,274
            L 1384,676 A 48,48 0 0 1 1336,724
-           L 306,724 A 10,10 0 0 1 296,714
-           L 296,668 A 10,10 0 0 1 306,658
+           L 314,724 A 10,10 0 0 1 304,714
+           L 304,668 A 10,10 0 0 1 314,658
            L 1294,658 A 24,24 0 0 0 1318,634
            L 1318,274 A 10,10 0 0 1 1328,264 Z"
         fill="#12301e" stroke="#c9a84c" stroke-width="1.5"/>
   <path d="M 1286,264 L 1310,264 A 8,8 0 0 1 1318,272
            L 1318,634 A 24,24 0 0 1 1294,658
-           L 304,658 A 8,8 0 0 1 296,650
-           L 296,626 A 8,8 0 0 1 304,618
+           L 312,658 A 8,8 0 0 1 304,650
+           L 304,626 A 8,8 0 0 1 312,618
            L 1258,618 A 20,20 0 0 0 1278,598
            L 1278,272 A 8,8 0 0 1 1286,264 Z"
         fill="#241019" stroke="#c9a84c" stroke-width="1.5"/>
@@ -407,9 +407,11 @@ function drawBoxes() {
     el("line", { x1: x, y1: y2, x2: x + BOX.w, y2: y2, stroke: "#c9a84c",
                  "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
 
+    // Behind the number (top, dealer side): lay / don't-come points.
+    // In front (bottom, player side): place / buy.
     const buyable = [4, 5, 9, 10].includes(n);
-    txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: BOX.y + 26, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 13, "letter-spacing": 2 }, g);
+    txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: BOX.y + 26, "text-anchor": "middle",
+        fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 1.2 }, g);
 
     const word = BOX_WORD[n];
     const midY = BOX.y + topH + (BOX.h - topH - botH) / 2 + 2;
@@ -423,8 +425,8 @@ function drawBoxes() {
     }
     txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 9, "text-anchor": "middle",
         fill: "#5d5648", "font-family": barlow, "font-size": 10, "letter-spacing": 1.5 }, g);
-    txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: y2 + 26, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 1.2 }, g);
+    txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: y2 + 26, "text-anchor": "middle",
+        fill: "#8a8171", "font-family": barlow, "font-size": 13, "letter-spacing": 2 }, g);
 
     if (cfg.puck === n) {
       const p = el("g", { transform: `translate(${x + BOX.w - 24},${BOX.y + 24})` }, g);
@@ -476,34 +478,35 @@ function drawField() {
   const r = el("rect", { x: FIELD.x, y: FIELD.y, width: FIELD.w, height: FIELD.h, rx: 10,
                          fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
 
-  const cy = FIELD.y + 82;
+  // Gentle arc: ends low, middle rises ~30px
   const leftCx = FIELD.x + 96, rightCx = FIELD.x + FIELD.w - 96;
+  const yAt = (t) => FIELD.y + 96 - 30 * Math.sin(Math.PI * t);
+  const xAt = (t) => leftCx + t * (rightCx - leftCx);
 
   const m2 = cfg.field2;
-  el("circle", { cx: leftCx, cy, r: 36, fill: "none", stroke: "#d8cfae",
+  el("circle", { cx: leftCx, cy: yAt(0), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m2 === 3 ? 2.2 : 1.4 }, g);
-  txt("2", { x: leftCx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+  txt("2", { x: leftCx, y: yAt(0), "text-anchor": "middle", "dominant-baseline": "middle",
              fill: "url(#ember)", "font-family": barlow, "font-size": 52, "font-weight": 700 }, g);
-  txt(`PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: leftCx, y: cy - 52, "text-anchor": "middle",
+  txt(`PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: leftCx, y: yAt(0) - 52, "text-anchor": "middle",
       fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
 
   const m12 = cfg.field12;
-  el("circle", { cx: rightCx, cy, r: 36, fill: "none", stroke: "#d8cfae",
+  el("circle", { cx: rightCx, cy: yAt(1), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m12 === 3 ? 2.2 : 1.4 }, g);
-  txt("12", { x: rightCx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+  txt("12", { x: rightCx, y: yAt(1), "text-anchor": "middle", "dominant-baseline": "middle",
               fill: "url(#ember)", "font-family": barlow, "font-size": 46, "font-weight": 700 }, g);
-  txt(`PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: rightCx, y: cy - 52, "text-anchor": "middle",
+  txt(`PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: rightCx, y: yAt(1) - 52, "text-anchor": "middle",
       fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
 
   const mids = [3, 4, 9, 10, 11];
-  const span = (rightCx - 60) - (leftCx + 60);
-  const step = span / (mids.length + 1);
   mids.forEach((n, i) => {
-    const cx = leftCx + 60 + step * (i + 1);
-    txt(String(n), { x: cx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+    const t = (i + 1) / 6;
+    txt(String(n), { x: xAt(t), y: yAt(t), "text-anchor": "middle", "dominant-baseline": "middle",
                      fill: "url(#ember)", "font-family": barlow, "font-size": 56, "font-weight": 700 }, g);
     if (i < mids.length - 1) {
-      txt("·", { x: cx + step / 2, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+      const tm = (i + 1.5) / 6;
+      txt("·", { x: xAt(tm), y: yAt(tm), "text-anchor": "middle", "dominant-baseline": "middle",
                  fill: "#d8cfae", "font-family": barlow, "font-size": 40 }, g);
     }
   });
