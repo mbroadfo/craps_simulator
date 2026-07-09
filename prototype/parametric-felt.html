@@ -50,6 +50,13 @@
     <button id="tAts" class="on">ATS</button>
     <button id="tLabels">BOX LABELS</button>
   </div>
+  <div class="grp"><label>Table</label>
+    <button id="tBoxes" class="on">BOXES</button>
+    <button id="tCome" class="on">COME</button>
+    <button id="tField" class="on">FIELD</button>
+    <button id="tPassDP" class="on">PASS/DP</button>
+    <button id="tDontCome" class="on">DON'T COME</button>
+  </div>
   <div class="grp"><label>ATS demo</label>
     <button id="aAll">ALL</button><button id="aTall">TALL</button><button id="aSmall">SMALL</button>
   </div>
@@ -89,14 +96,14 @@
   <!-- Both bands are rounded cards like every other section:
        small radii at their ends, a broad sweep at the outer corner,
        and the shared curve keeps them nested. -->
-  <path d="M 1328,264 L 1374,264 A 10,10 0 0 1 1384,274
+  <path id="pass-fill" d="M 1328,264 L 1374,264 A 10,10 0 0 1 1384,274
            L 1384,676 A 48,48 0 0 1 1336,724
            L 424,724 A 10,10 0 0 1 414,714
            L 414,668 A 10,10 0 0 1 424,658
            L 1294,658 A 24,24 0 0 0 1318,634
            L 1318,274 A 10,10 0 0 1 1328,264 Z"
         fill="#12301e" stroke="#c9a84c" stroke-width="1.5"/>
-  <path d="M 1286,264 L 1310,264 A 8,8 0 0 1 1318,272
+  <path id="dontpass-fill" d="M 1286,264 L 1310,264 A 8,8 0 0 1 1318,272
            L 1318,634 A 24,24 0 0 1 1294,658
            L 422,658 A 8,8 0 0 1 414,650
            L 414,626 A 8,8 0 0 1 422,618
@@ -125,6 +132,7 @@ const cfg = {
   puck: null,
   field2: 2, field12: 3,
   hops: true, props: true, ats: true, labels: false,
+  boxNums: true, come: true, field: true, passDontPass: true, dontCome: true,
   atsLit: { 2: false, 3: false, 4: false, 5: false, 6: false,
             8: false, 9: false, 10: false, 11: false, 12: false },
 };
@@ -233,6 +241,18 @@ function hopCell(g, x, y, w, h, a, b, kind) {
 
 function drawDpLabels() {
   dpLabels.replaceChildren();
+  // Dim the static band fills when off; skip their text/dice entirely
+  const passFill = document.getElementById("pass-fill");
+  const dpFill = document.getElementById("dontpass-fill");
+  passFill.setAttribute("fill", cfg.passDontPass ? "#12301e" : "#08090b");
+  dpFill.setAttribute("fill", cfg.passDontPass ? "#241019" : "#08090b");
+  if (!cfg.passDontPass) {
+    const g = el("g", {}, dpLabels);
+    txt("PASS / DON'T PASS OFF", { x: 900, y: 690, "text-anchor": "middle",
+        "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
+        "font-size": 13, "letter-spacing": 1.5 }, g);
+    return;
+  }
   const g = el("g", {}, dpLabels);
   // PASS LINE — bottom strip and rotated right rail
   txt("PASS LINE", { x: 795, y: 694, "text-anchor": "middle", "dominant-baseline": "middle",
@@ -483,6 +503,16 @@ function drawProps() {
 // Play area
 // ============================================================
 function drawBoxes() {
+  if (!cfg.boxNums) {
+    const g = el("g", {});
+    const w = BOX.w * 6 + BOX.gap * 5;
+    el("rect", { x: BOX.x0, y: BOX.y, width: w, height: BOX.h, rx: 4,
+                 fill: "#08090b", stroke: "#2a251e", "stroke-width": 1.2 }, g);
+    txt("BOX NUMBERS OFF", { x: BOX.x0 + w / 2, y: BOX.y + BOX.h / 2, "text-anchor": "middle",
+        "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
+        "font-size": 14, "letter-spacing": 2 }, g);
+    return;
+  }
   BOX.nums.forEach((n, i) => {
     const x = BOX.x0 + i * (BOX.w + BOX.gap);
     const g = el("g", {});
@@ -539,6 +569,14 @@ function drawBoxes() {
 
 function drawDontCome() {
   const g = el("g", {});
+  if (!cfg.dontCome) {
+    el("rect", { x: DC.x, y: DC.y, width: DC.w, height: DC.h, rx: 4,
+                 fill: "#08090b", stroke: "#2a251e", "stroke-width": 1.2 }, g);
+    txt("OFF", { x: DC.x + DC.w / 2, y: DC.y + DC.h / 2, "text-anchor": "middle",
+        "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
+        "font-size": 12, "letter-spacing": 2 }, g);
+    return;
+  }
   const r = el("rect", { x: DC.x, y: DC.y, width: DC.w, height: DC.h, rx: 4,
                          fill: "#100e14", stroke: "#d8cfae", "stroke-width": 1.2 }, g);
   if (cfg.puck === null) {
@@ -559,6 +597,14 @@ function drawDontCome() {
 
 function drawCome() {
   const g = el("g", {});
+  if (!cfg.come) {
+    el("rect", { x: COME.x, y: COME.y, width: COME.w, height: COME.h, rx: 10,
+                 fill: "#08090b", stroke: "#2a251e", "stroke-width": 1.2 }, g);
+    txt("COME OFF", { x: COME.x + COME.w / 2, y: COME.y + COME.h / 2, "text-anchor": "middle",
+        "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
+        "font-size": 14, "letter-spacing": 2 }, g);
+    return;
+  }
   const r = el("rect", { x: COME.x, y: COME.y, width: COME.w, height: COME.h, rx: 10,
                          fill: "#0d1210", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
   txt("Come", { x: COME.x + COME.w / 2, y: COME.y + COME.h / 2 + 4, "text-anchor": "middle",
@@ -584,6 +630,14 @@ function arcLabel(g, id, cx, cy, label) {
 
 function drawField() {
   const g = el("g", {});
+  if (!cfg.field) {
+    el("rect", { x: FIELD.x, y: FIELD.y, width: FIELD.w, height: FIELD.h, rx: 10,
+                 fill: "#08090b", stroke: "#2a251e", "stroke-width": 1.2 }, g);
+    txt("FIELD OFF", { x: FIELD.x + FIELD.w / 2, y: FIELD.y + FIELD.h / 2, "text-anchor": "middle",
+        "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
+        "font-size": 14, "letter-spacing": 2 }, g);
+    return;
+  }
   const r = el("rect", { x: FIELD.x, y: FIELD.y, width: FIELD.w, height: FIELD.h, rx: 10,
                          fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
 
@@ -653,7 +707,9 @@ const f2 = document.getElementById("f2"), f12 = document.getElementById("f12");
 f2.addEventListener("click", () => { cfg.field2 = cfg.field2 === 2 ? 3 : 2; f2.textContent = cfg.field2 + "×"; render(); });
 f12.addEventListener("click", () => { cfg.field12 = cfg.field12 === 3 ? 2 : 3; f12.textContent = cfg.field12 + "×"; render(); });
 
-[["tHops", "hops"], ["tProps", "props"], ["tAts", "ats"], ["tLabels", "labels"]].forEach(([id, key]) => {
+[["tHops", "hops"], ["tProps", "props"], ["tAts", "ats"], ["tLabels", "labels"],
+ ["tBoxes", "boxNums"], ["tCome", "come"], ["tField", "field"],
+ ["tPassDP", "passDontPass"], ["tDontCome", "dontCome"]].forEach(([id, key]) => {
   const b = document.getElementById(id);
   b.addEventListener("click", () => { cfg[key] = !cfg[key]; b.classList.toggle("on", cfg[key]); render(); });
 });
