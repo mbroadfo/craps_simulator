@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Parametric Felt — ColorUp Study v5</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: #04060a;
@@ -103,14 +103,8 @@
   <rect width="1400" height="740" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
   <rect x="3" y="3" width="1394" height="734" rx="14" fill="none" stroke="#a07030" stroke-width="1" stroke-opacity="0.5"/>
 
-  <!-- band labels -->
-  <text x="795" y="694" text-anchor="middle" dominant-baseline="middle"
-        font-family="'Playfair Display', Georgia, serif" font-size="30" font-weight="700"
-        letter-spacing="14" fill="url(#ember)">PASS LINE</text>
-  <text text-anchor="middle" dominant-baseline="middle"
-        font-family="'Playfair Display', Georgia, serif" font-size="24" font-weight="700"
-        letter-spacing="9" fill="url(#ember)" transform="translate(1351,440) rotate(-90)">PASS LINE</text>
-
+  <!-- band labels drawn by JS (drawDpLabels) so they render with the
+       loaded webfont, not the pre-load fallback -->
   <g id="dp-labels"></g>
 
   <!-- ================= INTERIOR (built by JS) ================= -->
@@ -216,6 +210,14 @@ function hopToken(g, cx, cy, a, b, hard) {
 function drawDpLabels() {
   dpLabels.replaceChildren();
   const g = el("g", {}, dpLabels);
+  // PASS LINE — bottom strip and rotated right rail
+  txt("PASS LINE", { x: 795, y: 694, "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "url(#ember)", "font-family": display, "font-size": 30, "font-weight": 700,
+      "letter-spacing": 14 }, g);
+  const pr = el("g", { transform: "translate(1351,440) rotate(-90)" }, g);
+  txt("PASS LINE", { "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "url(#ember)", "font-family": display, "font-size": 24, "font-weight": 700,
+      "letter-spacing": 9 }, pr);
   // The bet…
   txt("DON'T PASS", { x: 680, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "#d8cfae", "font-family": display,
@@ -500,7 +502,7 @@ function drawField() {
   el("circle", { cx: leftCx, cy: yAt(0), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m2 === 3 ? 2.2 : 1.4 }, g);
   txt("2", { x: leftCx, y: yAt(0), "text-anchor": "middle", "dominant-baseline": "middle",
-             fill: "url(#ember)", "font-family": display, "font-size": 52, "font-weight": 700 }, g);
+             fill: "url(#ember)", "font-family": display, "font-size": 52, "font-weight": 900 }, g);
   txt(`PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: leftCx, y: yAt(0) - 52, "text-anchor": "middle",
       fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
 
@@ -508,7 +510,7 @@ function drawField() {
   el("circle", { cx: rightCx, cy: yAt(1), r: 36, fill: "none", stroke: "#d8cfae",
                  "stroke-width": m12 === 3 ? 2.2 : 1.4 }, g);
   txt("12", { x: rightCx, y: yAt(1), "text-anchor": "middle", "dominant-baseline": "middle",
-              fill: "url(#ember)", "font-family": display, "font-size": 46, "font-weight": 700 }, g);
+              fill: "url(#ember)", "font-family": display, "font-size": 46, "font-weight": 900 }, g);
   txt(`PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: rightCx, y: yAt(1) - 52, "text-anchor": "middle",
       fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 1 }, g);
 
@@ -516,7 +518,7 @@ function drawField() {
   mids.forEach((n, i) => {
     const t = (i + 1) / 6;
     txt(String(n), { x: xAt(t), y: yAt(t), "text-anchor": "middle", "dominant-baseline": "middle",
-                     fill: "url(#ember)", "font-family": display, "font-size": 56, "font-weight": 700 }, g);
+                     fill: "url(#ember)", "font-family": display, "font-size": 56, "font-weight": 900 }, g);
     if (i < mids.length - 1) {
       const tm = (i + 1.5) / 6;
       txt("·", { x: xAt(tm), y: yAt(tm), "text-anchor": "middle", "dominant-baseline": "middle",
@@ -570,6 +572,8 @@ f12.addEventListener("click", () => { cfg.field12 = cfg.field12 === 3 ? 2 : 3; f
 });
 
 render();
+// Re-render once webfonts finish loading so nothing keeps the fallback face
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
 </script>
 </body>
 </html>
