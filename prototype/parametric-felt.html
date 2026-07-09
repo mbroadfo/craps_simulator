@@ -87,15 +87,15 @@
        and the shared curve keeps them nested. -->
   <path d="M 1328,264 L 1374,264 A 10,10 0 0 1 1384,274
            L 1384,676 A 48,48 0 0 1 1336,724
-           L 314,724 A 10,10 0 0 1 304,714
-           L 304,668 A 10,10 0 0 1 314,658
+           L 424,724 A 10,10 0 0 1 414,714
+           L 414,668 A 10,10 0 0 1 424,658
            L 1294,658 A 24,24 0 0 0 1318,634
            L 1318,274 A 10,10 0 0 1 1328,264 Z"
         fill="#12301e" stroke="#c9a84c" stroke-width="1.5"/>
   <path d="M 1286,264 L 1310,264 A 8,8 0 0 1 1318,272
            L 1318,634 A 24,24 0 0 1 1294,658
-           L 312,658 A 8,8 0 0 1 304,650
-           L 304,626 A 8,8 0 0 1 312,618
+           L 422,658 A 8,8 0 0 1 414,650
+           L 414,626 A 8,8 0 0 1 422,618
            L 1258,618 A 20,20 0 0 0 1278,598
            L 1278,272 A 8,8 0 0 1 1286,264 Z"
         fill="#241019" stroke="#c9a84c" stroke-width="1.5"/>
@@ -146,17 +146,17 @@ const display = "'Playfair Display', Georgia, serif";
 // ============================================================
 // Geometry v5 — narrow prop rail (120px), wide play area
 // ============================================================
-const RAIL = { x: 16, w: 280 };                       // left column
-const ATS = { x: 16, y: 16, w: 280, h: 140 };
-const HOPS = { x: 16, y: 164, w: 280, h: 228 };
-const PROPS = { x: 16, y: 400, w: 280, h: 234 };
-const WORLD = { x: 16, y: 642, w: 280, h: 68 };
+const RAIL = { x: 16, w: 390 };                       // left column
+const ATS = { x: 16, y: 16, w: 390, h: 140 };
+const HOPS = { x: 16, y: 164, w: 390, h: 228 };
+const PROPS = { x: 16, y: 400, w: 390, h: 234 };
+const WORLD = { x: 16, y: 642, w: 390, h: 68 };
 
-// Box row spans exactly the Come band width (x 144..1112)
-const BOX = { x0: 304, y: 16, w: (968 - 5 * 6) / 6, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
+// Box row spans exactly the Come band width (x 414..1272)
+const BOX = { x0: 414, y: 16, w: (858 - 5 * 6) / 6, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
 const DC = { x: 1278, y: 16, w: 106, h: 240 };  // caps the vertical rails in the far top-right corner
-const COME = { x: 304, y: 262, w: 968, h: 142 };
-const FIELD = { x: 304, y: 410, w: 968, h: 200 };
+const COME = { x: 414, y: 262, w: 858, h: 142 };
+const FIELD = { x: 414, y: 410, w: 858, h: 200 };
 
 const BOX_WORD = { 6: "Six", 9: "Nine" };            // only Six and Nine
 
@@ -195,7 +195,7 @@ function miniDie(g, cx, cy, v, opts) {
               4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]],
               6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
   const k = s / 3.9;
-  P[v].forEach(([dx, dy]) => el("circle", { cx: cx + dx * k, cy: cy + dy * k, r: s / 9.5, fill: "#20180f" }, g));
+  P[v].forEach(([dx, dy]) => el("circle", { cx: cx + dx * k, cy: cy + dy * k, r: s / 7.5, fill: "#20180f" }, g));
 }
 function barTwelve(g, cx, cy, s) {
   miniDie(g, cx - (s / 2 + 2), cy, 6, { s });
@@ -213,11 +213,12 @@ function hopCell(g, x, y, w, h, a, b, kind) {
   const st = HOP_STYLE[kind];
   const c = el("rect", { x, y, width: w, height: h,
                          fill: st.fill, stroke: st.ring, "stroke-width": 1 }, g);
-  const dieY = y + h / 2 - 7, s = 15;
-  miniDie(g, x + w / 2 - (s / 2 + 1.5), dieY, a, { s, face: HOP_FACE[kind] });
-  miniDie(g, x + w / 2 + (s / 2 + 1.5), dieY, b, { s, face: HOP_FACE[kind] });
-  txt(st.pays, { x: x + w / 2, y: y + h / 2 + 15, "text-anchor": "middle",
-      fill: st.payFill, "font-family": mono, "font-size": 9,
+  const s = kind === "seven" ? 26 : 22;
+  const dieY = y + h / 2 - 9;
+  miniDie(g, x + w / 2 - (s / 2 + 2), dieY, a, { s, face: HOP_FACE[kind] });
+  miniDie(g, x + w / 2 + (s / 2 + 2), dieY, b, { s, face: HOP_FACE[kind] });
+  txt(st.pays, { x: x + w / 2, y: y + h / 2 + 17, "text-anchor": "middle",
+      fill: st.payFill, "font-family": mono, "font-size": 8,
       "font-weight": kind === "easy" ? 400 : 700 }, g);
   const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
   zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`);
@@ -276,7 +277,7 @@ function drawAts() {
   // lamps
   const lamps = [["ALL", "175:1"], ["TALL", "34:1"], ["SMALL", "34:1"]];
   lamps.forEach(([name], i) => {
-    const cx = ATS.x + 56 + i * 88;
+    const cx = ATS.x + 78 + i * 122;
     const lit = cfg.atsLit[name];
     el("circle", { cx, cy: ATS.y + 20, r: 7,
                    fill: lit ? "#e8a04a" : "#1a1712",
@@ -292,7 +293,7 @@ function drawAts() {
     txt(label, { x: ATS.x + 8, y: cy + 3, fill: "#5d5648", "font-family": mono,
                  "font-size": 8.5, "letter-spacing": 0.5 }, g);
     nums.forEach((n, i) => {
-      const cx = ATS.x + 78 + i * 46;
+      const cx = ATS.x + 104 + i * 66;
       const lit = cfg.atsLit[key];   // event-driven per number later; demo lights the row
       el("circle", { cx, cy, r: 11, fill: lit ? "#2a1c08" : "#111214",
                      stroke: lit ? "#e8a04a" : "#3c362c", "stroke-width": 1 }, g);
@@ -384,10 +385,10 @@ function drawProps() {
     const hit = el("rect", { x: hx - 24, y: hy - 4, width: 48, height: 44, fill: "transparent" }, cg);
     zone(hit, `${name} — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`);
   };
-  hardCell(PROPS.x + 52, 3, "9:1", "HARD 6 (3-3)", EDGE.hard68, 0);
-  hardCell(PROPS.x + 52, 2, "7:1", "HARD 4 (2-2)", EDGE.hard410, 1);
-  hardCell(PROPS.x + PROPS.w - 52, 4, "9:1", "HARD 8 (4-4)", EDGE.hard68, 0);
-  hardCell(PROPS.x + PROPS.w - 52, 5, "7:1", "HARD 10 (5-5)", EDGE.hard410, 1);
+  hardCell(PROPS.x + 72, 3, "9:1", "HARD 6 (3-3)", EDGE.hard68, 0);
+  hardCell(PROPS.x + 72, 2, "7:1", "HARD 4 (2-2)", EDGE.hard410, 1);
+  hardCell(PROPS.x + PROPS.w - 72, 4, "9:1", "HARD 8 (4-4)", EDGE.hard68, 0);
+  hardCell(PROPS.x + PROPS.w - 72, 5, "7:1", "HARD 10 (5-5)", EDGE.hard410, 1);
 
   // center: Horn Bet
   const hornG = el("g", {});
