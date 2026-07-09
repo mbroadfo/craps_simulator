@@ -60,6 +60,9 @@
   <div class="grp"><label>ATS demo</label>
     <button id="aAll">ALL</button><button id="aTall">TALL</button><button id="aSmall">SMALL</button>
   </div>
+  <div class="grp"><label>Chips (dev tool)</label>
+    <button id="clearChips">CLEAR ALL</button>
+  </div>
 </div>
 
 <svg id="felt" viewBox="0 0 1400 740" xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +127,7 @@
 </svg>
 
 <div id="readout">hover a zone…</div>
-<p class="caption">Parametric felt v5 — ColorUp proportions · no chips yet · 1240 × 740</p>
+<p class="caption">Parametric felt v5 — ColorUp proportions · click a zone to test chip placement, right-click to remove · 1240 × 740</p>
 
 <script>
 "use strict";
@@ -198,9 +201,50 @@ function txt(content, attrs, parent) {
   t.textContent = content;
   return t;
 }
-function zone(node, info) {
+// Chip placement is a DEV TOOL for validating bet-position coordinates
+// (T2), not the real interaction model — the live felt places chips from
+// BetPlaced/BetResolved events, never clicks. See chat notes.
+const chips = {};       // zoneId -> chip count
+const chipAnchors = {}; // zoneId -> {x, y} (felt coordinate the chip sits at)
+
+function zone(node, info, chipId, cx, cy) {
   node.addEventListener("mouseenter", () => { readout.textContent = info; });
   node.addEventListener("mouseleave", () => { readout.textContent = "hover a zone…"; });
+  if (!chipId) return;
+  chipAnchors[chipId] = { x: cx, y: cy };
+  node.style.cursor = "pointer";
+  node.addEventListener("click", () => {
+    chips[chipId] = (chips[chipId] || 0) + 1;
+    render();
+  });
+  node.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    if (!chips[chipId]) return;
+    chips[chipId] -= 1;
+    if (chips[chipId] <= 0) delete chips[chipId];
+    render();
+  });
+}
+
+// Casino-chip token: cream face, dashed gold edge ring
+function chipToken(g, cx, cy) {
+  el("circle", { cx, cy, r: 12, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 1.5 }, g);
+  el("circle", { cx, cy, r: 8.5, fill: "none", stroke: "#c9a84c", "stroke-width": 1.2,
+                 "stroke-dasharray": "3 2" }, g);
+}
+
+function drawChipLayer() {
+  const g = el("g", {});
+  Object.entries(chips).forEach(([id, count]) => {
+    const anchor = chipAnchors[id];
+    if (!anchor || !count) return;
+    const shown = Math.min(count, 5);
+    for (let i = 0; i < shown; i++) chipToken(g, anchor.x, anchor.y - i * 3);
+    if (count > 5) {
+      txt(`+${count - 5}`, { x: anchor.x + 18, y: anchor.y - 12, "text-anchor": "middle",
+          fill: "#f3ce74", "font-family": mono, "font-size": 10, "font-weight": 700 }, g);
+    }
+  });
 }
 function miniDie(g, cx, cy, v, opts) {
   const { s = 14, face = "#efe7d3" } = opts || {};
@@ -236,7 +280,8 @@ function hopCell(g, x, y, w, h, a, b, kind) {
   txt(st.pays, { x: x + w / 2, y: y + h / 2 + 19, "text-anchor": "middle",
       fill: st.payFill, "font-family": mono, "font-style": "italic", "font-size": 14, "font-weight": 700 }, g);
   const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
-  zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`);
+  zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`,
+       `hop-${a}-${b}`, x + w / 2, y + h / 2 - 10);
 }
 
 function drawDpLabels() {
@@ -357,7 +402,8 @@ function drawAts() {
     txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
         fill: "url(#ember-soft)", "font-family": display, "font-style": "italic", "font-size": i === 1 ? 22 : 18,
         "font-weight": 700, style: pf }, g);
-    zone(cell, `${name} — ${pays} · edge ${edge} · every number (${nums}) must hit before a 7`);
+    zone(cell, `${name} — ${pays} · edge ${edge} · every number (${nums}) must hit before a 7`,
+         `ats-${name}`, x + cw / 2, gy + chh - 18);
   });
 }
 
@@ -440,7 +486,7 @@ function drawProps() {
         "letter-spacing": 1.5 }, g);
     txt(pays, { x: cx + 10, y: midY, "text-anchor": "start", "dominant-baseline": "middle",
         fill: "#e8938a", "font-family": mono, "font-style": "italic", "font-size": 20, "font-weight": 700 }, g);
-    zone(b, info);
+    zone(b, info, `band-${name}`, PROPS.x + PROPS.w - 40, midY);
   };
   band(PROPS.y + 2, "BIG RED", "4:1",
        `BIG RED (ANY SEVEN) — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
@@ -463,7 +509,7 @@ function drawProps() {
     miniDie(g, ccx - 11, ccy, b, { s: 28, face });
     txt(pays, { x: ccx + 12, y: ccy, "text-anchor": "start", "dominant-baseline": "middle",
         fill: payFill, "font-family": mono, "font-style": "italic", "font-size": 15, "font-weight": 700 }, g);
-    zone(c, info);
+    zone(c, info, `pair-${a}-${b}`, ccx - 26, ccy);
   };
 
   // Hardways 2x2
@@ -571,10 +617,14 @@ function drawBoxes() {
                   "font-family": display, "font-style": "italic", "font-size": 13, "font-weight": 700 }, p);
     }
     const label = word || String(n);
-    const info = `${label.toUpperCase()} — place ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
-      + (buyable ? ` · buy true odds −5% vig (edge ${EDGE.buy_on_win[n]})` : "")
-      + " · top: place/buy · center: come point + odds · bottom: lay/don't-come";
-    zone(outer, info);
+    const placeInfo = `PLACE ${label.toUpperCase()} — pays ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
+      + (buyable ? ` · or BUY at true odds −5% vig (edge ${EDGE.buy_on_win[n]})` : "");
+    const layInfo = `LAY / DON'T COME ${label.toUpperCase()} — click to test chip placement`;
+    zone(outer, `${label.toUpperCase()} — top: place/buy · center: come point + odds · bottom: lay/don't-come`);
+    const placeZone = el("rect", { x, y: y2, width: BOX.w, height: botH, fill: "transparent" }, g);
+    zone(placeZone, placeInfo, `place-${n}`, x + BOX.w / 2, y2 + botH / 2);
+    const layZone = el("rect", { x, y: BOX.y, width: BOX.w, height: topH, fill: "transparent" }, g);
+    zone(layZone, layInfo, `laydc-${n}`, x + BOX.w / 2, BOX.y + topH / 2);
   });
 }
 
@@ -603,7 +653,8 @@ function drawDontCome() {
   txt("Bar", { x: DC.x + DC.w / 2, y: DC.y + 176, "text-anchor": "middle", fill: "#d8cfae",
                "font-family": script, "font-style": "italic", "font-size": 17 }, g);
   barTwelve(g, DC.x + DC.w / 2, DC.y + 204, 18);
-  zone(r, "DON'T COME — even money once behind a number · bar 12 · edge 1.36%");
+  zone(r, "DON'T COME — even money once behind a number · bar 12 · edge 1.36%",
+       "dontcome", DC.x + DC.w / 2, DC.y + 140);
 }
 
 function drawCome() {
@@ -622,7 +673,8 @@ function drawCome() {
                 "dominant-baseline": "middle", fill: "#c8412f",
                 "font-family": script, "font-style": "italic",
                 "font-size": 84, "font-weight": 700, "letter-spacing": 8 }, g);
-  zone(r, "COME — even money, travels to the rolled number · edge 1.41%");
+  zone(r, "COME — even money, travels to the rolled number · edge 1.41%",
+       "come", COME.x + COME.w / 2, COME.y + COME.h - 26);
 }
 
 // "PAYS DOUBLE/TRIPLE" arched under a field circle, hugging its rim
@@ -687,7 +739,8 @@ function drawField() {
                  fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 40, "font-weight": 700,
                  "letter-spacing": 22 }, g);
   const edge = ((6 - cfg.field2 - cfg.field12) / 36 * 100).toFixed(2);
-  zone(r, `FIELD — one roll · 3·4·9·10·11 even, 2 pays ${cfg.field2}×, 12 pays ${cfg.field12}× · edge ${edge}%`);
+  zone(r, `FIELD — one roll · 3·4·9·10·11 even, 2 pays ${cfg.field2}×, 12 pays ${cfg.field12}× · edge ${edge}%`,
+       "field", FIELD.x + FIELD.w / 2, FIELD.y + FIELD.h - 60);
 }
 
 // ============================================================
@@ -703,6 +756,7 @@ function render() {
   drawDontCome();
   drawCome();
   drawField();
+  drawChipLayer();
 }
 
 document.querySelectorAll("[data-puck]").forEach(b => {
@@ -734,6 +788,11 @@ Object.entries(ATS_SETS).forEach(([id, nums]) => {
     b.classList.toggle("on", !allLit);
     render();
   });
+});
+
+document.getElementById("clearChips").addEventListener("click", () => {
+  Object.keys(chips).forEach(k => delete chips[k]);
+  render();
 });
 
 render();
