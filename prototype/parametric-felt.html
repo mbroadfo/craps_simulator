@@ -234,7 +234,7 @@ function hopCell(g, x, y, w, h, a, b, kind) {
   miniDie(g, x + w / 2 - (s / 2 + 2), dieY, a, { s, face: HOP_FACE[kind] });
   miniDie(g, x + w / 2 + (s / 2 + 2), dieY, b, { s, face: HOP_FACE[kind] });
   txt(st.pays, { x: x + w / 2, y: y + h / 2 + 19, "text-anchor": "middle",
-      fill: st.payFill, "font-family": mono, "font-style": "italic", "font-size": 11, "font-weight": 700 }, g);
+      fill: st.payFill, "font-family": mono, "font-style": "italic", "font-size": 14, "font-weight": 700 }, g);
   const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
   zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`);
 }
@@ -437,12 +437,12 @@ function drawProps() {
         fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 14, "font-weight": 700,
         "letter-spacing": 1.5 }, g);
     txt(pays, { x: cx + 10, y: midY, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": 12, "font-weight": 700 }, g);
+        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
     zone(b, info);
   };
-  band(PROPS.y + 2, "ANY SEVEN", "4 TO 1",
+  band(PROPS.y + 2, "ANY SEVEN", "4:1",
        `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
-  band(PROPS.y + PROPS.h - (BAND_H + 6), "ANY CRAPS", "7 TO 1",
+  band(PROPS.y + PROPS.h - (BAND_H + 6), "ANY CRAPS", "7:1",
        `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 
   // MIDDLE — Hardways grid (2x2, full width) with the Horn grid
