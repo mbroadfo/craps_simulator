@@ -78,16 +78,17 @@
        Don't Pass 40px: right x=[1118,1158], bottom y=[618,658]
        Both terminate at the Don't Come box row (full height right)
        and butt into the prop rail (x=136) at the bottom.        -->
-  <!-- Bands run full height; the Don't Come box sits in the corner
-       they form with the box row, right edge on the Don't Pass lane. -->
-  <path d="M 1158,16 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658 L 136,724 L 1224,724 L 1224,16 Z"
+  <!-- The Don't Come box caps the vertical rails: it occupies the far
+       top-right corner over the band lanes (x 1118-1224, y 16-256),
+       and the bands terminate at its bottom edge.                  -->
+  <path d="M 1158,256 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658 L 136,724 L 1224,724 L 1224,256 Z"
         fill="#12301e"/>
-  <path d="M 1118,16 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618 L 136,658 L 1134,658 A 24,24 0 0 0 1158,634 L 1158,16 Z"
+  <path d="M 1118,256 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618 L 136,658 L 1134,658 A 24,24 0 0 0 1158,634 L 1158,256 Z"
         fill="#241019"/>
 
   <!-- gold separators (inner boundaries only — outer edge is the rail) -->
-  <path d="M 1158,16 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <path d="M 1118,16 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1158,256 L 1158,634 A 24,24 0 0 1 1134,658 L 136,658" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1118,256 L 1118,598 A 20,20 0 0 1 1098,618 L 136,618" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
   <line x1="136" y1="618" x2="136" y2="724" stroke="#c9a84c" stroke-width="1.5"/>
 
   <!-- rail on top so band fills tuck under it cleanly -->
@@ -148,7 +149,7 @@ const PROPS = { x: 16, y: 400, w: 120, h: 234 };
 const WORLD = { x: 16, y: 642, w: 120, h: 68 };
 
 const BOX = { x0: 144, y: 16, w: 140, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
-const DC = { x: 1022, y: 16, w: 96, h: 240 };   // top-right corner, flush against the Don't Pass lane
+const DC = { x: 1118, y: 16, w: 106, h: 240 };  // caps the vertical rails in the far top-right corner
 const COME = { x: 144, y: 262, w: 968, h: 142 };
 const FIELD = { x: 144, y: 410, w: 968, h: 200 };
 
