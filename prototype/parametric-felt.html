@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Parametric Felt — ColorUp Study v3</title>
+<title>Parametric Felt — ColorUp Study v4</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,7 +47,7 @@
 </div>
 
 <svg id="felt" width="1240" height="740" viewBox="0 0 1240 740" xmlns="http://www.w3.org/2000/svg"
-     aria-label="Craps table — parametric felt study v3, ColorUp idiom">
+     aria-label="Craps table — parametric felt study v4, ColorUp proportions">
   <defs>
     <radialGradient id="felt-bg" cx="42%" cy="42%" r="78%" gradientUnits="objectBoundingBox">
       <stop offset="0%" stop-color="#121317"/>
@@ -65,56 +65,42 @@
   <rect width="1240" height="740" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
   <rect x="3" y="3" width="1234" height="734" rx="14" fill="none" stroke="#a07030" stroke-width="1" stroke-opacity="0.5"/>
 
-  <!-- ================= BANDS v3 =================
-       Pass Line 70px : right x=[1170,1240] bottom y=[670,740]
-       Don't Pass 50px: right x=[1120,1170] bottom y=[620,670]
-       Corner center (1140,640): outer r=100, pass-inner/DP-outer r=30,
-       DP inner corner rounded r=24 at (1120,620) so the color flows
-       through the whole arc. Bands terminate at y=166 (Don't Come row);
-       they do not continue past it.                              -->
-  <path d="M 1170,166 L 1170,640 A 30,30 0 0 1 1140,670 L 0,670 L 0,740 L 1140,740 A 100,100 0 0 1 1240,640 L 1240,166 Z"
-        fill="#12301e" data-zone="pass"/>
-  <path d="M 1120,166 L 1120,596 A 24,24 0 0 1 1096,620 L 0,620 L 0,670 L 1140,670 A 30,30 0 0 0 1170,640 L 1170,166 Z"
-        fill="#241019" data-zone="dontpass"/>
+  <!-- ================= BANDS v4 (ColorUp proportions) =============
+       Pass Line 66px : right x=[1158,1224]  bottom y=[658,724]
+       Don't Pass 40px: right x=[1118,1158]  bottom y=[618,658]
+       Corner center (1134,634): outer r=90, shared arc r=24,
+       DP inner corner rounded r=20. Bands run full height on the
+       right and butt into the prop column (x=350) at the bottom. -->
+  <path d="M 1158,16 L 1158,634 A 24,24 0 0 1 1134,658 L 350,658 L 350,724 L 1134,724 A 90,90 0 0 1 1224,634 L 1224,16 Z"
+        fill="#12301e"/>
+  <path d="M 1118,16 L 1118,598 A 20,20 0 0 1 1098,618 L 350,618 L 350,658 L 1134,658 A 24,24 0 0 0 1158,634 L 1158,16 Z"
+        fill="#241019"/>
 
   <!-- gold separators -->
-  <path d="M 1170,166 L 1170,640 A 30,30 0 0 1 1140,670 L 0,670" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <path d="M 1120,166 L 1120,596 A 24,24 0 0 1 1096,620 L 0,620" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <line x1="1120" y1="166" x2="1240" y2="166" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1158,16 L 1158,634 A 24,24 0 0 1 1134,658 L 350,658" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <path d="M 1118,16 L 1118,598 A 20,20 0 0 1 1098,618 L 350,618" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="350" y1="618" x2="350" y2="724" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="1118" y1="16" x2="1224" y2="16" stroke="#c9a84c" stroke-width="1.5"/>
 
   <!-- band labels -->
-  <text x="540" y="706" text-anchor="middle" dominant-baseline="middle"
-        font-family="'Barlow Condensed', sans-serif" font-size="30" font-weight="700"
-        letter-spacing="16" fill="url(#ember)">PASS LINE</text>
+  <text x="720" y="694" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Barlow Condensed', sans-serif" font-size="32" font-weight="700"
+        letter-spacing="18" fill="url(#ember)">PASS LINE</text>
   <text text-anchor="middle" dominant-baseline="middle"
-        font-family="'Barlow Condensed', sans-serif" font-size="30" font-weight="700"
-        letter-spacing="16" fill="url(#ember)" transform="translate(1205,400) rotate(-90)">PASS LINE</text>
+        font-family="'Barlow Condensed', sans-serif" font-size="26" font-weight="700"
+        letter-spacing="12" fill="url(#ember)" transform="translate(1191,330) rotate(-90)">PASS LINE</text>
 
-  <g font-family="'Barlow Condensed', sans-serif" font-size="16" font-weight="600" letter-spacing="4" fill="#d8cfae">
-    <text x="500" y="645" text-anchor="middle" dominant-baseline="middle">DON'T PASS BAR</text>
-    <g transform="translate(632,645)">
-      <circle r="11" fill="none" stroke="#d8cfae" stroke-width="1.2"/>
-      <text text-anchor="middle" dominant-baseline="middle" font-size="11" letter-spacing="0">12</text>
-    </g>
-    <text text-anchor="middle" dominant-baseline="middle" transform="translate(1145,430) rotate(-90)">DON'T PASS BAR</text>
-    <g transform="translate(1145,290)">
-      <circle r="11" fill="none" stroke="#d8cfae" stroke-width="1.2"/>
-      <text text-anchor="middle" dominant-baseline="middle" font-size="11" letter-spacing="0">12</text>
-    </g>
-  </g>
+  <g id="dp-labels"></g>
 
   <!-- ================= INTERIOR (built by JS) ================= -->
   <g id="interior"></g>
 </svg>
 
 <div id="readout">hover a zone…</div>
-<p class="caption">Parametric felt v3 — geometry &amp; props study · no chips yet · 1240 × 740</p>
+<p class="caption">Parametric felt v4 — ColorUp proportions · no chips yet · 1240 × 740</p>
 
 <script>
 "use strict";
-// ============================================================
-// Config (mirrors TableOptions / D6)
-// ============================================================
 const cfg = {
   puck: null,
   field2: 2, field12: 3,
@@ -133,29 +119,31 @@ const EDGE = {
 
 const SVG = "http://www.w3.org/2000/svg";
 const interior = document.getElementById("interior");
+const dpLabels = document.getElementById("dp-labels");
 const readout = document.getElementById("readout");
 const barlow = "'Barlow Condensed', sans-serif";
 const mono = "'IBM Plex Mono', monospace";
+const script = "Georgia, 'Times New Roman', serif";
 
 // ============================================================
-// Geometry v3 — interior right boundary is the DP inner edge (x=1120)
-//   Left column x=[16,376]: ATS / HOP BETS / PROPS stacked, no gaps
-//   Right block  x=[384,1113]: box row + Don't Come, Come, Field
+// Geometry v4 — ColorUp proportions
+//   Left column x=[16,342] full height (bands butt into it)
+//   Play area  x=[358,1112], right bands at x=1118+
+//   Box row 240 tall (~34%), Come 142, Field 200 — the big three
 // ============================================================
-const LEFT = { x: 16, w: 360 };
-const ATS = { x: 16, y: 16, w: 360, h: 80 };
-const HOPS = { x: 16, y: 104, w: 360, h: 332 };
-const PROPS = { x: 16, y: 444, w: 360, h: 168 };
+const LEFT = { x: 16, w: 326 };
+const ATS = { x: 16, y: 16, w: 326, h: 68 };
+const HOPS = { x: 16, y: 92, w: 326, h: 312 };
+const PROPS = { x: 16, y: 412, w: 326, h: 312 };
 
-const RIGHT = { x: 384, xEnd: 1113 };
-const BOX = { x0: 384, y: 16, w: 100, h: 150, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
-const DC = { x: 1020, y: 16, w: 93, h: 150 };
-const COME = { x: 384, y: 172, w: 729, h: 90 };
-const FIELD = { x: 384, y: 268, w: 729, h: 132 };
+const BOX = { x0: 358, y: 16, w: 104, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
+const DC = { x: 1020, y: 16, w: 92, h: 240 };
+const COME = { x: 358, y: 262, w: 754, h: 142 };
+const FIELD = { x: 358, y: 410, w: 754, h: 200 };
 
-const BOX_WORD = { 6: "SIX", 8: "EIGHT", 9: "NINE" };
+const BOX_WORD = { 6: "Six", 8: "Eight", 9: "Nine" };
 
-// Redline #4 — exact ordered combos per number (hard pair last)
+// Ordered hop combos (hard pair last): 3/4/5/5/4/3 per number
 const HOP_COMBOS = {
   4: [[1, 3], [3, 1], [2, 2]],
   5: [[1, 4], [4, 1], [2, 3], [3, 2]],
@@ -180,9 +168,38 @@ function zone(node, info) {
   node.addEventListener("mouseenter", () => { readout.textContent = info; });
   node.addEventListener("mouseleave", () => { readout.textContent = "hover a zone…"; });
 }
+function miniDie(g, cx, cy, v, opts) {
+  const { s = 18, face = "#efe7d3" } = opts || {};
+  el("rect", { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: 3,
+               fill: face, stroke: "#20180f", "stroke-width": 1 }, g);
+  const P = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]],
+              4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]],
+              6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+  const k = s / 3.9;
+  P[v].forEach(([dx, dy]) => el("circle", { cx: cx + dx * k, cy: cy + dy * k, r: s / 9.5, fill: "#20180f" }, g));
+}
+
+// BAR shown ColorUp-style: a pair of sixes
+function barTwelve(g, cx, cy, s) {
+  miniDie(g, cx - (s / 2 + 2), cy, 6, { s });
+  miniDie(g, cx + (s / 2 + 2), cy, 6, { s });
+}
+
+// Don't Pass labels live on the static bands
+function drawDpLabels() {
+  dpLabels.replaceChildren();
+  const g = el("g", {}, dpLabels);
+  txt("DON'T PASS BAR", { x: 660, y: 638, "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "#d8cfae", "font-family": barlow, "font-size": 17, "font-weight": 600, "letter-spacing": 5 }, g);
+  barTwelve(g, 790, 638, 16);
+  const rg = el("g", { transform: "translate(1138,300) rotate(-90)" }, g);
+  txt("DON'T PASS BAR", { "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "#d8cfae", "font-family": barlow, "font-size": 15, "font-weight": 600, "letter-spacing": 4 }, rg);
+  barTwelve(g, 1138, 190, 13);
+}
 
 // ============================================================
-// Left column
+// Left column — ATS / HOPS / PROPS, full height
 // ============================================================
 function drawAts() {
   const g = el("g", {});
@@ -200,26 +217,16 @@ function drawAts() {
   groups.forEach(([name, pays], i) => {
     const cx = ATS.x + gw * i + gw / 2;
     const lit = cfg.atsLit[name];
-    el("circle", { cx: cx - 34, cy: ATS.y + ATS.h / 2, r: 9,
+    el("circle", { cx: cx - 32, cy: ATS.y + ATS.h / 2, r: 9,
                    fill: lit ? "#e8a04a" : "#1a1712",
                    stroke: lit ? "#f3ce74" : "#4a3a1d", "stroke-width": 1.5,
                    ...(lit ? { filter: "drop-shadow(0 0 5px #e8a04a)" } : {}) }, g);
-    txt(name, { x: cx - 18, y: ATS.y + ATS.h / 2 - 4, fill: lit ? "#f3ce74" : "#d8cfae",
-                "font-family": barlow, "font-size": 17, "font-weight": 700, "letter-spacing": 1.5 }, g);
-    txt(pays, { x: cx - 18, y: ATS.y + ATS.h / 2 + 14, fill: "#5d5648",
+    txt(name, { x: cx - 16, y: ATS.y + ATS.h / 2 - 4, fill: lit ? "#f3ce74" : "#d8cfae",
+                "font-family": barlow, "font-size": 16, "font-weight": 700, "letter-spacing": 1.5 }, g);
+    txt(pays, { x: cx - 16, y: ATS.y + ATS.h / 2 + 14, fill: "#5d5648",
                 "font-family": barlow, "font-size": 11, "letter-spacing": 1 }, g);
   });
   zone(r, `ALL·TALL·SMALL — All 175:1 (edge ${EDGE.atsAll}) · Tall/Small 34:1 (edge ${EDGE.atsTS}) · lamps mark completions this shooter`);
-}
-
-function miniDie(g, cx, cy, v, hard) {
-  const s = 18;
-  el("rect", { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: 3,
-               fill: hard ? "#f3ce74" : "#efe7d3", stroke: "#20180f", "stroke-width": 1 }, g);
-  const P = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]],
-              4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]],
-              6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
-  P[v].forEach(([dx, dy]) => el("circle", { cx: cx + dx * 4.6, cy: cy + dy * 4.6, r: 1.9, fill: "#20180f" }, g));
 }
 
 function drawHops() {
@@ -233,28 +240,29 @@ function drawHops() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  txt("HOP BETS", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 20, "text-anchor": "middle",
-      fill: "#d8cfae", "font-family": barlow, "font-size": 14, "font-weight": 700, "letter-spacing": 4 }, g);
+  txt("Hop Bets", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 24, "text-anchor": "middle",
+      fill: "url(#ember)", "font-family": script, "font-style": "italic",
+      "font-size": 20, "font-weight": 700, "letter-spacing": 2 }, g);
 
   const nums = BOX.nums;
-  const colW = (HOPS.w - 16) / nums.length;
+  const colW = (HOPS.w - 14) / nums.length;
   nums.forEach((n, i) => {
-    const x = HOPS.x + 8 + i * colW;
-    txt(String(n), { x: x + colW / 2, y: HOPS.y + 46, "text-anchor": "middle",
-        fill: "url(#ember)", "font-family": barlow, "font-size": 22, "font-weight": 700 }, g);
-    if (i > 0) el("line", { x1: x, y1: HOPS.y + 30, x2: x, y2: HOPS.y + HOPS.h - 8,
+    const x = HOPS.x + 7 + i * colW;
+    txt(String(n), { x: x + colW / 2, y: HOPS.y + 50, "text-anchor": "middle",
+        fill: "url(#ember)", "font-family": barlow, "font-size": 20, "font-weight": 700 }, g);
+    if (i > 0) el("line", { x1: x, y1: HOPS.y + 34, x2: x, y2: HOPS.y + HOPS.h - 8,
                             stroke: "#c9a84c", "stroke-width": 0.5, "stroke-opacity": 0.3 }, g);
 
     HOP_COMBOS[n].forEach(([a, b], j) => {
-      const cy = HOPS.y + 74 + j * 53;
+      const cy = HOPS.y + 76 + j * 49;
       const hard = a === b;
       const cellG = el("g", {}, g);
-      miniDie(cellG, x + colW / 2 - 11, cy, a, hard);
-      miniDie(cellG, x + colW / 2 + 11, cy, b, hard);
-      txt(hard ? "30:1" : "15:1", { x: x + colW / 2, y: cy + 22, "text-anchor": "middle",
+      miniDie(cellG, x + colW / 2 - 10.5, cy, a, { s: 17, face: hard ? "#f3ce74" : "#efe7d3" });
+      miniDie(cellG, x + colW / 2 + 10.5, cy, b, { s: 17, face: hard ? "#f3ce74" : "#efe7d3" });
+      txt(hard ? "30:1" : "15:1", { x: x + colW / 2, y: cy + 21, "text-anchor": "middle",
           fill: hard ? "#f3ce74" : "#8a8171", "font-family": mono,
-          "font-size": 10, "font-weight": hard ? 700 : 400 }, cellG);
-      const hit = el("rect", { x: x + 2, y: cy - 14, width: colW - 4, height: 44,
+          "font-size": 9.5, "font-weight": hard ? 700 : 400 }, cellG);
+      const hit = el("rect", { x: x + 1, y: cy - 13, width: colW - 2, height: 42,
                                fill: "transparent" }, cellG);
       zone(hit, `HOP ${a}-${b}${hard ? " (hard)" : " (easy)"} — one roll · ${hard ? "30:1" : "15:1"} · edge ${hard ? EDGE.hopHard : EDGE.hopEasy}`);
     });
@@ -271,11 +279,12 @@ function propCell(g, x, y, w, h, title, lines, info, enabled) {
         fill: "#3c362c", "font-family": barlow, "font-size": 10, "letter-spacing": 2 }, g);
     return;
   }
-  txt(title, { x: x + w / 2, y: y + 22, "text-anchor": "middle", fill: "url(#ember)",
-               "font-family": barlow, "font-size": 18, "font-weight": 700, "letter-spacing": 2.5 }, g);
+  txt(title, { x: x + w / 2, y: y + 34, "text-anchor": "middle", fill: "url(#ember)",
+               "font-family": script, "font-style": "italic", "font-size": 22, "font-weight": 700,
+               "letter-spacing": 1 }, g);
   lines.forEach((line, i) => {
-    txt(line, { x: x + w / 2, y: y + 42 + i * 15, "text-anchor": "middle", fill: "#d8cfae",
-                "font-family": barlow, "font-size": 11.5, "letter-spacing": 1 }, g);
+    txt(line, { x: x + w / 2, y: y + 64 + i * 20, "text-anchor": "middle", fill: "#d8cfae",
+                "font-family": barlow, "font-size": 13, "letter-spacing": 1.2 }, g);
   });
   zone(r, info);
 }
@@ -284,15 +293,14 @@ function drawProps() {
   const g = el("g", {});
   const colW = (PROPS.w - 8) / 2, rowH = (PROPS.h - 8) / 2;
   const cells = [
-    ["ANY SEVEN", ["PAYS 4:1"],
+    ["Any Seven", ["PAYS 4:1"],
       `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`, PROPS.x, PROPS.y],
-    ["ANY CRAPS", ["2 · 3 · 12 PAYS 7:1"],
+    ["Any Craps", ["2 · 3 · 12 PAYS 7:1"],
       `ANY CRAPS — one roll · 7:1 · edge ${EDGE.anyCraps}`, PROPS.x + colW + 8, PROPS.y],
-    // Redline #5: Horn payouts shown separately
-    ["HORN", ["2 & 12 PAY 30:1", "3 & 11 PAY 15:1", "$4 UNITS"],
+    ["Horn Bet", ["2 & 12 PAY 30:1", "3 & 11 PAY 15:1", "$4 UNITS"],
       `HORN — 4-way split, $4 units · 2/12 quarter pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`,
       PROPS.x, PROPS.y + rowH + 8],
-    ["WORLD", ["HORN + ANY SEVEN — $5 UNITS", "2/12: 26:5 · 3/11: 11:5 · 7: PUSH"],
+    ["World", ["HORN + ANY SEVEN — $5 UNITS", "2/12: 26:5 · 3/11: 11:5", "7: PUSH"],
       `WORLD — horn + any seven, $5 units · pushes on 7 · edge ${EDGE.world}`,
       PROPS.x + colW + 8, PROPS.y + rowH + 8],
   ];
@@ -301,7 +309,7 @@ function drawProps() {
 }
 
 // ============================================================
-// Right block
+// Play area — the big three bands
 // ============================================================
 function drawBoxes() {
   BOX.nums.forEach((n, i) => {
@@ -310,7 +318,7 @@ function drawBoxes() {
     const outer = el("rect", { x, y: BOX.y, width: BOX.w, height: BOX.h, rx: 4,
                                fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.4 }, g);
 
-    const topH = 34, botH = 36;
+    const topH = 42, botH = 42;
     const y1 = BOX.y + topH, y2 = BOX.y + BOX.h - botH;
     el("line", { x1: x, y1, x2: x + BOX.w, y2: y1, stroke: "#c9a84c",
                  "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
@@ -318,102 +326,116 @@ function drawBoxes() {
                  "stroke-width": 0.6, "stroke-opacity": 0.45 }, g);
 
     const buyable = [4, 5, 9, 10].includes(n);
-    txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: BOX.y + 22, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
+    txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: BOX.y + 26, "text-anchor": "middle",
+        fill: "#8a8171", "font-family": barlow, "font-size": 13, "letter-spacing": 2 }, g);
 
-    // Redline #3: 4 · 5 · Six · Eight · Nine · 10
-    const label = BOX_WORD[n] || String(n);
-    const isWord = label.length > 2;
-    txt(label, { x: x + BOX.w / 2, y: BOX.y + topH + (BOX.h - topH - botH) / 2 + 1,
-                 "text-anchor": "middle", "dominant-baseline": "middle", fill: "url(#ember)",
-                 "font-family": barlow, "font-size": isWord ? 30 : 52, "font-weight": 700,
-                 "letter-spacing": isWord ? 1 : 0 }, g);
-    txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 7, "text-anchor": "middle",
-        fill: "#5d5648", "font-family": barlow, "font-size": 9, "letter-spacing": 1.5 }, g);
-    txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: y2 + 22, "text-anchor": "middle",
-        fill: "#8a8171", "font-family": barlow, "font-size": 11, "letter-spacing": 1.2 }, g);
+    // ColorUp: digits in condensed block, Six/Eight/Nine in script
+    const word = BOX_WORD[n];
+    if (word) {
+      txt(word, { x: x + BOX.w / 2, y: BOX.y + topH + (BOX.h - topH - botH) / 2 + 2,
+                  "text-anchor": "middle", "dominant-baseline": "middle", fill: "url(#ember)",
+                  "font-family": script, "font-style": "italic", "font-size": 46, "font-weight": 700 }, g);
+    } else {
+      txt(String(n), { x: x + BOX.w / 2, y: BOX.y + topH + (BOX.h - topH - botH) / 2 + 2,
+                       "text-anchor": "middle", "dominant-baseline": "middle", fill: "url(#ember)",
+                       "font-family": barlow, "font-size": 88, "font-weight": 700 }, g);
+    }
+    txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 9, "text-anchor": "middle",
+        fill: "#5d5648", "font-family": barlow, "font-size": 10, "letter-spacing": 1.5 }, g);
+    txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: y2 + 26, "text-anchor": "middle",
+        fill: "#8a8171", "font-family": barlow, "font-size": 11.5, "letter-spacing": 1 }, g);
 
     if (cfg.puck === n) {
-      const p = el("g", { transform: `translate(${x + BOX.w - 20},${BOX.y + 20})` }, g);
-      el("circle", { r: 14, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, p);
+      const p = el("g", { transform: `translate(${x + BOX.w - 22},${BOX.y + 22})` }, g);
+      el("circle", { r: 15, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, p);
       txt("ON", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#20180f",
-                  "font-family": barlow, "font-size": 11, "font-weight": 700 }, p);
+                  "font-family": barlow, "font-size": 12, "font-weight": 700 }, p);
     }
-    const info = `${label} — place ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
+    const label = word || String(n);
+    const info = `${label.toUpperCase()} — place ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
       + (buyable ? ` · buy true odds −5% vig (edge ${EDGE.buy_on_win[n]})` : "")
       + " · top: place/buy · center: come point + odds · bottom: lay/don't-come";
     zone(outer, info);
   });
-
-  if (cfg.puck === null) {
-    const p = el("g", { transform: `translate(${COME.x + 24},${COME.y + 24})` });
-    el("circle", { r: 14, fill: "#14100a", stroke: "#4a3a1d", "stroke-width": 2 }, p);
-    txt("OFF", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#8a8171",
-                 "font-family": barlow, "font-size": 10, "font-weight": 700 }, p);
-  }
 }
 
-// Redline #7: compact transit box, right of the Ten
 function drawDontCome() {
   const g = el("g", {});
   const r = el("rect", { x: DC.x, y: DC.y, width: DC.w, height: DC.h, rx: 4,
                          fill: "#100e14", stroke: "#d8cfae", "stroke-width": 1.2 }, g);
-  txt("DON'T", { x: DC.x + DC.w / 2, y: DC.y + 42, "text-anchor": "middle", fill: "#d8cfae",
-                 "font-family": barlow, "font-size": 19, "font-weight": 600, "letter-spacing": 2.5 }, g);
-  txt("COME", { x: DC.x + DC.w / 2, y: DC.y + 66, "text-anchor": "middle", fill: "#d8cfae",
-                "font-family": barlow, "font-size": 19, "font-weight": 600, "letter-spacing": 2.5 }, g);
-  const c = el("g", { transform: `translate(${DC.x + DC.w / 2},${DC.y + 100})` }, g);
-  el("circle", { r: 10, fill: "none", stroke: "#d8cfae", "stroke-width": 1.2 }, c);
-  txt("12", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#d8cfae",
-              "font-family": barlow, "font-size": 11 }, c);
-  txt("BAR", { x: DC.x + DC.w / 2, y: DC.y + 128, "text-anchor": "middle", fill: "#8a8171",
-               "font-family": barlow, "font-size": 11, "letter-spacing": 2.5 }, g);
+  // OFF puck parks here, ColorUp-style, when no point is set
+  if (cfg.puck === null) {
+    const p = el("g", { transform: `translate(${DC.x + DC.w / 2},${DC.y + 42})` }, g);
+    el("circle", { r: 18, fill: "#14100a", stroke: "#efe7d3", "stroke-width": 2 }, p);
+    txt("OFF", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#efe7d3",
+                 "font-family": barlow, "font-size": 12, "font-weight": 700, "letter-spacing": 1 }, p);
+  }
+  txt("DON'T", { x: DC.x + DC.w / 2, y: DC.y + 104, "text-anchor": "middle", fill: "#d8cfae",
+                 "font-family": barlow, "font-size": 20, "font-weight": 600, "letter-spacing": 2.5 }, g);
+  txt("COME", { x: DC.x + DC.w / 2, y: DC.y + 130, "text-anchor": "middle", fill: "#d8cfae",
+                "font-family": barlow, "font-size": 20, "font-weight": 600, "letter-spacing": 2.5 }, g);
+  txt("Bar", { x: DC.x + DC.w / 2, y: DC.y + 176, "text-anchor": "middle", fill: "#d8cfae",
+               "font-family": script, "font-style": "italic", "font-size": 18 }, g);
+  barTwelve(g, DC.x + DC.w / 2, DC.y + 204, 15);
   zone(r, "DON'T COME — even money once behind a number · bar 12 · edge 1.36%");
 }
 
 function drawCome() {
   const g = el("g", {});
-  const r = el("rect", { x: COME.x, y: COME.y, width: COME.w, height: COME.h, rx: 4,
+  const r = el("rect", { x: COME.x, y: COME.y, width: COME.w, height: COME.h, rx: 10,
                          fill: "#0d1210", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
-  txt("Come", { x: COME.x + COME.w / 2, y: COME.y + COME.h / 2 + 2, "text-anchor": "middle",
+  txt("Come", { x: COME.x + COME.w / 2, y: COME.y + COME.h / 2 + 4, "text-anchor": "middle",
                 "dominant-baseline": "middle", fill: "#c8412f",
-                "font-family": "Georgia, serif", "font-style": "italic",
-                "font-size": 52, "font-weight": 700, "letter-spacing": 6 }, g);
+                "font-family": script, "font-style": "italic",
+                "font-size": 84, "font-weight": 700, "letter-spacing": 8 }, g);
   zone(r, "COME — even money, travels to the rolled number · edge 1.41%");
 }
 
-// Redlines #2/#8: field wins only — 2·3·4·9·10·11·12 — on a gentle arc.
-// (5, 6, 8 LOSE in the field; printing them would promise payouts the
-//  engine refuses. Flagged for Mike.)
+// ColorUp field: one big line — ②  3·4·9·10·11  ⑫ — FIELD beneath.
+// True winners only (5/6/8 lose in the field).
 function drawField() {
   const g = el("g", {});
-  const r = el("rect", { x: FIELD.x, y: FIELD.y, width: FIELD.w, height: FIELD.h, rx: 4,
+  const r = el("rect", { x: FIELD.x, y: FIELD.y, width: FIELD.w, height: FIELD.h, rx: 10,
                          fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 1.2 }, g);
 
-  const nums = [2, 3, 4, 9, 10, 11, 12];
-  const pad = 60;
-  const span = FIELD.w - pad * 2;
-  nums.forEach((n, i) => {
-    const t = i / (nums.length - 1);
-    const cx = FIELD.x + pad + t * span;
-    const cy = FIELD.y + 62 - 24 * Math.sin(Math.PI * t);   // gentle arc
-    const mult = n === 2 ? cfg.field2 : n === 12 ? cfg.field12 : null;
-    if (mult && mult >= 2) {
-      el("circle", { cx, cy, r: 25, fill: "none", stroke: "#d8cfae",
-                     "stroke-width": mult === 3 ? 2 : 1.2,
-                     "stroke-dasharray": mult === 3 ? "" : "4 3" }, g);
-    }
+  const cy = FIELD.y + 82;
+  const leftCx = FIELD.x + 90, rightCx = FIELD.x + FIELD.w - 90;
+
+  // circled 2
+  const m2 = cfg.field2;
+  el("circle", { cx: leftCx, cy, r: 36, fill: "none", stroke: "#d8cfae",
+                 "stroke-width": m2 === 3 ? 2.2 : 1.4 }, g);
+  txt("2", { x: leftCx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+             fill: "url(#ember)", "font-family": barlow, "font-size": 52, "font-weight": 700 }, g);
+  txt(`PAYS ${m2 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: leftCx, y: cy - 52, "text-anchor": "middle",
+      fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
+
+  // circled 12
+  const m12 = cfg.field12;
+  el("circle", { cx: rightCx, cy, r: 36, fill: "none", stroke: "#d8cfae",
+                 "stroke-width": m12 === 3 ? 2.2 : 1.4 }, g);
+  txt("12", { x: rightCx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+              fill: "url(#ember)", "font-family": barlow, "font-size": 46, "font-weight": 700 }, g);
+  txt(`PAYS ${m12 === 3 ? "TRIPLE" : "DOUBLE"}`, { x: rightCx, y: cy - 52, "text-anchor": "middle",
+      fill: "#8a8171", "font-family": barlow, "font-size": 12, "letter-spacing": 2 }, g);
+
+  // middle run: 3 · 4 · 9 · 10 · 11
+  const mids = [3, 4, 9, 10, 11];
+  const span = (rightCx - 60) - (leftCx + 60);
+  const step = span / (mids.length + 1);
+  mids.forEach((n, i) => {
+    const cx = leftCx + 60 + step * (i + 1);
     txt(String(n), { x: cx, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
-                     fill: "url(#ember)", "font-family": barlow, "font-size": 36, "font-weight": 700 }, g);
-    if (mult) {
-      txt(`PAYS ${mult === 3 ? "TRIPLE" : "DOUBLE"}`, { x: cx, y: cy + 41, "text-anchor": "middle",
-          fill: "#8a8171", "font-family": barlow, "font-size": 10, "letter-spacing": 1.5 }, g);
+                     fill: "url(#ember)", "font-family": barlow, "font-size": 56, "font-weight": 700 }, g);
+    if (i < mids.length - 1) {
+      txt("·", { x: cx + step / 2, y: cy, "text-anchor": "middle", "dominant-baseline": "middle",
+                 fill: "#d8cfae", "font-family": barlow, "font-size": 40 }, g);
     }
   });
 
-  txt("FIELD", { x: FIELD.x + FIELD.w / 2, y: FIELD.y + FIELD.h - 20, "text-anchor": "middle",
-                 fill: "#d8cfae", "font-family": barlow, "font-size": 24, "font-weight": 700,
-                 "letter-spacing": 14 }, g);
+  txt("FIELD", { x: FIELD.x + FIELD.w / 2, y: FIELD.y + FIELD.h - 38, "text-anchor": "middle",
+                 fill: "url(#ember)", "font-family": barlow, "font-size": 40, "font-weight": 700,
+                 "letter-spacing": 22 }, g);
   const edge = ((6 - cfg.field2 - cfg.field12) / 36 * 100).toFixed(2);
   zone(r, `FIELD — one roll · 3·4·9·10·11 even, 2 pays ${cfg.field2}×, 12 pays ${cfg.field12}× · edge ${edge}%`);
 }
@@ -423,6 +445,7 @@ function drawField() {
 // ============================================================
 function render() {
   interior.replaceChildren();
+  drawDpLabels();
   drawAts();
   drawHops();
   drawProps();
