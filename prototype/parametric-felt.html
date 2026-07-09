@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Parametric Felt — ColorUp Study v5</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: #04060a;
@@ -146,7 +146,8 @@ const readout = document.getElementById("readout");
 const barlow = "'Barlow Condensed', sans-serif";
 const mono = "'IBM Plex Mono', monospace";
 const script = "Georgia, 'Times New Roman', serif";
-const display = "'Playfair Display', Georgia, serif";
+// Display face: Times New Roman — no webfont dependency, renders instantly
+const display = "'Times New Roman', Times, serif";
 
 // ============================================================
 // Geometry v5 — narrow prop rail (120px), wide play area
@@ -319,7 +320,7 @@ function drawAts() {
     xCursor += cw;
     const cell = el("rect", { x, y: gy, width: cw, height: chh,
                               fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 0.8 }, g);
-    const pf = "font-family:'Playfair Display',Georgia,serif;font-weight:700;";
+    const pf = "font-family:'Times New Roman',Times,serif;font-weight:700;";
     txt(name, { x: x + cw / 2, y: gy + 22, "text-anchor": "middle",
         fill: "#e8a04a", "font-family": display, "font-size": i === 1 ? 16 : 13,
         "font-weight": 700, "letter-spacing": 1, style: pf }, g);
