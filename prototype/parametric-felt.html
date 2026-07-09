@@ -121,7 +121,8 @@ const cfg = {
   puck: null,
   field2: 2, field12: 3,
   hops: true, props: true, ats: true, labels: true,
-  atsLit: { ALL: false, TALL: false, SMALL: false },
+  atsLit: { 2: false, 3: false, 4: false, 5: false, 6: false,
+            8: false, 9: false, 10: false, 11: false, 12: false },
 };
 
 // Engine truth for the readout (exact values from craps/edge.py)
@@ -274,36 +275,52 @@ function drawAts() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  // lamps
-  const lamps = [["ALL", "175:1"], ["TALL", "34:1"], ["SMALL", "34:1"]];
-  lamps.forEach(([name], i) => {
-    const cx = ATS.x + 78 + i * 122;
-    const lit = cfg.atsLit[name];
-    el("circle", { cx, cy: ATS.y + 20, r: 7,
-                   fill: lit ? "#e8a04a" : "#1a1712",
-                   stroke: lit ? "#f3ce74" : "#4a3a1d", "stroke-width": 1.4,
+
+  // TOP — ten tracker circles with a gold "/" between small and tall
+  const slots = [...SMALL_NUMS, "/", ...TALL_NUMS];
+  const step = (ATS.w - 20) / slots.length;
+  const trackY = ATS.y + 26;
+  slots.forEach((v, i) => {
+    const cx = ATS.x + 10 + step * (i + 0.5);
+    if (v === "/") {
+      txt("/", { x: cx, y: trackY + 1, "text-anchor": "middle", "dominant-baseline": "middle",
+          fill: "#c9a84c", "font-family": display, "font-size": 22, "font-weight": 700 }, g);
+      return;
+    }
+    const lit = cfg.atsLit[v];
+    const c = el("circle", { cx, cy: trackY, r: 11,
+                   fill: lit ? "#e8a04a" : "#111214",
+                   stroke: lit ? "#f3ce74" : "#6b6355", "stroke-width": 1.3,
+                   cursor: "pointer",
                    ...(lit ? { filter: "drop-shadow(0 0 4px #e8a04a)" } : {}) }, g);
-    txt(name, { x: cx, y: ATS.y + 38, "text-anchor": "middle", fill: lit ? "#f3ce74" : "#8a8171",
-                "font-family": display, "font-size": 10, "font-weight": 700, "letter-spacing": 0.5 }, g);
+    txt(String(v), { x: cx, y: trackY + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
+        fill: lit ? "#ffffff" : "#8a8171", "font-family": mono, "font-size": 10,
+        "font-weight": lit ? 700 : 400, "pointer-events": "none" }, g);
+    c.addEventListener("click", () => { cfg.atsLit[v] = !cfg.atsLit[v]; render(); });
+    zone(c, `ATS tracker — ${v} ${lit ? "hit" : "not hit"} this shooter (click to toggle)`);
   });
-  // progress trackers: TALL 8..12, SMALL 2..6
-  const rows = [["TALL", TALL_NUMS, "TALL"], ["SMALL", SMALL_NUMS, "SMALL"]];
-  rows.forEach(([label, nums, key], rI) => {
-    const cy = ATS.y + 66 + rI * 34;
-    txt(label, { x: ATS.x + 8, y: cy + 3, fill: "#5d5648", "font-family": mono,
-                 "font-size": 8.5, "letter-spacing": 0.5 }, g);
-    nums.forEach((n, i) => {
-      const cx = ATS.x + 104 + i * 66;
-      const lit = cfg.atsLit[key];   // event-driven per number later; demo lights the row
-      el("circle", { cx, cy, r: 11, fill: lit ? "#2a1c08" : "#111214",
-                     stroke: lit ? "#e8a04a" : "#3c362c", "stroke-width": 1 }, g);
-      txt(String(n), { x: cx, y: cy + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
-          fill: lit ? "#f3ce74" : "#8a8171", "font-family": mono, "font-size": 9.5 }, g);
-    });
+
+  // BOTTOM — three bet cells: All Small / Make'Em All / All Tall
+  const cells = [
+    ["ALL SMALL", "2·3·4·5·6", "34 to 1", EDGE.atsTS],
+    ["MAKE'EM ALL", "2·3·4·5·6·8·9·10·11·12", "175 to 1", EDGE.atsAll],
+    ["ALL TALL", "8·9·10·11·12", "34 to 1", EDGE.atsTS],
+  ];
+  const gx = ATS.x + 3, gy = ATS.y + 48;
+  const cw = (ATS.w - 6) / 3, chh = ATS.h - 51;
+  cells.forEach(([name, nums, pays, edge], i) => {
+    const x = gx + i * cw;
+    const cell = el("rect", { x, y: gy, width: cw, height: chh,
+                              fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 0.8 }, g);
+    txt(name, { x: x + cw / 2, y: gy + 22, "text-anchor": "middle",
+        fill: "#e8a04a", "font-family": display, "font-size": 13, "font-weight": 700,
+        "letter-spacing": 1 }, g);
+    txt(`(${nums})`, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
+        fill: "#a08d5f", "font-family": mono, "font-size": 8 }, g);
+    txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
+        fill: "url(#ember)", "font-family": display, "font-size": 19, "font-weight": 700 }, g);
+    zone(cell, `${name} — ${pays} · edge ${edge} · every number (${nums}) must hit before a 7`);
   });
-  txt("ALL 175:1 · T/S 34:1", { x: ATS.x + ATS.w / 2, y: ATS.y + ATS.h - 8, "text-anchor": "middle",
-      fill: "#5d5648", "font-family": mono, "font-size": 8.5, "letter-spacing": 0.5 }, g);
-  zone(r, `ALL·TALL·SMALL — All 175:1 (edge ${EDGE.atsAll}) · Tall/Small 34:1 (edge ${EDGE.atsTS}) · circles track numbers hit this shooter`);
 }
 
 function drawHops() {
@@ -614,9 +631,16 @@ f12.addEventListener("click", () => { cfg.field12 = cfg.field12 === 3 ? 2 : 3; f
   const b = document.getElementById(id);
   b.addEventListener("click", () => { cfg[key] = !cfg[key]; b.classList.toggle("on", cfg[key]); render(); });
 });
-[["aAll", "ALL"], ["aTall", "TALL"], ["aSmall", "SMALL"]].forEach(([id, key]) => {
+// Demo buttons light number SETS: toggles the whole group on/off
+const ATS_SETS = { aAll: [...SMALL_NUMS, ...TALL_NUMS], aTall: TALL_NUMS, aSmall: SMALL_NUMS };
+Object.entries(ATS_SETS).forEach(([id, nums]) => {
   const b = document.getElementById(id);
-  b.addEventListener("click", () => { cfg.atsLit[key] = !cfg.atsLit[key]; b.classList.toggle("on", cfg.atsLit[key]); render(); });
+  b.addEventListener("click", () => {
+    const allLit = nums.every(n => cfg.atsLit[n]);
+    nums.forEach(n => { cfg.atsLit[n] = !allLit; });
+    b.classList.toggle("on", !allLit);
+    render();
+  });
 });
 
 render();
