@@ -67,6 +67,10 @@
       <stop offset="55%" stop-color="#e8a04a"/>
       <stop offset="100%" stop-color="#d9622b"/>
     </linearGradient>
+    <linearGradient id="ember-soft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4873a"/>
+      <stop offset="100%" stop-color="#c9a84c"/>
+    </linearGradient>
   </defs>
 
   <!-- ================= FELT + RAIL ================= -->
@@ -288,14 +292,13 @@ function drawAts() {
       return;
     }
     const lit = cfg.atsLit[v];
-    const c = el("circle", { cx, cy: trackY, r: 11,
-                   fill: lit ? "#e8a04a" : "#111214",
-                   stroke: lit ? "#f3ce74" : "#6b6355", "stroke-width": 1.3,
-                   cursor: "pointer",
-                   ...(lit ? { filter: "drop-shadow(0 0 4px #e8a04a)" } : {}) }, g);
+    const c = el("circle", { cx, cy: trackY, r: 14,
+                   fill: lit ? "#c9a84c" : "#1a1a1a",
+                   stroke: lit ? "#d4873a" : "#4a4035", "stroke-width": 1.5,
+                   cursor: "pointer" }, g);
     txt(String(v), { x: cx, y: trackY + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
-        fill: lit ? "#ffffff" : "#8a8171", "font-family": mono, "font-size": 10,
-        "font-weight": lit ? 700 : 400, "pointer-events": "none" }, g);
+        fill: lit ? "#111111" : "#4a4035", "font-family": display, "font-size": 12,
+        "font-weight": 700, "pointer-events": "none" }, g);
     c.addEventListener("click", () => { cfg.atsLit[v] = !cfg.atsLit[v]; render(); });
     zone(c, `ATS tracker — ${v} ${lit ? "hit" : "not hit"} this shooter (click to toggle)`);
   });
@@ -318,7 +321,7 @@ function drawAts() {
     txt(`(${nums})`, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
         fill: "#a08d5f", "font-family": mono, "font-size": 8 }, g);
     txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
-        fill: "url(#ember)", "font-family": display, "font-size": 19, "font-weight": 700 }, g);
+        fill: "url(#ember-soft)", "font-family": display, "font-size": 19, "font-weight": 700 }, g);
     zone(cell, `${name} — ${pays} · edge ${edge} · every number (${nums}) must hit before a 7`);
   });
 }
