@@ -272,9 +272,13 @@ const SMALL_NUMS = [2, 3, 4, 5, 6];
 
 function drawAts() {
   const g = el("g", {});
+  // No outer frame when enabled — the tracker circles and bet-cell
+  // borders below define the section; an outer box just doubled up
+  // against them. Disabled state keeps a faint outline as an empty-slot cue.
   const r = el("rect", { x: ATS.x, y: ATS.y, width: ATS.w, height: ATS.h, rx: 6,
                          fill: cfg.ats ? "#0c0d11" : "#08090b",
-                         stroke: cfg.ats ? "#c9a84c" : "#2a251e", "stroke-width": 1.2 }, g);
+                         stroke: cfg.ats ? "none" : "#2a251e",
+                         "stroke-width": cfg.ats ? 0 : 1.2 }, g);
   if (!cfg.ats) {
     txt("ATS", { x: ATS.x + ATS.w / 2, y: ATS.y + ATS.h / 2, "text-anchor": "middle",
         "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
@@ -337,9 +341,11 @@ function drawAts() {
 
 function drawHops() {
   const g = el("g", {});
+  // No outer frame when enabled — the grid's own cell borders define it
   const frame = el("rect", { x: HOPS.x, y: HOPS.y, width: HOPS.w, height: HOPS.h, rx: 6,
                              fill: cfg.hops ? "#0c0d11" : "#08090b",
-                             stroke: cfg.hops ? "#c9a84c" : "#2a251e", "stroke-width": 1.2 }, g);
+                             stroke: cfg.hops ? "none" : "#2a251e",
+                             "stroke-width": cfg.hops ? 0 : 1.2 }, g);
   if (!cfg.hops) {
     txt("HOPS", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + HOPS.h / 2, "text-anchor": "middle",
         "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
@@ -383,9 +389,11 @@ function drawHops() {
 
 function drawProps() {
   const g = el("g", {});
+  // No outer frame when enabled — the bands and grids below border themselves
   const r = el("rect", { x: PROPS.x, y: PROPS.y, width: PROPS.w, height: PROPS.h, rx: 6,
                          fill: cfg.props ? "#0c0d11" : "#08090b",
-                         stroke: cfg.props ? "#c9a84c" : "#2a251e", "stroke-width": 1.2 }, g);
+                         stroke: cfg.props ? "none" : "#2a251e",
+                         "stroke-width": cfg.props ? 0 : 1.2 }, g);
   if (!cfg.props) {
     txt("PROPS", { x: PROPS.x + PROPS.w / 2, y: PROPS.y + PROPS.h / 2, "text-anchor": "middle",
         "dominant-baseline": "middle", fill: "#3c362c", "font-family": barlow,
@@ -453,12 +461,17 @@ function drawProps() {
     pairCell(gx2 + col * cellW, hornY + row * cellH, a, b, pays, "#d95f4c", "#f3ce74",
              `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`);
   });
-  el("rect", { x: cx - 46, y: hornY + cellH - 20, width: 92, height: 40, rx: 6,
+  // Taller and narrower, "Horn" over "Bet" — reads as a placard sitting
+  // atop the grid rather than a wide label bar
+  el("rect", { x: cx - 33, y: hornY + cellH - 26, width: 66, height: 52, rx: 6,
                fill: "#0d1a0d", stroke: "#c9a84c", "stroke-width": 1.2,
                "stroke-opacity": 0.9 }, g);
-  txt("Horn Bet", { x: cx, y: hornY + cellH + 1, "text-anchor": "middle", "dominant-baseline": "middle",
+  txt("Horn", { x: cx, y: hornY + cellH - 8, "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "#e8a04a", "font-family": script, "font-style": "italic",
-      "font-size": 19, "font-weight": 700 }, g);
+      "font-size": 18, "font-weight": 700 }, g);
+  txt("Bet", { x: cx, y: hornY + cellH + 14, "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: "#e8a04a", "font-family": script, "font-style": "italic",
+      "font-size": 18, "font-weight": 700 }, g);
 }
 
 
