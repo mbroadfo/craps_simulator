@@ -293,11 +293,11 @@ function drawAts() {
     }
     const lit = cfg.atsLit[v];
     const c = el("circle", { cx, cy: trackY, r: 14,
-                   fill: lit ? "#c9a84c" : "#1a1a1a",
-                   stroke: lit ? "#d4873a" : "#4a4035", "stroke-width": 1.5,
+                   fill: lit ? "#4caf7d" : "#1a1a1a",
+                   stroke: lit ? "#7fd6a4" : "#4a4035", "stroke-width": 1.5,
                    cursor: "pointer" }, g);
     txt(String(v), { x: cx, y: trackY + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
-        fill: lit ? "#111111" : "#4a4035", "font-family": display, "font-size": 12,
+        fill: lit ? "#0a2f1c" : "#4a4035", "font-family": display, "font-size": 12,
         "font-weight": 700, "pointer-events": "none" }, g);
     c.addEventListener("click", () => { cfg.atsLit[v] = !cfg.atsLit[v]; render(); });
     zone(c, `ATS tracker — ${v} ${lit ? "hit" : "not hit"} this shooter (click to toggle)`);
@@ -318,8 +318,8 @@ function drawAts() {
     txt(name, { x: x + cw / 2, y: gy + 22, "text-anchor": "middle",
         fill: "#e8a04a", "font-family": display, "font-size": 13, "font-weight": 700,
         "letter-spacing": 1 }, g);
-    txt(`(${nums})`, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-size": 8 }, g);
+    txt(nums, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
+        fill: "#a08d5f", "font-family": mono, "font-size": nums.length > 12 ? 9.5 : 11 }, g);
     txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
         fill: "url(#ember-soft)", "font-family": display, "font-size": 19, "font-weight": 700 }, g);
     zone(cell, `${name} — ${pays} · edge ${edge} · every number (${nums}) must hit before a 7`);
@@ -337,9 +337,13 @@ function drawHops() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  // A connected 6-column grid of cells (no floating tokens, no header)
-  const gx = HOPS.x + 3, gy = HOPS.y + 3;
-  const cw = (HOPS.w - 6) / 6, ch = (HOPS.h - 6) / 4;
+  // A connected 6-column grid of cells with a Big Red banner label
+  const gx = HOPS.x + 3;
+  txt("Hop Big Red", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 15, "text-anchor": "middle",
+      fill: "#d95f4c", "font-family": script, "font-style": "italic",
+      "font-size": 14, "font-weight": 700 }, g);
+  const gy = HOPS.y + 22;
+  const cw = (HOPS.w - 6) / 6, ch = (HOPS.h - 25) / 4;
 
   // ROW 1 — hop the 7: three merged cells of two columns each
   HOP_SEVEN.forEach(([a, b], i) => {
@@ -405,28 +409,29 @@ function drawProps() {
     const hit = el("rect", { x: hx - 24, y: hy - 4, width: 48, height: 44, fill: "transparent" }, cg);
     zone(hit, `${name} — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`);
   };
-  hardCell(PROPS.x + 72, 3, "9:1", "HARD 6 (3-3)", EDGE.hard68, 0);
-  hardCell(PROPS.x + 72, 2, "7:1", "HARD 4 (2-2)", EDGE.hard410, 1);
-  hardCell(PROPS.x + PROPS.w - 72, 4, "9:1", "HARD 8 (4-4)", EDGE.hard68, 0);
-  hardCell(PROPS.x + PROPS.w - 72, 5, "7:1", "HARD 10 (5-5)", EDGE.hard410, 1);
+  hardCell(PROPS.x + 72, 3, "PAYS 9:1", "HARD 6 (3-3)", EDGE.hard68, 0);
+  hardCell(PROPS.x + 72, 2, "PAYS 7:1", "HARD 4 (2-2)", EDGE.hard410, 1);
+  hardCell(PROPS.x + PROPS.w - 72, 4, "PAYS 9:1", "HARD 8 (4-4)", EDGE.hard68, 0);
+  hardCell(PROPS.x + PROPS.w - 72, 5, "PAYS 7:1", "HARD 10 (5-5)", EDGE.hard410, 1);
 
-  // center: Horn Bet
+  // center: Horn Bet — the four horn numbers as pip pairs (ColorUp)
   const hornG = el("g", {});
-  txt("Horn", { x: cx, y: midY + 22, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": script, "font-style": "italic", "font-size": 15, "font-weight": 700 }, hornG);
-  txt("Bet", { x: cx, y: midY + 38, "text-anchor": "middle", fill: "url(#ember)",
-      "font-family": script, "font-style": "italic", "font-size": 15, "font-weight": 700 }, hornG);
-  txt("2·12", { x: cx, y: midY + 60, "text-anchor": "middle", fill: "#d8cfae",
-      "font-family": mono, "font-size": 9 }, hornG);
-  txt("30:1", { x: cx, y: midY + 72, "text-anchor": "middle", fill: "#f3ce74",
-      "font-family": mono, "font-size": 9, "font-weight": 700 }, hornG);
-  txt("3·11", { x: cx, y: midY + 90, "text-anchor": "middle", fill: "#d8cfae",
-      "font-family": mono, "font-size": 9 }, hornG);
-  txt("15:1", { x: cx, y: midY + 102, "text-anchor": "middle", fill: "#f3ce74",
-      "font-family": mono, "font-size": 9, "font-weight": 700 }, hornG);
-  txt("$4 UNITS", { x: cx, y: midY + 118, "text-anchor": "middle", fill: "#5d5648",
+  txt("Horn Bet", { x: cx, y: midY + 18, "text-anchor": "middle", fill: "url(#ember)",
+      "font-family": script, "font-style": "italic", "font-size": 17, "font-weight": 700 }, hornG);
+  const hornPairs = [
+    [1, 1, "30:1", -34, 0], [1, 2, "15:1", 34, 0],
+    [5, 6, "15:1", -34, 1], [6, 6, "30:1", 34, 1],
+  ];
+  hornPairs.forEach(([a, b, pays, dx, row]) => {
+    const hx = cx + dx, hy = midY + 46 + row * 50;
+    miniDie(hornG, hx - 8.5, hy, a, { s: 14, face: "#d95f4c" });
+    miniDie(hornG, hx + 8.5, hy, b, { s: 14, face: "#d95f4c" });
+    txt(pays, { x: hx, y: hy + 20, "text-anchor": "middle", fill: "#f3ce74",
+        "font-family": mono, "font-size": 9, "font-weight": 700 }, hornG);
+  });
+  txt("$4 UNITS", { x: cx, y: midY + 146, "text-anchor": "middle", fill: "#5d5648",
       "font-family": mono, "font-size": 8, "letter-spacing": 0.5 }, hornG);
-  const hornHit = el("rect", { x: cx - 34, y: midY + 8, width: 68, height: 114, fill: "transparent" }, hornG);
+  const hornHit = el("rect", { x: cx - 62, y: midY + 4, width: 124, height: 146, fill: "transparent" }, hornG);
   zone(hornHit, `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`);
 
   // BOTTOM BAND — Any Craps
