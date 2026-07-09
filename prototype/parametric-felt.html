@@ -201,20 +201,22 @@ function barTwelve(g, cx, cy, s) {
   miniDie(g, cx - (s / 2 + 2), cy, 6, { s });
   miniDie(g, cx + (s / 2 + 2), cy, 6, { s });
 }
-// Hop token: small circle with "a-b" text. Amber = hard, bone = easy,
-// red tint = hop-the-seven.
+// Hop cell: a grid rectangle with the pair and its payout inside.
+// Amber = hard, bone = easy, red tint = hop-the-seven.
 const HOP_STYLE = {
   hard:  { fill: "#2a1c08", ring: "#e8a04a", text: "#f3ce74", pays: "30:1", payFill: "#f3ce74" },
   easy:  { fill: "#111214", ring: "#8a8171", text: "#d8cfae", pays: "15:1", payFill: "#8a8171" },
   seven: { fill: "#2a0f0c", ring: "#d95f4c", text: "#e8938a", pays: "15:1", payFill: "#d95f4c" },
 };
-function hopToken(g, cx, cy, a, b, kind) {
+function hopCell(g, x, y, w, h, a, b, kind) {
   const st = HOP_STYLE[kind];
-  const c = el("circle", { cx, cy, r: 14, fill: st.fill, stroke: st.ring, "stroke-width": 1.2 }, g);
-  txt(`${a}-${b}`, { x: cx, y: cy + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: st.text, "font-family": mono, "font-size": 10 }, g);
-  txt(st.pays, { x: cx, y: cy + 24, "text-anchor": "middle", fill: st.payFill,
-      "font-family": mono, "font-size": 8.5, "font-weight": kind === "easy" ? 400 : 700 }, g);
+  const c = el("rect", { x, y, width: w, height: h,
+                         fill: st.fill, stroke: st.ring, "stroke-width": 1 }, g);
+  txt(`${a}-${b}`, { x: x + w / 2, y: y + h / 2 - 8, "text-anchor": "middle",
+      "dominant-baseline": "middle", fill: st.text, "font-family": mono, "font-size": 11 }, g);
+  txt(st.pays, { x: x + w / 2, y: y + h / 2 + 12, "text-anchor": "middle",
+      fill: st.payFill, "font-family": mono, "font-size": 9,
+      "font-weight": kind === "easy" ? 400 : 700 }, g);
   const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
   zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`);
 }
@@ -312,37 +314,35 @@ function drawHops() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  txt("HOP BETS", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 20, "text-anchor": "middle",
-      fill: "url(#ember)", "font-family": display,
-      "font-size": 15, "font-weight": 700, "letter-spacing": 2 }, g);
+  // A connected 6-column grid of cells (no floating tokens, no header)
+  const gx = HOPS.x + 8, gy = HOPS.y + 8;
+  const cw = (HOPS.w - 16) / 6, ch = (HOPS.h - 16) / 4;
 
-  // Column centers for the 6 point-number columns (4 5 6 8 9 10)
-  const colCx = (i) => HOPS.x + 30 + i * 44;
-
-  // ROW 1 — full width: HOP THE 7 (red tint), three combos
-  txt("HOP THE 7", { x: HOPS.x + 14, y: HOPS.y + 52, fill: "#d95f4c",
-      "font-family": mono, "font-size": 9, "letter-spacing": 1 }, g);
+  // ROW 1 — hop the 7: three merged cells of two columns each
   HOP_SEVEN.forEach(([a, b], i) => {
-    hopToken(g, colCx(3 + i), HOPS.y + 56, a, b, "seven");
+    hopCell(g, gx + i * cw * 2, gy, cw * 2, ch, a, b, "seven");
   });
 
-  // ROWS 2-3 — one combo per point-number column
+  // ROWS 2-3 — one combo per point-number column (4 5 6 8 9 10)
   HOP_GRID.forEach((row, r) => {
     row.forEach(([a, b, kind], i) => {
-      hopToken(g, colCx(i), HOPS.y + 104 + r * 48, a, b, kind);
+      hopCell(g, gx + i * cw, gy + ch * (r + 1), cw, ch, a, b, kind);
     });
   });
 
-  // ROW 4 — corners merged, 6 and 8 third combos in the middle
-  const row4Y = HOPS.y + 200;
-  txt("HOP", { x: (colCx(0) + colCx(1)) / 2, y: row4Y + 5, "text-anchor": "middle",
-      fill: "url(#ember)", "font-family": display, "font-size": 16, "font-weight": 700,
-      "letter-spacing": 3 }, g);
-  hopToken(g, colCx(2), row4Y, HOP_ROW4.six[0], HOP_ROW4.six[1], "easy");
-  hopToken(g, colCx(3), row4Y, HOP_ROW4.eight[0], HOP_ROW4.eight[1], "easy");
-  txt("BET", { x: (colCx(4) + colCx(5)) / 2, y: row4Y + 5, "text-anchor": "middle",
-      fill: "url(#ember)", "font-family": display, "font-size": 16, "font-weight": 700,
-      "letter-spacing": 3 }, g);
+  // ROW 4 — corners merged into HOP / BET, 6 and 8 third combos centered
+  const r4y = gy + ch * 3;
+  const labelCell = (x, w, label) => {
+    el("rect", { x, y: r4y, width: w, height: ch,
+                 fill: "#0c0d11", stroke: "#8a8171", "stroke-width": 1 }, g);
+    txt(label, { x: x + w / 2, y: r4y + ch / 2 + 1, "text-anchor": "middle",
+        "dominant-baseline": "middle", fill: "url(#ember)", "font-family": display,
+        "font-size": 17, "font-weight": 700, "letter-spacing": 3 }, g);
+  };
+  labelCell(gx, cw * 2, "HOP");
+  hopCell(g, gx + cw * 2, r4y, cw, ch, HOP_ROW4.six[0], HOP_ROW4.six[1], "easy");
+  hopCell(g, gx + cw * 3, r4y, cw, ch, HOP_ROW4.eight[0], HOP_ROW4.eight[1], "easy");
+  labelCell(gx + cw * 4, cw * 2, "BET");
 
   zone(frame, "HOP BETS — hardways 30:1 (amber), easy ways 15:1, hop the 7 in red · one roll");
 }
