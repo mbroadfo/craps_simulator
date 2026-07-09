@@ -48,7 +48,7 @@
     <button id="tHops" class="on">HOPS</button>
     <button id="tProps" class="on">PROPS</button>
     <button id="tAts" class="on">ATS</button>
-    <button id="tLabels" class="on">BOX LABELS</button>
+    <button id="tLabels">BOX LABELS</button>
   </div>
   <div class="grp"><label>ATS demo</label>
     <button id="aAll">ALL</button><button id="aTall">TALL</button><button id="aSmall">SMALL</button>
@@ -124,7 +124,7 @@
 const cfg = {
   puck: null,
   field2: 2, field12: 3,
-  hops: true, props: true, ats: true, labels: true,
+  hops: true, props: true, ats: true, labels: false,
   atsLit: { 2: false, 3: false, 4: false, 5: false, 6: false,
             8: false, 9: false, 10: false, 11: false, 12: false },
 };
@@ -144,7 +144,8 @@ const interior = document.getElementById("interior");
 const dpLabels = document.getElementById("dp-labels");
 const readout = document.getElementById("readout");
 const barlow = "'Barlow Condensed', sans-serif";
-const mono = "'IBM Plex Mono', monospace";
+// Felt payout/data face: Georgia italic (was IBM Plex Mono)
+const mono = "Georgia, 'Times New Roman', serif";
 const script = "Georgia, 'Times New Roman', serif";
 // Display face: Georgia italic — same voice as Come/Six/Nine/Horn Bet
 const display = "Georgia, 'Times New Roman', serif";
@@ -225,7 +226,7 @@ function hopCell(g, x, y, w, h, a, b, kind) {
   miniDie(g, x + w / 2 - (s / 2 + 2), dieY, a, { s, face: HOP_FACE[kind] });
   miniDie(g, x + w / 2 + (s / 2 + 2), dieY, b, { s, face: HOP_FACE[kind] });
   txt(st.pays, { x: x + w / 2, y: y + h / 2 + 19, "text-anchor": "middle",
-      fill: st.payFill, "font-family": mono, "font-size": 11, "font-weight": 700 }, g);
+      fill: st.payFill, "font-family": mono, "font-style": "italic", "font-size": 11, "font-weight": 700 }, g);
   const desc = kind === "hard" ? "hard" : kind === "seven" ? "hop the 7" : "easy";
   zone(c, `HOP ${a}-${b} (${desc}) — one roll · ${st.pays} · edge ${kind === "hard" ? EDGE.hopHard : EDGE.hopEasy}`);
 }
@@ -326,7 +327,7 @@ function drawAts() {
         fill: "#e8a04a", "font-family": display, "font-style": "italic", "font-size": i === 1 ? 16 : 13,
         "font-weight": 700, "letter-spacing": 1, style: pf }, g);
     txt(nums, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-size": nums.length > 12 ? 11 : 10.5 }, g);
+        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": nums.length > 12 ? 11 : 10.5 }, g);
     txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
         fill: "url(#ember-soft)", "font-family": display, "font-style": "italic", "font-size": i === 1 ? 22 : 18,
         "font-weight": 700, style: pf }, g);
@@ -345,13 +346,11 @@ function drawHops() {
         "font-size": 12, "letter-spacing": 2 }, g);
     return;
   }
-  // A connected 6-column grid of cells with a Big Red banner label
+  // A connected 6-column grid of cells (no title bar — row 1's red
+  // tint identifies hop-the-7 on its own)
   const gx = HOPS.x + 3;
-  txt("Hop the Seven  15:1", { x: HOPS.x + HOPS.w / 2, y: HOPS.y + 15, "text-anchor": "middle",
-      fill: "#d95f4c", "font-family": script, "font-style": "italic",
-      "font-size": 15, "font-weight": 700 }, g);
-  const gy = HOPS.y + 22;
-  const cw = (HOPS.w - 6) / 6, ch = (HOPS.h - 25) / 4;
+  const gy = HOPS.y + 3;
+  const cw = (HOPS.w - 6) / 6, ch = (HOPS.h - 6) / 4;
 
   // ROW 1 — hop the 7: three merged cells of two columns each
   HOP_SEVEN.forEach(([a, b], i) => {
@@ -404,7 +403,7 @@ function drawProps() {
         fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 13, "font-weight": 700,
         "letter-spacing": 1.5 }, g);
     txt(pays, { x: cx + 10, y: y + 16, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-size": 11, "font-weight": 700 }, g);
+        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": 11, "font-weight": 700 }, g);
     zone(b, info);
   };
   band(PROPS.y + 6, "ANY SEVEN", "4 TO 1",
@@ -422,11 +421,12 @@ function drawProps() {
                            fill: "#0c0d11", stroke: "#c9a84c", "stroke-width": 0.8,
                            opacity: 1, "stroke-opacity": 0.6 }, g);
     const ccx = x + cellW / 2 + ox, ccy = y + cellH / 2 + oy;
-    // 20px dice — hop-panel scale, keeps the Horn square prominent
-    miniDie(g, ccx - 34, ccy, a, { s: 20, face });
-    miniDie(g, ccx - 12, ccy, b, { s: 20, face });
-    txt(pays, { x: ccx + 3, y: ccy, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: payFill, "font-family": mono, "font-size": 11, "font-weight": 700 }, g);
+    // 28px dice — larger than the hop grid; the Horn square still reads
+    // as the focal point because of its own size and border
+    miniDie(g, ccx - 41, ccy, a, { s: 28, face });
+    miniDie(g, ccx - 11, ccy, b, { s: 28, face });
+    txt(pays, { x: ccx + 12, y: ccy, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: payFill, "font-family": mono, "font-style": "italic", "font-size": 15, "font-weight": 700 }, g);
     zone(c, info);
   };
 
@@ -485,7 +485,7 @@ function drawBoxes() {
     const buyable = [4, 5, 9, 10].includes(n);
     if (cfg.labels) {
       txt("LAY · DON'T COME", { x: x + BOX.w / 2, y: BOX.y + 26, "text-anchor": "middle",
-          fill: "#8a8171", "font-family": mono, "font-size": 10, "letter-spacing": 0.5 }, g);
+          fill: "#8a8171", "font-family": mono, "font-style": "italic", "font-size": 10, "letter-spacing": 0.5 }, g);
     }
 
     const word = BOX_WORD[n];
@@ -502,9 +502,9 @@ function drawBoxes() {
     }
     if (cfg.labels) {
       txt("COME · ODDS", { x: x + BOX.w / 2, y: y2 - 9, "text-anchor": "middle",
-          fill: "#5d5648", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
+          fill: "#5d5648", "font-family": mono, "font-style": "italic", "font-size": 9, "letter-spacing": 0.5 }, g);
       txt(buyable ? "PLACE · BUY" : "PLACE", { x: x + BOX.w / 2, y: y2 + 26, "text-anchor": "middle",
-          fill: "#8a8171", "font-family": mono, "font-size": 10.5, "letter-spacing": 0.5 }, g);
+          fill: "#8a8171", "font-family": mono, "font-style": "italic", "font-size": 10.5, "letter-spacing": 0.5 }, g);
     }
 
     if (cfg.puck === n) {
@@ -554,9 +554,10 @@ function drawCome() {
 
 // "PAYS DOUBLE/TRIPLE" arched under a field circle, hugging its rim
 function arcLabel(g, id, cx, cy, label) {
-  el("path", { id, d: `M ${cx - 44},${cy + 22} A 48,48 0 0 0 ${cx + 44},${cy + 22}`,
+  el("path", { id, d: `M ${cx - 58},${cy + 26} A 62,62 0 0 0 ${cx + 58},${cy + 26}`,
                fill: "none" }, g);
-  const t = el("text", { fill: "#8a8171", "font-family": mono, "font-size": 10,
+  const t = el("text", { fill: "#c9a84c", "font-family": script, "font-style": "italic",
+                         "font-size": 15, "font-weight": 700,
                          "letter-spacing": 1, "text-anchor": "middle" }, g);
   const tp = document.createElementNS(SVG, "textPath");
   tp.setAttribute("href", `#${id}`);
