@@ -157,7 +157,7 @@ const displayStyle = "font-family:Georgia,'Times New Roman',serif;font-style:ita
 const RAIL = { x: 16, w: 390 };                       // left column
 const ATS = { x: 16, y: 16, w: 390, h: 140 };
 const HOPS = { x: 16, y: 164, w: 390, h: 228 };
-const PROPS = { x: 16, y: 400, w: 390, h: 310 };  // fills the rail to the bottom
+const PROPS = { x: 16, y: 400, w: 390, h: 330 };  // Any Craps bottom lands on y=724, flush with Pass Line
 
 // Box row spans exactly the Come band width (x 414..1272)
 const BOX = { x0: 414, y: 16, w: (858 - 5 * 6) / 6, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
@@ -402,21 +402,25 @@ function drawProps() {
   }
   const cx = PROPS.x + PROPS.w / 2;
 
-  // Single-line band: NAME in Playfair + payout in mono, both larger
+  // Single-line band: NAME in Playfair + payout in mono, both larger.
+  // Taller than the original 30px so Any Craps' bottom edge lands on
+  // the Pass Line band's outer bottom (y=724).
+  const BAND_H = 38;
   const band = (y, name, pays, info) => {
-    const b = el("rect", { x: PROPS.x + 4, y, width: PROPS.w - 8, height: 30, rx: 4,
+    const b = el("rect", { x: PROPS.x + 4, y, width: PROPS.w - 8, height: BAND_H, rx: 4,
                            fill: "#111214", stroke: "#c9a84c", "stroke-width": 0.6,
                            "stroke-opacity": 0.5 }, g);
-    txt(name, { x: cx - 8, y: y + 16, "text-anchor": "end", "dominant-baseline": "middle",
-        fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 13, "font-weight": 700,
+    const midY = y + BAND_H / 2;
+    txt(name, { x: cx - 8, y: midY, "text-anchor": "end", "dominant-baseline": "middle",
+        fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 14, "font-weight": 700,
         "letter-spacing": 1.5 }, g);
-    txt(pays, { x: cx + 10, y: y + 16, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": 11, "font-weight": 700 }, g);
+    txt(pays, { x: cx + 10, y: midY, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": 12, "font-weight": 700 }, g);
     zone(b, info);
   };
   band(PROPS.y + 6, "ANY SEVEN", "4 TO 1",
        `ANY SEVEN — one roll · 4:1 · edge ${EDGE.anySeven} (worst bet on the felt)`);
-  band(PROPS.y + PROPS.h - 36, "ANY CRAPS", "7 TO 1",
+  band(PROPS.y + PROPS.h - (BAND_H + 6), "ANY CRAPS", "7 TO 1",
        `ANY CRAPS — 2·3·12, one roll · 7:1 · edge ${EDGE.anyCraps}`);
 
   // MIDDLE — Hardways grid (2x2, full width) with the Horn grid
