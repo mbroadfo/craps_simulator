@@ -28,7 +28,7 @@
      window width, or window height minus the controls/readout chrome
      (~160px) converted through the 1240:740 aspect ratio. */
   #felt {
-    width: min(96vw, calc((100vh - 160px) * 1.892));
+    width: min(96vw, calc((100vh - 160px) * 1.707));
     max-width: 1900px;
     height: auto;
   }
@@ -65,7 +65,7 @@
   </div>
 </div>
 
-<svg id="felt" viewBox="0 0 1400 740" xmlns="http://www.w3.org/2000/svg"
+<svg id="felt" viewBox="0 0 1400 820" xmlns="http://www.w3.org/2000/svg"
      aria-label="Craps table — parametric felt study v5, ColorUp proportions">
   <defs>
     <radialGradient id="felt-bg" cx="42%" cy="42%" r="78%" gradientUnits="objectBoundingBox">
@@ -748,6 +748,35 @@ function drawField() {
        "field", FIELD.x + FIELD.w / 2, FIELD.y + FIELD.h - 60);
 }
 
+// Free odds are never a printed felt zone — real players place them by
+// convention (behind the Pass Line bet; stacked on a traveled Come bet's
+// number). This tray is a dev-tool aid only, styled distinctly from the
+// felt (no wood rail, no rounded card treatment) so it never reads as
+// part of T1's faithful layout.
+function drawOddsTray() {
+  const g = el("g", {});
+  const y0 = 756, h = 56;
+  el("line", { x1: 16, y1: y0 - 8, x2: 1384, y2: y0 - 8,
+               stroke: "#4a3a1d", "stroke-width": 1 }, g);
+  txt("Odds — not a printed zone, dev tool only", { x: 16, y: y0 - 16,
+      fill: "#5d5648", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
+
+  const cellW = (1384 - 16 - 8) / 2;
+  const cell = (x, name, sub, chipId, info) => {
+    const c = el("rect", { x, y: y0, width: cellW, height: h, rx: 4,
+                           fill: "#0c0d11", stroke: "#3c362c", "stroke-width": 1 }, g);
+    txt(name, { x: x + 16, y: y0 + 21, fill: "#8a8171", "font-family": script,
+        "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
+    txt(sub, { x: x + 16, y: y0 + 39, fill: "#5d5648", "font-family": mono,
+        "font-size": 9.5 }, g);
+    zone(c, info, chipId, x + cellW - 40, y0 + h / 2);
+  };
+  cell(16, "Pass Line Odds", "true odds, 3-4-5x · 0% edge · sits behind the flat bet",
+       "passline-odds", "Pass Line Odds — true odds, 0% edge · placed behind the Pass Line bet, not printed as its own zone");
+  cell(16 + cellW + 8, "Come Odds", "true odds, 3-4-5x · 0% edge · stacked on the traveled number",
+       "come-odds", "Come Odds — true odds, 0% edge · stacked on the Come bet once it travels to a number, not printed as its own zone");
+}
+
 // ============================================================
 // Render + controls
 // ============================================================
@@ -761,6 +790,7 @@ function render() {
   drawDontCome();
   drawCome();
   drawField();
+  drawOddsTray();
   drawChipLayer();
 }
 
