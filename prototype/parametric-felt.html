@@ -28,7 +28,7 @@
      window width, or window height minus the controls/readout chrome
      (~160px) converted through the 1240:740 aspect ratio. */
   #felt {
-    width: min(96vw, calc((100vh - 160px) * 1.707));
+    width: min(96vw, calc((100vh - 160px) * 1.892));
     max-width: 1900px;
     height: auto;
   }
@@ -65,7 +65,7 @@
   </div>
 </div>
 
-<svg id="felt" viewBox="0 0 1400 820" xmlns="http://www.w3.org/2000/svg"
+<svg id="felt" viewBox="0 0 1400 740" xmlns="http://www.w3.org/2000/svg"
      aria-label="Craps table — parametric felt study v5, ColorUp proportions">
   <defs>
     <radialGradient id="felt-bg" cx="42%" cy="42%" r="78%" gradientUnits="objectBoundingBox">
@@ -115,6 +115,14 @@
            L 1278,272 A 8,8 0 0 1 1286,264 Z"
         fill="#241019" stroke="#c9a84c" stroke-width="1.5"/>
 
+  <!-- Pass Line odds have no printed felt zone on a real table — players
+       simply stack chips behind their flat bet. This invisible rect is
+       ONLY a dev-tool click target sitting inside the Pass Line band,
+       closer to the outer rail edge than the flat-bet chip spot, so it
+       never reads as its own zone. -->
+  <rect id="passline-odds-fill" x="1060" y="698" width="80" height="24"
+        fill="transparent" pointer-events="all"/>
+
   <!-- rail on top so band fills tuck under it cleanly -->
   <rect width="1400" height="740" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
   <rect x="3" y="3" width="1394" height="734" rx="14" fill="none" stroke="#a07030" stroke-width="1" stroke-opacity="0.5"/>
@@ -128,7 +136,7 @@
 </svg>
 
 <div id="readout">hover a zone…</div>
-<p class="caption">Parametric felt v5 — ColorUp proportions · click a zone to test chip placement, right-click to remove · 1240 × 740</p>
+<p class="caption">Parametric felt v5 — ColorUp proportions · click a zone to test chip placement, right-click to remove · 1400 × 740</p>
 
 <script>
 "use strict";
@@ -748,35 +756,6 @@ function drawField() {
        "field", FIELD.x + FIELD.w / 2, FIELD.y + FIELD.h - 60);
 }
 
-// Free odds are never a printed felt zone — real players place them by
-// convention (behind the Pass Line bet; stacked on a traveled Come bet's
-// number). This tray is a dev-tool aid only, styled distinctly from the
-// felt (no wood rail, no rounded card treatment) so it never reads as
-// part of T1's faithful layout.
-function drawOddsTray() {
-  const g = el("g", {});
-  const y0 = 756, h = 56;
-  el("line", { x1: 16, y1: y0 - 8, x2: 1384, y2: y0 - 8,
-               stroke: "#4a3a1d", "stroke-width": 1 }, g);
-  txt("Odds — not a printed zone, dev tool only", { x: 16, y: y0 - 16,
-      fill: "#5d5648", "font-family": mono, "font-size": 9, "letter-spacing": 0.5 }, g);
-
-  const cellW = (1384 - 16 - 8) / 2;
-  const cell = (x, name, sub, chipId, info) => {
-    const c = el("rect", { x, y: y0, width: cellW, height: h, rx: 4,
-                           fill: "#0c0d11", stroke: "#3c362c", "stroke-width": 1 }, g);
-    txt(name, { x: x + 16, y: y0 + 21, fill: "#8a8171", "font-family": script,
-        "font-style": "italic", "font-size": 16, "font-weight": 700 }, g);
-    txt(sub, { x: x + 16, y: y0 + 39, fill: "#5d5648", "font-family": mono,
-        "font-size": 9.5 }, g);
-    zone(c, info, chipId, x + cellW - 40, y0 + h / 2);
-  };
-  cell(16, "Pass Line Odds", "true odds, 3-4-5x · 0% edge · sits behind the flat bet",
-       "passline-odds", "Pass Line Odds — true odds, 0% edge · placed behind the Pass Line bet, not printed as its own zone");
-  cell(16 + cellW + 8, "Come Odds", "true odds, 3-4-5x · 0% edge · stacked on the traveled number",
-       "come-odds", "Come Odds — true odds, 0% edge · stacked on the Come bet once it travels to a number, not printed as its own zone");
-}
-
 // ============================================================
 // Render + controls
 // ============================================================
@@ -790,7 +769,6 @@ function render() {
   drawDontCome();
   drawCome();
   drawField();
-  drawOddsTray();
   drawChipLayer();
 }
 
@@ -798,9 +776,19 @@ function render() {
 // wire their chip zones ONCE here, not inside drawDpLabels, or every
 // redraw would stack another click listener on the same persistent node.
 zone(document.getElementById("pass-fill"),
-     "Pass Line — even money · edge 1.41%", "passline", 1100, 698);
+     "Pass Line — even money · edge 1.41%", "passline", 1100, 686);
 zone(document.getElementById("dontpass-fill"),
      "Don't Pass Bar 12 — even money · edge 1.36%", "dontpass", 1080, 642);
+// Odds have no printed zone on a real table (see rect comment above) —
+// this small hit-rect sits on top of pass-fill in DOM order, so it wins
+// the click inside its bounds while the rest of the band still bets flat.
+// Come odds get NO click zone in this prototype: the real engine will
+// need to render an odds chip offset/stacked from the existing Come-bet
+// chip on that number whenever a BetPlaced(ComeOdds) event lands on a
+// number that already holds a traveled Come bet — that's renderer logic
+// against live TableState, not something a static dev-tool click can model.
+zone(document.getElementById("passline-odds-fill"),
+     "Pass Line Odds — true odds, 0% edge · behind the flat bet", "passline-odds", 1100, 710);
 
 document.querySelectorAll("[data-puck]").forEach(b => {
   b.addEventListener("click", () => {
