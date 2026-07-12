@@ -1,0 +1,230 @@
+/**
+ * Ported near-verbatim from prototype/parametric-felt.html's <style>
+ * block. Two deliberate deviations from a byte-for-byte copy:
+ *  1. The prototype's `*, *::before, *::after { box-sizing: border-box;
+ *     margin: 0; padding: 0; }` universal reset is dropped — Tailwind's
+ *     preflight (already loaded app-wide via index.css) covers this,
+ *     and a bare `*` selector here would leak outside this component
+ *     and fight it.
+ *  2. The prototype's `body { ... }` rule (page background/padding/
+ *     flex layout) becomes `.pit-felt-root { ... }` — this component
+ *     doesn't own the actual document <body>, it's mounted inside it.
+ * The Google Fonts @import lives in web/index.html as <link> tags now
+ * instead of a second CSS @import (see the plan's Shared modules note).
+ *
+ * No selector here is namespaced beyond the one root class — nothing
+ * else in web/src uses plain CSS today (only Tailwind utilities), so
+ * there's no live collision to guard against yet. If a second
+ * plain-CSS feature ever shows up in this app, namespace both then.
+ */
+
+.pit-felt-root {
+  background: #04060a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #8a8171;
+  /* This is a game table, not a document — nothing on it should turn
+     blue and highlight from a click-drag or an accidental double-click
+     on a bet zone. The prototype didn't have this rule either, but it
+     was never exercised there the way real clicking-to-place-chips
+     does here. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pageRow { display: flex; flex-direction: row; align-items: flex-start; gap: 16px; }
+
+#menuToggle {
+  position: fixed; top: 12px; left: 12px; z-index: 10;
+  width: 32px; height: 32px; font-size: 16px; cursor: pointer;
+  background: #0c0d11; color: #8a8171; border: 1px solid #2a251e;
+  border-radius: 4px;
+}
+#menuToggle:hover { color: #c9a84c; border-color: #c9a84c; }
+
+.controls {
+  display: none; flex-direction: column; gap: 8px; font-size: 11px;
+  position: fixed; top: 50px; left: 12px; z-index: 10;
+  width: 216px; max-height: calc(100vh - 70px); overflow-y: auto;
+  background: #0c0d11; border: 1px solid #2a251e; border-radius: 6px; padding: 10px;
+}
+.controls.open { display: flex; }
+.controls .grp {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+  border: 1px solid #2a251e; border-radius: 4px; padding: 4px 6px;
+}
+.controls label { display: block; width: 100%; color: #8a8171; letter-spacing: 1px; text-transform: uppercase; font-size: 9px; }
+.controls button {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; cursor: pointer;
+  background: transparent; color: #8a8171; border: 1px solid #2a251e;
+  border-radius: 3px; padding: 2px 8px;
+}
+.controls button.on { background: #c9a84c; color: #14100a; border-color: #c9a84c; font-weight: 700; }
+#readout {
+  font-size: 11px; color: #c9a84c; letter-spacing: 0.5px;
+  border-top: 1px solid #2a251e; padding-top: 6px; margin-top: 2px;
+}
+
+/* Fill the page but always fit: sized by whichever is tighter —
+   window width, or window height minus body padding, converted
+   through the felt's own aspect ratio (1400:851, includes the chip
+   rail below the printed felt). The denom-picker/button row sits
+   inside this footprint (absolute, under the props panel), so it no
+   longer needs its own reserved page height. Controls/readout float
+   as an overlay and don't count against this budget either. */
+.tableWrap {
+  position: relative;
+  width: min(96vw, calc((100vh - 48px) * 1.645));
+  max-width: 1900px;
+}
+#felt { width: 100%; height: auto; display: block; }
+
+/* ============== Denom picker + Roll/Clear/Export row ==================
+   Anchored under the props panel, same vertical band as the chip
+   rail — not stacked below it. Free to overflow right past the
+   props panel's own width toward the chip rail; if it still doesn't
+   fit, push the rail further right instead of cramping the controls. */
+.actionBar {
+  position: absolute; top: 88.4%; left: 1.14%; width: max-content;
+  display: flex; flex-direction: row; align-items: center; flex-wrap: nowrap; gap: 12px;
+}
+.denomPicker { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.denomChip {
+  width: 60px; height: 60px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55));
+  transition: filter 0.15s, transform 0.15s;
+}
+.denomChip:hover { transform: translateY(-1px); }
+.denomChip.selected {
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55)) drop-shadow(0 0 6px #c9a84c) drop-shadow(0 0 3px #f3ce74);
+}
+/* Round icon buttons — glyph only, tooltip carries the label — sized
+   and colored to actually read as buttons next to the chips, not
+   disappear beside them. */
+.btnRow { display: flex; gap: 9px; flex-shrink: 0; }
+.iconBtn {
+  width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; line-height: 1;
+  background: radial-gradient(circle at 35% 30%, #2c2f38, #0c0d11 75%);
+  color: #c9a84c; border: 1.5px solid #4a3a1d;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 2px 5px rgba(0,0,0,0.5);
+  transition: color 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.iconBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+.iconBtn.primary {
+  background: radial-gradient(circle at 35% 30%, #c14c3d, #7a231b 75%);
+  color: #ffe9c9; border-color: #d95f4c; font-weight: 700;
+}
+.iconBtn.primary:disabled { background: radial-gradient(circle at 35% 30%, #3a201c, #1a100e 75%); color: #6b5550; border-color: #4a2a26; }
+.iconBtn:not(:disabled):hover {
+  border-color: #c9a84c; color: #f3ce74; transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 2px 6px rgba(0,0,0,0.5), 0 0 7px rgba(201,168,76,0.3);
+}
+.iconBtn.primary:not(:disabled):hover {
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 2px 6px rgba(0,0,0,0.5), 0 0 8px rgba(217,95,76,0.45);
+}
+.iconBtn:not(:disabled):active { transform: translateY(0); }
+/* Roll button — glossy casino-red circle drawn as SVG (see the
+   inline <svg> in the button markup), not CSS gradients + a glyph. */
+.rollBtn {
+  width: 46px; height: 46px; padding: 0; border: none; background: none; cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55));
+  transition: filter 0.15s, transform 0.15s;
+}
+.rollBtn:hover { transform: translateY(-1px); filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6)) drop-shadow(0 0 6px rgba(217,95,76,0.5)); }
+.rollBtn:active { transform: translateY(0); }
+
+/* Rail win/lose flash — hook for a future dice-resolve step. */
+@keyframes railWinGlow { 0% { filter: none; } 30% { filter: drop-shadow(0 0 6px #c9a84c); } 100% { filter: none; } }
+@keyframes railLoseGlow { 0% { filter: none; } 30% { filter: drop-shadow(0 0 6px #c0392b); } 100% { filter: none; } }
+.rail-flash-win { animation: railWinGlow 0.4s ease-out; }
+.rail-flash-lose { animation: railLoseGlow 0.4s ease-out; }
+
+/* Win/loss toast — dicer.io-style: rounded card, colored border,
+   fades up and out. Triggered manually (dev-tool test buttons) for
+   now — there's no resolve engine yet to fire it for real. */
+@keyframes toastFadeUp {
+  0%   { opacity: 0; transform: translateY(8px) scale(0.92); }
+  15%  { opacity: 1; transform: translateY(0) scale(1); }
+  72%  { opacity: 1; transform: translateY(-10px) scale(1); }
+  100% { opacity: 0; transform: translateY(-46px) scale(1); }
+}
+.bet-toast { animation: toastFadeUp 1.5s ease-out forwards; pointer-events: none; }
+
+/* ============== Shooter roll number line ==============
+   No card, no border, no title, no scrollbar — just the rolled
+   totals stacked vertically next to the table, oldest at top,
+   newest appended at the bottom, colored by what they meant. Roll/
+   Reset controls live in the hamburger menu, not here. */
+/* Reserve the number column's width up front — otherwise the sidebar
+   is 0px wide until the first roll, and the table visibly jumps left
+   when it suddenly gains width. */
+.shooterHistory { padding-top: 4px; min-width: 30px; flex-shrink: 0; }
+#shList { display: flex; flex-direction: column; gap: 5px; font-family: 'IBM Plex Mono', monospace; }
+.shRoll { width: 30px; text-align: center; font-size: 19px; font-weight: 800; line-height: 1; }
+
+/* ============== Stats sidebar ==============
+   No scrollbar, ever — the inner content is scaled (via
+   useSidebarAutoFit) to exactly match whatever vertical room the
+   felt's own height gives it, shrinking if it would overflow, never
+   growing past 1:1 (see layout.ts / useSidebarAutoFit's own comment —
+   a documented past bug). */
+.statsSidebar {
+  width: 160px; overflow: hidden; box-sizing: border-box;
+  background: #111111; border: 1px solid #2a251e; padding: 7px;
+}
+.statsSidebarInner {
+  display: flex; flex-direction: column;
+  font-family: 'Barlow', sans-serif; color: #c9a84c;
+  transform-origin: top center;
+}
+/* App logo — two dice showing 11 (5+6) beside the "The Pit" wordmark. */
+.stLogo {
+  height: 60px; margin-bottom: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.stLogo svg { width: 100%; height: 100%; }
+.stSection { padding: 10px 0; border-bottom: 1px solid #4a4035; }
+.stSection:first-child { padding-top: 0; }
+.stSection:last-child { border-bottom: none; }
+.stHeader {
+  font-size: 13px; letter-spacing: 1.5px; color: #9c8968; margin-bottom: 8px; font-weight: 700;
+  display: flex; align-items: center; justify-content: flex-start; gap: 6px;
+  cursor: pointer; user-select: none;
+}
+.stHeader:hover { color: #c9a84c; }
+.stChevron { display: inline-block; font-size: 10px; transition: transform 0.15s; }
+.stSection.collapsed .stChevron { transform: rotate(-90deg); }
+.stSection.collapsed .stBody { display: none; }
+.stSection.collapsed .stHeader { margin-bottom: 0; }
+.stRow { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; padding: 3px 0; }
+.stLabel { font-size: 15px; color: #9c8968; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+/* White by default everywhere — amber/gold is reserved for the felt
+   itself. .pos/.neg (JS-applied, only on values that actually
+   represent a gain/loss: Strategy P&L, Shooter net, Net hero)
+   override to green/red; everything else stays plain white. */
+.stValue { font-size: 16px; color: #f2f2f2; font-weight: 700; text-align: right; }
+.stValue.pos { color: #2ecc71; }
+.stValue.neg { color: #e0564a; }
+/* Distribution — one horizontal row per number, with a 10px-tall bar
+   so it's readable at a glance. */
+.stDistRow { display: flex; align-items: center; gap: 5px; height: 20px; }
+.stDistNum { width: 20px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px; color: #9c8968; text-align: right; flex-shrink: 0; }
+.stDistBarTrack { position: relative; flex: 1; height: 10px; }
+.stDistBar { position: absolute; left: 0; top: 0; height: 100%; background: #e0be6f; }
+.stDistBar.seven { background: #e0564a; }
+.stDistTick { position: absolute; top: -1px; width: 1px; height: 12px; background: #ffffff; opacity: 0.7; }
+.stDistCount { width: 24px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 12px; color: #f2f2f2; text-align: right; flex-shrink: 0; }
+/* Net sits inside Current as a normal row, just set apart by a
+   faint divider above it — no special hero treatment, no bottom
+   pinning; Current flows right after Session like every other box. */
+.stNetDivider { border-top: 1px solid #4a4035; margin: 8px 0 3px; }
+.stNetValue.pos { color: #2ecc71; }
+.stNetValue.neg { color: #e0564a; }
+@media (max-width: 1300px) { .statsSidebar { display: none; } }
