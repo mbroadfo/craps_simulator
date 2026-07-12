@@ -4,39 +4,216 @@
 <meta charset="utf-8">
 <title>Parametric Felt — ColorUp Study v5</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=IBM+Plex+Mono:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600&family=Barlow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: #04060a;
     min-height: 100vh;
     display: flex; flex-direction: column; align-items: center;
-    gap: 10px; padding: 18px;
+    padding: 18px;
     font-family: 'IBM Plex Mono', monospace; color: #8a8171;
   }
-  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 11px; }
-  .controls .grp { display: flex; align-items: center; gap: 4px; border: 1px solid #2a251e; border-radius: 4px; padding: 3px 6px; }
-  .controls label { color: #8a8171; letter-spacing: 1px; text-transform: uppercase; font-size: 9px; }
+  .pageRow { display: flex; flex-direction: row; align-items: flex-start; gap: 16px; }
+  #menuToggle {
+    position: fixed; top: 12px; left: 12px; z-index: 10;
+    width: 32px; height: 32px; font-size: 16px; cursor: pointer;
+    background: #0c0d11; color: #8a8171; border: 1px solid #2a251e;
+    border-radius: 4px;
+  }
+  #menuToggle:hover { color: #c9a84c; border-color: #c9a84c; }
+  .controls {
+    display: none; flex-direction: column; gap: 8px; font-size: 11px;
+    position: fixed; top: 50px; left: 12px; z-index: 10;
+    width: 216px; max-height: calc(100vh - 70px); overflow-y: auto;
+    background: #0c0d11; border: 1px solid #2a251e; border-radius: 6px; padding: 10px;
+  }
+  .controls.open { display: flex; }
+  .controls .grp {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+    border: 1px solid #2a251e; border-radius: 4px; padding: 4px 6px;
+  }
+  .controls label { display: block; width: 100%; color: #8a8171; letter-spacing: 1px; text-transform: uppercase; font-size: 9px; }
   .controls button {
     font-family: 'IBM Plex Mono', monospace; font-size: 11px; cursor: pointer;
     background: transparent; color: #8a8171; border: 1px solid #2a251e;
     border-radius: 3px; padding: 2px 8px;
   }
   .controls button.on { background: #c9a84c; color: #14100a; border-color: #c9a84c; font-weight: 700; }
-  #readout { font-size: 11px; color: #c9a84c; min-height: 16px; letter-spacing: 0.5px; }
-  .caption { font-size: 10px; letter-spacing: 3px; opacity: .45; text-transform: uppercase; }
-  /* Fill the page but always fit: sized by whichever is tighter —
-     window width, or window height minus the controls/readout chrome
-     (~160px) converted through the 1240:740 aspect ratio. */
-  #felt {
-    width: min(96vw, calc((100vh - 160px) * 1.892));
-    max-width: 1900px;
-    height: auto;
+  #readout {
+    font-size: 11px; color: #c9a84c; letter-spacing: 0.5px;
+    border-top: 1px solid #2a251e; padding-top: 6px; margin-top: 2px;
   }
+  /* Fill the page but always fit: sized by whichever is tighter —
+     window width, or window height minus body padding, converted
+     through the felt's own aspect ratio (1400:851, includes the chip
+     rail below the printed felt). The denom-picker/button row sits
+     inside this footprint (absolute, under the props panel), so it no
+     longer needs its own reserved page height. Controls/readout float
+     as an overlay and don't count against this budget either. */
+  .tableWrap {
+    position: relative;
+    width: min(96vw, calc((100vh - 48px) * 1.645));
+    max-width: 1900px;
+  }
+  #felt { width: 100%; height: auto; display: block; }
+
+  /* ============== Denom picker + Roll/Clear/Export row ==================
+     Anchored under the props panel, same vertical band as the chip
+     rail — not stacked below it. Free to overflow right past the
+     props panel's own width toward the chip rail; if it still doesn't
+     fit, push the rail further right instead of cramping the controls. */
+  .actionBar {
+    position: absolute; top: 88.4%; left: 1.14%; width: max-content;
+    display: flex; flex-direction: row; align-items: center; flex-wrap: nowrap; gap: 12px;
+  }
+  .denomPicker { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .denomChip {
+    width: 60px; height: 60px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55));
+    transition: filter 0.15s, transform 0.15s;
+  }
+  .denomChip:hover { transform: translateY(-1px); }
+  .denomChip.selected {
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55)) drop-shadow(0 0 6px #c9a84c) drop-shadow(0 0 3px #f3ce74);
+  }
+  /* Round icon buttons — glyph only, tooltip carries the label — sized
+     and colored to actually read as buttons next to the chips, not
+     disappear beside them. */
+  .btnRow { display: flex; gap: 9px; flex-shrink: 0; }
+  .iconBtn {
+    width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; line-height: 1;
+    background: radial-gradient(circle at 35% 30%, #2c2f38, #0c0d11 75%);
+    color: #c9a84c; border: 1.5px solid #4a3a1d;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 2px 5px rgba(0,0,0,0.5);
+    transition: color 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+  .iconBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .iconBtn.primary {
+    background: radial-gradient(circle at 35% 30%, #c14c3d, #7a231b 75%);
+    color: #ffe9c9; border-color: #d95f4c; font-weight: 700;
+  }
+  .iconBtn.primary:disabled { background: radial-gradient(circle at 35% 30%, #3a201c, #1a100e 75%); color: #6b5550; border-color: #4a2a26; }
+  .iconBtn:not(:disabled):hover {
+    border-color: #c9a84c; color: #f3ce74; transform: translateY(-1px);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 2px 6px rgba(0,0,0,0.5), 0 0 7px rgba(201,168,76,0.3);
+  }
+  .iconBtn.primary:not(:disabled):hover {
+    box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 2px 6px rgba(0,0,0,0.5), 0 0 8px rgba(217,95,76,0.45);
+  }
+  .iconBtn:not(:disabled):active { transform: translateY(0); }
+  /* Roll button — glossy casino-red circle drawn as SVG (see the
+     inline <svg> in the button markup), not CSS gradients + a glyph. */
+  .rollBtn {
+    width: 46px; height: 46px; padding: 0; border: none; background: none; cursor: pointer;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55));
+    transition: filter 0.15s, transform 0.15s;
+  }
+  .rollBtn:hover { transform: translateY(-1px); filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6)) drop-shadow(0 0 6px rgba(217,95,76,0.5)); }
+  .rollBtn:active { transform: translateY(0); }
+
+  /* Rail win/lose flash — hook for a future dice-resolve step (see
+     flashPlayerSection in the script; not called anywhere yet). */
+  @keyframes railWinGlow { 0% { filter: none; } 30% { filter: drop-shadow(0 0 6px #c9a84c); } 100% { filter: none; } }
+  @keyframes railLoseGlow { 0% { filter: none; } 30% { filter: drop-shadow(0 0 6px #c0392b); } 100% { filter: none; } }
+  .rail-flash-win { animation: railWinGlow 0.4s ease-out; }
+  .rail-flash-lose { animation: railLoseGlow 0.4s ease-out; }
+
+  /* Win/loss toast — dicer.io-style: rounded card, colored border,
+     fades up and out. Triggered manually (dev-tool test buttons) for
+     now — there's no resolve engine yet to fire it for real. */
+  @keyframes toastFadeUp {
+    0%   { opacity: 0; transform: translateY(8px) scale(0.92); }
+    15%  { opacity: 1; transform: translateY(0) scale(1); }
+    72%  { opacity: 1; transform: translateY(-10px) scale(1); }
+    100% { opacity: 0; transform: translateY(-46px) scale(1); }
+  }
+  .bet-toast { animation: toastFadeUp 1.5s ease-out forwards; pointer-events: none; }
+
+  /* ============== Shooter roll number line ==============
+     No card, no border, no title, no scrollbar — just the rolled
+     totals stacked vertically next to the table, oldest at top,
+     newest appended at the bottom, colored by what they meant. Roll/
+     Reset controls live in the hamburger menu, not here. */
+  /* Reserve the number column's width up front — otherwise the sidebar
+     is 0px wide until the first roll, and the table visibly jumps left
+     when it suddenly gains width. */
+  .shooterHistory { padding-top: 4px; min-width: 30px; flex-shrink: 0; }
+  #shList { display: flex; flex-direction: column; gap: 5px; font-family: 'IBM Plex Mono', monospace; }
+  .shRoll { width: 30px; text-align: center; font-size: 19px; font-weight: 800; line-height: 1; }
+
+  /* ============== Stats sidebar ==============
+     Georgia italic everywhere, matching "Come" on the felt (script =
+     Georgia italic) — this is the font the whole file standardized on,
+     the sidebar just hadn't caught up to it. */
+  /* No scrollbar, ever — the inner content is scaled (via JS,
+     fitSidebarContent) to exactly match whatever vertical room the
+     felt's own height gives it, shrinking if it would overflow,
+     growing to fill extra space if there's room to spare. */
+  .statsSidebar {
+    width: 160px; overflow: hidden; box-sizing: border-box;
+    background: #111111; border: 1px solid #2a251e; padding: 7px;
+  }
+  .statsSidebarInner {
+    display: flex; flex-direction: column;
+    font-family: 'Barlow', sans-serif; color: #c9a84c;
+    transform-origin: top center;
+  }
+  /* App logo — two dice showing 11 (5+6) beside the "The Pit" wordmark. */
+  .stLogo {
+    height: 60px; margin-bottom: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stLogo svg { width: 100%; height: 100%; }
+  .stSection { padding: 10px 0; border-bottom: 1px solid #4a4035; }
+  .stSection:first-child { padding-top: 0; }
+  .stSection:last-child { border-bottom: none; }
+  .stHeader {
+    font-size: 13px; letter-spacing: 1.5px; color: #9c8968; margin-bottom: 8px; font-weight: 700;
+    display: flex; align-items: center; justify-content: flex-start; gap: 6px;
+    cursor: pointer; user-select: none;
+  }
+  .stHeader:hover { color: #c9a84c; }
+  .stChevron { display: inline-block; font-size: 10px; transition: transform 0.15s; }
+  .stSection.collapsed .stChevron { transform: rotate(-90deg); }
+  .stSection.collapsed .stBody { display: none; }
+  .stSection.collapsed .stHeader { margin-bottom: 0; }
+  .stRow { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; padding: 3px 0; }
+  .stLabel { font-size: 15px; color: #9c8968; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+  /* White by default everywhere — amber/gold is reserved for the felt
+     itself. .pos/.neg (JS-applied, only on values that actually
+     represent a gain/loss: Strategy P&L, Shooter net, Net hero)
+     override to green/red; everything else — Table Limits, Efficiency,
+     Distribution counts, Session, and the plain counts in Current
+     (Bets/Rack/Bankroll) — stays plain white. */
+  .stValue { font-size: 16px; color: #f2f2f2; font-weight: 700; text-align: right; }
+  .stValue.pos { color: #2ecc71; }
+  .stValue.neg { color: #e0564a; }
+  /* Distribution — one horizontal row per number, with a 10px-tall bar
+     so it's readable at a glance. */
+  .stDistRow { display: flex; align-items: center; gap: 5px; height: 20px; }
+  .stDistNum { width: 20px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px; color: #9c8968; text-align: right; flex-shrink: 0; }
+  .stDistBarTrack { position: relative; flex: 1; height: 10px; }
+  .stDistBar { position: absolute; left: 0; top: 0; height: 100%; background: #e0be6f; }
+  .stDistBar.seven { background: #e0564a; }
+  .stDistTick { position: absolute; top: -1px; width: 1px; height: 12px; background: #ffffff; opacity: 0.7; }
+  .stDistCount { width: 24px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 12px; color: #f2f2f2; text-align: right; flex-shrink: 0; }
+  /* Net sits inside Current as a normal row, just set apart by a
+     faint divider above it — no special hero treatment, no bottom
+     pinning; Current flows right after Session like every other box. */
+  .stNetDivider { border-top: 1px solid #4a4035; margin: 8px 0 3px; }
+  .stNetValue.pos { color: #2ecc71; }
+  .stNetValue.neg { color: #e0564a; }
+  @media (max-width: 1300px) { .statsSidebar { display: none; } }
 </style>
 </head>
 <body>
 
-<div class="controls">
+<button id="menuToggle" aria-label="Toggle dev controls">&#9776;</button>
+
+<div class="controls" id="controlsPanel">
   <div class="grp"><label>Puck</label>
     <button data-puck="off">OFF</button>
     <button data-puck="4">4</button><button data-puck="5">5</button><button data-puck="6">6</button>
@@ -60,12 +237,110 @@
   <div class="grp"><label>ATS demo</label>
     <button id="aAll">ALL</button><button id="aTall">TALL</button><button id="aSmall">SMALL</button>
   </div>
-  <div class="grp"><label>Chips (dev tool)</label>
-    <button id="clearChips">CLEAR ALL</button>
+  <div class="grp"><label>Win/Loss test</label>
+    <button id="testWin">+$10</button>
+    <button id="testLose">&minus;$10</button>
   </div>
+  <div class="grp"><label>Shooter roll</label>
+    <button id="shRollBtn">ROLL</button>
+    <button id="shReset">RESET</button>
+  </div>
+  <div class="grp"><label>Data</label>
+    <button id="exportBtn">EXPORT JSON</button>
+  </div>
+  <div id="readout">hover a zone…</div>
 </div>
 
-<svg id="felt" viewBox="0 0 1400 740" xmlns="http://www.w3.org/2000/svg"
+<div class="pageRow">
+<!-- ================= STATS SIDEBAR =================
+     Presentational only — populated by window.updateSidebar(stats).
+     Sections with a real local data source (table config, roll
+     distribution, rolls/hands, rack/bankroll, bets-on-table) are wired
+     to this file's own state (see gatherLocalStats()). Sections that
+     need real bet resolution/strategy tracking this prototype doesn't
+     have (Strategy P&L, Efficiency, Hits/Rate, Shooter net, Net P&L)
+     show "—" until a real backend calls updateSidebar() with them. -->
+<div class="statsSidebar" id="statsSidebar">
+<div class="statsSidebarInner" id="statsSidebarInner">
+  <div class="stLogo">
+    <svg viewBox="0 0 140 60" xmlns="http://www.w3.org/2000/svg" aria-label="The Pit — dice showing 11">
+      <!-- die showing 5 -->
+      <rect x="40" y="4" width="28" height="28" rx="4" fill="#efe7d3" stroke="#20180f" stroke-width="1.5"/>
+      <circle cx="47" cy="11" r="2.4" fill="#20180f"/>
+      <circle cx="61" cy="11" r="2.4" fill="#20180f"/>
+      <circle cx="54" cy="18" r="2.4" fill="#20180f"/>
+      <circle cx="47" cy="25" r="2.4" fill="#20180f"/>
+      <circle cx="61" cy="25" r="2.4" fill="#20180f"/>
+      <!-- die showing 6 -->
+      <rect x="72" y="4" width="28" height="28" rx="4" fill="#efe7d3" stroke="#20180f" stroke-width="1.5"/>
+      <circle cx="79" cy="11" r="2.4" fill="#20180f"/>
+      <circle cx="93" cy="11" r="2.4" fill="#20180f"/>
+      <circle cx="79" cy="18" r="2.4" fill="#20180f"/>
+      <circle cx="93" cy="18" r="2.4" fill="#20180f"/>
+      <circle cx="79" cy="25" r="2.4" fill="#20180f"/>
+      <circle cx="93" cy="25" r="2.4" fill="#20180f"/>
+      <text x="70" y="50" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+            font-style="italic" font-weight="700" font-size="19" letter-spacing="0.5"
+            fill="#c9a84c">The Pit</text>
+    </svg>
+  </div>
+  <div class="stSection">
+    <div class="stHeader"><span class="stChevron">&#9662;</span>Table Limits</div>
+    <div class="stBody">
+      <div class="stRow"><span class="stLabel">Min</span><span class="stValue" data-stat="min">—</span></div>
+      <div class="stRow"><span class="stLabel">Max</span><span class="stValue" data-stat="max">—</span></div>
+      <div class="stRow"><span class="stLabel">Odds</span><span class="stValue" data-stat="odds">—</span></div>
+      <div class="stRow"><span class="stLabel">Odds max</span><span class="stValue" data-stat="oddsMax">—</span></div>
+    </div>
+  </div>
+  <div class="stSection">
+    <div class="stHeader"><span class="stChevron">&#9662;</span>Current</div>
+    <div class="stBody">
+      <div class="stRow"><span class="stLabel">Shooter</span><span class="stValue" data-stat="shooterNet">—</span></div>
+      <div class="stRow"><span class="stLabel">Bets</span><span class="stValue" data-stat="betsOn">—</span></div>
+      <div class="stRow"><span class="stLabel">Rack</span><span class="stValue" data-stat="rack">—</span></div>
+      <div class="stRow"><span class="stLabel">Bankroll</span><span class="stValue" data-stat="bankroll">—</span></div>
+      <div class="stNetDivider"></div>
+      <div class="stRow"><span class="stLabel">Net</span><span class="stValue" data-stat="net">—</span></div>
+    </div>
+  </div>
+  <div class="stSection collapsed">
+    <div class="stHeader"><span class="stChevron">&#9662;</span>Session</div>
+    <div class="stBody">
+      <div class="stRow"><span class="stLabel">Hands</span><span class="stValue" data-stat="hands">—</span></div>
+      <div class="stRow"><span class="stLabel">Rolls</span><span class="stValue" data-stat="rolls">—</span></div>
+      <div class="stRow"><span class="stLabel">Hits</span><span class="stValue" data-stat="hits">—</span></div>
+      <div class="stRow"><span class="stLabel">Rate</span><span class="stValue" data-stat="rate">—</span></div>
+    </div>
+  </div>
+  <div class="stSection collapsed">
+    <div class="stHeader"><span class="stChevron">&#9662;</span>Distribution</div>
+    <div class="stBody">
+      <div id="stDist"></div>
+    </div>
+  </div>
+  <div class="stSection collapsed">
+    <div class="stHeader"><span class="stChevron">&#9662;</span>Efficiency</div>
+    <div class="stBody">
+      <div class="stRow"><span class="stLabel">RPS</span><span class="stValue" data-stat="rps">—</span></div>
+      <div class="stRow"><span class="stLabel">AHL</span><span class="stValue" data-stat="ahl">—</span></div>
+      <div class="stRow"><span class="stLabel">HPS</span><span class="stValue" data-stat="hps">—</span></div>
+      <div class="stRow"><span class="stLabel">BPS</span><span class="stValue" data-stat="bps">—</span></div>
+    </div>
+  </div>
+  <div class="stSection collapsed">
+    <div class="stHeader"><span class="stChevron">&#9662;</span>Strategy</div>
+    <div class="stBody">
+      <div class="stRow"><span class="stLabel">Across</span><span class="stValue" data-stat="pnlAcross">—</span></div>
+      <div class="stRow"><span class="stLabel">Inside</span><span class="stValue" data-stat="pnlInside">—</span></div>
+      <div class="stRow"><span class="stLabel">Outside</span><span class="stValue" data-stat="pnlOutside">—</span></div>
+      <div class="stRow"><span class="stLabel">Horn</span><span class="stValue" data-stat="pnlHorn">—</span></div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="tableWrap">
+<svg id="felt" viewBox="0 0 1400 851" xmlns="http://www.w3.org/2000/svg"
      aria-label="Craps table — parametric felt study v5, ColorUp proportions">
   <defs>
     <radialGradient id="felt-bg" cx="42%" cy="42%" r="78%" gradientUnits="objectBoundingBox">
@@ -81,51 +356,61 @@
       <stop offset="0%" stop-color="#d4873a"/>
       <stop offset="100%" stop-color="#c9a84c"/>
     </linearGradient>
+    <linearGradient id="railWood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6b4423"/>
+      <stop offset="45%" stop-color="#5c3a1e"/>
+      <stop offset="100%" stop-color="#432914"/>
+    </linearGradient>
+    <linearGradient id="grooveShade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.7"/>
+      <stop offset="18%" stop-color="#000000" stop-opacity="0.15"/>
+      <stop offset="82%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.12"/>
+    </linearGradient>
   </defs>
 
-  <!-- ================= FELT + RAIL ================= -->
-  <rect width="1400" height="740" rx="16" fill="url(#felt-bg)"/>
+  <!-- ================= FELT + RAIL =================
+       Extends a bit past the printed betting area (which ends at
+       y=724) down to y=743 — table apron, not printed felt — so the
+       gap before the chip rail (y=752) reads as part of the table
+       instead of empty page background. -->
+  <rect width="1400" height="743" rx="16" fill="url(#felt-bg)"/>
 
-  <!-- ================= BANDS v5 =================
+  <!-- ================= BANDS v6 =================
        Outer edge IS the rail (ColorUp): fills run solid into the
-       corner; only the INNER boundaries curve (r24 / r20).
-       Pass Line 58px : right x>=1326, bottom y>=666
-       Don't Pass 48px: right x=[1278,1326], bottom y=[618,666]
-       Both terminate at the Don't Come box row (full height right)
-       and butt into the prop rail (x=136) at the bottom.        -->
-  <!-- The Don't Come box caps the vertical rails: it occupies the far
-       top-right corner over the band lanes (x 1118-1224, y 16-256),
-       and the bands terminate at its bottom edge.                  -->
-  <!-- Both bands are rounded cards like every other section:
-       small radii at their ends, a broad sweep at the outer corner,
-       and the shared curve keeps them nested. -->
-  <!-- Rebalanced 58/48 (was 66/40) — Pass Line still leads, less dramatically -->
-  <path id="pass-fill" d="M 1336,264 L 1374,264 A 10,10 0 0 1 1384,274
+       corner; only the INNER boundaries curve. Pass Line and Don't
+       Pass are both 53px wrap-around lanes hugging the right + bottom
+       edges. Pass Line's lane now runs the FULL height of the betting
+       area (from y=16, past the Don't Come box) so it reaches the top
+       — Don't Come no longer caps it, only Don't Pass's lane still
+       terminates at Don't Come's bottom edge (y=256) as before. -->
+  <path id="pass-fill" d="M 1341,16 L 1374,16 A 10,10 0 0 1 1384,26
            L 1384,676 A 48,48 0 0 1 1336,724
            L 424,724 A 10,10 0 0 1 414,714
-           L 414,676 A 10,10 0 0 1 424,666
-           L 1302,666 A 24,24 0 0 0 1326,642
-           L 1326,274 A 10,10 0 0 1 1336,264 Z"
+           L 414,676 A 10,10 0 0 1 424,671
+           L 1307,671 A 24,24 0 0 0 1331,647
+           L 1331,26 A 10,10 0 0 1 1341,16 Z"
         fill="#12301e" stroke="#c9a84c" stroke-width="1.5"/>
-  <path id="dontpass-fill" d="M 1286,264 L 1318,264 A 8,8 0 0 1 1326,272
-           L 1326,642 A 24,24 0 0 1 1302,666
-           L 422,666 A 8,8 0 0 1 414,658
+  <path id="dontpass-fill" d="M 1286,264 L 1323,264 A 8,8 0 0 1 1331,272
+           L 1331,647 A 24,24 0 0 1 1307,671
+           L 422,671 A 8,8 0 0 1 414,663
            L 414,626 A 8,8 0 0 1 422,618
            L 1258,618 A 20,20 0 0 0 1278,598
            L 1278,272 A 8,8 0 0 1 1286,264 Z"
         fill="#241019" stroke="#c9a84c" stroke-width="1.5"/>
 
   <!-- Pass Line odds have no printed felt zone on a real table — players
-       simply stack chips behind their flat bet. This invisible rect is
-       ONLY a dev-tool click target sitting inside the Pass Line band,
-       closer to the outer rail edge than the flat-bet chip spot, so it
-       never reads as its own zone. -->
-  <rect id="passline-odds-fill" x="1060" y="698" width="80" height="24"
+       stack them on the open felt behind their flat bet, between the
+       Pass Line's own printed edge and the rail, never on the printed
+       Pass Line area itself. This invisible rect is ONLY a dev-tool
+       click target, sitting in that open margin (y 726..742, below
+       Pass Line's y=724 outer edge). -->
+  <rect id="passline-odds-fill" x="1060" y="726" width="80" height="16"
         fill="transparent" pointer-events="all"/>
 
   <!-- rail on top so band fills tuck under it cleanly -->
-  <rect width="1400" height="740" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
-  <rect x="3" y="3" width="1394" height="734" rx="14" fill="none" stroke="#a07030" stroke-width="1" stroke-opacity="0.5"/>
+  <rect width="1400" height="743" rx="16" fill="none" stroke="#4a3a1d" stroke-width="6"/>
+  <rect x="3" y="3" width="1394" height="737" rx="14" fill="none" stroke="#a07030" stroke-width="1" stroke-opacity="0.5"/>
 
   <!-- band labels drawn by JS (drawDpLabels) so they render with the
        loaded webfont, not the pre-load fallback -->
@@ -133,10 +418,54 @@
 
   <!-- ================= INTERIOR (built by JS) ================= -->
   <g id="interior"></g>
+
+  <!-- ================= CHIP RAIL (built by JS, drawChipRail) =================
+       A straight band centered on the Field bet. -->
+  <g id="chip-rail"></g>
+
+  <!-- ================= WIN/LOSS TOASTS =================
+       Always last in DOM order so toasts render on top of everything
+       else — built/removed on the fly by showBetToast(), not part of
+       the render() redraw cycle. -->
+  <g id="toast-layer"></g>
 </svg>
 
-<div id="readout">hover a zone…</div>
-<p class="caption">Parametric felt v5 — ColorUp proportions · click a zone to test chip placement, right-click to remove · 1400 × 740</p>
+<div class="actionBar">
+  <div class="denomPicker" id="denomPicker"></div>
+  <div class="btnRow">
+    <button id="rollBtn" class="rollBtn" title="Roll — random 2d6, tracks point/seven-out">
+      <svg viewBox="0 0 46 46" width="46" height="46">
+        <defs>
+          <radialGradient id="rollBtnGrad" cx="35%" cy="28%" r="75%">
+            <stop offset="0%" stop-color="#ea5b48"/>
+            <stop offset="55%" stop-color="#b3271c"/>
+            <stop offset="100%" stop-color="#7a1712"/>
+          </radialGradient>
+        </defs>
+        <circle cx="23" cy="23" r="21" fill="url(#rollBtnGrad)" stroke="#c9a84c" stroke-width="2.5"/>
+        <circle cx="23" cy="23" r="21" fill="none" stroke="#5a120c" stroke-width="1" stroke-opacity="0.5"/>
+        <ellipse cx="18" cy="14" rx="10.5" ry="5.5" fill="#ffffff" fill-opacity="0.22"/>
+        <text x="23" y="28" text-anchor="middle" font-family="Arial, Helvetica, sans-serif"
+              font-weight="800" font-size="12" letter-spacing="0.5" fill="#ffffff"
+              stroke="#5a120c" stroke-width="1.6" paint-order="stroke fill">ROLL</text>
+      </svg>
+    </button>
+    <button id="clearBtn" class="iconBtn" title="Clear all bets">
+      <svg viewBox="0 0 32 32" width="38" height="38">
+        <path d="M 10,1 L 22,1 L 22,13 L 28,13 L 16,29 L 4,13 L 10,13 Z"
+              fill="#f3ce74" stroke="#7a5c14" stroke-width="1.2"/>
+        <text x="16" y="20.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif"
+              font-weight="800" font-size="13" fill="#14100a">$</text>
+      </svg>
+    </button>
+  </div>
+</div>
+</div>
+
+<div class="shooterHistory">
+  <div id="shList"></div>
+</div>
+</div>
 
 <script>
 "use strict";
@@ -162,7 +491,34 @@ const EDGE = {
 const SVG = "http://www.w3.org/2000/svg";
 const interior = document.getElementById("interior");
 const dpLabels = document.getElementById("dp-labels");
+const chipRail = document.getElementById("chip-rail");
+const toastLayer = document.getElementById("toast-layer");
 const readout = document.getElementById("readout");
+
+// Win/loss toast — dicer.io-style: white rounded card, colored border
+// (green win / red loss), bold black "+$N"/"-$N", fades up and out.
+// Dev-tool trigger only for now (see the "Win/Loss test" buttons) —
+// no resolve engine exists yet to fire this from a real dice outcome.
+function showBetToast(amount, x, y) {
+  const isWin = amount >= 0;
+  const label = `${isWin ? "+" : "-"}$${Math.abs(amount)}`;
+  const w = 44 + label.length * 13, h = 38;
+  // Clamp so a toast over a bet near the table's own top/left edge
+  // can't push its card past the canvas boundary and get clipped.
+  const cx = Math.max(w / 2 + 4, Math.min(1400 - w / 2 - 4, x));
+  const cy = Math.max(h / 2 + 4, y);
+  const g = el("g", { class: "bet-toast", transform: `translate(${cx},${cy})` }, toastLayer);
+  el("rect", { x: -w / 2, y: -h / 2, width: w, height: h, rx: 9,
+               fill: "#ffffff", stroke: isWin ? "#2f8a5b" : "#c0392b", "stroke-width": 3,
+               filter: "drop-shadow(0 3px 5px rgba(0,0,0,0.6))" }, g);
+  txt(label, { x: 0, y: 7, "text-anchor": "middle", fill: "#111111",
+      "font-family": "Arial, Helvetica, sans-serif", "font-weight": 800, "font-size": 20 }, g);
+  setTimeout(() => g.remove(), 1500);
+}
+
+document.getElementById("menuToggle").addEventListener("click", () => {
+  document.getElementById("controlsPanel").classList.toggle("open");
+});
 const barlow = "'Barlow Condensed', sans-serif";
 // Felt payout/data face: Georgia italic (was IBM Plex Mono)
 const mono = "Georgia, 'Times New Roman', serif";
@@ -179,9 +535,15 @@ const ATS = { x: 16, y: 16, w: 390, h: 140 };
 const HOPS = { x: 16, y: 164, w: 390, h: 228 };
 const PROPS = { x: 16, y: 400, w: 390, h: 330 };  // Any Craps bottom lands on y=724, flush with Pass Line
 
-// Box row spans exactly the Come band width (x 414..1272)
-const BOX = { x0: 414, y: 16, w: (858 - 5 * 6) / 6, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
-const DC = { x: 1278, y: 16, w: 106, h: 240 };  // caps the vertical rails in the far top-right corner
+// DC now caps only the Don't Pass lane — Pass Line's own top-right
+// column runs the full height of the betting area, from y=16 past DC
+// down to the rail (see pass-fill), so DC shifted left by Pass Line's
+// lane width (53px) to clear that column. Box row narrows to make
+// room for DC's new left edge; Come/Field keep their original width
+// (they're below DC's row, unaffected) — DC's leftover overhang
+// (x 1225..1278) just sits above them, same as the box numbers do.
+const DC = { x: 1225, y: 16, w: 106, h: 240 };
+const BOX = { x0: 414, y: 16, w: (DC.x - 6 - 414 - 5 * 6) / 6, h: 240, gap: 6, nums: [4, 5, 6, 8, 9, 10] };
 const COME = { x: 414, y: 262, w: 858, h: 142 };
 const FIELD = { x: 414, y: 410, w: 858, h: 200 };
 
@@ -213,7 +575,30 @@ function txt(content, attrs, parent) {
 // Chip placement is a DEV TOOL for validating bet-position coordinates
 // (T2), not the real interaction model — the live felt places chips from
 // BetPlaced/BetResolved events, never clicks. See chat notes.
-const chips = {};       // zoneId -> chip count
+// Chip denominations — standard casino colors, edge-spot colors per the
+// reference photos (assets/*.png chip-rail shots). `fill`/`edge` are the
+// solid on-felt/rail chip colors; `ring` is the accent color used by the
+// picker's white-body poker-chip icon (chipFaceSVG) — same hue as fill
+// except $1, which stays a white/grey solid chip on the felt but wants a
+// distinct blue ring in the icon (matching the reference chip-icon set).
+const DENOMS = [
+  { value: 1,   label: "$1",   fill: "#d4d4d4", edge: "#8a8a8a", ring: "#2a5ca8" },
+  { value: 5,   label: "$5",   fill: "#c0392b", edge: "#ffffff", ring: "#c0392b" },
+  { value: 25,  label: "$25",  fill: "#27ae60", edge: "#ffffff", ring: "#1f8b4c" },
+  { value: 100, label: "$100", fill: "#2c2c2c", edge: "#ffffff", ring: "#2c2c2c" },
+  { value: 500, label: "$500", fill: "#6c3483", edge: "#c9a84c", ring: "#6c3483" },
+];
+// Bankroll lives as an explicit chip rack (denom -> count), not a dollar
+// number — $500 dealt as 2x$100 + 8x$25 + 20x$5 (deliberately textured,
+// not a single $500 chip), so a plain greedy dollar->chip breakdown
+// wouldn't reproduce it. No resolve/roll engine exists yet, so the
+// rack only moves chips between "on the felt" and "in the rack" — it
+// never grows/shrinks on its own.
+function startingRack() { return { 1: 0, 5: 20, 25: 8, 100: 2, 500: 0 }; }
+let rack = startingRack();
+let selectedDenom = 25;
+
+const chips = {};       // zoneId -> array of denom values, e.g. [5, 25, 25]
 const chipAnchors = {}; // zoneId -> {x, y} (felt coordinate the chip sits at)
 
 function zone(node, info, chipId, cx, cy) {
@@ -223,38 +608,175 @@ function zone(node, info, chipId, cx, cy) {
   chipAnchors[chipId] = { x: cx, y: cy };
   node.style.cursor = "pointer";
   node.addEventListener("click", () => {
-    chips[chipId] = (chips[chipId] || 0) + 1;
+    if (!rack[selectedDenom]) return; // none of that denomination left in the rack
+    rack[selectedDenom] -= 1;
+    (chips[chipId] = chips[chipId] || []).push(selectedDenom);
     render();
   });
   node.addEventListener("contextmenu", (e) => {
     e.preventDefault();
-    if (!chips[chipId]) return;
-    chips[chipId] -= 1;
-    if (chips[chipId] <= 0) delete chips[chipId];
+    if (!chips[chipId] || !chips[chipId].length) return;
+    const denom = chips[chipId].pop();
+    rack[denom] = (rack[denom] || 0) + 1;
+    if (!chips[chipId].length) delete chips[chipId];
     render();
   });
 }
 
-// Casino-chip token: cream face, dashed gold edge ring
-function chipToken(g, cx, cy) {
-  el("circle", { cx, cy, r: 17, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, g);
-  el("circle", { cx, cy, r: 12, fill: "none", stroke: "#c9a84c", "stroke-width": 1.6,
-                 "stroke-dasharray": "4 3" }, g);
+// Felt bet chip — the same drawn chip face used by the denomination
+// picker (chipFaceSVG), embedded as a nested <svg> so the whole file
+// has one chip design instead of two. labelOverride lets the topmost
+// chip in a stack show the bet's running total instead of its own
+// single face value (see drawChipLayer).
+function chipToken(g, cx, cy, denomValue, labelOverride) {
+  const d = DENOMS.find(x => x.value === denomValue) || DENOMS[0];
+  const size = 60; // matches the denomination picker's chips
+  const svg = chipFaceSVG(d, size, labelOverride);
+  svg.setAttribute("x", cx - size / 2);
+  svg.setAttribute("y", cy - size / 2);
+  g.appendChild(svg);
 }
 
 function drawChipLayer() {
   const g = el("g", {});
-  Object.entries(chips).forEach(([id, count]) => {
+  Object.entries(chips).forEach(([id, stack]) => {
     const anchor = chipAnchors[id];
-    if (!anchor || !count) return;
-    const shown = Math.min(count, 5);
-    for (let i = 0; i < shown; i++) chipToken(g, anchor.x, anchor.y - i * 4);
-    if (count > 5) {
-      txt(`+${count - 5}`, { x: anchor.x + 24, y: anchor.y - 16, "text-anchor": "middle",
-          fill: "#f3ce74", "font-family": mono, "font-size": 11, "font-weight": 700 }, g);
+    if (!anchor || !stack || !stack.length) return;
+    const total = stack.reduce((sum, v) => sum + v, 0);
+    // Largest denomination at the bottom of the stack (index 0, no
+    // y-offset), smallest on top — e.g. 25,5,5,1 stacks 25 at the base
+    // up through the 1. The topmost/most-visible chip shows the bet's
+    // running $ total, not its own face value, so the total is
+    // readable at a glance without counting the stack.
+    const sorted = [...stack].sort((a, b) => b - a);
+    const shown = Math.min(sorted.length, 5);
+    const slice = sorted.slice(0, shown);
+    for (let i = 0; i < shown; i++) {
+      const isTop = i === shown - 1;
+      chipToken(g, anchor.x, anchor.y - i * 7, slice[i], isTop ? `$${total}` : undefined);
+    }
+    if (stack.length > shown) {
+      txt(`+${stack.length - shown}`, { x: anchor.x + 42, y: anchor.y - (shown - 1) * 7 - 28, "text-anchor": "middle",
+          fill: "#f3ce74", "font-family": mono, "font-size": 13, "font-weight": 700 }, g);
     }
   });
 }
+
+// ============================================================
+// Chip rail — horizontal, right-justified to the table's own right
+// edge, wood-body/two-groove/divider cross-section (90px thick).
+// ============================================================
+const RAIL_ORDER = [500, 100, 25, 5, 1]; // highest denomination first
+const CHIP_W = 7, CHIP_H = 42, CHIP_PITCH = 9, GROUP_GAP = CHIP_PITCH - CHIP_W; // no extra gap between denominations
+
+// Pass Line's own outer edge — no longer derivable from DC (which now
+// sits inboard of it, see DC's comment above), so this is fixed to
+// match pass-fill's actual right edge (1384).
+const TABLE_RIGHT_X = 1384;
+const RAIL_W = 700, RAIL_H = 90;
+const RAIL_X1 = TABLE_RIGHT_X, RAIL_X0 = RAIL_X1 - RAIL_W; // P1: right-justified
+const RAIL_Y0 = 752; // Pass Line's own bottom edge is y=724 — halved that 55px gap down to ~28px
+
+// A chip's edge print (visible from directly above, looking down on
+// the rim) is a repeating ring of alternating color/white segments —
+// more like 8-10 segments going all the way around, not 3. Standing on
+// edge in the tray, each chip shows a run of that ring, and because
+// chips are dropped in at different spins around their own vertical
+// axis (not tilted — they still sit perfectly flat against their
+// neighbors), the run you see doesn't line up chip-to-chip. These are
+// the 7-band runs a chip can show — cycled (not randomized) by index
+// so the render stays stable, not flickering on every redraw.
+const CHIP_PATTERNS = [
+  ["c", "w", "c", "w", "c", "w", "c"], ["w", "c", "w", "c", "w", "c", "w"],
+  ["c", "c", "w", "c", "w", "c", "w"], ["w", "c", "c", "w", "c", "w", "c"],
+  ["c", "w", "w", "c", "w", "c", "c"], ["w", "w", "c", "w", "c", "w", "c"],
+  ["c", "w", "c", "c", "w", "w", "c"], ["w", "c", "w", "w", "c", "c", "w"],
+];
+
+// A chip standing on edge, drawn as a slim rectangle (not an ellipse) —
+// real chip stock is flat, and from the side it reads as a thin bar,
+// not a lens shape. Body cream, with 5 stacked bands alternating
+// color/white per CHIP_PATTERNS. Chips lie flat against their
+// neighbors — no per-chip tilt — only which band run they show varies.
+function drawChipRect(parent, cx, cy, denomValue, mountDeg, index, onClick) {
+  const d = DENOMS.find(x => x.value === denomValue);
+  const lg = el("g", { transform: `translate(${cx},${cy}) rotate(${mountDeg})` }, parent);
+  el("rect", { x: -CHIP_W / 2, y: -CHIP_H / 2, width: CHIP_W, height: CHIP_H, rx: 1.3, fill: "#f0ebdc" }, lg);
+  const pattern = CHIP_PATTERNS[index % CHIP_PATTERNS.length];
+  const bandH = CHIP_H / pattern.length;
+  pattern.forEach((band, i) => {
+    if (band === "w") return; // base rect is already the "white" tone
+    el("rect", { x: -CHIP_W / 2, y: -CHIP_H / 2 + i * bandH, width: CHIP_W, height: bandH, fill: d.fill }, lg);
+  });
+  el("rect", { x: -CHIP_W / 2, y: -CHIP_H / 2, width: CHIP_W, height: CHIP_H, rx: 1.3,
+              fill: "none", stroke: "#00000060", "stroke-width": 0.75 }, lg);
+  if (onClick) {
+    lg.style.cursor = "pointer";
+    const hit = el("rect", { x: -CHIP_W / 2 - 2, y: -CHIP_H / 2 - 2, width: CHIP_W + 4, height: CHIP_H + 4,
+                             fill: "transparent" }, lg);
+    hit.addEventListener("click", onClick);
+  }
+}
+
+// Hook for a future dice-resolve step: flashes P1's rail amber (win) or
+// red (lose). Not called anywhere yet — no resolve engine exists in
+// this prototype — but the CSS/wiring is ready for it.
+function flashPlayerSection(kind) {
+  const node = document.getElementById("rail-section-P1");
+  if (!node) return;
+  const cls = kind === "win" ? "rail-flash-win" : "rail-flash-lose";
+  node.classList.remove("rail-flash-win", "rail-flash-lose");
+  void node.offsetWidth; // restart the animation if triggered again quickly
+  node.classList.add(cls);
+  setTimeout(() => node.classList.remove(cls), 400);
+}
+
+// Wood body + two equal grooves + a raised divider bead. Tighter
+// corner radii and a subdued inset-shadow overlay on the grooves
+// (grooveShade, already defined in <defs>) read less like a toy and
+// more like carved wood than the earlier pill-shaped, uniformly-dark
+// version.
+function railChrome(parent, x, y, w, h) {
+  el("rect", { x, y, width: w, height: h, rx: 5, fill: "url(#railWood)" }, parent);
+  el("rect", { x, y, width: w, height: h, rx: 5,
+               fill: "none", stroke: "#a07030", "stroke-width": 1, "stroke-opacity": 0.35 }, parent);
+  const groove = (gx, gy, gw, gh) => {
+    el("rect", { x: gx, y: gy, width: gw, height: gh, rx: 3, fill: "#241207" }, parent);
+    el("rect", { x: gx, y: gy, width: gw, height: gh, rx: 3, fill: "url(#grooveShade)" }, parent);
+  };
+  groove(x + 8, y + 5, w - 16, 33);
+  groove(x + 8, y + 53, w - 16, 33);
+  el("line", { x1: x + 12, y1: y + 45.5, x2: x + w - 12, y2: y + 45.5,
+               stroke: "#c9a84c", "stroke-width": 1, "stroke-opacity": 0.25 }, parent);
+}
+
+function drawChipRail() {
+  chipRail.replaceChildren();
+
+  // ---- Player 1: horizontal, right-justified to the table's right
+  // edge, live (clicking a chip selects its denomination; felt clicks
+  // spend from this rack). Chips left-justified within P1's own rail. ----
+  const g1 = el("g", { id: "rail-section-P1" }, chipRail);
+  railChrome(g1, RAIL_X0, RAIL_Y0, RAIL_W, RAIL_H);
+  {
+    const groups = RAIL_ORDER.map(v => ({ value: v, count: rack[v] || 0 })).filter(gr => gr.count > 0);
+    let x = RAIL_X0 + 14, chipIndex = 0;
+    groups.forEach(gr => {
+      const groupW = gr.count * CHIP_PITCH - (CHIP_PITCH - CHIP_W);
+      if (gr.value === selectedDenom) {
+        el("circle", { cx: x + groupW / 2, cy: RAIL_Y0 + 45.5, r: 4.5, fill: "#c9a84c" }, g1);
+      }
+      for (let i = 0; i < gr.count; i++) {
+        drawChipRect(g1, x + CHIP_W / 2, RAIL_Y0 + 21.5, gr.value, 0, chipIndex++,
+          () => { selectedDenom = gr.value; render(); });
+        x += CHIP_PITCH;
+      }
+      x += GROUP_GAP - (CHIP_PITCH - CHIP_W);
+    });
+  }
+
+}
+
 function miniDie(g, cx, cy, v, opts) {
   const { s = 14, face = "#efe7d3" } = opts || {};
   el("rect", { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: 2.5,
@@ -269,14 +791,25 @@ function barTwelve(g, cx, cy, s) {
   miniDie(g, cx - (s / 2 + 2), cy, 6, { s });
   miniDie(g, cx + (s / 2 + 2), cy, 6, { s });
 }
+
+// The craps "puck" — flat circle, no gradients/shadows/gold. Off: black
+// fill, white border/text. On: white fill, black border/text.
+function drawPuck(parent, cx, cy, r, on) {
+  const p = el("g", { transform: `translate(${cx},${cy})` }, parent);
+  el("circle", { cx: 0, cy: 0, r, fill: on ? "#f0f0f0" : "#111111",
+                stroke: on ? "#000000" : "#ffffff", "stroke-width": 1.5 }, p);
+  txt(on ? "ON" : "OFF", { x: 0, y: 1, "text-anchor": "middle", "dominant-baseline": "middle",
+      fill: on ? "#000000" : "#ffffff", "font-family": display, "font-style": "italic",
+      "font-weight": 700, "font-size": r * 0.6 }, p);
+}
 // Hop cell: a grid rectangle with the pair and its payout inside.
 // Amber = hard, bone = easy, red tint = hop-the-seven.
 const HOP_STYLE = {
   hard:  { fill: "#2a1c08", ring: "#e8a04a", text: "#f3ce74", pays: "30:1", payFill: "#f3ce74" },
   easy:  { fill: "#111214", ring: "#8a8171", text: "#d8cfae", pays: "15:1", payFill: "#8a8171" },
-  seven: { fill: "#2a0f0c", ring: "#d95f4c", text: "#e8938a", pays: "15:1", payFill: "#d95f4c" },
+  seven: { fill: "#2a0f0c", ring: "#d95f4c", text: "#e8938a", pays: "15:1", payFill: "#efe7d3" },
 };
-const HOP_FACE = { hard: "#e8a04a", easy: "#efe7d3", seven: "#d95f4c" };
+const HOP_FACE = { hard: "#e8a04a", easy: "#efe7d3", seven: "#efe7d3" };
 function hopCell(g, x, y, w, h, a, b, kind) {
   const st = HOP_STYLE[kind];
   // Neutral cell — the color coding lives on the dice, not the felt
@@ -311,33 +844,33 @@ function drawDpLabels() {
   }
   const g = el("g", {}, dpLabels);
   // Pass Line — bottom strip and rotated right rail
-  txt("Pass Line", { x: 795, y: 698, "text-anchor": "middle", "dominant-baseline": "middle",
+  txt("Pass Line", { x: 795, y: 697, "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 30, "font-weight": 700,
       "letter-spacing": 14 }, g);
-  const pr = el("g", { transform: "translate(1355,440) rotate(-90)" }, g);
+  const pr = el("g", { transform: "translate(1358,440) rotate(-90)" }, g);
   txt("Pass Line", { "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "url(#ember)", "font-family": display, "font-style": "italic", "font-size": 24, "font-weight": 700,
       "letter-spacing": 9 }, pr);
   // The bet…
-  txt("Don't Pass", { x: 680, y: 642, "text-anchor": "middle", "dominant-baseline": "middle",
+  txt("Don't Pass", { x: 680, y: 645, "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "#d8cfae", "font-family": display, "font-style": "italic",
       "font-size": 17, "font-weight": 700, "letter-spacing": 4 }, g);
   // …and, well apart, the constraint
-  txt("Bar", { x: 915, y: 642, "text-anchor": "middle", "dominant-baseline": "middle",
+  txt("Bar", { x: 915, y: 645, "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "#d8cfae", "font-family": script, "font-style": "italic", "font-size": 18 }, g);
-  barTwelve(g, 968, 642, 19);
+  barTwelve(g, 970, 645, 24);
 
-  const rg = el("g", { transform: "translate(1302,440) rotate(-90)" }, g);
+  const rg = el("g", { transform: "translate(1305,440) rotate(-90)" }, g);
   txt("Don't Pass", { "text-anchor": "middle", "dominant-baseline": "central",
       fill: "#d8cfae", "font-family": display, "font-style": "italic",
       "font-size": 18, "font-weight": 700, "letter-spacing": 3 }, rg);
   // Reading up the rail, Bar 12 continues AFTER Don't Pass (above it)
-  const rb = el("g", { transform: "translate(1302,330) rotate(-90)" }, g);
+  const rb = el("g", { transform: "translate(1305,330) rotate(-90)" }, g);
   txt("Bar", { "text-anchor": "middle", "dominant-baseline": "middle",
       fill: "#d8cfae", "font-family": script, "font-style": "italic", "font-size": 16 }, rb);
   // Dice stacked along the lane, rotated for the player standing table-right
-  const rd = el("g", { transform: "translate(1302,290) rotate(-90)" }, g);
-  barTwelve(rd, 0, 0, 15);
+  const rd = el("g", { transform: "translate(1305,290) rotate(-90)" }, g);
+  barTwelve(rd, 0, 0, 20);
 }
 
 // ============================================================
@@ -375,13 +908,13 @@ function drawAts() {
     }
     const lit = cfg.atsLit[v];
     // Direct SVG attributes only — nothing can override the dim border
-    const c = el("circle", { cx, cy: trackY, r: 14,
+    const c = el("circle", { cx, cy: trackY, r: 15,
                    fill: lit ? "#4caf7d" : "#0f0f0f",
                    stroke: lit ? "#7fd6a4" : "#7a6a40", "stroke-width": 2,
                    cursor: "pointer" }, g);
     txt(String(v), { x: cx, y: trackY + 0.5, "text-anchor": "middle", "dominant-baseline": "middle",
         fill: lit ? "#0a2f1c" : "#7a6a40", "font-family": display, "font-style": "italic",
-        "font-size": lit ? 12 : 11, "font-weight": 700, "pointer-events": "none" }, g);
+        "font-size": lit ? 18 : 17, "font-weight": 700, "pointer-events": "none" }, g);
     c.addEventListener("click", () => { cfg.atsLit[v] = !cfg.atsLit[v]; render(); });
     zone(c, `ATS tracker — ${v} ${lit ? "hit" : "not hit"} this shooter (click to toggle)`);
   });
@@ -407,7 +940,7 @@ function drawAts() {
         fill: "#e8a04a", "font-family": display, "font-style": "italic", "font-size": i === 1 ? 16 : 13,
         "font-weight": 700, "letter-spacing": 1, style: pf }, g);
     txt(nums, { x: x + cw / 2, y: gy + 40, "text-anchor": "middle",
-        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": nums.length > 12 ? 11 : 10.5 }, g);
+        fill: "#a08d5f", "font-family": mono, "font-style": "italic", "font-size": nums.length > 12 ? 13 : 14 }, g);
     txt(pays, { x: x + cw / 2, y: gy + 68, "text-anchor": "middle",
         fill: "url(#ember-soft)", "font-family": display, "font-style": "italic", "font-size": i === 1 ? 22 : 18,
         "font-weight": 700, style: pf }, g);
@@ -489,12 +1022,15 @@ function drawProps() {
                            "stroke-opacity": 0.5 }, g);
     const midY = y + BAND_H / 2;
     // Red, not ember: both bands are one-roll bets, same accent as
-    // Hop-the-7 and the Horn numbers use for the same reason
-    txt(name, { x: cx - 8, y: midY, "text-anchor": "end", "dominant-baseline": "middle",
+    // Hop-the-7 and the Horn numbers use for the same reason. Payout
+    // mirrored on both sides of the name, matching the reference table.
+    txt(pays, { x: cx - 68, y: midY, "text-anchor": "end", "dominant-baseline": "middle",
+        fill: "#d95f4c", "font-family": mono, "font-style": "italic", "font-size": 18, "font-weight": 700 }, g);
+    txt(name, { x: cx, y: midY, "text-anchor": "middle", "dominant-baseline": "middle",
         fill: "#d95f4c", "font-family": display, "font-style": "italic", "font-size": 18, "font-weight": 700,
         "letter-spacing": 1.5 }, g);
-    txt(pays, { x: cx + 10, y: midY, "text-anchor": "start", "dominant-baseline": "middle",
-        fill: "#e8938a", "font-family": mono, "font-style": "italic", "font-size": 20, "font-weight": 700 }, g);
+    txt(pays, { x: cx + 68, y: midY, "text-anchor": "start", "dominant-baseline": "middle",
+        fill: "#d95f4c", "font-family": mono, "font-style": "italic", "font-size": 18, "font-weight": 700 }, g);
     zone(b, info, `band-${name}`, PROPS.x + PROPS.w - 40, midY);
   };
   band(PROPS.y + 2, "Big Red", "4:1",
@@ -532,7 +1068,7 @@ function drawProps() {
     // (dice left, payout trailing right) leaves a bigger outer margin on
     // the right than the left has otherwise — this equalizes them.
     const ox = col === 1 ? 10 : 0;
-    pairCell(gx2 + col * cellW, hardY + row * cellH, a, a, pays, "#e8a04a", "#d8cfae",
+    pairCell(gx2 + col * cellW, hardY + row * cellH, a, a, pays, "#e8a04a", "#e8a04a",
              `${name} (${a}-${a}) — pays ${pays} · edge ${edge} · loses on easy ${a + a} or 7`, ox);
   });
 
@@ -548,7 +1084,7 @@ function drawProps() {
     // Right column (3, 12) shifts right ~10px to match the left column's
     // outer margin, same reasoning as the hardways grid.
     const ox = col === 1 ? 10 : 0;
-    pairCell(gx2 + col * cellW, hornY + row * cellH, a, b, pays, "#d95f4c", "#f3ce74",
+    pairCell(gx2 + col * cellW, hornY + row * cellH, a, b, pays, "#d95f4c", "#d95f4c",
              `HORN — 4-way split, $4 units · 2/12 pays 30:1, 3/11 pays 15:1 · edge ${EDGE.horn}`, ox);
   });
   // Taller and narrower, "Horn" over "Bet" — reads as a placard sitting
@@ -559,10 +1095,10 @@ function drawProps() {
                fill: "#0d1a0d", stroke: "#c9a84c", "stroke-width": 1.2,
                "stroke-opacity": 0.9 }, g);
   txt("Horn", { x: cx, y: hornY + cellH - 8, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#e8a04a", "font-family": script, "font-style": "italic",
+      fill: "#d95f4c", "font-family": script, "font-style": "italic",
       "font-size": 18, "font-weight": 700 }, g);
   txt("Bet", { x: cx, y: hornY + cellH + 14, "text-anchor": "middle", "dominant-baseline": "middle",
-      fill: "#e8a04a", "font-family": script, "font-style": "italic",
+      fill: "#d95f4c", "font-family": script, "font-style": "italic",
       "font-size": 18, "font-weight": 700 }, g);
   zone(hornBox, `HORN — the whole 4-way bet, $4 units · edge ${EDGE.horn}`,
        "horn-bet", cx, hornY + cellH);
@@ -624,10 +1160,9 @@ function drawBoxes() {
     }
 
     if (cfg.puck === n) {
-      const p = el("g", { transform: `translate(${x + BOX.w - 24},${BOX.y + 24})` }, g);
-      el("circle", { r: 16, fill: "#efe7d3", stroke: "#20180f", "stroke-width": 2 }, p);
-      txt("On", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#20180f",
-                  "font-family": display, "font-style": "italic", "font-size": 13, "font-weight": 700 }, p);
+      // Centered on the line between the Lay/Don't Come strip and the
+      // come-point area — not tucked in a corner.
+      drawPuck(g, x + BOX.w / 2, y1, 27, true);
     }
     const label = word || String(n);
     const placeInfo = `PLACE ${label.toUpperCase()} — pays ${n === 6 || n === 8 ? "7:6" : n === 5 || n === 9 ? "7:5" : "9:5"} (edge ${EDGE.place[n]})`
@@ -654,18 +1189,15 @@ function drawDontCome() {
   const r = el("rect", { x: DC.x, y: DC.y, width: DC.w, height: DC.h, rx: 4,
                          fill: "#100e14", stroke: "#d8cfae", "stroke-width": 1.2 }, g);
   if (cfg.puck === null) {
-    const p = el("g", { transform: `translate(${DC.x + DC.w / 2},${DC.y + 42})` }, g);
-    el("circle", { r: 18, fill: "#14100a", stroke: "#efe7d3", "stroke-width": 2 }, p);
-    txt("Off", { "text-anchor": "middle", "dominant-baseline": "middle", fill: "#efe7d3",
-                 "font-family": display, "font-style": "italic", "font-size": 12, "font-weight": 700, "letter-spacing": 1 }, p);
+    drawPuck(g, DC.x + DC.w / 2, DC.y + 46, 22, false);
   }
-  txt("Don't", { x: DC.x + DC.w / 2, y: DC.y + 104, "text-anchor": "middle", fill: "#d8cfae",
-                 "font-family": display, "font-style": "italic", "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
-  txt("Come", { x: DC.x + DC.w / 2, y: DC.y + 130, "text-anchor": "middle", fill: "#d8cfae",
-                "font-family": display, "font-style": "italic", "font-size": 17, "font-weight": 700, "letter-spacing": 1 }, g);
-  txt("Bar", { x: DC.x + DC.w / 2, y: DC.y + 176, "text-anchor": "middle", fill: "#d8cfae",
-               "font-family": script, "font-style": "italic", "font-size": 17 }, g);
-  barTwelve(g, DC.x + DC.w / 2, DC.y + 204, 18);
+  txt("Don't", { x: DC.x + DC.w / 2, y: DC.y + 116, "text-anchor": "middle", fill: "#d8cfae",
+                 "font-family": display, "font-style": "italic", "font-size": 20, "font-weight": 700, "letter-spacing": 1 }, g);
+  txt("Come", { x: DC.x + DC.w / 2, y: DC.y + 144, "text-anchor": "middle", fill: "#d8cfae",
+                "font-family": display, "font-style": "italic", "font-size": 20, "font-weight": 700, "letter-spacing": 1 }, g);
+  txt("Bar", { x: DC.x + DC.w / 2, y: DC.y + 194, "text-anchor": "middle", fill: "#d8cfae",
+               "font-family": script, "font-style": "italic", "font-size": 19 }, g);
+  barTwelve(g, DC.x + DC.w / 2, DC.y + 220, 24);
   zone(r, "DON'T COME — even money once behind a number · bar 12 · edge 1.36%",
        "dontcome", DC.x + DC.w / 2, DC.y + 140);
 }
@@ -770,15 +1302,65 @@ function render() {
   drawCome();
   drawField();
   drawChipLayer();
+  drawChipRail();
+  buildDenomPicker();
+  if (window.updateSidebar) window.updateSidebar(gatherLocalStats());
+  syncSidebarHeight();
+}
+
+// A poker-chip icon, drawn as SVG (not a photo): body in the chip's own
+// casino color, a dashed edge-spot ring, a soft top sheen, and a bold
+// white numeral (with a dark outline so it stays legible even on the
+// pale $1 chip). Crisp at any size, no external assets.
+function chipFaceSVG(d, size, labelOverride) {
+  const svgns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgns, "svg");
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+  svg.setAttribute("viewBox", "0 0 40 40");
+  const mk = (tag, attrs) => {
+    const n = document.createElementNS(svgns, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    svg.appendChild(n);
+    return n;
+  };
+  mk("circle", { cx: 20, cy: 20, r: 19, fill: d.fill, stroke: "#00000055", "stroke-width": 1 });
+  mk("circle", { cx: 20, cy: 20, r: 16, fill: "none", stroke: d.edge,
+                 "stroke-width": 3, "stroke-dasharray": "4 3.5" });
+  mk("circle", { cx: 20, cy: 20, r: 12.5, fill: "none", stroke: d.edge, "stroke-width": 1, "stroke-opacity": 0.6 });
+  mk("ellipse", { cx: 16, cy: 13, rx: 8.5, ry: 4.5, fill: "#ffffff", "fill-opacity": 0.22 });
+  const label = labelOverride != null ? labelOverride : `$${d.value}`;
+  const fontSize = label.length <= 2 ? 13 : label.length === 3 ? 11 : 9;
+  const t = mk("text", { x: 20, y: 24.5, "text-anchor": "middle",
+      "font-family": "Arial, Helvetica, sans-serif", "font-weight": 800, "font-size": fontSize,
+      fill: "#ffffff", stroke: "#00000090", "stroke-width": 2, "paint-order": "stroke fill" });
+  t.textContent = label;
+  return svg;
+}
+
+// Denomination picker — single chip per denomination (not a stack), so
+// picking a denomination is a deliberate, obvious click, separate from
+// clicking a chip group directly in the rail (which also still works).
+function buildDenomPicker() {
+  const wrap = document.getElementById("denomPicker");
+  wrap.replaceChildren();
+  DENOMS.forEach(d => {
+    const c = document.createElement("div");
+    c.className = "denomChip" + (d.value === selectedDenom ? " selected" : "");
+    c.title = `$${d.value} — click to select as the active denomination`;
+    c.appendChild(chipFaceSVG(d, 60));
+    c.addEventListener("click", () => { selectedDenom = d.value; render(); });
+    wrap.appendChild(c);
+  });
 }
 
 // Pass Line / Don't Pass are static paths, not redrawn each render() —
 // wire their chip zones ONCE here, not inside drawDpLabels, or every
 // redraw would stack another click listener on the same persistent node.
 zone(document.getElementById("pass-fill"),
-     "Pass Line — even money · edge 1.41%", "passline", 1100, 686);
+     "Pass Line — even money · edge 1.41%", "passline", 1080, 697);
 zone(document.getElementById("dontpass-fill"),
-     "Don't Pass Bar 12 — even money · edge 1.36%", "dontpass", 1080, 642);
+     "Don't Pass Bar 12 — even money · edge 1.36%", "dontpass", 1080, 645);
 // Odds have no printed zone on a real table (see rect comment above) —
 // this small hit-rect sits on top of pass-fill in DOM order, so it wins
 // the click inside its bounds while the rest of the band still bets flat.
@@ -788,7 +1370,7 @@ zone(document.getElementById("dontpass-fill"),
 // number that already holds a traveled Come bet — that's renderer logic
 // against live TableState, not something a static dev-tool click can model.
 zone(document.getElementById("passline-odds-fill"),
-     "Pass Line Odds — true odds, 0% edge · behind the flat bet", "passline-odds", 1100, 710);
+     "Pass Line Odds — true odds, 0% edge · behind the flat bet", "passline-odds", 1100, 734);
 
 document.querySelectorAll("[data-puck]").forEach(b => {
   b.addEventListener("click", () => {
@@ -798,6 +1380,235 @@ document.querySelectorAll("[data-puck]").forEach(b => {
   });
 });
 document.querySelector("[data-puck='off']").classList.add("on");
+
+// ============================================================
+// Shooter history — random 2d6 roller (finally gives Roll something
+// to do) that tracks point/seven-out state and colors each roll:
+// point established = blue, point repeated (pass line win) = green,
+// seven-out = red, hardway (matching dice on 4/6/8/10) = amber,
+// anything else (come-out natural/craps, a random point-phase number)
+// = neutral. A roll that's BOTH the point and hard (e.g. point=8,
+// rolls 4-4) counts as point-hit — the line result outranks how the
+// number was made. No payout/resolution logic here — this is purely
+// the point-tracking + history feed Mike asked for; wiring bet
+// resolution (and the win/loss toasts) to real rolls is a follow-up.
+// ============================================================
+const ROLL_COLORS = {
+  "point-set": "#4a7fd4",
+  "point-hit": "#3fae74",
+  "seven-out": "#e05a48",
+  "hardway":   "#e8a04a",
+  "neutral":   "#8a8171",
+};
+let shooterNum = 1;
+const rollHistory = []; // { shooter, d1, d2, total, type }
+
+function classifyRoll(d1, d2, pointBefore) {
+  const total = d1 + d2;
+  if (pointBefore != null && total === 7) return "seven-out";
+  if (pointBefore != null && total === pointBefore) return "point-hit";
+  if (pointBefore == null && [4, 5, 6, 8, 9, 10].includes(total)) return "point-set";
+  if (d1 === d2 && [4, 6, 8, 10].includes(total)) return "hardway";
+  return "neutral";
+}
+
+function setPuckUI() {
+  document.querySelectorAll("[data-puck]").forEach(x =>
+    x.classList.toggle("on", x.dataset.puck === (cfg.puck ? String(cfg.puck) : "off")));
+}
+
+function rollDice() {
+  const d1 = 1 + Math.floor(Math.random() * 6);
+  const d2 = 1 + Math.floor(Math.random() * 6);
+  const total = d1 + d2;
+  const type = classifyRoll(d1, d2, cfg.puck);
+
+  if (type === "seven-out" || type === "point-hit") cfg.puck = null;
+  else if (type === "point-set") cfg.puck = total;
+
+  rollHistory.push({ shooter: shooterNum, d1, d2, total, type });
+  if (type === "seven-out") shooterNum++;
+
+  setPuckUI();
+  render();
+  renderShooterHistory();
+}
+
+function renderShooterHistory() {
+  const list = document.getElementById("shList");
+  list.replaceChildren();
+  // Only the CURRENT shooter's rolls — rollHistory itself stays intact
+  // (session stats/distribution stay cumulative), but the number line
+  // resets the roll after a seven-out, once shooterNum has advanced.
+  const current = rollHistory.filter(r => r.shooter === shooterNum);
+  for (let i = 0; i < current.length; i++) { // oldest at top, newest appended at the bottom
+    const r = current[i];
+    const row = document.createElement("div");
+    row.className = "shRoll";
+    row.style.color = ROLL_COLORS[r.type];
+    row.textContent = r.total;
+    list.appendChild(row);
+  }
+}
+
+// ============================================================
+// Stats sidebar — presentational only. window.updateSidebar(stats) is
+// the public contract a real backend can call directly. This file has
+// no bet-resolution or strategy tracking, so gatherLocalStats() only
+// fills the fields it genuinely has (table config placeholders, roll
+// distribution, rolls/hands, rack/bankroll, bets-on-table) — Strategy
+// P&L, Efficiency, Hits/Rate, Shooter net, and Net P&L stay "—" until
+// something real calls updateSidebar() with them.
+// ============================================================
+const THEORY_FREQ = { 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1 }; // out of 36
+
+function rackTotal() {
+  return Object.entries(rack).reduce((sum, [denom, count]) => sum + Number(denom) * count, 0);
+}
+function feltTotal() {
+  return Object.values(chips).reduce((sum, stack) => sum + stack.reduce((a, b) => a + b, 0), 0);
+}
+
+function gatherLocalStats() {
+  const counts = {};
+  for (let n = 2; n <= 12; n++) counts[n] = 0;
+  rollHistory.forEach(r => { counts[r.total]++; });
+  return {
+    // Static display values — no HouseRules/config source in this prototype
+    min: 10, max: 1000, odds: "3-4-5x", oddsMax: 2000,
+    rolls: rollHistory.length,
+    hands: rollHistory.filter(r => r.type === "seven-out").length,
+    distribution: counts,
+    rack: rackTotal(),
+    bankroll: rackTotal() + feltTotal(),
+    betsOn: Object.keys(chips).length,
+  };
+}
+
+function fmtMoney(n) { return `$${Math.round(n).toLocaleString()}`; }
+function fmtSigned(n) { const s = Math.round(n); return (s > 0 ? "+" : "") + s.toLocaleString(); }
+
+function updateSidebar(stats) {
+  stats = stats || {};
+  const set = (key, text, cls) => {
+    const node = document.querySelector(`[data-stat="${key}"]`);
+    if (!node) return;
+    node.textContent = text == null ? "—" : text;
+    node.classList.remove("pos", "neg");
+    if (cls) node.classList.add(cls);
+  };
+
+  set("min", stats.min != null ? fmtMoney(stats.min) : null);
+  set("max", stats.max != null ? fmtMoney(stats.max) : null);
+  set("odds", stats.odds);
+  set("oddsMax", stats.oddsMax != null ? fmtMoney(stats.oddsMax) : null);
+
+  ["pnlAcross", "pnlInside", "pnlOutside", "pnlHorn"].forEach(k => {
+    const v = stats[k];
+    set(k, v != null ? fmtSigned(v) : null, v > 0 ? "pos" : v < 0 ? "neg" : null);
+  });
+  ["rps", "ahl", "hps", "bps"].forEach(k => set(k, stats[k] != null ? stats[k].toFixed(2) : null));
+
+  set("hands", stats.hands != null ? stats.hands : null);
+  set("rolls", stats.rolls != null ? stats.rolls : null);
+  set("hits", stats.hits != null ? stats.hits : null);
+  set("rate", stats.rate != null ? stats.rate.toFixed(2) : null);
+
+  set("shooterNet", stats.shooterNet != null ? fmtSigned(stats.shooterNet) : null,
+      stats.shooterNet > 0 ? "pos" : stats.shooterNet < 0 ? "neg" : null);
+  set("betsOn", stats.betsOn != null ? stats.betsOn : null);
+  set("rack", stats.rack != null ? fmtMoney(stats.rack) : null);
+  set("bankroll", stats.bankroll != null ? fmtMoney(stats.bankroll) : null);
+  set("net", stats.net != null ? fmtSigned(stats.net) : null,
+      stats.net > 0 ? "pos" : stats.net < 0 ? "neg" : null);
+
+  // One horizontal row per number: number label, bar (proportional to
+  // hit count), count. Theoretical-frequency tick on each bar track.
+  const distBox = document.getElementById("stDist");
+  if (distBox) {
+    distBox.replaceChildren();
+    const dist = stats.distribution || {};
+    const totalRolls = stats.rolls || 0;
+    const maxCount = Math.max(1, ...Object.values(dist));
+    for (let n = 2; n <= 12; n++) {
+      const count = dist[n] || 0;
+      const theoryCount = totalRolls > 0 ? (THEORY_FREQ[n] / 36) * totalRolls : 0;
+      const row = document.createElement("div");
+      row.className = "stDistRow";
+      const num = document.createElement("div");
+      num.className = "stDistNum";
+      num.textContent = n;
+      const track = document.createElement("div");
+      track.className = "stDistBarTrack";
+      const bar = document.createElement("div");
+      bar.className = "stDistBar" + (n === 7 ? " seven" : "");
+      bar.style.width = `${(count / maxCount) * 100}%`;
+      track.appendChild(bar);
+      if (totalRolls > 0) {
+        const tick = document.createElement("div");
+        tick.className = "stDistTick";
+        tick.style.left = `${Math.min(100, (theoryCount / maxCount) * 100)}%`;
+        track.appendChild(tick);
+      }
+      const cnt = document.createElement("div");
+      cnt.className = "stDistCount";
+      cnt.textContent = count;
+      row.appendChild(num);
+      row.appendChild(track);
+      row.appendChild(cnt);
+      distBox.appendChild(row);
+    }
+  }
+}
+window.updateSidebar = updateSidebar;
+
+// Sizes the sidebar box to match the felt's rendered height, then
+// scales its inner content (not just font-size guesses) down to avoid
+// a scrollbar when it would overflow — never scales UP past 1:1, since
+// collapsing sections routinely leaves the natural content far shorter
+// than the available height, and magnifying to "fill" that gap blew
+// text out past the sidebar's fixed width (clipped both edges).
+function syncSidebarHeight() {
+  const felt = document.getElementById("felt");
+  const sidebar = document.getElementById("statsSidebar");
+  const inner = document.getElementById("statsSidebarInner");
+  if (!felt || !sidebar || !inner) return;
+  sidebar.style.height = `${felt.getBoundingClientRect().height}px`;
+  inner.style.transform = "scale(1)";
+  const availH = sidebar.clientHeight - 14; // minus 7px top/bottom padding
+  const naturalH = inner.scrollHeight;
+  if (naturalH > 0) {
+    const scale = Math.min(1, availH / naturalH);
+    inner.style.transform = `scale(${scale})`;
+  }
+}
+window.addEventListener("resize", syncSidebarHeight);
+
+// Each section header collapses just itself — click anywhere on the
+// header row to toggle its own .stBody, then re-fit. syncSidebarHeight
+// only ever shrinks (never magnifies past 1:1 — see its own comment),
+// so this can't cause the old "collapsing zooms the text in" bug; it
+// only kicks in to shrink everything back into view if expanding a lot
+// of sections at once would otherwise overflow the sidebar's fixed-
+// height, overflow:hidden box and become inaccessible.
+document.getElementById("statsSidebarInner").addEventListener("click", (e) => {
+  const header = e.target.closest(".stHeader");
+  if (!header) return;
+  header.closest(".stSection").classList.toggle("collapsed");
+  syncSidebarHeight();
+});
+
+document.getElementById("rollBtn").addEventListener("click", rollDice);
+document.getElementById("shRollBtn").addEventListener("click", rollDice);
+document.getElementById("shReset").addEventListener("click", () => {
+  rollHistory.length = 0;
+  shooterNum = 1;
+  cfg.puck = null;
+  setPuckUI();
+  render();
+  renderShooterHistory();
+});
+renderShooterHistory();
 
 const f2 = document.getElementById("f2"), f12 = document.getElementById("f12");
 f2.addEventListener("click", () => { cfg.field2 = cfg.field2 === 2 ? 3 : 2; f2.textContent = cfg.field2 + "×"; render(); });
@@ -821,14 +1632,44 @@ Object.entries(ATS_SETS).forEach(([id, nums]) => {
   });
 });
 
-document.getElementById("clearChips").addEventListener("click", () => {
+// Manual triggers for the win/loss toast — one per currently active
+// bet (every zone with chips on it), each showing that bet's own total,
+// popping up just above its chip stack. Place a few bets first.
+function testAllBets(sign) {
+  Object.entries(chips).forEach(([id, stack]) => {
+    const anchor = chipAnchors[id];
+    if (!anchor || !stack || !stack.length) return;
+    const total = stack.reduce((sum, v) => sum + v, 0);
+    showBetToast(sign * total, anchor.x, anchor.y - 50);
+  });
+}
+document.getElementById("testWin").addEventListener("click", () => testAllBets(1));
+document.getElementById("testLose").addEventListener("click", () => testAllBets(-1));
+
+document.getElementById("clearBtn").addEventListener("click", () => {
+  // Clear returns the felt's chips to P1's rack — a bet pulled before
+  // the roll goes back in the player's hand, it doesn't vanish.
+  Object.values(chips).forEach(stack => stack.forEach(denom => { rack[denom] = (rack[denom] || 0) + 1; }));
   Object.keys(chips).forEach(k => delete chips[k]);
   render();
 });
+// "Export" (dicer.io) — dumps the current bet layout + rack as JSON for inspection.
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const wager = Object.values(chips).reduce((sum, stack) => sum + stack.reduce((s, d) => s + d, 0), 0);
+  const data = JSON.stringify({ chips, rack, wager }, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "felt-bets.json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
 
 render();
+syncSidebarHeight();
 // Re-render once webfonts finish loading so nothing keeps the fallback face
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { render(); syncSidebarHeight(); });
 </script>
 </body>
 </html>
