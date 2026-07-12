@@ -28,6 +28,8 @@ FLAG_GATED_BETS = [
     ("Hop", 1, (3, 3), "point"),
     ("Proposition", 5, 7, "come-out"),
     ("Any Craps", 5, None, "come-out"),
+    ("Horn", 4, None, "come-out"),
+    ("World", 5, None, "come-out"),
 ]
 
 

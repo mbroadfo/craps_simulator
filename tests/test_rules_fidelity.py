@@ -177,8 +177,84 @@ class TestBuyNumbers:
         assert bet.vig is True
 
 
-class TestCombosRemoved:
-    @pytest.mark.parametrize("bet_type", ["Horn", "Horn High", "World"])
-    def test_composite_prop_stubs_are_gone(self, bet_type):
+class TestCombosRestored:
+    """Horn and World are real bets again (felt redline, 2026-07-05);
+    Horn High stays gone."""
+
+    def test_horn_high_stays_gone(self):
         with pytest.raises(ValueError, match="Unknown bet type"):
-            RulesEngine.get_bet_rules(bet_type)
+            RulesEngine.get_bet_rules("Horn High")
+
+
+class TestHornAndWorld:
+    @pytest.mark.parametrize("dice,expected", [
+        ((1, 1), 27),  # 2: the 30:1 quarter wins, three quarters lose
+        ((6, 6), 27),  # 12
+        ((1, 2), 12),  # 3: the 15:1 quarter wins
+        ((5, 6), 12),  # 11
+    ])
+    def test_horn_pays_by_rolled_total(self, dice, expected):
+        table, game_state = make_table()
+        player = Player("Horner", initial_balance=1000)
+        bet = RulesEngine.create_bet("Horn", 4, player)
+        assert table.place_bet(bet, "come-out")
+        settled = roll(table, game_state, dice)
+        assert bet in settled and bet.status == "won"
+        assert bet.resolved_payout == expected
+        assert player.balance == 1000 + expected
+
+    def test_horn_loses_any_other_total(self):
+        table, game_state = make_table()
+        player = Player("Horner", initial_balance=1000)
+        bet = RulesEngine.create_bet("Horn", 4, player)
+        assert table.place_bet(bet, "come-out")
+        roll(table, game_state, (3, 3))
+        assert bet.status == "lost"
+        assert player.balance == 996
+
+    def test_horn_bet_in_four_dollar_units(self):
+        table, _ = make_table()
+        player = Player("Horner", initial_balance=1000)
+        bet = RulesEngine.create_bet("Horn", 10, player)
+        valid, message = table.validate_bet(bet, "come-out")
+        assert valid is False
+        assert message is not None and "units of $4" in message
+
+    @pytest.mark.parametrize("dice,expected", [
+        ((1, 1), 26),  # 2 per $5: 30:1 fifth minus four losing units
+        ((6, 6), 26),  # 12
+        ((2, 1), 11),  # 3
+        ((5, 6), 11),  # 11
+    ])
+    def test_world_pays_by_rolled_total(self, dice, expected):
+        table, game_state = make_table()
+        player = Player("Worldly", initial_balance=1000)
+        bet = RulesEngine.create_bet("World", 5, player)
+        assert table.place_bet(bet, "come-out")
+        settled = roll(table, game_state, dice)
+        assert bet in settled and bet.status == "won"
+        assert bet.resolved_payout == expected
+
+    def test_world_pushes_on_seven(self):
+        table, game_state = make_table()
+        player = Player("Worldly", initial_balance=1000)
+        bet = RulesEngine.create_bet("World", 5, player)
+        assert table.place_bet(bet, "come-out")
+        settled = roll(table, game_state, (3, 4))
+        assert bet in settled and bet.status == "return"
+        assert not table.has_bet(bet), "pushed World comes down"
+        assert player.balance == 1000, "push moves no money"
+
+    def test_world_bet_in_five_dollar_units(self):
+        table, _ = make_table()
+        player = Player("Worldly", initial_balance=1000)
+        bet = RulesEngine.create_bet("World", 8, player)
+        valid, message = table.validate_bet(bet, "come-out")
+        assert valid is False
+        assert message is not None and "units of $5" in message
+
+    @pytest.mark.parametrize("bet_type,unit", [("Horn", 4), ("World", 5)])
+    def test_takes_no_number(self, bet_type, unit):
+        player = Player("Propper", initial_balance=1000)
+        with pytest.raises(ValueError):
+            RulesEngine.create_bet(bet_type, unit, player, number=2)

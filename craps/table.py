@@ -126,6 +126,8 @@ class Table:
             "Hop": self.house_rules.hop_bets_enabled,
             "Proposition": self.house_rules.prop_bets_enabled,
             "Any Craps": self.house_rules.prop_bets_enabled,
+            "Horn": self.house_rules.prop_bets_enabled,
+            "World": self.house_rules.prop_bets_enabled,
         }
         if not availability.get(bet.bet_type, True):
             return False, f"{bet.owner.name}'s {bet.bet_type} bet refused — this table does not offer {bet.bet_type} bets."
