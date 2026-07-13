@@ -60,6 +60,7 @@ export const api = {
   start: (id: string) => post<TableSnapshot>(`/tables/${id}/start`),
   pause: (id: string) => post<TableSnapshot>(`/tables/${id}/pause`),
   resume: (id: string) => post<TableSnapshot>(`/tables/${id}/resume`),
+  step: (id: string) => post<TableSnapshot>(`/tables/${id}/step`),
   stop: (id: string) => post<TableSnapshot>(`/tables/${id}/stop`),
   setPace: (id: string, rollDelayMs: number) =>
     post<TableSnapshot>(`/tables/${id}/pace`, { roll_delay_ms: rollDelayMs }),

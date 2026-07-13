@@ -2,15 +2,16 @@ import { useSidebarAutoFit } from '../state/useSidebarAutoFit'
 import { DistributionSection } from './DistributionSection'
 import { StatsLogo } from './StatsLogo'
 import { StatsSection } from './StatsSection'
-import { fmtMoney, useLocalStats } from './useLocalStats'
+import { fmtMoney, fmtSigned, useLocalStats } from './useLocalStats'
 
 const DASH = '—'
 
 /**
- * Presentational only — Strategy P&L, Efficiency, Hits/Rate, Shooter
- * net, and Net P&L stay "—" until something with real bet-resolution
- * and strategy tracking exists to feed them (Step 3+). Not fabricated
- * here, same rule the felt itself follows.
+ * Presentational only — Table Limits, Efficiency, Hits/Rate stay "—"
+ * (no HouseRules/strategy-coverage source exposed by the backend yet
+ * — Step 3 is spectator-only, no new backend endpoints). Shooter and
+ * Net come from FeltUiState (real in live mode via useFeltLiveState,
+ * "—"-equivalent placeholders in dev mode).
  */
 export function StatsSidebar() {
   const stats = useLocalStats()
@@ -32,14 +33,25 @@ export function StatsSidebar() {
         />
         <StatsSection
           title="Current"
+          titleNode={
+            stats.roster.length > 0 ? (
+              <select className="stCurrentSelect" value={stats.selectedPlayer} onChange={(e) => stats.setSelectedPlayer(e.target.value)}>
+                {stats.roster.map((p) => (
+                  <option key={p.name} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            ) : undefined
+          }
           defaultCollapsed={false}
           rows={[
-            { label: 'Shooter', value: DASH },
+            { label: 'Shooter', value: stats.shooterName || DASH },
             { label: 'Bets', value: String(stats.betsOn) },
             { label: 'Rack', value: fmtMoney(stats.rack) },
             { label: 'Bankroll', value: fmtMoney(stats.bankroll) },
           ]}
-          netRow={{ label: 'Net', value: DASH }}
+          netRow={{ label: 'Net', value: stats.net === null ? DASH : fmtSigned(stats.net) }}
         />
         <StatsSection
           title="Session"

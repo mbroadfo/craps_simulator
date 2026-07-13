@@ -1,16 +1,19 @@
 import { useCallback, useState } from 'react'
 import { classifyRoll, startingRack } from '../data'
-import { defaultCfg, type CfgState, type ChipZone, type RollRecord, type Toast } from '../types'
+import { stackedToastY } from '../toast/toastStack'
+import { defaultCfg, type CfgState, type ChipZone, type FeltUiState, type RollRecord, type Toast } from '../types'
 
 let nextToastId = 0
+const noop = () => {}
 
 /**
  * The dev-tool state the prototype kept as module-level mutable
  * globals (cfg, rack, chips/chipAnchors, selectedDenom, rollHistory/
  * shooterNum, toasts) — now real React state, owned by one hook and
- * shared via FeltStateContext.
+ * shared via FeltStateContext. Return shape is FeltUiState — the same
+ * contract useFeltLiveState (Step 3 spectator mode) conforms to.
  */
-export function useFeltDevState() {
+export function useFeltDevState(): FeltUiState {
   const [cfg, setCfg] = useState<CfgState>(defaultCfg)
   // rack and chips update together (spend on place, credit on remove) —
   // one state object so the check-then-mutate is atomic within a
@@ -131,7 +134,7 @@ export function useFeltDevState() {
 
   const pushToast = useCallback((amount: number, x: number, y: number) => {
     const id = nextToastId++
-    setToasts((prev) => [...prev, { id, amount, x, y }])
+    setToasts((prev) => [...prev, { id, amount, x, y: stackedToastY(prev, x, y) }])
     setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 1500)
   }, [])
 
@@ -180,6 +183,11 @@ export function useFeltDevState() {
     setPuck,
     rollHistory,
     shooterNum,
+    shooterName: `Shooter ${shooterNum}`,
+    net: null,
+    roster: [],
+    selectedPlayer: '',
+    setSelectedPlayer: noop,
     rollDice,
     resetShooter,
     toasts,
@@ -188,5 +196,3 @@ export function useFeltDevState() {
     exportJson,
   }
 }
-
-export type FeltDevState = ReturnType<typeof useFeltDevState>

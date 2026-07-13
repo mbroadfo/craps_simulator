@@ -1,8 +1,13 @@
 /**
- * Dev-tool-local types for the felt port. Deliberately independent of
- * web/src/lib/tableReducer.ts — this step has no live data (see the
- * plan's Scope section); wiring these to TableState is Step 3.
+ * Dev-tool-local types for the felt port, deliberately independent of
+ * web/src/lib/tableReducer.ts's wire types — bet placement here is a
+ * felt-local zone id, not a (player, betType, number) key. FeltUiState
+ * is the shared contract both useFeltDevState (dev mode) and
+ * useFeltLiveState (Step 3 spectator mode) return, so every panel
+ * component can read via useFeltState() without caring which one is
+ * behind it.
  */
+import type { Dispatch, SetStateAction } from 'react'
 import type { RollType } from './data'
 
 export interface CfgState {
@@ -46,4 +51,45 @@ export interface Toast {
   amount: number
   x: number
   y: number
+}
+
+/** A seated player, for the sidebar's Current-section perspective dropdown. */
+export interface RosterEntry {
+  name: string
+  strategy: string
+}
+
+export interface FeltUiState {
+  cfg: CfgState
+  setCfg: Dispatch<SetStateAction<CfgState>>
+  rack: Record<number, number>
+  chips: Record<string, ChipZone>
+  selectedDenom: number
+  setSelectedDenom: Dispatch<SetStateAction<number>>
+  hoverInfo: string
+  setHoverInfo: Dispatch<SetStateAction<string>>
+  placeChip: (zoneId: string, x: number, y: number, denom: number) => void
+  removeChip: (zoneId: string) => void
+  clearAllBets: () => void
+  toggleAtsLit: (n: number) => void
+  toggleAtsSet: (nums: number[]) => void
+  setField2: () => void
+  setField12: () => void
+  setPuck: (value: number | null) => void
+  rollHistory: RollRecord[]
+  shooterNum: number
+  shooterName: string
+  /** Net win/loss for the displayed seat, or null with no real source (dev mode). */
+  net: number | null
+  /** Seated players (live mode) — empty in dev mode, so the sidebar's
+   * Current-section dropdown falls back to a plain label there. */
+  roster: RosterEntry[]
+  selectedPlayer: string
+  setSelectedPlayer: (name: string) => void
+  rollDice: () => void
+  resetShooter: () => void
+  toasts: Toast[]
+  pushToast: (amount: number, x: number, y: number) => void
+  testAllBets: (sign: 1 | -1) => void
+  exportJson: () => void
 }

@@ -19,7 +19,7 @@ export function fmtSigned(n: number): string {
  * provides them.
  */
 export function useLocalStats() {
-  const { rack, chips, rollHistory } = useFeltState()
+  const { rack, chips, rollHistory, shooterName, net, roster, selectedPlayer, setSelectedPlayer } = useFeltState()
 
   const rackTotal = Object.entries(rack).reduce((sum, [denom, count]) => sum + Number(denom) * count, 0)
   const feltTotal = Object.values(chips).reduce((sum, zone) => sum + zone.denoms.reduce((a, b) => a + b, 0), 0)
@@ -40,5 +40,10 @@ export function useLocalStats() {
     rack: rackTotal,
     bankroll: rackTotal + feltTotal,
     betsOn: Object.keys(chips).length,
+    shooterName,
+    net,
+    roster,
+    selectedPlayer,
+    setSelectedPlayer,
   }
 }

@@ -116,6 +116,17 @@ async def resume_table(request: Request, table_id: str) -> Dict[str, Any]:
     return session.snapshot()
 
 
+@tables_router.post("/{table_id}/step")
+async def step_table(request: Request, table_id: str) -> Dict[str, Any]:
+    """Let exactly one paced roll through a paused table, then re-pause."""
+    session = _session(request, table_id)
+    try:
+        session.step()
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return session.snapshot()
+
+
 @tables_router.post("/{table_id}/pace")
 async def set_pace(request: Request, table_id: str, body: PaceRequest) -> Dict[str, Any]:
     session = _session(request, table_id)
