@@ -2,24 +2,19 @@ import { DENOMS } from '../data'
 import { CHIP_H, CHIP_PATTERNS, CHIP_PITCH, CHIP_W, GROUP_GAP, RAIL_H, RAIL_ORDER, RAIL_W, RAIL_X0, RAIL_Y0 } from '../layout'
 import { useFeltState } from '../state/FeltStateContext'
 
-// Wood body + two equal grooves + a raised divider bead. Tighter
-// corner radii and a subdued inset-shadow overlay on the grooves read
-// less like a toy and more like carved wood. Single-use (only
-// ChipRail calls it), stays local.
+// Wood body + one groove — the felt only ever shows one seat's rack
+// (single-player, see phase2-table-fidelity memory), so a second row
+// never had anything to hold; it just sat empty. Tighter corner radii
+// and a subdued inset-shadow overlay on the groove read less like a
+// toy and more like carved wood. Single-use (only ChipRail calls it),
+// stays local.
 function RailChrome({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
-  const groove = (gx: number, gy: number, gw: number, gh: number, key: string) => (
-    <g key={key}>
-      <rect x={gx} y={gy} width={gw} height={gh} rx={3} fill="#241207" />
-      <rect x={gx} y={gy} width={gw} height={gh} rx={3} fill="url(#grooveShade)" />
-    </g>
-  )
   return (
     <>
       <rect x={x} y={y} width={w} height={h} rx={5} fill="url(#railWood)" />
       <rect x={x} y={y} width={w} height={h} rx={5} fill="none" stroke="#a07030" strokeWidth={1} strokeOpacity={0.35} />
-      {groove(x + 8, y + 5, w - 16, 33, 'g1')}
-      {groove(x + 8, y + 53, w - 16, 33, 'g2')}
-      <line x1={x + 12} y1={y + 45.5} x2={x + w - 12} y2={y + 45.5} stroke="#c9a84c" strokeWidth={1} strokeOpacity={0.25} />
+      <rect x={x + 8} y={y + 5} width={w - 16} height={h - 10} rx={3} fill="#241207" />
+      <rect x={x + 8} y={y + 5} width={w - 16} height={h - 10} rx={3} fill="url(#grooveShade)" />
     </>
   )
 }
@@ -66,14 +61,14 @@ export function ChipRail() {
         const fill = DENOMS.find((d) => d.value === gr.value)!.fill
         const chips = []
         for (let i = 0; i < gr.count; i++) {
-          chips.push(<ChipRect key={chipIndex} cx={x + CHIP_W / 2} cy={RAIL_Y0 + 21.5} fill={fill} index={chipIndex} onClick={() => setSelectedDenom(gr.value)} />)
+          chips.push(<ChipRect key={chipIndex} cx={x + CHIP_W / 2} cy={RAIL_Y0 + RAIL_H / 2} fill={fill} index={chipIndex} onClick={() => setSelectedDenom(gr.value)} />)
           chipIndex++
           x += CHIP_PITCH
         }
         x += GROUP_GAP - (CHIP_PITCH - CHIP_W)
         return (
           <g key={gr.value}>
-            {gr.value === selectedDenom && <circle cx={groupX + groupW / 2} cy={RAIL_Y0 + 45.5} r={4.5} fill="#c9a84c" />}
+            {gr.value === selectedDenom && <circle cx={groupX + groupW / 2} cy={RAIL_Y0 + RAIL_H - 10} r={4.5} fill="#c9a84c" />}
             {chips}
           </g>
         )

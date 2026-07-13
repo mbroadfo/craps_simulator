@@ -1,5 +1,7 @@
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import './Felt.css'
 import { ActionBar } from './actionbar/ActionBar'
+import { LiveActionBar } from './actionbar/LiveActionBar'
 import { ChipRail } from './chips/ChipRail'
 import { ChipStackLayer } from './chips/ChipStackLayer'
 import { DevControlsPanel } from './devcontrols/DevControlsPanel'
@@ -15,8 +17,13 @@ import { StatsSidebar } from './sidebar/StatsSidebar'
 import { FeltDefs } from './shell/FeltDefs'
 import { DpLabels, PassDontPassBands } from './shell/PassDontPassBands'
 import { FeltStateProvider } from './state/FeltStateContext'
+import { useFeltLiveState } from './state/useFeltLiveState'
+import type { RollLogState } from './state/liveRollLog'
+import type { RosterEntry } from './types'
 import { BetToast } from './toast/BetToast'
 import { FELT_H_BG, FELT_VIEWBOX, FELT_W } from './layout'
+import type { TableSnapshot } from '../../lib/api'
+import type { TableState } from '../../lib/tableReducer'
 
 /**
  * Faithful port of prototype/parametric-felt.html — Step 2, complete.
@@ -33,15 +40,75 @@ import { FELT_H_BG, FELT_VIEWBOX, FELT_W } from './layout'
 export function Felt() {
   return (
     <FeltStateProvider>
-      <FeltInner />
+      <FeltInner mode="dev" />
     </FeltStateProvider>
   )
 }
 
-function FeltInner() {
+/**
+ * Step 3, spectator mode: same felt, fed by a pre-built FeltUiState
+ * (useFeltLiveState) instead of the dev-tool hook. Click-to-place and
+ * the dev-controls panel only make sense for a human bettor — neither
+ * exists in live mode. The chip rail and action bar DO stay, though,
+ * with live-mode content: the rail shows the selected seat's real
+ * bankroll (decomposed, shrinks/grows with it), and the action bar
+ * becomes session-lifecycle controls (LiveActionBar) instead of Roll/
+ * Clear. `rosterPanel` is a slot — App.tsx owns lineup/roster/session
+ * state and builds the actual panel; this component just places it.
+ */
+export function LiveFelt({
+  tableState,
+  rollLog,
+  playerName,
+  setPlayerName,
+  roster,
+  setTableState,
+  sessionState,
+  onPauseResume,
+  onTurbo,
+  turboOn,
+  onStep,
+  rosterPanel,
+}: {
+  tableState: TableState
+  rollLog: RollLogState
+  playerName: string
+  setPlayerName: Dispatch<SetStateAction<string>>
+  roster: RosterEntry[]
+  setTableState: Dispatch<SetStateAction<TableState>>
+  sessionState: TableSnapshot['state'] | null
+  onPauseResume: () => void
+  onTurbo: () => void
+  turboOn: boolean
+  onStep: () => void
+  rosterPanel: ReactNode
+}) {
+  const state = useFeltLiveState(tableState, rollLog, playerName, setPlayerName, roster, setTableState)
+  return (
+    <FeltStateProvider value={state}>
+      <FeltInner mode="live" liveActionBar={{ sessionState, onPauseResume, onTurbo, turboOn, onStep }} rosterPanel={rosterPanel} />
+    </FeltStateProvider>
+  )
+}
+
+function FeltInner({
+  mode,
+  liveActionBar,
+  rosterPanel,
+}: {
+  mode: 'dev' | 'live'
+  liveActionBar?: {
+    sessionState: TableSnapshot['state'] | null
+    onPauseResume: () => void
+    onTurbo: () => void
+    turboOn: boolean
+    onStep: () => void
+  }
+  rosterPanel?: ReactNode
+}) {
   return (
     <div className="pit-felt-root">
-      <DevControlsPanel />
+      {mode === 'dev' && <DevControlsPanel />}
       <div className="pageRow">
         <StatsSidebar />
         <div className="tableWrap">
@@ -86,6 +153,11 @@ function FeltInner() {
               <ChipStackLayer />
             </g>
 
+            {/* Chip rail — visible in both modes. Live mode shows the
+                selected seat's real bankroll, decomposed into a
+                textured pile (see useFeltLiveState's rack); clicking
+                it is still a harmless no-op (no denom picker to feed
+                in live mode). */}
             <g id="chip-rail">
               <ChipRail />
             </g>
@@ -94,10 +166,12 @@ function FeltInner() {
             <BetToast />
           </svg>
 
-          <ActionBar />
+          {mode === 'dev' && <ActionBar />}
+          {mode === 'live' && liveActionBar && <LiveActionBar {...liveActionBar} />}
         </div>
 
         <ShooterHistory />
+        {rosterPanel}
       </div>
     </div>
   )

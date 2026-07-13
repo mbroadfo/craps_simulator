@@ -75,10 +75,18 @@
    rail below the printed felt). The denom-picker/button row sits
    inside this footprint (absolute, under the props panel), so it no
    longer needs its own reserved page height. Controls/readout float
-   as an overlay and don't count against this budget either. */
+   as an overlay and don't count against this budget either.
+   The width-vs-viewport term reserves room for .pageRow's other
+   columns (statsSidebar 160px + shooterHistory 30px + rosterPanel
+   220px + 3 16px gaps + root's own 18px*2 padding =~ 494px, rounded
+   up) — added when the roster panel (Step 3b) pushed total row width
+   past the old bare 96vw budget, clipping the sidebar/roster panel
+   against the viewport edge instead of the felt shrinking first as
+   intended. The first pass at this forgot shooterHistory's own
+   width, which starved it down to nothing instead. */
 .tableWrap {
   position: relative;
-  width: min(96vw, calc((100vh - 48px) * 1.645));
+  width: min(calc(100vw - 530px), calc((100vh - 48px) * 1.645));
   max-width: 1900px;
 }
 #felt { width: 100%; height: auto; display: block; }
@@ -176,7 +184,7 @@
    growing past 1:1 (see layout.ts / useSidebarAutoFit's own comment —
    a documented past bug). */
 .statsSidebar {
-  width: 160px; overflow: hidden; box-sizing: border-box;
+  width: 160px; flex-shrink: 0; overflow: hidden; box-sizing: border-box;
   background: #111111; border: 1px solid #2a251e; padding: 7px;
 }
 .statsSidebarInner {
@@ -200,6 +208,15 @@
 }
 .stHeader:hover { color: #c9a84c; }
 .stChevron { display: inline-block; font-size: 10px; transition: transform 0.15s; }
+/* Current section's player-perspective picker (live mode only) —
+   styled to read as part of the header, not a form control dropped
+   onto it. */
+.stCurrentSelect {
+  font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 1.5px; font-weight: 700;
+  color: #9c8968; background: transparent; border: none; cursor: pointer; text-transform: uppercase;
+}
+.stCurrentSelect:hover, .stCurrentSelect:focus { color: #c9a84c; }
+.stCurrentSelect option { background: #111111; color: #f2f2f2; text-transform: none; letter-spacing: normal; }
 .stSection.collapsed .stChevron { transform: rotate(-90deg); }
 .stSection.collapsed .stBody { display: none; }
 .stSection.collapsed .stHeader { margin-bottom: 0; }

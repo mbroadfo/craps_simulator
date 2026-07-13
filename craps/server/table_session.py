@@ -75,6 +75,22 @@ class TableSession:
         self.state = "running"
         self._gate.set()
 
+    def step(self) -> None:
+        """Let exactly one paced roll through, then stay paused.
+
+        set()+clear() back-to-back is safe here because asyncio.Event
+        wakes its waiter by resolving an already-created Future — the
+        _drive loop's `await self._gate.wait()` still completes even
+        though clear() runs (synchronously, no intervening await)
+        right after set(). clear() only affects the *next* wait()
+        call, which correctly blocks the loop again after this one
+        roll — state stays "paused" throughout, matching that.
+        """
+        if self.state != "paused":
+            raise RuntimeError(f"table {self.table_id} is {self.state}, not paused")
+        self._gate.set()
+        self._gate.clear()
+
     def set_pace(self, roll_delay_ms: int) -> None:
         self.roll_delay_ms = roll_delay_ms
 

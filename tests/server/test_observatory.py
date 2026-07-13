@@ -217,6 +217,35 @@ def test_pause_resume_and_pace(client):
     wait_for_state(client, "t1", "finished")
 
 
+def test_step_advances_exactly_one_roll(client):
+    create_table(client, roll_delay_ms=25, num_shooters=5)
+    client.post("/tables/t1/start")
+
+    # step is only valid while paused
+    assert client.post("/tables/t1/step").status_code == 409
+
+    deadline = time.time() + 20
+    while client.get("/tables/t1").json()["session_rolls"] < 1:
+        assert time.time() < deadline, "no rolls happened"
+        time.sleep(0.02)
+    assert client.post("/tables/t1/pause").status_code == 200
+    time.sleep(0.1)  # let any in-flight roll land
+    rolls_before = client.get("/tables/t1").json()["session_rolls"]
+
+    for expected in range(rolls_before + 1, rolls_before + 4):
+        resp = client.post("/tables/t1/step")
+        assert resp.status_code == 200
+        assert resp.json()["state"] == "paused"
+        deadline = time.time() + 20
+        while client.get("/tables/t1").json()["session_rolls"] < expected:
+            assert time.time() < deadline, "step did not advance a roll"
+            time.sleep(0.02)
+        # exactly one roll per step — no free-run resumed underneath us
+        time.sleep(0.15)
+        assert client.get("/tables/t1").json()["session_rolls"] == expected
+        assert client.get("/tables/t1").json()["state"] == "paused"
+
+
 def test_max_rolls_and_stop(client):
     create_table(client, max_rolls=5)
     client.post("/tables/t1/start")
