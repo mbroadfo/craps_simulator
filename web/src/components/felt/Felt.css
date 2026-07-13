@@ -77,16 +77,14 @@
    longer needs its own reserved page height. Controls/readout float
    as an overlay and don't count against this budget either.
    The width-vs-viewport term reserves room for .pageRow's other
-   columns (statsSidebar 160px + shooterHistory 30px + rosterPanel
-   220px + 3 16px gaps + root's own 18px*2 padding =~ 494px, rounded
-   up) — added when the roster panel (Step 3b) pushed total row width
-   past the old bare 96vw budget, clipping the sidebar/roster panel
-   against the viewport edge instead of the felt shrinking first as
-   intended. The first pass at this forgot shooterHistory's own
-   width, which starved it down to nothing instead. */
+   columns (statsSidebar 160px + shooterHistory 30px + playerSidebar
+   180px + 3 16px gaps + root's own 18px*2 padding =~ 466px, rounded
+   up) — .pageRow is back to 4 columns now that a lean PlayerSidebar
+   returned (leaner than the old RosterPanel it replaces: no lineup
+   builder, no play-by-play, just name/strategy/bankroll rows). */
 .tableWrap {
   position: relative;
-  width: min(calc(100vw - 530px), calc((100vh - 48px) * 1.645));
+  width: min(calc(100vw - 480px), calc((100vh - 48px) * 1.645));
   max-width: 1900px;
 }
 #felt { width: 100%; height: auto; display: block; }
@@ -100,6 +98,7 @@
   position: absolute; top: 88.4%; left: 1.14%; width: max-content;
   display: flex; flex-direction: row; align-items: center; flex-wrap: nowrap; gap: 12px;
 }
+
 .denomPicker { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .denomChip {
   width: 60px; height: 60px; border-radius: 50%; cursor: pointer;

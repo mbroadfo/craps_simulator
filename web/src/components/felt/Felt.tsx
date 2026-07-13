@@ -1,7 +1,6 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import './Felt.css'
 import { ActionBar } from './actionbar/ActionBar'
-import { LiveActionBar } from './actionbar/LiveActionBar'
 import { ChipRail } from './chips/ChipRail'
 import { ChipStackLayer } from './chips/ChipStackLayer'
 import { DevControlsPanel } from './devcontrols/DevControlsPanel'
@@ -22,7 +21,6 @@ import type { RollLogState } from './state/liveRollLog'
 import type { RosterEntry } from './types'
 import { BetToast } from './toast/BetToast'
 import { FELT_H_BG, FELT_VIEWBOX, FELT_W } from './layout'
-import type { TableSnapshot } from '../../lib/api'
 import type { TableState } from '../../lib/tableReducer'
 
 /**
@@ -49,12 +47,16 @@ export function Felt() {
  * Step 3, spectator mode: same felt, fed by a pre-built FeltUiState
  * (useFeltLiveState) instead of the dev-tool hook. Click-to-place and
  * the dev-controls panel only make sense for a human bettor — neither
- * exists in live mode. The chip rail and action bar DO stay, though,
- * with live-mode content: the rail shows the selected seat's real
- * bankroll (decomposed, shrinks/grows with it), and the action bar
- * becomes session-lifecycle controls (LiveActionBar) instead of Roll/
- * Clear. `rosterPanel` is a slot — App.tsx owns lineup/roster/session
- * state and builds the actual panel; this component just places it.
+ * exists in live mode. The chip rail stays, showing the selected
+ * seat's real bankroll (decomposed, shrinks/grows with it).
+ *
+ * Session-lifecycle controls (Pause/Roll/Turbo) and the lineup builder
+ * live in ControlStripe, a horizontal band App.tsx renders between the
+ * felt and the session graph — the felt itself knows nothing about
+ * session lifecycle in live mode. `sidebar` is a slot for a
+ * player-perspective picker (PlayerSidebar) — App.tsx owns the roster/
+ * bankroll data and builds the actual panel; this component just
+ * places it, same seam ControlStripe uses.
  */
 export function LiveFelt({
   tableState,
@@ -63,12 +65,7 @@ export function LiveFelt({
   setPlayerName,
   roster,
   setTableState,
-  sessionState,
-  onPauseResume,
-  onTurbo,
-  turboOn,
-  onStep,
-  rosterPanel,
+  sidebar,
 }: {
   tableState: TableState
   rollLog: RollLogState
@@ -76,36 +73,17 @@ export function LiveFelt({
   setPlayerName: Dispatch<SetStateAction<string>>
   roster: RosterEntry[]
   setTableState: Dispatch<SetStateAction<TableState>>
-  sessionState: TableSnapshot['state'] | null
-  onPauseResume: () => void
-  onTurbo: () => void
-  turboOn: boolean
-  onStep: () => void
-  rosterPanel: ReactNode
+  sidebar?: ReactNode
 }) {
   const state = useFeltLiveState(tableState, rollLog, playerName, setPlayerName, roster, setTableState)
   return (
     <FeltStateProvider value={state}>
-      <FeltInner mode="live" liveActionBar={{ sessionState, onPauseResume, onTurbo, turboOn, onStep }} rosterPanel={rosterPanel} />
+      <FeltInner mode="live" sidebar={sidebar} />
     </FeltStateProvider>
   )
 }
 
-function FeltInner({
-  mode,
-  liveActionBar,
-  rosterPanel,
-}: {
-  mode: 'dev' | 'live'
-  liveActionBar?: {
-    sessionState: TableSnapshot['state'] | null
-    onPauseResume: () => void
-    onTurbo: () => void
-    turboOn: boolean
-    onStep: () => void
-  }
-  rosterPanel?: ReactNode
-}) {
+function FeltInner({ mode, sidebar }: { mode: 'dev' | 'live'; sidebar?: ReactNode }) {
   return (
     <div className="pit-felt-root">
       {mode === 'dev' && <DevControlsPanel />}
@@ -167,11 +145,10 @@ function FeltInner({
           </svg>
 
           {mode === 'dev' && <ActionBar />}
-          {mode === 'live' && liveActionBar && <LiveActionBar {...liveActionBar} />}
         </div>
 
         <ShooterHistory />
-        {rosterPanel}
+        {sidebar}
       </div>
     </div>
   )

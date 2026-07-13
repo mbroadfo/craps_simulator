@@ -44,6 +44,11 @@ export interface PlayerState {
   bankroll: number
   history: number[]
   atRisk: number
+  /** at-risk amount over time, index-aligned with history (both are
+   * appended once per roll — RiskUpdated and BankrollsUpdated fire at
+   * the same cadence, see refresh_bet_statuses()/adjust_bets() in
+   * craps_engine.py's roll_once() sequence). */
+  atRiskHistory: number[]
 }
 
 export interface TableState {
@@ -131,10 +136,8 @@ function popChip(chips: Map<string, ChipStack>, key: string, amount: number): vo
 }
 
 function getPlayer(players: Map<string, PlayerState>, name: string): PlayerState {
-  return players.get(name) ?? { bankroll: 0, history: [], atRisk: 0 }
+  return players.get(name) ?? { bankroll: 0, history: [], atRisk: 0, atRiskHistory: [] }
 }
-
-const SPARKLINE_POINTS = 120
 
 export function tableReducer(state: TableState, e: Envelope): TableState {
   switch (e.type) {
@@ -224,7 +227,7 @@ export function tableReducer(state: TableState, e: Envelope): TableState {
         players.set(name, {
           ...p,
           bankroll: balance,
-          history: [...p.history.slice(-(SPARKLINE_POINTS - 1)), balance],
+          history: [...p.history, balance],
         })
       }
       return { ...state, players }
@@ -233,7 +236,8 @@ export function tableReducer(state: TableState, e: Envelope): TableState {
     case 'RiskUpdated': {
       const players = new Map(state.players)
       for (const [name, atRisk] of e.at_risk) {
-        players.set(name, { ...getPlayer(players, name), atRisk })
+        const p = getPlayer(players, name)
+        players.set(name, { ...p, atRisk, atRiskHistory: [...p.atRiskHistory, atRisk] })
       }
       return { ...state, players }
     }
