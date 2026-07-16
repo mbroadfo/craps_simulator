@@ -92,4 +92,10 @@ export interface FeltUiState {
   pushToast: (amount: number, x: number, y: number) => void
   testAllBets: (sign: 1 | -1) => void
   exportJson: () => void
+  /** The stats sidebar overlay's open/closed state — lives here (not
+   * local state in Felt.tsx) so ControlRail, rendered outside the felt
+   * proper in the Observatory panel, can toggle it via useFeltState()
+   * without prop-drilling through App.tsx. */
+  statsOpen: boolean
+  toggleStats: () => void
 }

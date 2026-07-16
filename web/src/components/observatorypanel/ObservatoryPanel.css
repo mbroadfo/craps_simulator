@@ -1,0 +1,163 @@
+/**
+ * Georgia/gold "casino ledger" theme for the Observatory panel —
+ * deliberately distinct from Felt.css's IBM Plex Mono dark-casino
+ * language, per Mike's explicit spec. Headers/labels originally
+ * matched the spec's literal near-invisible #2a251e-on-#111111 tone;
+ * Mike later called that unreadable (twice — first the color, then
+ * the size), so both now use the same muted-but-legible tones already
+ * proven readable elsewhere in this app (StatsSidebar's .stHeader/
+ * .stLabel use #9c8968, .pit-felt-root's own base text is #8a8171)
+ * rather than inventing a third palette, at a noticeably larger scale
+ * than the original spec's 7-9px. #2a251e survives only as a divider/
+ * border color, where contrast doesn't matter.
+ *
+ * Session-lifecycle controls (SessionControl, QuickControls) and
+ * Strategy Comparison used to live here — both are gone now
+ * (ControlRail is fixed/always-visible, see .railControls below, and
+ * RollDistribution.tsx replaced the redundant comparison chart).
+ */
+.observatoryPanel {
+  /* Grows to fill the width .pageRow no longer spends on a permanent
+     statsSidebar column — no capped max-width, so the panel (and with
+     it, the whole page) uses the full remaining browser width instead
+     of leaving a dead gray gutter on the right. No panel-level
+     scroll/max-height either — the roll feed is the only section that
+     still needs its own internal scroll (see .obsFeedList).
+     padding-right reserves room for .railControls, which is
+     position:fixed at the same right-edge reference frame (see its
+     own comment) — without this, its content would run underneath
+     the rail instead of stopping short of it. */
+  flex: 1 1 220px;
+  min-width: 220px;
+  padding-right: 72px;
+  box-sizing: border-box;
+  background: #111111;
+  border: 1px solid #2a251e;
+  font-family: Georgia, serif;
+  color: #8a8171;
+}
+
+.obsSection { padding: 14px 16px; border-bottom: 1px solid #2a251e; }
+.obsSection:last-child { border-bottom: none; }
+
+.obsHeader {
+  font-family: Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #9c8968;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.obsHeaderRow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.obsHeaderRow .obsHeader { margin-bottom: 0; }
+
+.obsLabel { font-family: Georgia, serif; font-size: 12px; color: #8a8171; }
+.obsValue { font-family: Georgia, serif; font-size: 13px; font-weight: 700; color: #c9a84c; }
+.obsPos { color: #2ecc71; }
+.obsNeg { color: #e0564a; }
+
+/* ---- Lineup builder (pre-table) ---- */
+.obsBulkRow { display: flex; gap: 8px; }
+.obsBulkBtn {
+  background: #0d0d0d; color: #9c8968; border: 1px solid #2a251e;
+  font-family: Georgia, serif; font-size: 11px; padding: 3px 8px; cursor: pointer;
+}
+.obsBulkBtn:hover { color: #c9a84c; border-color: #c9a84c; }
+.obsSeat { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 5px 0; }
+.obsSeat input[type='checkbox'] { width: 15px; height: 15px; accent-color: #c9a84c; }
+.obsShootersRow { display: flex; align-items: center; justify-content: space-between; margin: 8px 0; }
+.obsShootersInput {
+  width: 64px; background: #0d0d0d; color: #c9a84c; border: 1px solid #2a251e;
+  font-family: Georgia, serif; font-size: 12px; padding: 4px 6px; text-align: right;
+}
+.obsError { color: #e0564a; font-size: 12px; margin-bottom: 8px; }
+
+.obsBtn {
+  width: 100%; padding: 10px; background: #0d0d0d; color: #9c8968; border: 1px solid #2a251e;
+  font-family: Georgia, serif; font-weight: 700; letter-spacing: 1px; font-size: 14px; cursor: pointer;
+}
+.obsBtn.active { background: #1a2a1a; border-color: #c9a84c; color: #c9a84c; }
+.obsBtn:disabled { color: #4a4035; cursor: not-allowed; }
+
+/* ---- Control rail — the action bar. Fixed, not inline: always
+   visible regardless of page scroll or whether a table exists yet
+   (Mike: "The action bar is always visible... it doesn't scroll
+   either. It just is."). right:20px matches .pit-felt-root's own
+   18px padding closely enough to feel aligned with the page edge;
+   .observatoryPanel's padding-right reserves the matching gutter so
+   this never sits on top of the panel's own content (e.g. the
+   Leaderboard). Every button here stays mounted at all times and
+   only ever toggles :disabled — none of them disappear as state
+   changes, so the bar's shape never jumps around. ---- */
+.railControls {
+  position: fixed; top: 20px; right: 20px; z-index: 101;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.railError { color: #e0564a; font-size: 10px; max-width: 90px; text-align: center; }
+.railBtn {
+  width: 36px; height: 36px; background: #111111; color: #c9a84c; border: 1px solid #c9a84c;
+  font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.railBtn:disabled { color: #6b6255; border-color: #4a4035; cursor: not-allowed; }
+.railBtn.active { background: #1a2a1a; color: #e0a83a; border-color: #e0a83a; }
+.railBtn.reset { color: #e0564a; border-color: #e0564a; }
+/* Higher specificity than .railBtn.active/.railBtn.reset alone (both
+   0,2,0, same as .railBtn:disabled — source order would otherwise let
+   the color modifier win over the disabled one) so a disabled Turbo
+   or Reset actually reads as grey, not still amber/red. */
+.railBtn.active:disabled, .railBtn.reset:disabled { color: #6b6255; border-color: #4a4035; background: #111111; }
+.railSliderWrap { width: 36px; height: 90px; display: flex; align-items: center; justify-content: center; }
+.railSlider {
+  width: 90px; height: 36px;
+  transform: rotate(-90deg);
+  accent-color: #c9a84c;
+}
+.railSpeedValue { font-size: 10px; font-weight: 700; color: #c9a84c; }
+.railSpeedValue.turbo { color: #e0a83a; }
+
+/* ---- Current roll — label left, two dice centered, sum right ---- */
+.obsCurrentRoll { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #2a251e; }
+.obsCurrentRollLabel { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #9c8968; flex-shrink: 0; }
+.obsCurrentRollDice { display: flex; gap: 8px; }
+.obsCurrentRollSum { font-size: 18px; font-weight: 700; color: #c9a84c; min-width: 32px; text-align: right; flex-shrink: 0; }
+
+/* ---- Bot roster ---- */
+.obsRosterRow { display: flex; align-items: center; gap: 10px; padding: 8px 0; cursor: pointer; }
+.obsRosterRow.selected { background: #1a1a1a; }
+.obsSwatch { width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; }
+/* Selected bot's marker gets a ring around it (not just the row's own
+   background tint) so which perspective is active reads at a glance
+   even at this small size. */
+.obsSwatch.selected { box-shadow: 0 0 0 2px #0d0d0d, 0 0 0 4px #c9a84c; }
+.obsRosterMain { flex: 1; min-width: 0; }
+.obsRosterTop { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+.obsRosterName { font-size: 13px; font-weight: 700; color: #c9a84c; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.obsRosterStrategy { font-size: 11px; font-style: italic; color: #8a8171; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.obsSparkline { display: block; width: 100%; height: 16px; margin: 4px 0; }
+.obsRosterPnl { font-size: 13px; font-weight: 700; flex-shrink: 0; }
+
+/* ---- Leaderboard ---- */
+.obsLeaderRow { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-left: 2px solid transparent; padding-left: 5px; }
+.obsLeaderRow.leader { border-left-color: #c9a84c; }
+.obsLeaderRank { font-size: 13px; font-weight: 700; color: #8a8171; width: 16px; }
+.obsLeaderName { font-size: 13px; color: #c9a84c; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.obsLeaderPnl { font-size: 13px; font-weight: 700; }
+.obsLeaderRoi { font-size: 11px; width: 56px; text-align: right; }
+
+/* ---- Roll distribution (replaces the old Strategy Comparison —
+   redundant with the Leaderboard) ---- */
+.obsDistChart { display: flex; align-items: flex-end; gap: 4px; height: 110px; }
+.obsDistCol { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.obsDistCount { font-size: 10px; color: #8a8171; height: 12px; }
+.obsDistBarTrack { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.obsDistBar { width: 100%; background: #c9a84c; min-height: 1px; }
+.obsDistBar.seven { background: #e0564a; }
+.obsDistLabel { font-size: 11px; color: #9c8968; margin-top: 4px; }
+
+/* ---- Roll feed — the only section that still scrolls internally ---- */
+.obsFeedList { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column-reverse; }
+.obsFeedRow { font-size: 12px; padding: 3px 0; color: #8a8171; line-height: 1.4; }
+.obsFeedRow.sevenout, .obsFeedRow.loss { color: #e0564a; }
+.obsFeedRow.win { color: #2ecc71; }
+
+.obsEmpty { font-size: 12px; font-style: italic; color: #8a8171; }

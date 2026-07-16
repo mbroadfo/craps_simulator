@@ -1,0 +1,46 @@
+/**
+ * Deliberately a LIGHT theme, unlike every other plain-CSS component
+ * in this app (Felt.css/RosterPanel.css are both dark) — Mike's
+ * explicit call, to match a reference chart image, even though it
+ * sits right below the felt's dark casino look. Not a mistake, don't
+ * "fix" this to match the dark palette without checking first.
+ */
+.sessionGraph {
+  width: 100%;
+  max-width: 1400px;
+  height: 92vh;
+  margin: 24px auto 0;
+  padding: 14px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #333333;
+}
+
+.sessionGraphTitle {
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.sessionGraphEmpty { padding: 40px 0; text-align: center; color: #9ca3af; font-size: 12px; }
+
+.sessionGraphTooltip {
+  background: #333333;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.sessionGraphTooltipRoll { font-weight: 700; margin-bottom: 4px; opacity: 0.8; }
+.sessionGraphTooltipRow { display: flex; align-items: center; gap: 8px; padding: 2px 0; white-space: nowrap; }
+.sessionGraphTooltipName { font-weight: 700; }
+.sessionGraphTooltipDelta { font-weight: 700; }
+.sessionGraphTooltipDelta.pos { color: #4ade80; }
+.sessionGraphTooltipDelta.neg { color: #f87171; }

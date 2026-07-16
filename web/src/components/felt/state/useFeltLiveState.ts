@@ -10,7 +10,7 @@
  * live zone does nothing (see the plan's scope decision: manual play
  * is a separate future step with no backend support today).
  */
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import { drainFadeUps, type PlayerState, type TableState } from '../../../lib/tableReducer'
 import { chipDenomsForAmount, rackDenomsForAmount } from '../chips/chipDecompose'
 import { stackedToastY } from '../toast/toastStack'
@@ -36,6 +36,8 @@ export function useFeltLiveState(
 ): FeltUiState {
   const [toasts, setToasts] = useState<Toast[]>([])
   const drainedThrough = useRef(-1)
+  const [statsOpen, setStatsOpen] = useState(false)
+  const toggleStats = useCallback(() => setStatsOpen((v) => !v), [])
 
   // Drain the *whole table's* fadeUps queue (all players) so it never
   // grows unbounded, but only turn this seat's own resolutions into a
@@ -143,5 +145,7 @@ export function useFeltLiveState(
     pushToast: noop,
     testAllBets: noop,
     exportJson: noop,
+    statsOpen,
+    toggleStats,
   }
 }

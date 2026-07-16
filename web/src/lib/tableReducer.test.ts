@@ -10,7 +10,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-import type { BankrollsUpdated, DiceRolled, Envelope } from './events'
+import type { BankrollsUpdated, DiceRolled, Envelope, RiskUpdated } from './events'
 import { initialState, tableReducer } from './tableReducer'
 
 const fixturePath = join(__dirname, '__fixtures__', 'session.jsonl')
@@ -56,10 +56,20 @@ describe('tableReducer replay gate', () => {
     expect(final.players.size).toBe(4)
   })
 
-  it('keeps sparkline history bounded to 120 points', () => {
+  it('keeps the full session\'s bankroll history uncapped, one entry per BankrollsUpdated', () => {
+    const updates = events.filter((e): e is BankrollsUpdated => e.type === 'BankrollsUpdated')
     for (const player of final.players.values()) {
-      expect(player.history.length).toBeLessThanOrEqual(120)
+      expect(player.history.length).toBe(updates.length)
       expect(player.history.at(-1)).toBe(player.bankroll)
+    }
+  })
+
+  it('keeps the full session\'s at-risk history uncapped, index-aligned with bankroll history', () => {
+    const updates = events.filter((e): e is RiskUpdated => e.type === 'RiskUpdated')
+    for (const player of final.players.values()) {
+      expect(player.atRiskHistory.length).toBe(updates.length)
+      expect(player.atRiskHistory.length).toBe(player.history.length)
+      expect(player.atRiskHistory.at(-1)).toBe(player.atRisk)
     }
   })
 

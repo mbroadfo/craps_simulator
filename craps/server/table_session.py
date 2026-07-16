@@ -55,6 +55,11 @@ class TableSession:
         self._task: Optional["asyncio.Task[None]"] = None
         self._gate = asyncio.Event()
         self._gate.set()
+        # Set by step() so _drive() skips the paced sleep for exactly
+        # the one roll it lets through — a deliberate single-step
+        # click should be instant, not subject to whatever pace a
+        # continuous Auto Play/Turbo run happened to leave configured.
+        self._skip_next_delay = False
 
     def start(self) -> None:
         if self.state != "created":
@@ -76,7 +81,7 @@ class TableSession:
         self._gate.set()
 
     def step(self) -> None:
-        """Let exactly one paced roll through, then stay paused.
+        """Let exactly one roll through immediately, then stay paused.
 
         set()+clear() back-to-back is safe here because asyncio.Event
         wakes its waiter by resolving an already-created Future — the
@@ -88,6 +93,7 @@ class TableSession:
         """
         if self.state != "paused":
             raise RuntimeError(f"table {self.table_id} is {self.state}, not paused")
+        self._skip_next_delay = True
         self._gate.set()
         self._gate.clear()
 
@@ -111,7 +117,10 @@ class TableSession:
         try:
             while shooters_done < runner.max_shooters:
                 await self._gate.wait()
-                if self.roll_delay_ms:
+                if self._skip_next_delay:
+                    self._skip_next_delay = False
+                    await asyncio.sleep(0)  # still yield once, same as TURBO
+                elif self.roll_delay_ms:
                     await asyncio.sleep(self.roll_delay_ms / 1000)
                 else:
                     await asyncio.sleep(0)  # TURBO still yields per roll

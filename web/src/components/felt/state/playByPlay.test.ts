@@ -17,7 +17,7 @@ describe('playByPlayReducer', () => {
 
   it('narrates a shooter change', () => {
     const e: ShooterAssigned = { type: 'ShooterAssigned', seq: 0, table_id: 't1', shooter_index: 0, shooter_name: 'Molly' }
-    expect(playByPlayReducer([], e)).toEqual(['— Molly is up —'])
+    expect(playByPlayReducer([], e)).toEqual([{ id: 0, text: '— Molly is up —', kind: 'neutral' }])
   })
 
   it('narrates a dice roll', () => {
@@ -34,19 +34,19 @@ describe('playByPlayReducer', () => {
       table_risk: 0,
       shooter_name: 'Molly',
     }
-    expect(playByPlayReducer([], e)).toEqual(['Molly rolls 3-4 (7)'])
+    expect(playByPlayReducer([], e)).toEqual([{ id: 1, text: 'Molly rolls 3-4 (7)', kind: 'neutral' }])
   })
 
-  it('narrates point established/hit and seven-out', () => {
+  it('narrates point established/hit and seven-out with the right kinds', () => {
     const established: PointEstablished = { type: 'PointEstablished', seq: 2, table_id: 't1', point: 6 }
     const hit: PointHit = { type: 'PointHit', seq: 3, table_id: 't1', point: 6 }
     const sevenOut: SevenOut = { type: 'SevenOut', seq: 4, table_id: 't1', shooter_index: 0, shooter_results: [] }
     let lines = playByPlayReducer([], established)
-    expect(lines).toEqual(['Point is 6'])
+    expect(lines).toEqual([{ id: 2, text: 'Point is 6', kind: 'neutral' }])
     lines = playByPlayReducer(lines, hit)
-    expect(lines).toEqual(['Point is 6', 'Point made — 6 winners paid'])
+    expect(lines[1]).toEqual({ id: 3, text: 'Point made — 6 winners paid', kind: 'win' })
     lines = playByPlayReducer(lines, sevenOut)
-    expect(lines.at(-1)).toBe('Seven out')
+    expect(lines.at(-1)).toEqual({ id: 4, text: 'Seven out', kind: 'sevenout' })
   })
 
   it('narrates a bet win with a plain-number label', () => {
@@ -63,7 +63,7 @@ describe('playByPlayReducer', () => {
       win_payout: 14,
       removed: false,
     }
-    expect(playByPlayReducer([], e)).toEqual(['Crosstopher wins $14 on Place 6'])
+    expect(playByPlayReducer([], e)).toEqual([{ id: 5, text: 'Crosstopher wins $14 on Place 6', kind: 'win' }])
   })
 
   it('narrates a bet loss with a hop-pair label', () => {
@@ -80,25 +80,26 @@ describe('playByPlayReducer', () => {
       win_payout: 0,
       removed: true,
     }
-    expect(playByPlayReducer([], e)).toEqual(['Linus loses $5 on Hop 3-3'])
+    expect(playByPlayReducer([], e)).toEqual([{ id: 6, text: 'Linus loses $5 on Hop 3-3', kind: 'loss' }])
   })
 
   it('narrates session end', () => {
     const e: SessionFinalized = { type: 'SessionFinalized', seq: 7, table_id: 't1', session_rolls: 93 }
-    expect(playByPlayReducer([], e)).toEqual(['Session complete — 93 rolls'])
+    expect(playByPlayReducer([], e)).toEqual([{ id: 7, text: 'Session complete — 93 rolls', kind: 'neutral' }])
   })
 
   it('ignores uninteresting event types', () => {
-    expect(playByPlayReducer(['x'], { type: 'BetsRequested', seq: 8, table_id: 't1' })).toEqual(['x'])
+    const lines = playByPlayReducer([{ id: -1, text: 'x', kind: 'neutral' }], { type: 'BetsRequested', seq: 8, table_id: 't1' })
+    expect(lines).toEqual([{ id: -1, text: 'x', kind: 'neutral' }])
   })
 
   it('caps at 300 lines, dropping the oldest', () => {
-    let lines: string[] = []
+    let lines: ReturnType<typeof initialPlayByPlay> = []
     for (let i = 0; i < 305; i++) {
       lines = playByPlayReducer(lines, { type: 'ShooterAssigned', seq: i, table_id: 't1', shooter_index: i, shooter_name: `P${i}` })
     }
     expect(lines).toHaveLength(300)
-    expect(lines[0]).toBe('— P5 is up —')
-    expect(lines.at(-1)).toBe('— P304 is up —')
+    expect(lines[0].text).toBe('— P5 is up —')
+    expect(lines.at(-1)?.text).toBe('— P304 is up —')
   })
 })

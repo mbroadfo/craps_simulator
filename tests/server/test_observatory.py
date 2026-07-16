@@ -246,6 +246,37 @@ def test_step_advances_exactly_one_roll(client):
         assert client.get("/tables/t1").json()["state"] == "paused"
 
 
+def test_step_ignores_the_configured_pace_delay(client):
+    """A manual single-step Roll click should be instant — not throttled
+    by whatever roll_delay_ms a prior Auto Play/Turbo run left configured.
+    Continuous rolling (start/resume) still respects the pace; only the
+    one roll step() lets through skips it."""
+    create_table(client, roll_delay_ms=1500, num_shooters=5)
+    client.post("/tables/t1/start")
+
+    deadline = time.time() + 20
+    while client.get("/tables/t1").json()["session_rolls"] < 1:
+        assert time.time() < deadline, "no rolls happened"
+        time.sleep(0.02)
+    assert client.post("/tables/t1/pause").status_code == 200
+    # The gate was never cleared before this pause() call (nothing else
+    # clears it), so the loop was mid-sleep on the *next* roll's full
+    # 1.5s pace the instant session_rolls hit 1 — unlike the small-delay
+    # tests above, 0.1s isn't enough to let that in-flight roll land.
+    time.sleep(1.7)
+    rolls_before = client.get("/tables/t1").json()["session_rolls"]
+
+    started = time.time()
+    resp = client.post("/tables/t1/step")
+    assert resp.status_code == 200
+
+    deadline = time.time() + 1.0  # well under the configured 1.5s pace
+    while client.get("/tables/t1").json()["session_rolls"] < rolls_before + 1:
+        assert time.time() < deadline, "step waited for the full configured pace instead of skipping it"
+        time.sleep(0.02)
+    assert time.time() - started < 1.0
+
+
 def test_max_rolls_and_stop(client):
     create_table(client, max_rolls=5)
     client.post("/tables/t1/start")
