@@ -35,6 +35,8 @@ export function useFeltDevState(): FeltUiState {
   // appeared in — the red 7 never showed).
   const [pendingNewShooter, setPendingNewShooter] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [statsOpen, setStatsOpen] = useState(false)
+  const toggleStats = useCallback(() => setStatsOpen((v) => !v), [])
 
   const placeChip = useCallback((zoneId: string, x: number, y: number, denom: number) => {
     setRackChips((prev) => {
@@ -194,5 +196,7 @@ export function useFeltDevState(): FeltUiState {
     pushToast,
     testAllBets,
     exportJson,
+    statsOpen,
+    toggleStats,
   }
 }

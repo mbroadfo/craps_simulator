@@ -23,7 +23,13 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* flex-start, not center: .pageRow no longer has a statsSidebar
+     column filling its left edge (that's a hamburger-triggered
+     overlay now), so centering it on wide/short viewports where the
+     felt is height-capped left a big, oddly-empty gutter with just
+     the hamburger floating in it — flush left keeps any leftover
+     slack on the right, past the Observatory panel, instead. */
+  align-items: flex-start;
   padding: 18px;
   font-family: 'IBM Plex Mono', monospace;
   color: #8a8171;
@@ -36,7 +42,13 @@
   -webkit-user-select: none;
 }
 
-.pageRow { display: flex; flex-direction: row; align-items: flex-start; gap: 16px; }
+/* width:100% is load-bearing: .pit-felt-root uses align-items:flex-start
+   (see its own comment), so without an explicit width here .pageRow
+   shrink-wraps to its children's content size instead of stretching —
+   leaving the Observatory panel's flex-grow nothing to grow into and
+   a dead gray gutter on the right, no matter how its own max-width is
+   set. */
+.pageRow { display: flex; flex-direction: row; align-items: flex-start; gap: 16px; width: 100%; }
 
 #menuToggle {
   position: fixed; top: 12px; left: 12px; z-index: 10;
@@ -76,15 +88,16 @@
    inside this footprint (absolute, under the props panel), so it no
    longer needs its own reserved page height. Controls/readout float
    as an overlay and don't count against this budget either.
-   The width-vs-viewport term reserves room for .pageRow's other
-   columns (statsSidebar 160px + shooterHistory 30px + playerSidebar
-   180px + 3 16px gaps + root's own 18px*2 padding =~ 466px, rounded
-   up) — .pageRow is back to 4 columns now that a lean PlayerSidebar
-   returned (leaner than the old RosterPanel it replaces: no lineup
-   builder, no play-by-play, just name/strategy/bankroll rows). */
+   The width-vs-viewport term reserves room for .pageRow's remaining
+   columns (shooterHistory 30px + the Observatory panel 220px + 2
+   16px gaps + root's own 18px*2 padding =~ 318px, rounded up) — the
+   stats sidebar no longer takes a permanent column (it's a
+   hamburger-triggered left overlay now, see .statsOverlay below), so
+   the felt and Observatory panel expand into the width it used to
+   reserve. */
 .tableWrap {
   position: relative;
-  width: min(calc(100vw - 480px), calc((100vh - 48px) * 1.645));
+  width: min(calc(100vw - 320px), calc((100vh - 48px) * 1.645));
   max-width: 1900px;
 }
 #felt { width: 100%; height: auto; display: block; }
@@ -167,8 +180,7 @@
 /* ============== Shooter roll number line ==============
    No card, no border, no title, no scrollbar — just the rolled
    totals stacked vertically next to the table, oldest at top,
-   newest appended at the bottom, colored by what they meant. Roll/
-   Reset controls live in the hamburger menu, not here. */
+   newest appended at the bottom, colored by what they meant. */
 /* Reserve the number column's width up front — otherwise the sidebar
    is 0px wide until the first roll, and the table visibly jumps left
    when it suddenly gains width. */
@@ -186,6 +198,24 @@
   width: 160px; flex-shrink: 0; overflow: hidden; box-sizing: border-box;
   background: #111111; border: 1px solid #2a251e; padding: 7px;
 }
+/* ---- Left overlay (hamburger-triggered) ----
+   .statsSidebar itself is untouched (still 160px, still auto-fit to
+   the felt's height via useSidebarAutoFit) — this wrapper just gives
+   it a fixed-position, full-height overlay to sit inside instead of a
+   permanent .pageRow column. Background matches .statsSidebar's own
+   #111111 so any height mismatch between the two doesn't show a seam. */
+.statsOverlay {
+  position: fixed; top: 0; left: 0; height: 100vh; width: 200px; z-index: 100;
+  background: #111111; border-right: 1px solid #2a251e;
+  display: flex; align-items: flex-start;
+  transform: translateX(-100%);
+  transition: transform 200ms ease;
+}
+.statsOverlay.open { transform: translateX(0); }
+.statsOverlayBackdrop { position: fixed; inset: 0; z-index: 99; }
+/* The hamburger that toggles this overlay is ControlRail's own top
+   button now (ObservatoryPanel.css's .railBtn) — no more #menuToggle-
+   style fixed button living here in Felt.css. */
 .statsSidebarInner {
   display: flex; flex-direction: column;
   font-family: 'Barlow', sans-serif; color: #c9a84c;
@@ -243,4 +273,7 @@
 .stNetDivider { border-top: 1px solid #4a4035; margin: 8px 0 3px; }
 .stNetValue.pos { color: #2ecc71; }
 .stNetValue.neg { color: #e0564a; }
-@media (max-width: 1300px) { .statsSidebar { display: none; } }
+/* The old "hide below 1300px" rule is gone — the sidebar is an
+   explicit hamburger-triggered overlay now, not a permanent column
+   competing for viewport width, so there's nothing to reclaim by
+   hiding it at narrow widths. */

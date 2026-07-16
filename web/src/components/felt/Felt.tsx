@@ -15,7 +15,7 @@ import { PropsPanel } from './panels/PropsPanel'
 import { StatsSidebar } from './sidebar/StatsSidebar'
 import { FeltDefs } from './shell/FeltDefs'
 import { DpLabels, PassDontPassBands } from './shell/PassDontPassBands'
-import { FeltStateProvider } from './state/FeltStateContext'
+import { FeltStateProvider, useFeltState } from './state/FeltStateContext'
 import { useFeltLiveState } from './state/useFeltLiveState'
 import type { RollLogState } from './state/liveRollLog'
 import type { RosterEntry } from './types'
@@ -27,8 +27,8 @@ import type { TableState } from '../../lib/tableReducer'
  * Faithful port of prototype/parametric-felt.html — Step 2, complete.
  * Every visual piece is in: felt interior, chip rail, action bar,
  * dev-controls panel, shooter history, win/loss toasts, and the stats
- * sidebar (left of the table, matching the prototype's own layout
- * decision).
+ * sidebar — a hamburger-triggered left overlay rather than a permanent
+ * .pageRow column, so the felt and right panel can use its width.
  *
  * JSX ordering inside <svg> intentionally mirrors the prototype's own
  * render() DOM order — do not reorder groups here without checking
@@ -50,13 +50,11 @@ export function Felt() {
  * exists in live mode. The chip rail stays, showing the selected
  * seat's real bankroll (decomposed, shrinks/grows with it).
  *
- * Session-lifecycle controls (Pause/Roll/Turbo) and the lineup builder
- * live in ControlStripe, a horizontal band App.tsx renders between the
- * felt and the session graph — the felt itself knows nothing about
- * session lifecycle in live mode. `sidebar` is a slot for a
- * player-perspective picker (PlayerSidebar) — App.tsx owns the roster/
- * bankroll data and builds the actual panel; this component just
- * places it, same seam ControlStripe uses.
+ * Session-lifecycle controls (Play/Roll/Turbo/Reset) and the lineup
+ * builder live in ObservatoryPanel/ControlRail now, both rendered
+ * inside the Observatory panel itself (ControlRail sits to the right
+ * of the current-roll/bot-roster column) — the felt itself knows
+ * nothing about session lifecycle in live mode at all.
  */
 export function LiveFelt({
   tableState,
@@ -84,11 +82,27 @@ export function LiveFelt({
 }
 
 function FeltInner({ mode, sidebar }: { mode: 'dev' | 'live'; sidebar?: ReactNode }) {
+  // statsOpen/toggleStats live in FeltUiState (not local state here) so
+  // ControlRail, rendered outside the felt proper in the Observatory
+  // panel, can toggle the overlay via useFeltState() too — see the
+  // hamburger button now living at the top of the action bar.
+  const { statsOpen, toggleStats } = useFeltState()
+
   return (
     <div className="pit-felt-root">
       {mode === 'dev' && <DevControlsPanel />}
-      <div className="pageRow">
+
+      {/* Stats sidebar is an overlay, not a permanent .pageRow column.
+          Overlay panel itself is always mounted (never conditionally
+          unrendered) so the slide transform has something to animate
+          and Felt.test.tsx's stats-section queries keep working
+          regardless of open state. */}
+      {statsOpen && <div className="statsOverlayBackdrop" onClick={toggleStats} />}
+      <div className={'statsOverlay' + (statsOpen ? ' open' : '')}>
         <StatsSidebar />
+      </div>
+
+      <div className="pageRow">
         <div className="tableWrap">
           <svg
             id="felt"
