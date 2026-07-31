@@ -16,6 +16,7 @@ env/
 .pytest_cache/
 output/
 sessions/
+node_modules/
 
 # Ignore IDE-specific files
 .vscode/

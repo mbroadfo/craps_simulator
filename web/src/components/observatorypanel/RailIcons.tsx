@@ -29,3 +29,20 @@ export function TurboIcon() {
     </svg>
   )
 }
+
+/** A repeat/loop glyph for the Autoplay toggle — deliberately not another triangle or chevron (Roll and Turbo already use those), so "roll continuously" reads as a distinct action from "roll once" or "jump to max speed" at a glance. */
+export function AutoplayIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width={16} height={16} aria-hidden="true">
+      <path
+        d="M4 8a6 6 0 0 1 10.5-4M16 12a6 6 0 0 1-10.5 4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.6}
+        strokeLinecap="round"
+      />
+      <path d="M14.5 2.5v4h-4" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5.5 17.5v-4h4" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}

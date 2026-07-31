@@ -4,6 +4,7 @@ import { ActionBar } from './actionbar/ActionBar'
 import { ChipRail } from './chips/ChipRail'
 import { ChipStackLayer } from './chips/ChipStackLayer'
 import { DevControlsPanel } from './devcontrols/DevControlsPanel'
+import { DiceAnimation } from './dice/DiceAnimation'
 import { ShooterHistory } from './history/ShooterHistory'
 import { AtsPanel } from './panels/AtsPanel'
 import { BoxNumbers } from './panels/BoxNumbers'
@@ -55,6 +56,12 @@ export function Felt() {
  * inside the Observatory panel itself (ControlRail sits to the right
  * of the current-roll/bot-roster column) — the felt itself knows
  * nothing about session lifecycle in live mode at all.
+ *
+ * `diceResult`/`diceSpeed`/`onDiceSettled` drive DiceAnimation (Phase
+ * A: flying/tumbling/bouncing dice overlaying the felt, see
+ * dice/DiceAnimation.tsx) — App.tsx owns the actual gating of chip/
+ * fade-up/ATS state behind `onDiceSettled`; the felt just renders the
+ * animation and forwards the callback.
  */
 export function LiveFelt({
   tableState,
@@ -64,6 +71,9 @@ export function LiveFelt({
   roster,
   setTableState,
   sidebar,
+  diceResult,
+  diceSpeed,
+  onDiceSettled,
 }: {
   tableState: TableState
   rollLog: RollLogState
@@ -72,16 +82,31 @@ export function LiveFelt({
   roster: RosterEntry[]
   setTableState: Dispatch<SetStateAction<TableState>>
   sidebar?: ReactNode
+  diceResult: [number, number] | null
+  diceSpeed: number
+  onDiceSettled: () => void
 }) {
   const state = useFeltLiveState(tableState, rollLog, playerName, setPlayerName, roster, setTableState)
   return (
     <FeltStateProvider value={state}>
-      <FeltInner mode="live" sidebar={sidebar} />
+      <FeltInner mode="live" sidebar={sidebar} diceResult={diceResult} diceSpeed={diceSpeed} onDiceSettled={onDiceSettled} />
     </FeltStateProvider>
   )
 }
 
-function FeltInner({ mode, sidebar }: { mode: 'dev' | 'live'; sidebar?: ReactNode }) {
+function FeltInner({
+  mode,
+  sidebar,
+  diceResult,
+  diceSpeed,
+  onDiceSettled,
+}: {
+  mode: 'dev' | 'live'
+  sidebar?: ReactNode
+  diceResult?: [number, number] | null
+  diceSpeed?: number
+  onDiceSettled?: () => void
+}) {
   // statsOpen/toggleStats live in FeltUiState (not local state here) so
   // ControlRail, rendered outside the felt proper in the Observatory
   // panel, can toggle the overlay via useFeltState() too — see the
@@ -159,6 +184,13 @@ function FeltInner({ mode, sidebar }: { mode: 'dev' | 'live'; sidebar?: ReactNod
           </svg>
 
           {mode === 'dev' && <ActionBar />}
+
+          {/* Dev mode has no DiceRolled SSE event to key off (its own
+              rollDice() is a local random roller) — the animation is
+              live-mode only. */}
+          {mode === 'live' && (
+            <DiceAnimation result={diceResult ?? null} speed={diceSpeed ?? 1} onSettled={onDiceSettled ?? (() => {})} />
+          )}
         </div>
 
         <ShooterHistory />

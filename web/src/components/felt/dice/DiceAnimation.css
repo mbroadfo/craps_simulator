@@ -1,0 +1,19 @@
+/**
+ * The dice themselves are a Three.js/Cannon-es WebGL scene (see
+ * DiceAnimation.tsx) rendered onto a single <canvas> — this file only
+ * positions that canvas as a transparent overlay directly on top of
+ * the felt SVG, matching the same absolute-fill/pointer-events-none/
+ * z-index the CSS-only Phase A version used.
+ */
+.diceAnimation {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.diceAnimation canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

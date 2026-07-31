@@ -4,21 +4,24 @@
  * whether a table exists yet. Every button renders unconditionally,
  * in the same slot, at the same size, at all times — only :disabled
  * toggles. Nothing appears/disappears/reflows as the game starts;
- * before a table exists, Roll/Turbo/slider/Reset are simply greyed
- * out rather than absent.
+ * before a table exists, Autoplay/Turbo/slider/Reset are simply
+ * greyed out rather than absent.
  *
- * Start and Play/Pause are the same button — before a table exists it
- * reads "Start" (creates the table, but does NOT set it rolling: see
+ * Start and Roll are the same button, same spot, same meaning
+ * throughout: "advance by one." Before a table exists it reads
+ * "Start" (creates the table, but does NOT set it rolling: see
  * App.tsx's handleStart, which calls start() then immediately
- * pause()), and once one exists the identical ▶/⏸ slot becomes the
- * ordinary Play/Pause toggle. From there the game only ever
- * progresses via that toggle, Roll (single step, paused only), or
- * Turbo (jumps the speed slider to max).
+ * pause()); once one exists, the identical slot becomes Roll — a
+ * single step, disabled while auto-rolling or finished. Continuous
+ * rolling is a *separate* button (Autoplay, the Play/Pause toggle) so
+ * "roll once" and "keep rolling" are never the same click target —
+ * clicking Start twice in a row should never surprise you into
+ * autoplay.
  */
 import type { TableSnapshot } from '../../lib/api'
 import { useFeltState } from '../felt/state/FeltStateContext'
 import './ObservatoryPanel.css'
-import { DiceIcon, TurboIcon } from './RailIcons'
+import { AutoplayIcon, DiceIcon, TurboIcon } from './RailIcons'
 
 export const MAX_SPEED = 10
 
@@ -54,9 +57,12 @@ export function ControlRail({
   const finished = sessionState === 'finished' || sessionState === 'stopped'
   const turboActive = speed >= MAX_SPEED
 
-  const primaryTitle = !hasTable ? 'Start' : running ? 'Pause' : 'Play'
-  const primaryDisabled = !hasTable ? creating || !canStart : finished
-  const primaryClick = !hasTable ? onStart : onPauseResume
+  const primaryTitle = !hasTable ? 'Start' : 'Roll — advance one roll, then stay paused'
+  const primaryDisabled = !hasTable ? creating || !canStart : !paused
+  const primaryClick = !hasTable ? onStart : onStep
+
+  const autoplayTitle = running ? 'Pause — stop auto-rolling' : 'Autoplay — roll continuously'
+  const autoplayDisabled = !hasTable || finished
 
   return (
     <div className="railControls">
@@ -65,10 +71,15 @@ export function ControlRail({
       </button>
       {error && <div className="railError">{error}</div>}
       <button className="railBtn" title={primaryTitle} disabled={primaryDisabled} onClick={primaryClick}>
-        {running ? '⏸' : '▶'}
+        {hasTable ? <DiceIcon /> : '▶'}
       </button>
-      <button className="railBtn" title="Roll — advance one roll, then stay paused" disabled={!paused} onClick={onStep}>
-        <DiceIcon />
+      <button
+        className={'railBtn' + (running ? ' active' : '')}
+        title={autoplayTitle}
+        disabled={autoplayDisabled}
+        onClick={onPauseResume}
+      >
+        {running ? '⏸' : <AutoplayIcon />}
       </button>
       <button
         className={'railBtn' + (turboActive ? ' active' : '')}
