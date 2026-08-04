@@ -1,5 +1,11 @@
 /** REST client for the observatory server (Step 1 endpoints). */
 
+/** A strategy's lineup-picker name plus its static come-out dealer call (Observatory panel roster speech bubble, Tier 1). */
+export interface StrategyInfo {
+  name: string
+  dealer_call: string
+}
+
 export interface PlayerSpec {
   name: string
   strategy: string
@@ -52,7 +58,7 @@ const post = <T,>(path: string, body?: unknown): Promise<T> =>
   })
 
 export const api = {
-  listStrategies: () => request<string[]>('/tables/strategies'),
+  listStrategies: () => request<StrategyInfo[]>('/tables/strategies'),
   listTables: () => request<TableSnapshot[]>('/tables'),
   getTable: (id: string) => request<TableSnapshot>(`/tables/${id}`),
   getStats: (id: string) => request<Record<string, unknown>>(`/tables/${id}/stats`),

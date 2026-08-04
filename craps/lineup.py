@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Optional, List, TYPE_CHECKING
+from typing import Any, Callable, Dict, NamedTuple, Optional, List, TYPE_CHECKING
 
 from craps.rules_engine import RulesEngine
 from craps.strategy_contract import V2StrategyAdapter
@@ -17,6 +17,13 @@ from craps.strategies.regress_press_v2 import RegressPressV2
 
 if TYPE_CHECKING:
     from craps.player import Player
+
+
+class StrategyEntry(NamedTuple):
+    """A strategy's fresh-adapter factory alongside its casino-vernacular dealer call (Observatory panel bubble, Tier 1)."""
+    factory: Callable[[], V2StrategyAdapter]
+    dealer_call: str
+
 
 class PlayerLineup:
     """Class to manage the lineup of players and their strategies."""
@@ -42,42 +49,66 @@ class PlayerLineup:
 
         # Factories: each player gets a fresh adapter, so per-player memo
         # state never leaks between players sharing a strategy name.
-        self.all_strategies: Dict[str, Callable[[], V2StrategyAdapter]] = {
-            "Pass-Line": lambda: V2StrategyAdapter(
-                PassLineV2(bet_amount=tm), strategy_name="PassLine"),
-            "Pass-Line w/ Odds": lambda: V2StrategyAdapter(
-                PassLineOddsV2(odds_multiple="1x"), strategy_name="PassOdds"),
-            "Field": lambda: V2StrategyAdapter(
-                FieldV2(min_bet=tm), strategy_name="Field"),
-            "Iron Cross": lambda: V2StrategyAdapter(
-                IronCrossV2(min_bet=tm, play_pass_line=True, odds_type="3x-4x-5x"),
-                strategy_name="IronCross"),
-            "3-Point Molly": lambda: V2StrategyAdapter(
-                ThreePointMollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
-                strategy_name="ThreePointMolly"),
-            "3-Point Dolly": lambda: V2StrategyAdapter(
-                ThreePointDollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
-                strategy_name="ThreePointDolly"),
-            "Inside": lambda: V2StrategyAdapter(
-                PlaceV2("inside"), strategy_name="Place"),
-            "Across": lambda: V2StrategyAdapter(
-                PlaceV2("across"), strategy_name="Place"),
-            "Place 68": lambda: V2StrategyAdapter(
-                PlaceV2([6, 8]), strategy_name="Place"),
-            "Double Hop": lambda: V2StrategyAdapter(
-                DoubleHopV2(hop_target=(3, 3), base_bet=1), strategy_name="DoubleHop"),
-            "Three-Two-One": lambda: V2StrategyAdapter(
-                ThreeTwoOneV2(min_bet=tm, odds_type="1x"), strategy_name="ThreeTwoOne"),
-            "RegressHalfPress": lambda: V2StrategyAdapter(
-                RegressPressV2(high_unit=10, low_unit=3, regression_factor=2, regress_units=5),
-                strategy_name="RegressThenPress"),
-            "Lay Outside": lambda: V2StrategyAdapter(
-                LayV2("Outside"), strategy_name="Lay"),
-            "HardwayHighway": lambda: V2StrategyAdapter(
-                HardwayHighwayV2(), strategy_name="Hardways"),
-            "AllTallSmall": lambda: V2StrategyAdapter(
-                AllTallSmallV2(ats_type="AllTallSmall", bet_amount=15),
-                strategy_name="AllTallSmall"),
+        # dealer_call is a static, per-strategy come-out opening line for
+        # the Observatory panel's roster speech bubble (Tier 1 — no
+        # dynamic mid-hand narration yet).
+        self.all_strategies: Dict[str, StrategyEntry] = {
+            "Pass-Line": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(PassLineV2(bet_amount=tm), strategy_name="PassLine"),
+                dealer_call="$10 on the line"),
+            "Pass-Line w/ Odds": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(PassLineOddsV2(odds_multiple="1x"), strategy_name="PassOdds"),
+                dealer_call="$10 on the line with full odds behind"),
+            "Field": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(FieldV2(min_bet=tm), strategy_name="Field"),
+                dealer_call="$10 on the field every roll"),
+            "Iron Cross": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(
+                    IronCrossV2(min_bet=tm, play_pass_line=True, odds_type="3x-4x-5x"),
+                    strategy_name="IronCross"),
+                dealer_call="$10 on the line — inside for $34 and the field"),
+            "3-Point Molly": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(
+                    ThreePointMollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
+                    strategy_name="ThreePointMolly"),
+                dealer_call="$10 on the line, chasing two come bets with odds"),
+            "3-Point Dolly": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(
+                    ThreePointDollyV2(bet_amount=tm, odds_type="3x-4x-5x"),
+                    strategy_name="ThreePointDolly"),
+                dealer_call="$10 on the don't, laying two don't comes"),
+            "Inside": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(PlaceV2("inside"), strategy_name="Place"),
+                dealer_call="$44 inside — the five, six, eight, and nine"),
+            "Across": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(PlaceV2("across"), strategy_name="Place"),
+                dealer_call="$64 across — every number covered"),
+            "Place 68": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(PlaceV2([6, 8]), strategy_name="Place"),
+                dealer_call="Give me the six and eight for $12 each"),
+            "Double Hop": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(
+                    DoubleHopV2(hop_target=(3, 3), base_bet=1), strategy_name="DoubleHop"),
+                dealer_call="Hopping the hard ways — thirty to one"),
+            "Three-Two-One": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(ThreeTwoOneV2(min_bet=tm, odds_type="1x"), strategy_name="ThreeTwoOne"),
+                dealer_call="$10 on the line, pressing three-two-one"),
+            "RegressHalfPress": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(
+                    RegressPressV2(high_unit=10, low_unit=3, regression_factor=2, regress_units=5),
+                    strategy_name="RegressThenPress"),
+                dealer_call="Regress then press — start high, lock up profit"),
+            "Lay Outside": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(LayV2("Outside"), strategy_name="Lay"),
+                dealer_call="Laying the four and ten — wrong side outside"),
+            "HardwayHighway": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(HardwayHighwayV2(), strategy_name="Hardways"),
+                dealer_call="Hard six, hard eight, hard four, hard ten working"),
+            "AllTallSmall": StrategyEntry(
+                factory=lambda: V2StrategyAdapter(
+                    AllTallSmallV2(ats_type="AllTallSmall", bet_amount=15),
+                    strategy_name="AllTallSmall"),
+                dealer_call="$15 each on the all, tall, and small"),
         }
 
     def add_player(self, player: "Player") -> None:
@@ -118,7 +149,7 @@ class PlayerLineup:
         """
         for player in players:
             if player.strategy_name in self.all_strategies:
-                player.betting_strategy = self.all_strategies[player.strategy_name]()
+                player.betting_strategy = self.all_strategies[player.strategy_name].factory()
                 self.add_player(player)
             else:
                 raise ValueError(f"No strategy found for player '{player.name}'")

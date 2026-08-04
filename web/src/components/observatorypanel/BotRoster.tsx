@@ -4,6 +4,7 @@
  * perspective. Replaces the old standalone PlayerSidebar, folded into
  * the Observatory panel alongside session control/leaderboard/etc.
  */
+import { DealerCallBubble } from './DealerCallBubble'
 import { sparklinePoints, sparklineTrend } from './sparklinePath'
 import './ObservatoryPanel.css'
 
@@ -28,10 +29,13 @@ export function BotRoster({
   roster,
   selectedPlayer,
   onSelectPlayer,
+  activeShooterCall,
 }: {
   roster: ObsPlayerRow[]
   selectedPlayer: string
   onSelectPlayer: (name: string) => void
+  /** The active shooter's dealer-call speech bubble (Tier 1) — null when no bubble should show. */
+  activeShooterCall: { name: string; text: string } | null
 }) {
   return (
     <div className="obsSection">
@@ -73,6 +77,9 @@ export function BotRoster({
                   strokeWidth={1.4}
                 />
               </svg>
+              {/* In-flow, not absolutely positioned — the row reflows to
+                  accommodate it and collapses back when it unmounts. */}
+              {activeShooterCall?.name === p.name && <DealerCallBubble text={activeShooterCall.text} />}
             </div>
           </div>
         )

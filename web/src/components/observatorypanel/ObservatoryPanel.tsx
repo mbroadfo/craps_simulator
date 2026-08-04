@@ -57,6 +57,7 @@ export function ObservatoryPanel({
   feed,
   rolls,
   dice,
+  activeShooterCall,
 }: {
   hasTable: boolean
   seats: Seat[]
@@ -81,6 +82,8 @@ export function ObservatoryPanel({
   feed: PlayByPlayEntry[]
   rolls: number[]
   dice: [number, number] | null
+  /** The active shooter's dealer-call speech bubble (Tier 1) — null when no bubble should show. */
+  activeShooterCall: { name: string; text: string } | null
 }) {
   const controlRail = (
     <ControlRail
@@ -143,7 +146,7 @@ export function ObservatoryPanel({
       {controlRail}
       <div className="observatoryPanel">
         <CurrentRoll dice={dice} />
-        <BotRoster roster={roster} selectedPlayer={selectedPlayer} onSelectPlayer={onSelectPlayer} />
+        <BotRoster roster={roster} selectedPlayer={selectedPlayer} onSelectPlayer={onSelectPlayer} activeShooterCall={activeShooterCall} />
         <Leaderboard roster={roster} />
         <RollDistribution rolls={rolls} />
         <RollFeed entries={feed} />

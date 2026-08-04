@@ -26,8 +26,13 @@ def create_app(sessions_dir: Union[str, Path] = "sessions") -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        # Vite dev server (Step 2) and the legacy UI port.
-        allow_origins=["http://localhost:5173", "http://localhost:3000"],
+        # Vite's default port (5173) auto-increments past whatever's
+        # already listening (5174, 5175, ...) when this machine has
+        # other dev servers running — a fixed allowlist just breaks
+        # every time that happens. Matching any localhost port is
+        # still scoped to local dev (never 0.0.0.0/a real origin), so
+        # it doesn't loosen anything that mattered.
+        allow_origin_regex=r"http://localhost:\d+",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

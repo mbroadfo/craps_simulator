@@ -67,12 +67,23 @@ export default function App() {
   const diceAnimating = useRef(false)
   const pendingEnvelopes = useRef<Envelope[]>([])
 
+  // Dealer-call speech bubble (Observatory panel roster, Tier 1) — the
+  // active shooter's static come-out line, auto-hides after 3s. A ref,
+  // not state, for the lookup table: attach()'s SSE callback is a
+  // useCallback created once with `[applyEnvelope]` as its only dep, so
+  // reading a live useState here would close over a permanently-stale
+  // empty value (same reason diceAnimating/pendingEnvelopes are refs).
+  const strategyDealerCalls = useRef<Record<string, string>>({})
+  const [activeShooterCall, setActiveShooterCall] = useState<{ name: string; text: string } | null>(null)
+  const activeShooterTimer = useRef<number | null>(null)
+
   // Lifted out of ObservatoryPanel (rather than local state there) so
   // ControlRail's Start button can read the current lineup selection
   // too — see ObservatoryPanel.tsx's header comment.
   useEffect(() => {
     api.listStrategies().then((list) => {
-      setSeats(list.map((name) => ({ name, enabled: DEFAULT_CHECKED.has(name) })))
+      setSeats(list.map((s) => ({ name: s.name, enabled: DEFAULT_CHECKED.has(s.name) })))
+      strategyDealerCalls.current = Object.fromEntries(list.map((s) => [s.name, s.dealer_call]))
     })
   }, [])
 
@@ -97,6 +108,9 @@ export default function App() {
       diceAnimating.current = false
       pendingEnvelopes.current = []
       setDiceResult(null)
+      if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
+      activeShooterTimer.current = null
+      setActiveShooterCall(null)
       stream.current = connectTableStream(tableId, (envelope) => {
         // DiceRolled itself is queued too (not applied early) — that
         // keeps tableState.dice/phase/point/puckOn changing in lockstep
@@ -106,7 +120,35 @@ export default function App() {
           diceAnimating.current = true
           setDiceResult(envelope.dice)
         }
-        if (diceAnimating.current) {
+        // ShooterAssigned fires the roster speech bubble immediately —
+        // never gated behind diceAnimating (it's not tied to any roll's
+        // outcome-reveal timing) and never suppressed at Turbo (rapid
+        // flicker there is expected, not a bug). A fresh assignment
+        // replaces whatever bubble/timer was already showing.
+        if (envelope.type === 'ShooterAssigned') {
+          const call = strategyDealerCalls.current[envelope.shooter_name]
+          if (call) {
+            if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
+            setActiveShooterCall({ name: envelope.shooter_name, text: call })
+            activeShooterTimer.current = window.setTimeout(() => setActiveShooterCall(null), 3000)
+          }
+        }
+        // BetPlaced is exempt from the gate: the engine's own per-roll
+        // order is accept_bets() (BetPlaced) THEN roll_dice() (see
+        // TableRunner.roll_once), so a BetPlaced always belongs to the
+        // *upcoming* roll, never the one currently animating — nothing
+        // about it depends on dice having landed. Queuing it anyway
+        // (the original behavior) meant it arrived while the previous
+        // roll's animation was still in flight, sat in pendingEnvelopes
+        // until that animation settled, and then got dumped into the
+        // felt in the same instant as that roll's own resolution —
+        // new Come bets never got their own visible moment; they just
+        // popped into existence alongside the fade-ups. Applying it
+        // immediately lets the chip actually appear before the next
+        // throw, the way a real placement does.
+        if (envelope.type === 'BetPlaced') {
+          applyEnvelope(envelope)
+        } else if (diceAnimating.current) {
           pendingEnvelopes.current.push(envelope)
         } else {
           applyEnvelope(envelope)
@@ -209,6 +251,9 @@ export default function App() {
     diceAnimating.current = false
     pendingEnvelopes.current = []
     setDiceResult(null)
+    if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
+    activeShooterTimer.current = null
+    setActiveShooterCall(null)
   }, [snapshot])
 
   const roster: RosterEntry[] = snapshot?.players.map((p) => ({ name: p.name, strategy: p.strategy })) ?? []
@@ -276,6 +321,7 @@ export default function App() {
             feed={feed}
             rolls={rollTotals}
             dice={state.dice}
+            activeShooterCall={activeShooterCall}
           />
         }
       />

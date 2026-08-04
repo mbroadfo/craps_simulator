@@ -4,9 +4,11 @@
 // globals, which this project doesn't enable (see vite.config.ts —
 // no `test.globals: true`).
 import '@testing-library/jest-dom/vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
-import { Felt } from './Felt'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { Felt, LiveFelt } from './Felt'
+import { initialRollLogState } from './state/liveRollLog'
+import { initialState } from '../../lib/tableReducer'
 
 // jsdom doesn't implement ResizeObserver (used by useSidebarAutoFit) —
 // a plain stub is the standard fix, same as any other component that
@@ -21,6 +23,11 @@ beforeAll(() => {
     // @ts-expect-error -- test-only stub, not a full ResizeObserver
     globalThis.ResizeObserver = ResizeObserverStub
   }
+  // jsdom has no audio decoding pipeline — HTMLMediaElement.play()
+  // rejects with "not implemented" by default; LiveFelt's dice
+  // animation plays a roll sound, so this needs the same stub
+  // DiceAnimation.test.tsx uses.
+  window.HTMLMediaElement.prototype.play = () => Promise.resolve()
 })
 
 // RTL's auto-cleanup-between-tests relies on detecting a global
@@ -80,5 +87,55 @@ describe('Felt', () => {
     const afterRemove = screen.getAllByText('$25').length
 
     expect(afterRemove).toBe(withChip - 1)
+  })
+})
+
+// Thin prop-plumbing checks — DiceAnimation's own phase/timing/queueing
+// behavior is fully covered by dice/DiceAnimation.test.tsx; these only
+// confirm LiveFelt actually threads diceResult/diceSpeed/onDiceSettled
+// through to it rather than dropping them.
+describe('LiveFelt dice wiring', () => {
+  const noop = () => {}
+
+  function renderLive(diceResult: [number, number] | null, diceSpeed: number, onDiceSettled: () => void) {
+    return render(
+      <LiveFelt
+        tableState={initialState()}
+        rollLog={initialRollLogState()}
+        playerName=""
+        setPlayerName={noop}
+        roster={[]}
+        setTableState={noop}
+        diceResult={diceResult}
+        diceSpeed={diceSpeed}
+        onDiceSettled={onDiceSettled}
+      />,
+    )
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('passes a null diceResult through as idle (no animation started)', () => {
+    const { container } = renderLive(null, 1, noop)
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'idle')
+  })
+
+  it('passes a real diceResult through and starts the animation', () => {
+    const { container } = renderLive([3, 4], 1, noop)
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
+  })
+
+  it('wires onDiceSettled through end-to-end — it fires once the animation settles', () => {
+    const onDiceSettled = vi.fn()
+    renderLive([3, 4], 1, onDiceSettled)
+
+    act(() => vi.advanceTimersByTime(1000)) // normal-speed cycle: 700ms flight + 300ms bounce
+    expect(onDiceSettled).toHaveBeenCalledTimes(1)
   })
 })

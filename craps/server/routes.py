@@ -22,10 +22,12 @@ from craps.server.table_session import TableSession
 tables_router = APIRouter(prefix="/tables", tags=["Observatory"])
 recordings_router = APIRouter(prefix="/recordings", tags=["Recordings"])
 
-#: Strategy names PlayerLineup can seat — the create-table vocabulary.
-VALID_STRATEGIES = frozenset(
-    PlayerLineup(HouseRules({}), None, PlayByPlay(), RulesEngine()).all_strategies
-)
+#: Built once from a single throwaway PlayerLineup — _ALL_STRATEGIES keeps
+#: the full StrategyEntry (factory + dealer_call) for list_strategies();
+#: VALID_STRATEGIES stays a flat frozenset of names for create_table's
+#: validation below, unaffected by all_strategies' value shape.
+_ALL_STRATEGIES = PlayerLineup(HouseRules({}), None, PlayByPlay(), RulesEngine()).all_strategies
+VALID_STRATEGIES = frozenset(_ALL_STRATEGIES)
 
 SSE_HEADERS = {
     "Cache-Control": "no-cache",
@@ -47,9 +49,12 @@ def _session(request: Request, table_id: str) -> TableSession:
 
 
 @tables_router.get("/strategies")
-async def list_strategies() -> List[str]:
-    """Strategy names PlayerLineup can seat — the lineup-picker vocabulary."""
-    return sorted(VALID_STRATEGIES)
+async def list_strategies() -> List[Dict[str, str]]:
+    """Strategy names (+ dealer call) PlayerLineup can seat — the lineup-picker vocabulary."""
+    return [
+        {"name": name, "dealer_call": entry.dealer_call}
+        for name, entry in sorted(_ALL_STRATEGIES.items())
+    ]
 
 
 @tables_router.post("", status_code=201)

@@ -102,11 +102,17 @@ def test_create_start_finish_and_stats(client):
 
 def test_strategy_list_matches_lineup_vocabulary(client):
     strategies = client.get("/tables/strategies").json()
-    assert "Pass-Line" in strategies
-    assert "Iron Cross" in strategies
-    assert strategies == sorted(strategies)
     # the route must not be shadowed by /tables/{table_id}
     assert isinstance(strategies, list)
+    names = [s["name"] for s in strategies]
+    assert "Pass-Line" in names
+    assert "Iron Cross" in names
+    assert names == sorted(names)
+    # every strategy carries a non-empty dealer call (Observatory panel
+    # roster speech bubble, Tier 1)
+    for s in strategies:
+        assert isinstance(s["dealer_call"], str)
+        assert s["dealer_call"]
 
 
 def test_validation_errors(client):
