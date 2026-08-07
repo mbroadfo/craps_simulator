@@ -276,4 +276,41 @@ describe('App — dealer-call speech bubble', () => {
 
     expect(screen.queryByText('$10 on the line')).not.toBeInTheDocument()
   })
+
+  it('re-announces the same shooter\'s call on PointHit (they keep the dice and start a fresh come-out)', async () => {
+    await startTable()
+
+    await act(async () => {
+      onEnvelopeRef.current?.({
+        seq: 1,
+        table_id: 'table-1',
+        type: 'ShooterAssigned',
+        shooter_index: 0,
+        shooter_name: 'Pass-Line',
+      })
+    })
+    expect(screen.getByText('$10 on the line')).toBeInTheDocument()
+
+    // bubble auto-hides...
+    await act(async () => vi.advanceTimersByTime(3000))
+    expect(screen.queryByText('$10 on the line')).not.toBeInTheDocument()
+
+    // ...then the shooter makes their point and keeps the dice — a
+    // fresh come-out for the *same* shooter re-announces the call,
+    // even though no new ShooterAssigned fired.
+    await act(async () => {
+      onEnvelopeRef.current?.({ seq: 2, table_id: 'table-1', type: 'PointHit', point: 6 })
+    })
+    expect(screen.getByText('$10 on the line')).toBeInTheDocument()
+  })
+
+  it('PointHit before any shooter is assigned does nothing (no crash, no stray bubble)', async () => {
+    await startTable()
+
+    await act(async () => {
+      onEnvelopeRef.current?.({ seq: 1, table_id: 'table-1', type: 'PointHit', point: 6 })
+    })
+
+    expect(screen.queryByText('$10 on the line')).not.toBeInTheDocument()
+  })
 })

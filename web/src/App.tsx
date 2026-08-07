@@ -76,6 +76,11 @@ export default function App() {
   const strategyDealerCalls = useRef<Record<string, string>>({})
   const [activeShooterCall, setActiveShooterCall] = useState<{ name: string; text: string } | null>(null)
   const activeShooterTimer = useRef<number | null>(null)
+  // Persists for the shooter's whole turn (unlike activeShooterCall,
+  // which clears after 3s) — PointHit carries no player identity of
+  // its own, so this is how a re-announcement on PointHit knows who
+  // to re-announce for.
+  const currentShooterName = useRef<string | null>(null)
 
   // Lifted out of ObservatoryPanel (rather than local state there) so
   // ControlRail's Start button can read the current lineup selection
@@ -111,6 +116,22 @@ export default function App() {
       if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
       activeShooterTimer.current = null
       setActiveShooterCall(null)
+      currentShooterName.current = null
+
+      // Shared by both ShooterAssigned and PointHit below — a shooter's
+      // "opening call" belongs to every come-out roll of their turn,
+      // not just the first one: after they make their point they keep
+      // the dice and start a fresh come-out sequence (PointHit is that
+      // moment), so the call re-announces there too, not only once per
+      // ShooterAssigned.
+      const showDealerCall = (name: string) => {
+        const call = strategyDealerCalls.current[name]
+        if (!call) return
+        if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
+        setActiveShooterCall({ name, text: call })
+        activeShooterTimer.current = window.setTimeout(() => setActiveShooterCall(null), 3000)
+      }
+
       stream.current = connectTableStream(tableId, (envelope) => {
         // DiceRolled itself is queued too (not applied early) — that
         // keeps tableState.dice/phase/point/puckOn changing in lockstep
@@ -120,18 +141,18 @@ export default function App() {
           diceAnimating.current = true
           setDiceResult(envelope.dice)
         }
-        // ShooterAssigned fires the roster speech bubble immediately —
-        // never gated behind diceAnimating (it's not tied to any roll's
-        // outcome-reveal timing) and never suppressed at Turbo (rapid
-        // flicker there is expected, not a bug). A fresh assignment
-        // replaces whatever bubble/timer was already showing.
+        // ShooterAssigned and PointHit both fire the roster speech
+        // bubble immediately — never gated behind diceAnimating (it's
+        // not tied to any roll's outcome-reveal timing) and never
+        // suppressed at Turbo (rapid flicker there is expected, not a
+        // bug). A fresh announcement replaces whatever bubble/timer was
+        // already showing.
         if (envelope.type === 'ShooterAssigned') {
-          const call = strategyDealerCalls.current[envelope.shooter_name]
-          if (call) {
-            if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
-            setActiveShooterCall({ name: envelope.shooter_name, text: call })
-            activeShooterTimer.current = window.setTimeout(() => setActiveShooterCall(null), 3000)
-          }
+          currentShooterName.current = envelope.shooter_name
+          showDealerCall(envelope.shooter_name)
+        }
+        if (envelope.type === 'PointHit' && currentShooterName.current) {
+          showDealerCall(currentShooterName.current)
         }
         // BetPlaced is exempt from the gate: the engine's own per-roll
         // order is accept_bets() (BetPlaced) THEN roll_dice() (see
@@ -254,6 +275,7 @@ export default function App() {
     if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
     activeShooterTimer.current = null
     setActiveShooterCall(null)
+    currentShooterName.current = null
   }, [snapshot])
 
   const roster: RosterEntry[] = snapshot?.players.map((p) => ({ name: p.name, strategy: p.strategy })) ?? []
