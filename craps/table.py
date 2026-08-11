@@ -302,15 +302,34 @@ class Table:
                 settled_bets.append(bet)
                 resolved_bet_ids.add(id(bet))
 
-        # 🧹 Final pass: catch any orphaned odds bets whose parent was already removed
+        # 🧹 Final pass: sweeps every remaining parent-linked (odds) bet
+        # not yet handled above — including ones whose status is still
+        # "active" because their parent hasn't resolved this roll.
+        # That's intentional and must stay: odds bets are ephemeral by
+        # design (see three_point_v2.py's own docstring) — the strategy
+        # re-places them fresh every point-phase roll, and v1's golden
+        # reference does the same, so the regression harness's wager
+        # totals depend on this exact remove-then-replace cadence.
+        #
+        # What must NOT happen is reporting this sweep as a resolution.
+        # A still-"active" bet swept here never actually won or lost —
+        # lose_bet()/win_bet() are correctly never called for it, no
+        # bankroll impact either way — but it used to land in
+        # settled_bets regardless, so resolve_bets()'s Step 3 published
+        # a BetResolved with status="active" for it anyway. The UI only
+        # knows won vs. not-won, so "not won" rendered as a loss the bet
+        # never actually took (that's the "how can odds lose on their
+        # own" bug). Only append to settled_bets — the list that drives
+        # published events — when the bet actually resolved.
         for bet in list(self.bets):
             if bet.parent_bet and id(bet) not in resolved_bet_ids:
                 if bet.status in {"lost", "return"}:
                     bet.owner.lose_bet(bet, self.play_by_play)
+                    settled_bets.append(bet)
                 elif bet.status == "won":
                     bet.owner.win_bet(bet, self.play_by_play)
+                    settled_bets.append(bet)
                 self.bets.remove(bet)
-                settled_bets.append(bet)
 
         return settled_bets
 
