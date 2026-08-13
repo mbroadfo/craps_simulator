@@ -57,8 +57,19 @@ class ThreePointDollyStrategy(BaseStrategy):
         if self.odds_strategy and game_state.phase == "point":
             odds_bets = self.odds_strategy.get_odds_bet(game_state, player, table)
             if odds_bets:
-                existing_odds = {
-                    (b.parent_bet, b.number)
+                # A parent bet can only ever have one odds bet attached
+                # at a time, so matching on parent identity alone is
+                # sufficient — and it's the only thing that's reliable:
+                # a Don't Come bet's own `.number` is its traveled
+                # point (set once, matches the odds bet's inherited
+                # number below), but a Don't Pass bet's `.number` is
+                # always None (the point lives on game_state, not the
+                # bet), so keying on (parent, parent.number) as this
+                # used to do never matched an existing Don't Pass Odds
+                # bet — it silently let a fresh duplicate through every
+                # single roll.
+                existing_odds_parents = {
+                    b.parent_bet
                     for b in table.bets
                     if b.bet_type.endswith("Odds") and b.owner == player
                 }
@@ -67,7 +78,7 @@ class ThreePointDollyStrategy(BaseStrategy):
                     if (
                         parent
                         and parent.owner == player
-                        and (parent, parent.number) not in existing_odds
+                        and parent not in existing_odds_parents
                     ):
                         odds_bet.number = parent.number  # Ensure odds bet inherits number
                         bets.append(odds_bet)

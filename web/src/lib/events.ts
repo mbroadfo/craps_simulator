@@ -64,6 +64,14 @@ export interface BetStatusChanged extends Base {
   status: string
 }
 
+/** accept_bets() has finished for the upcoming roll — everything at
+ * risk for the next roll is now fully placed and published. Dice for
+ * this round have not been thrown yet. */
+export interface RoundReady extends Base {
+  type: 'RoundReady'
+  bet_count: number
+}
+
 export interface DiceRolled extends Base {
   type: 'DiceRolled'
   shooter_index: number
@@ -140,6 +148,7 @@ export type Envelope =
   | BetMoved
   | BetAdjusted
   | BetStatusChanged
+  | RoundReady
   | DiceRolled
   | BetResolved
   | NumberHit
@@ -159,6 +168,7 @@ export const EVENT_TYPES = [
   'BetMoved',
   'BetAdjusted',
   'BetStatusChanged',
+  'RoundReady',
   'DiceRolled',
   'BetResolved',
   'NumberHit',

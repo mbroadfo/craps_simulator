@@ -10,13 +10,16 @@
  * Start and Roll are the same button, same spot, same meaning
  * throughout: "advance by one." Before a table exists it reads
  * "Start" (creates the table, but does NOT set it rolling: see
- * App.tsx's handleStart, which calls start() then immediately
- * pause()); once one exists, the identical slot becomes Roll — a
- * single step, disabled while auto-rolling or finished. Continuous
- * rolling is a *separate* button (Autoplay, the Play/Pause toggle) so
- * "roll once" and "keep rolling" are never the same click target —
- * clicking Start twice in a row should never surprise you into
- * autoplay.
+ * App.tsx's handleStart, which starts the table with startPaused=true
+ * so it lands paused with zero rolls); once one exists, the
+ * identical slot becomes Roll — a single step, disabled while
+ * auto-rolling, finished, or `awaitingRoll` (the previous round's
+ * dice are still animating/resolving, or the next round's bets
+ * haven't finished revealing yet — see App.tsx's two-phase reveal
+ * state machine). Continuous rolling is a *separate* button (Autoplay,
+ * the Play/Pause toggle) so "roll once" and "keep rolling" are never
+ * the same click target — clicking Start twice in a row should never
+ * surprise you into autoplay.
  */
 import type { TableSnapshot } from '../../lib/api'
 import { useFeltState } from '../felt/state/FeltStateContext'
@@ -32,6 +35,7 @@ export function ControlRail({
   error,
   onStart,
   sessionState,
+  awaitingRoll,
   onPauseResume,
   onStep,
   onReset,
@@ -44,6 +48,8 @@ export function ControlRail({
   error: string | null
   onStart: () => void
   sessionState: TableSnapshot['state'] | null
+  /** True from the moment Roll is clicked until the next round's bets have been fully revealed — see App.tsx's two-phase reveal state machine. */
+  awaitingRoll: boolean
   onPauseResume: () => void
   onStep: () => void
   onReset: () => void
@@ -58,7 +64,7 @@ export function ControlRail({
   const turboActive = speed >= MAX_SPEED
 
   const primaryTitle = !hasTable ? 'Start' : 'Roll — advance one roll, then stay paused'
-  const primaryDisabled = !hasTable ? creating || !canStart : !paused
+  const primaryDisabled = !hasTable ? creating || !canStart : !paused || awaitingRoll
   const primaryClick = !hasTable ? onStart : onStep
 
   const autoplayTitle = running ? 'Pause — stop auto-rolling' : 'Autoplay — roll continuously'

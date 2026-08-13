@@ -29,6 +29,7 @@ from craps.events import (
     BetMoved,
     BetAdjusted,
     BetStatusChanged,
+    RoundReady,
     DiceRolled,
     BetResolved,
     NumberHit,
@@ -241,6 +242,7 @@ class CrapsEngine:
                     status=bet.status,
                 ))
 
+        self.events.publish(RoundReady(bet_count=total_bets))
         return total_bets
 
     def roll_dice(self) -> tuple[int, int]:
@@ -404,6 +406,12 @@ class CrapsEngine:
             elif bet.bet_type in ["Hop", "Proposition", "Hardways", "Any Craps", "Horn", "World"]:
                 if bet.status == "won":
                     bet.status = "active"
+
+            elif bet.bet_type in ["Come Odds", "Don't Come Odds"]:
+                if self.game_state.phase == "point" or self.house_rules.come_odds_working_on_come_out:
+                    bet.status = "active"
+                else:
+                    bet.status = "inactive"
 
         for bet, old_status in statuses_before:
             if bet.status != old_status:

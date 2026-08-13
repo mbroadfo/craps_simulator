@@ -35,9 +35,9 @@ export interface FadeUp {
   player: string
   betType: string
   number: BetNumber
-  /** signed display amount: +winnings or -stake */
+  /** signed display amount: +winnings or -stake (always 0 for 'return') */
   delta: number
-  win: boolean
+  kind: 'win' | 'loss' | 'return'
 }
 
 export interface PlayerState {
@@ -208,14 +208,27 @@ export function tableReducer(state: TableState, e: Envelope): TableState {
       if (key === null) return { ...state, orphans: [...state.orphans, e] }
       const chips = new Map(state.chips)
       if (e.removed) popChip(chips, key, e.amount)
-      const win = e.status === 'won'
+      // status "swept" (craps/table.py's ephemeral-odds sweep — see its
+      // own comment) never won or lost; it's an odds bet being pulled
+      // for a fresh re-place next roll, not a resolution. Still pop the
+      // chip above (it really is leaving the table this instant, and
+      // pushChip on the next roll's BetPlaced always *appends* rather
+      // than replaces — skip that pop and the pile grows unbounded,
+      // every roll, forever) but don't fade up a win/loss toast for it.
+      if (e.status === 'swept') return { ...state, chips }
+      // "return" (an odds bet refunded — e.g. Come Odds off/toggled
+      // inactive when its parent resolves) never won or lost either:
+      // place_bet() never deducted its amount up front, so there's no
+      // real delta to fade up as a loss. Reported honestly so the felt
+      // can show a distinct "Returned" toast instead — see BetToast.tsx.
+      const kind: FadeUp['kind'] = e.status === 'won' ? 'win' : e.status === 'return' ? 'return' : 'loss'
       const fadeUp: FadeUp = {
         seq: e.seq,
         player: e.player_name,
         betType: e.bet_type,
         number: e.number,
-        delta: win ? e.payout : -e.amount,
-        win,
+        delta: kind === 'win' ? e.payout : kind === 'return' ? 0 : -e.amount,
+        kind,
       }
       return { ...state, chips, fadeUps: [...state.fadeUps, fadeUp] }
     }
@@ -246,6 +259,7 @@ export function tableReducer(state: TableState, e: Envelope): TableState {
       return { ...state, finished: true }
 
     case 'BetsRequested':
+    case 'RoundReady':
     case 'NumberHit':
     case 'GameStateChanged':
       return state

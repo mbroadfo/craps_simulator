@@ -36,6 +36,10 @@ export interface ChipZone {
   x: number
   y: number
   denoms: number[]
+  /** 'inactive' when the underlying bet isn't currently working (e.g.
+   * Place/Buy/Lay off during come-out, Come/Don't Come Odds off unless
+   * called on) — drives dimmed rendering. Undefined/'active' otherwise. */
+  status?: string
 }
 
 export interface RollRecord {
@@ -51,6 +55,12 @@ export interface Toast {
   amount: number
   x: number
   y: number
+  /** 'return' when every resolution folded into this toast was a
+   * refund (never won or lost) — renders as a neutral "Returned"
+   * label instead of a colored +/-$ amount. Defaults to deriving
+   * win/loss from `amount`'s sign when omitted (dev-tool test
+   * buttons have no resolution kind of their own). */
+  kind?: 'win' | 'loss' | 'return'
 }
 
 /** A seated player, for the sidebar's Current-section perspective dropdown. */

@@ -46,6 +46,7 @@ export function ObservatoryPanel({
   error,
   onStart,
   sessionState,
+  awaitingRoll,
   onPauseResume,
   onStep,
   onReset,
@@ -71,6 +72,8 @@ export function ObservatoryPanel({
   error: string | null
   onStart: () => void
   sessionState: TableSnapshot['state'] | null
+  /** True from the moment Roll is clicked until the next round's bets have been fully revealed. */
+  awaitingRoll: boolean
   onPauseResume: () => void
   onStep: () => void
   onReset: () => void
@@ -93,6 +96,7 @@ export function ObservatoryPanel({
       error={error}
       onStart={onStart}
       sessionState={sessionState}
+      awaitingRoll={awaitingRoll}
       onPauseResume={onPauseResume}
       onStep={onStep}
       onReset={onReset}

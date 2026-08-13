@@ -31,26 +31,54 @@ export interface FeltZone {
   y: number
 }
 
-// How far a traveled Come/Don't Come pile shifts left off the box's
-// center, so it doesn't sit directly under the Place/Lay pile — half
-// of BOX.w (~129px) is ~64px, so 38px keeps it clear of both the
-// Place pile and the box's left edge.
-const COME_OFFSET_X = 38
+// BoxCell's own outer-zone tooltip (BoxNumbers.tsx) documents the box
+// as three rows: "top: place/buy · center: come point + odds ·
+// bottom: lay/don't-come" — Place sits in the bottom strip, Lay in
+// the top strip (see BoxCell's placeZone/layZone, which these `place`/
+// `laydc` y's mirror exactly), and a traveled Come/Don't Come (with
+// its odds) belongs in the open CENTER row alongside the box's big
+// number, not sharing Place's row. It used to: `come`/`dontcome` here
+// reused `place`'s exact y (just offset in x), so a traveled Come bet
+// visually read as sitting in the Place strip — a real, reported bug,
+// not a style nit.
+//
+// Within that center row: COME_OFFSET_X shifts the base Come/Don't
+// Come pile off dead-center so it doesn't sit directly on the big
+// number. The Odds pile then shifts right+down from *that* — the
+// exact same relative offset Pass Line Odds already uses from Pass
+// Line itself (PASSLINE_ODDS_FILL: +20 x, +37 y from the Pass Line
+// zone), reused here rather than invented fresh, so every "bet + its
+// odds" pair reads the same way across the felt.
+const COME_OFFSET_X = 32
+const COME_ODDS_DX = 20
+const COME_ODDS_DY = 37
 
-function boxZones(): Map<number, { place: FeltZone; laydc: FeltZone; come: FeltZone; dontcome: FeltZone }> {
+interface BoxZoneSet {
+  place: FeltZone
+  laydc: FeltZone
+  come: FeltZone
+  dontcome: FeltZone
+  comeOdds: FeltZone
+  dontcomeOdds: FeltZone
+}
+
+function boxZones(): Map<number, BoxZoneSet> {
   const topH = 42
   const botH = 42
   const y1 = BOX.y + topH
   const y2 = BOX.y + BOX.h - botH
-  const map = new Map<number, { place: FeltZone; laydc: FeltZone; come: FeltZone; dontcome: FeltZone }>()
+  const midY = BOX.y + topH + (BOX.h - topH - botH) / 2
+  const map = new Map<number, BoxZoneSet>()
   BOX.nums.forEach((n, i) => {
     const x = BOX.x0 + i * (BOX.w + BOX.gap)
     const cx = x + BOX.w / 2
     map.set(n, {
       place: { zoneId: `place-${n}`, x: cx, y: y2 + botH / 2 },
       laydc: { zoneId: `laydc-${n}`, x: cx, y: y1 - topH / 2 },
-      come: { zoneId: `come-${n}`, x: cx - COME_OFFSET_X, y: y2 + botH / 2 },
-      dontcome: { zoneId: `dontcome-${n}`, x: cx - COME_OFFSET_X, y: y1 - topH / 2 },
+      come: { zoneId: `come-${n}`, x: cx - COME_OFFSET_X, y: midY },
+      dontcome: { zoneId: `dontcome-${n}`, x: cx - COME_OFFSET_X, y: midY },
+      comeOdds: { zoneId: `come-odds-${n}`, x: cx - COME_OFFSET_X + COME_ODDS_DX, y: midY + COME_ODDS_DY },
+      dontcomeOdds: { zoneId: `dontcome-odds-${n}`, x: cx - COME_OFFSET_X + COME_ODDS_DX, y: midY + COME_ODDS_DY },
     })
   })
   return map
@@ -161,7 +189,7 @@ export function feltZoneFor(betType: string, number: BetNumber): FeltZone | null
     }
     case 'Come Odds': {
       const n = pointNumber(number)
-      return n === null ? null : (BOX_ZONES.get(n)?.come ?? null)
+      return n === null ? null : (BOX_ZONES.get(n)?.comeOdds ?? null)
     }
     case "Don't Come": {
       const n = pointNumber(number)
@@ -170,7 +198,7 @@ export function feltZoneFor(betType: string, number: BetNumber): FeltZone | null
     }
     case "Don't Come Odds": {
       const n = pointNumber(number)
-      return n === null ? null : (BOX_ZONES.get(n)?.dontcome ?? null)
+      return n === null ? null : (BOX_ZONES.get(n)?.dontcomeOdds ?? null)
     }
     case "Don't Place": {
       const n = pointNumber(number)

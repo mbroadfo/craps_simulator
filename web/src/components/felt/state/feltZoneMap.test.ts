@@ -20,14 +20,26 @@ describe('feltZoneFor', () => {
   it('maps a traveled Come/Don\'t Come to its own offset pile, distinct from Place/Lay', () => {
     expect(feltZoneFor('Come', 6)?.zoneId).toBe('come-6')
     expect(feltZoneFor("Don't Come", 4)?.zoneId).toBe('dontcome-4')
-    expect(feltZoneFor('Come Odds', 8)?.zoneId).toBe('come-8')
-    expect(feltZoneFor("Don't Come Odds", 10)?.zoneId).toBe('dontcome-10')
+    expect(feltZoneFor('Come Odds', 8)?.zoneId).toBe('come-odds-8')
+    expect(feltZoneFor("Don't Come Odds", 10)?.zoneId).toBe('dontcome-odds-10')
 
-    // Genuinely distinct positions, not just distinct ids sharing a spot.
+    // The box's own tooltip (BoxNumbers.tsx) documents three rows —
+    // top: place/buy, center: come point + odds, bottom: lay/don't-come
+    // — so a traveled Come bet must NOT share Place's row (a real,
+    // reported bug: it used to, reading as if it were a Place bet).
     const place6 = feltZoneFor('Place', 6)!
+    const laydc6 = feltZoneFor('Lay', 6)!
     const come6 = feltZoneFor('Come', 6)!
-    expect(come6.y).toBe(place6.y)
-    expect(come6.x).not.toBe(place6.x)
+    expect(come6.y).not.toBe(place6.y)
+    expect(come6.y).not.toBe(laydc6.y)
+
+    // Come Odds shifts right+down from Come — the same relative offset
+    // Pass Line Odds already uses from Pass Line, reused here rather
+    // than invented fresh — distinct piles with a small overlap, not
+    // stacked exactly on top of each other (also previously the case).
+    const comeOdds6 = feltZoneFor('Come Odds', 6)!
+    expect(comeOdds6.x).toBeGreaterThan(come6.x)
+    expect(comeOdds6.y).toBeGreaterThan(come6.y)
   })
 
   it('maps Place/Buy to the bottom strip and Lay/Don\'t Place to the top strip, per number', () => {

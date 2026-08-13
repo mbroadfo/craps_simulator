@@ -77,7 +77,8 @@ describe('tableReducer replay gate', () => {
     const resolutions = events.filter((e) => e.type === 'BetResolved')
     expect(final.fadeUps.length).toBe(resolutions.length)
     for (const f of final.fadeUps) {
-      expect(f.win ? f.delta >= 0 : f.delta < 0).toBe(true)
+      if (f.kind === 'return') expect(f.delta).toBe(0)
+      else expect(f.kind === 'win' ? f.delta >= 0 : f.delta < 0).toBe(true)
     }
   })
 
@@ -97,5 +98,157 @@ describe('tableReducer replay gate', () => {
         expect(state.puckOn).toBe(roll.phase === 'point')
       }
     }
+  })
+})
+
+// BetStatusChanged already flips ChipStack.status (case 'BetStatusChanged'
+// above) — this is the mechanism Come/Don't Come Odds now rely on to
+// toggle working/not-working (see craps_engine.py's refresh_bet_statuses()),
+// same as Place/Buy/Lay already did. Explicit coverage since it was
+// previously only exercised incidentally by the fixture replay.
+describe('tableReducer — BetStatusChanged', () => {
+  it('flips an existing chip stack\'s status', () => {
+    let state = initialState()
+    state = tableReducer(state, {
+      seq: 0,
+      table_id: 't',
+      type: 'BetPlaced',
+      player_name: 'Bot',
+      bet_type: 'Come Odds',
+      amount: 50,
+      number: 6,
+    })
+    const before = [...state.chips.values()][0]
+    expect(before.status).toBe('active')
+
+    state = tableReducer(state, {
+      seq: 1,
+      table_id: 't',
+      type: 'BetStatusChanged',
+      player_name: 'Bot',
+      bet_type: 'Come Odds',
+      number: 6,
+      status: 'inactive',
+    })
+    const after = [...state.chips.values()][0]
+    expect(after.status).toBe('inactive')
+  })
+})
+
+// Regression test for a real reported bug: craps/table.py's ephemeral-
+// odds sweep (removes+re-places an odds bet every roll its parent
+// doesn't itself resolve — see three_point_v2.py) publishes a
+// BetResolved(status="swept", removed=true) so the chip pop still
+// happens (pushChip on BetPlaced always *appends*, never replaces —
+// without a pop signal every roll, the displayed pile grows forever
+// while the real bet stays correctly bounded server-side). It must
+// pop the chip like any other resolved bet, but — unlike a real win
+// or loss — must NOT produce a fade-up toast, since the bet never
+// actually won or lost.
+describe('tableReducer — swept odds bets (ephemeral re-place, not a resolution)', () => {
+  it('pops the chip but adds no fade-up for a BetResolved with status="swept"', () => {
+    let state = initialState()
+    state = tableReducer(state, {
+      seq: 0,
+      table_id: 't',
+      type: 'BetPlaced',
+      player_name: 'Bot',
+      bet_type: 'Pass Line Odds',
+      amount: 40,
+      number: null,
+    })
+    expect([...state.chips.values()].some((s) => s.amounts.includes(40))).toBe(true)
+
+    state = tableReducer(state, {
+      seq: 1,
+      table_id: 't',
+      type: 'BetResolved',
+      player_name: 'Bot',
+      bet_type: 'Pass Line Odds',
+      amount: 40,
+      number: null,
+      status: 'swept',
+      payout: 0,
+      win_payout: 0,
+      removed: true,
+    })
+
+    expect(state.fadeUps.length).toBe(0)
+    expect([...state.chips.values()].some((s) => s.amounts.includes(40))).toBe(false)
+  })
+
+  it('does not let a swept-then-replaced pile grow across repeated rolls, unlike the bug this guards', () => {
+    let state = initialState()
+    const place = (seq: number) =>
+      tableReducer(state, {
+        seq,
+        table_id: 't',
+        type: 'BetPlaced',
+        player_name: 'Bot',
+        bet_type: 'Pass Line Odds',
+        amount: 40,
+        number: null,
+      })
+    const sweep = (seq: number) =>
+      tableReducer(state, {
+        seq,
+        table_id: 't',
+        type: 'BetResolved',
+        player_name: 'Bot',
+        bet_type: 'Pass Line Odds',
+        amount: 40,
+        number: null,
+        status: 'swept',
+        payout: 0,
+        win_payout: 0,
+        removed: true,
+      })
+
+    for (let seq = 0; seq < 10; seq += 2) {
+      state = place(seq)
+      state = sweep(seq + 1)
+    }
+
+    const stack = [...state.chips.values()].find((s) => s.amounts.length > 0)
+    expect(stack).toBeUndefined()
+  })
+})
+
+// Regression test for a real reported bug: a Come Odds bet refunded
+// when its parent resolves (off during come-out, or a come-out loss —
+// see craps/table.py's attached-bet loops) was indistinguishable from
+// a real loss on the felt: BetResolved(status="return") rendered as
+// "-$50" in red, even though place_bet() never deducted it and the
+// player's bankroll was never touched.
+describe('tableReducer — returned odds bets (refund, not a loss)', () => {
+  it('pops the chip and adds a zero-delta "return" fade-up, not a loss', () => {
+    let state = initialState()
+    state = tableReducer(state, {
+      seq: 0,
+      table_id: 't',
+      type: 'BetPlaced',
+      player_name: 'Bot',
+      bet_type: 'Come Odds',
+      amount: 50,
+      number: 6,
+    })
+
+    state = tableReducer(state, {
+      seq: 1,
+      table_id: 't',
+      type: 'BetResolved',
+      player_name: 'Bot',
+      bet_type: 'Come Odds',
+      amount: 50,
+      number: 6,
+      status: 'return',
+      payout: 0,
+      win_payout: 0,
+      removed: true,
+    })
+
+    expect([...state.chips.values()].some((s) => s.amounts.includes(50))).toBe(false)
+    expect(state.fadeUps).toHaveLength(1)
+    expect(state.fadeUps[0]).toMatchObject({ kind: 'return', delta: 0 })
   })
 })

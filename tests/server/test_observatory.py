@@ -223,6 +223,67 @@ def test_pause_resume_and_pace(client):
     wait_for_state(client, "t1", "finished")
 
 
+def test_start_paused_lands_with_zero_rolls(client):
+    """Regression test for a real reported bug: a plain start() followed
+    by a separate pause() call races table_session.py's drive loop —
+    the gate is only checked once per iteration, *before* the pacing
+    sleep, so a pause() arriving mid-sleep can never cancel the roll
+    already in flight; the first roll fires regardless. start_paused
+    clears the gate before the drive task is even scheduled, so no
+    roll can slip through before an explicit resume()/step()."""
+    create_table(client, roll_delay_ms=0, num_shooters=5)  # TURBO pace — the race is easiest to lose here
+    resp = client.post("/tables/t1/start", params={"start_paused": "true"})
+    assert resp.status_code == 200
+    assert resp.json()["state"] == "paused"
+
+    time.sleep(0.3)  # long enough for several TURBO-paced rolls to have fired if the gate leaked
+    snap = client.get("/tables/t1").json()
+    assert snap["state"] == "paused"
+    assert snap["session_rolls"] == 0
+
+    assert client.post("/tables/t1/step").status_code == 200
+    deadline = time.time() + 5
+    while client.get("/tables/t1").json()["session_rolls"] < 1:
+        assert time.time() < deadline, "step never advanced a roll after a paused start"
+        time.sleep(0.02)
+
+
+def test_next_rounds_bets_are_visible_while_paused(client):
+    """The bug this feature fixes: bets for the upcoming roll are
+    already on the wire before that roll's DiceRolled — even while
+    paused, before the user has clicked Roll at all. Before the split
+    into prepare_next_roll()/roll_and_resolve(), a round's BetPlaced
+    events were only ever published in the same atomic step as that
+    round's own DiceRolled — a paused table's event buffer would never
+    contain a BetPlaced/RoundReady with no matching DiceRolled yet."""
+    create_table(client, roll_delay_ms=0, num_shooters=5)
+    resp = client.post("/tables/t1/start", params={"start_paused": "true"})
+    assert resp.json()["state"] == "paused"
+
+    events = client.get("/tables/t1/events").json()["events"]
+    types = [e["type"] for e in events]
+    assert "RoundReady" in types, "no bets were prepared for the first round while paused"
+    assert "DiceRolled" not in types, "a roll happened before any Roll click"
+
+    # Step through one full round: RoundReady for round 2 must land
+    # strictly after round 1's DiceRolled, and the table is paused
+    # again (round 2's bets visible) without a second DiceRolled yet.
+    assert client.post("/tables/t1/step").status_code == 200
+    deadline = time.time() + 5
+    while True:
+        events = client.get("/tables/t1/events").json()["events"]
+        types = [e["type"] for e in events]
+        if types.count("RoundReady") >= 2:
+            break
+        assert time.time() < deadline, "second round's bets never appeared"
+        time.sleep(0.02)
+
+    last_dice_rolled = max(i for i, t in enumerate(types) if t == "DiceRolled")
+    last_round_ready = max(i for i, t in enumerate(types) if t == "RoundReady")
+    assert last_round_ready > last_dice_rolled
+    assert types.count("DiceRolled") == 1, "a second roll fired before the next Roll click"
+
+
 def test_step_advances_exactly_one_roll(client):
     create_table(client, roll_delay_ms=25, num_shooters=5)
     client.post("/tables/t1/start")

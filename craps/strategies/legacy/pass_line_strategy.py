@@ -41,5 +41,17 @@ class PassLineStrategy(BaseStrategy):
     def adjust_bets(self, game_state: GameState, player: Player, table: Table) -> Optional[List[Bet]]:
         """If an odds strategy is set, place odds bets when a point is established."""
         if self.odds_strategy and game_state.phase == "point":
-            return self.odds_strategy.get_odds_bet(game_state, player, table)  # Delegate odds betting to FreeOddsStrategy
+            odds_bets = self.odds_strategy.get_odds_bet(game_state, player, table)
+            if not odds_bets:
+                return None
+            # A parent bet can only ever carry one odds bet at a time —
+            # without this guard, get_odds_bet() (which just looks at
+            # active contract bets, not existing odds) hands back a
+            # fresh Pass Line Odds bet every single point-phase roll.
+            existing_odds_parents = {
+                b.parent_bet
+                for b in table.bets
+                if b.bet_type.endswith("Odds") and b.owner == player
+            }
+            return [b for b in odds_bets if b.parent_bet not in existing_odds_parents]
         return None

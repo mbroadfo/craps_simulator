@@ -377,11 +377,11 @@ class RulesEngine:
                         bet.number = bet.parent_bet.number
 
             elif bet.parent_bet and bet.parent_bet.status == "lost":
-                if bet.bet_type == "Come Odds" and game_state.phase == "come-out":
+                if bet.bet_type in ("Come Odds", "Don't Come Odds") and game_state.phase == "come-out":
                     bet.status = "return"
                 else:
                     bet.status = "lost"
-                        
+
             # ✅ Assign number first, before checking status
             if bet.number is None and bet.parent_bet:
                 if bet.parent_bet.bet_type == "Pass Line":
@@ -393,8 +393,11 @@ class RulesEngine:
                 if bet.parent_bet.status == "won":
                     bet.status = "won"
                 elif bet.parent_bet.status == "lost":
-                    # Special case: Come Odds returned on come-out 7
-                    if bet.bet_type == "Come Odds" and game_state.phase == "come-out":
+                    # Special case: Come/Don't Come Odds returned on a
+                    # come-out loss — the house_rules flag governing
+                    # this (come_odds_working_on_come_out) is a single,
+                    # unified toggle for both sides, not right-only.
+                    if bet.bet_type in ("Come Odds", "Don't Come Odds") and game_state.phase == "come-out":
                         bet.status = "return"
                     else:
                         bet.status = "lost"

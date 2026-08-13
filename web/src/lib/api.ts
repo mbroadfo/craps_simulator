@@ -63,7 +63,8 @@ export const api = {
   getTable: (id: string) => request<TableSnapshot>(`/tables/${id}`),
   getStats: (id: string) => request<Record<string, unknown>>(`/tables/${id}/stats`),
   createTable: (body: CreateTableRequest) => post<TableSnapshot>('/tables', body),
-  start: (id: string) => post<TableSnapshot>(`/tables/${id}/start`),
+  start: (id: string, startPaused = false) =>
+    post<TableSnapshot>(`/tables/${id}/start${startPaused ? '?start_paused=true' : ''}`),
   pause: (id: string) => post<TableSnapshot>(`/tables/${id}/pause`),
   resume: (id: string) => post<TableSnapshot>(`/tables/${id}/resume`),
   step: (id: string) => post<TableSnapshot>(`/tables/${id}/step`),

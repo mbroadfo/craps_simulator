@@ -36,6 +36,9 @@ import { initialState, tableReducer, type TableState } from './lib/tableReducer'
 
 const DEFAULT_ROLL_DELAY_MS = 500
 const DEFAULT_NUM_SHOOTERS = 10
+// How long a just-resolved round's toasts stay on screen alone before
+// the next round's bets/commentary are revealed — see handleDiceSettled.
+const REVEAL_DELAY_MS = 500
 
 // Seats are keyed by strategy name, one-to-one — the player *name*
 // sent to the backend is just the strategy name too (PlayerSpec still
@@ -67,11 +70,37 @@ export default function App() {
   const diceAnimating = useRef(false)
   const pendingEnvelopes = useRef<Envelope[]>([])
 
+  // The two-phase roll cycle: the backend now publishes a round's bets
+  // (BetPlaced/BetStatusChanged, capped off by RoundReady) strictly
+  // *before* that round's own DiceRolled — see table_session.py's
+  // _drive(), which calls prepare_next_roll() ungated at the top of
+  // its loop and roll_and_resolve() only once the pause gate/pace
+  // allow it. The felt should hold those next-round envelopes back
+  // until the *current* round's animation has fully settled AND an
+  // extra ~500ms has passed (so the win/loss toasts actually get seen
+  // before new chips land on top of them) — a second, later gate than
+  // diceAnimating/pendingEnvelopes above, which only covers the
+  // current round's own resolution.
+  //
+  // BetsRequested (published as the very first thing inside
+  // accept_bets()) marks the moment envelopes stop being "this round's
+  // resolution" and start being "next round's prep"; the following
+  // DiceRolled marks the end of prep and the start of a new round's
+  // resolution. inPrepPhase tracks which side of that boundary we're
+  // on; awaitingReveal opens the instant DiceRolled arrives (not later,
+  // at settle) so envelopes are guaranteed to queue no matter how fast
+  // the backend or how slow the animation.
+  const awaitingReveal = useRef(false)
+  const inPrepPhase = useRef(false)
+  const revealQueue = useRef<Envelope[]>([])
+  const revealTimer = useRef<number | null>(null)
+  const [awaitingRoll, setAwaitingRoll] = useState(false)
+
   // Dealer-call speech bubble (Observatory panel roster, Tier 1) — the
   // active shooter's static come-out line, auto-hides after 3s. A ref,
   // not state, for the lookup table: attach()'s SSE callback is a
-  // useCallback created once with `[applyEnvelope]` as its only dep, so
-  // reading a live useState here would close over a permanently-stale
+  // useCallback created once with `[applyAndUnlockRoll]` as its only
+  // dep, so reading a live useState here would close over a permanently-stale
   // empty value (same reason diceAnimating/pendingEnvelopes are refs).
   const strategyDealerCalls = useRef<Record<string, string>>({})
   const [activeShooterCall, setActiveShooterCall] = useState<{ name: string; text: string } | null>(null)
@@ -104,6 +133,19 @@ export default function App() {
     setFeed((f) => playByPlayReducer(f, envelope))
   }, [])
 
+  // applyEnvelope, plus: a RoundReady is the signal that this round's
+  // bets are fully revealed and it's safe to roll again — shared by
+  // both places an envelope can apply immediately (attach()'s SSE
+  // callback, when nothing is queued) and where a held-back batch
+  // finally applies (flushOneRoundOfReveal).
+  const applyAndUnlockRoll = useCallback(
+    (envelope: Envelope) => {
+      applyEnvelope(envelope)
+      if (envelope.type === 'RoundReady') setAwaitingRoll(false)
+    },
+    [applyEnvelope],
+  )
+
   const attach = useCallback(
     (tableId: string) => {
       stream.current?.close()
@@ -113,6 +155,12 @@ export default function App() {
       diceAnimating.current = false
       pendingEnvelopes.current = []
       setDiceResult(null)
+      awaitingReveal.current = false
+      inPrepPhase.current = false
+      revealQueue.current = []
+      if (revealTimer.current) window.clearTimeout(revealTimer.current)
+      revealTimer.current = null
+      setAwaitingRoll(false)
       if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
       activeShooterTimer.current = null
       setActiveShooterCall(null)
@@ -139,7 +187,23 @@ export default function App() {
         // before the dice have even shown a result.
         if (envelope.type === 'DiceRolled') {
           diceAnimating.current = true
+          // Opens the instant this round starts, not later at settle —
+          // that's what makes this race-free regardless of animation
+          // speed or how fast the backend publishes the next round's
+          // prep. See the awaitingReveal/inPrepPhase comment above.
+          awaitingReveal.current = true
+          inPrepPhase.current = false
+          setAwaitingRoll(true)
           setDiceResult(envelope.dice)
+        }
+        // Marks the start of "next round's prep" — everything from
+        // here until the next DiceRolled belongs to the upcoming roll,
+        // not the one that just resolved (see table_session.py's
+        // _drive(): prepare_next_roll() runs, unconditionally
+        // publishing BetsRequested first, before the pause gate/pace
+        // ever let roll_and_resolve() fire).
+        if (envelope.type === 'BetsRequested') {
+          inPrepPhase.current = true
         }
         // ShooterAssigned and PointHit both fire the roster speech
         // bubble immediately — never gated behind diceAnimating (it's
@@ -154,44 +218,105 @@ export default function App() {
         if (envelope.type === 'PointHit' && currentShooterName.current) {
           showDealerCall(currentShooterName.current)
         }
-        // BetPlaced is exempt from the gate: the engine's own per-roll
-        // order is accept_bets() (BetPlaced) THEN roll_dice() (see
-        // TableRunner.roll_once), so a BetPlaced always belongs to the
-        // *upcoming* roll, never the one currently animating — nothing
-        // about it depends on dice having landed. Queuing it anyway
-        // (the original behavior) meant it arrived while the previous
-        // roll's animation was still in flight, sat in pendingEnvelopes
-        // until that animation settled, and then got dumped into the
-        // felt in the same instant as that roll's own resolution —
-        // new Come bets never got their own visible moment; they just
-        // popped into existence alongside the fade-ups. Applying it
-        // immediately lets the chip actually appear before the next
-        // throw, the way a real placement does.
-        if (envelope.type === 'BetPlaced') {
-          applyEnvelope(envelope)
+
+        if (inPrepPhase.current) {
+          // Next round's prep: held back until the current round's
+          // animation *and* the extra reveal delay both finish (see
+          // handleDiceSettled) — never merged into pendingEnvelopes,
+          // which flushes right at settle with no extra delay.
+          if (awaitingReveal.current) revealQueue.current.push(envelope)
+          else applyAndUnlockRoll(envelope)
         } else if (diceAnimating.current) {
           pendingEnvelopes.current.push(envelope)
         } else {
-          applyEnvelope(envelope)
+          applyAndUnlockRoll(envelope)
         }
       })
     },
-    [applyEnvelope],
+    [applyAndUnlockRoll],
   )
 
-  // DiceAnimation calls this once a roll's dice have landed — flushes
-  // whatever arrived while they were mid-flight, in original order.
-  const handleDiceSettled = useCallback(() => {
-    const queued = pendingEnvelopes.current
-    pendingEnvelopes.current = []
-    diceAnimating.current = false
-    for (const envelope of queued) applyEnvelope(envelope)
+  // Applies exactly the OLDEST unflushed round's resolution envelopes
+  // out of pendingEnvelopes — not everything currently queued.
+  //
+  // At the default pace (500ms between rolls) the backend routinely
+  // outpaces the ~1000ms dice-settle animation: a second round's own
+  // DiceRolled can arrive while the first round's dice are still
+  // mid-flight. DiceAnimation queues and plays every such result in
+  // full, one after another (dice/DiceAnimation.tsx's `queuedResult` —
+  // it never drops one), so onSettled() still fires once per round,
+  // just later than the backend produced it — but pendingEnvelopes can
+  // already hold *two* rounds' worth of resolution data by the time
+  // the first onSettled() call happens. Flushing all of it there used
+  // to apply a later round's resolution before its own dice had
+  // visually landed — and, worse, before that round's own BetPlaced
+  // (held separately in revealQueue) had even been revealed yet,
+  // orphaning its pop and leaving the *next* round's BetPlaced to
+  // stack onto the same felt zone once revealQueue eventually caught
+  // up (two $10 Pass Line placements merging into one $20 pile — a
+  // real reported bug). Slicing at the next DiceRolled boundary here
+  // keeps every round's resolution flushed only on its own onSettled().
+  const flushOneRoundOfPending = useCallback(() => {
+    const queue = pendingEnvelopes.current
+    if (queue.length === 0) return
+    const nextIdx = queue.findIndex((e, i) => i > 0 && e.type === 'DiceRolled')
+    const thisRound = nextIdx === -1 ? queue : queue.slice(0, nextIdx)
+    pendingEnvelopes.current = nextIdx === -1 ? [] : queue.slice(nextIdx)
+    for (const envelope of thisRound) applyEnvelope(envelope)
   }, [applyEnvelope])
 
-  // Creates the table and immediately pauses it — Start does not set
-  // the game rolling, it just makes the rail's Play/Roll/Turbo
-  // controls available. start() has to run first: pause() only
-  // accepts a table already in the "running" state.
+  // Applies exactly the OLDEST unflushed round's prep batch (BetsRequested
+  // through RoundReady) out of revealQueue — the reveal-side counterpart
+  // to flushOneRoundOfPending, for the same reason: multiple rounds' worth
+  // of prep can queue up before the first one's reveal timer fires.
+  // Leaves awaitingReveal open (and schedules nothing further itself) if
+  // more batches are still waiting — the *next* one only reveals once its
+  // own round's resolution has also been flushed (see startOrContinueReveal),
+  // so a later round's bets never appear before an earlier round's dice
+  // have actually resolved.
+  const flushOneRoundOfReveal = useCallback(() => {
+    const queue = revealQueue.current
+    if (queue.length === 0) return
+    const endIdx = queue.findIndex((e) => e.type === 'RoundReady')
+    const thisRound = endIdx === -1 ? queue : queue.slice(0, endIdx + 1)
+    revealQueue.current = endIdx === -1 ? [] : queue.slice(endIdx + 1)
+    for (const envelope of thisRound) applyAndUnlockRoll(envelope)
+    if (revealQueue.current.length === 0) awaitingReveal.current = false
+  }, [applyAndUnlockRoll])
+
+  // Called after each pendingEnvelopes flush: if there's a next round's
+  // prep already waiting, count down the reveal beat for it (skipped at
+  // Turbo). Deliberately does NOT chain into any *further* queued batch
+  // itself — that only happens once the round in between has settled its
+  // own dice too, via the next flushOneRoundOfPending → this call.
+  const startOrContinueReveal = useCallback(() => {
+    if (revealQueue.current.length === 0) return
+    if (revealTimer.current) window.clearTimeout(revealTimer.current)
+    if (speed >= MAX_SPEED) flushOneRoundOfReveal()
+    else revealTimer.current = window.setTimeout(flushOneRoundOfReveal, REVEAL_DELAY_MS)
+  }, [speed, flushOneRoundOfReveal])
+
+  // DiceAnimation calls this once a roll's dice have landed.
+  const handleDiceSettled = useCallback(() => {
+    flushOneRoundOfPending()
+    // Another round's DiceRolled+resolution is already queued behind
+    // this one (DiceAnimation is about to chain straight into its own
+    // animation) — stay "animating" so incoming envelopes keep queuing
+    // correctly until *its* own onSettled() call handles them.
+    if (pendingEnvelopes.current.length === 0) diceAnimating.current = false
+    startOrContinueReveal()
+  }, [flushOneRoundOfPending, startOrContinueReveal])
+
+  // Creates the table and starts it landing paused — Start does not
+  // set the game rolling, it just makes the rail's Play/Roll/Turbo
+  // controls available. A separate start()-then-pause() used to do
+  // this and lost the race almost every time: table_session.py's
+  // drive loop only checks its pause gate once per iteration, *before*
+  // the pacing sleep, so a pause() arriving during that sleep can
+  // never cancel the roll already in flight — the first roll fired
+  // regardless, ~500ms after Start. start_paused clears the gate
+  // before the drive task is even scheduled, so it lands genuinely
+  // paused with zero rolls.
   const handleStart = useCallback(async () => {
     try {
       setCreating(true)
@@ -205,8 +330,7 @@ export default function App() {
       attach(created.table_id)
       setPlayerName(created.players[0]?.name ?? '')
       setSpeed(1)
-      await api.start(created.table_id)
-      setSnapshot(await api.pause(created.table_id))
+      setSnapshot(await api.start(created.table_id, true))
     } catch (e) {
       setError(String(e))
     } finally {
@@ -247,10 +371,16 @@ export default function App() {
 
   const handleStep = useCallback(async () => {
     if (!snapshot) return
+    // Optimistic: disables Roll the instant it's clicked, not only
+    // once RoundReady eventually arrives for the *next* round — a
+    // rejected request re-enables it below, same spirit as the other
+    // handlers' error handling.
+    setAwaitingRoll(true)
     try {
       setSnapshot(await api.step(snapshot.table_id))
     } catch (e) {
       setError(String(e))
+      setAwaitingRoll(false)
     }
   }, [snapshot])
 
@@ -272,6 +402,12 @@ export default function App() {
     diceAnimating.current = false
     pendingEnvelopes.current = []
     setDiceResult(null)
+    awaitingReveal.current = false
+    inPrepPhase.current = false
+    revealQueue.current = []
+    if (revealTimer.current) window.clearTimeout(revealTimer.current)
+    revealTimer.current = null
+    setAwaitingRoll(false)
     if (activeShooterTimer.current) window.clearTimeout(activeShooterTimer.current)
     activeShooterTimer.current = null
     setActiveShooterCall(null)
@@ -332,6 +468,7 @@ export default function App() {
             error={error}
             onStart={handleStart}
             sessionState={snapshot?.state ?? null}
+            awaitingRoll={awaitingRoll}
             onPauseResume={handlePauseResume}
             onStep={handleStep}
             onReset={handleReset}

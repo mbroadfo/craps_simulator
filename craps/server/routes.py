@@ -92,10 +92,10 @@ async def get_table(request: Request, table_id: str) -> Dict[str, Any]:
 
 
 @tables_router.post("/{table_id}/start")
-async def start_table(request: Request, table_id: str) -> Dict[str, Any]:
+async def start_table(request: Request, table_id: str, start_paused: bool = False) -> Dict[str, Any]:
     session = _session(request, table_id)
     try:
-        session.start()
+        session.start(start_paused=start_paused)
     except RuntimeError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     return session.snapshot()

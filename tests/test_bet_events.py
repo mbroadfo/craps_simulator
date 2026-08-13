@@ -155,3 +155,32 @@ def test_resolved_carries_removal_fact(captured):
     assert all(e.status == "won" for e in stay_ups), (
         "only winners may stay on the table"
     )
+
+
+def test_no_stuck_chips_after_session_ends(captured):
+    """Every bet placed during the session should be fully paid/removed
+    by the time all shooters have finished — each of the 20 shooters
+    ends in a natural seven-out, which resolves (and removes) every
+    bet still on the table, contract and odds alike.
+
+    This is the check that would have caught a real bug: an odds bet
+    that's placed fresh every point-phase roll (ephemeral by design —
+    see three_point_v2.py) but, if a re-place ever isn't paired with a
+    removal of the *previous* roll's placement, accumulates forever
+    instead of replacing. `test_stream_has_no_orphan_chip_events`
+    above doesn't catch that — a repeated BetPlaced is never an
+    orphan, it's a perfectly valid push onto a growing stack — so the
+    stream can be internally consistent event-by-event while the
+    *aggregate* it implies drifts further from the truth every roll.
+    Asserting the reconstructed felt is fully empty once every shooter
+    has naturally resolved is the cheapest check that would surface
+    that class of bug: any leftover entry here means something was
+    placed on the felt and never actually cleared.
+    """
+    tracker = ChipTracker()
+    for event in captured:
+        tracker.apply(event)
+    assert tracker.chips == {}, (
+        f"{len(tracker.chips)} chip stack(s) never resolved by session end "
+        f"(stuck/phantom chips): {tracker.chips}"
+    )

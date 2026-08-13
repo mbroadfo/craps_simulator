@@ -12,7 +12,7 @@ import type { BetNumber, Envelope } from '../../../lib/events'
 
 const MAX_LINES = 300
 
-export type PlayByPlayKind = 'sevenout' | 'win' | 'loss' | 'neutral'
+export type PlayByPlayKind = 'sevenout' | 'win' | 'loss' | 'return' | 'neutral'
 
 export interface PlayByPlayEntry {
   id: number
@@ -39,6 +39,12 @@ export function playByPlayReducer(lines: PlayByPlayEntry[], e: Envelope): PlayBy
   switch (e.type) {
     case 'ShooterAssigned':
       return append(lines, { id: e.seq, text: `— ${e.shooter_name} is up —`, kind: 'neutral' })
+    case 'BetPlaced':
+      return append(lines, {
+        id: e.seq,
+        text: `${e.player_name} bets $${e.amount} on ${betLabel(e.bet_type, e.number)}`,
+        kind: 'neutral',
+      })
     case 'DiceRolled':
       return append(lines, { id: e.seq, text: `${e.shooter_name} rolls ${e.dice[0]}-${e.dice[1]} (${e.total})`, kind: 'neutral' })
     case 'PointEstablished':
@@ -48,7 +54,18 @@ export function playByPlayReducer(lines: PlayByPlayEntry[], e: Envelope): PlayBy
     case 'SevenOut':
       return append(lines, { id: e.seq, text: 'Seven out', kind: 'sevenout' })
     case 'BetResolved': {
+      // "swept" (craps/table.py's ephemeral-odds sweep) never won or
+      // lost — an odds bet pulled for a fresh re-place next roll, not
+      // a resolution — so it gets no feed line at all, not a loss one.
+      if (e.status === 'swept') return lines
       const label = betLabel(e.bet_type, e.number)
+      // "return" (an odds bet refunded — e.g. Come Odds off when its
+      // parent resolves) never won or lost: no money changed hands, so
+      // it gets its own honest line, not "loses $N" for $N that was
+      // never actually taken.
+      if (e.status === 'return') {
+        return append(lines, { id: e.seq, text: `${e.player_name}'s ${label} bet is returned`, kind: 'return' })
+      }
       const won = e.status === 'won'
       const text = won ? `${e.player_name} wins $${e.payout} on ${label}` : `${e.player_name} loses $${e.amount} on ${label}`
       return append(lines, { id: e.seq, text, kind: won ? 'win' : 'loss' })

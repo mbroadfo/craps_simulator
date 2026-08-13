@@ -20,8 +20,21 @@ const PROXIMITY_RADIUS_Y = 240
 const STACK_OFFSET = 46
 
 export function stackedToastY(existing: Toast[], x: number, y: number): number {
-  const nearby = existing.filter(
-    (t) => Math.abs(t.x - x) < PROXIMITY_RADIUS_X && t.y <= y + STACK_OFFSET && t.y > y - PROXIMITY_RADIUS_Y,
-  ).length
-  return y - nearby * STACK_OFFSET
+  const nearby = existing.filter((t) => Math.abs(t.x - x) < PROXIMITY_RADIUS_X && t.y > y - PROXIMITY_RADIUS_Y)
+  if (nearby.length === 0) return y
+
+  // Anchor to the highest (smallest-y) nearby toast and place STACK_OFFSET
+  // above *that* — not a flat `y - count * STACK_OFFSET` off this toast's
+  // own raw target. That flat version assumed every "nearby" toast started
+  // at the exact same y (true for its original case: several dev-tool test
+  // toasts fired at one identical coordinate), so subtracting a fixed
+  // amount from a shared baseline produced an evenly-spaced stack. It
+  // breaks the moment two zones have their own small natural y-gap before
+  // stacking even starts (Pass Line vs Pass Line Odds, 37px apart): the new
+  // toast's raw target is already partway up from the old one, so
+  // subtracting another flat 46px overshoots past it, landing only ~9px
+  // away instead of clearing it — the exact "toasts overlap" bug this
+  // anchors against.
+  const highest = Math.min(y, ...nearby.map((t) => t.y))
+  return highest - STACK_OFFSET
 }

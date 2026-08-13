@@ -139,3 +139,47 @@ describe('LiveFelt dice wiring', () => {
     expect(onDiceSettled).toHaveBeenCalledTimes(1)
   })
 })
+
+// A bet toggled "inactive" (Place/Buy/Lay off during come-out,
+// Come/Don't Come Odds off unless called on) must render dimmed
+// instead of full-opacity, so a viewer can tell an "off" pile apart
+// from a working one at a glance.
+describe('LiveFelt chip status rendering', () => {
+  const noop = () => {}
+
+  function renderWithChip(status: string) {
+    const tableState = initialState()
+    tableState.chips.set('k1', {
+      player: 'Molly',
+      betType: 'Place',
+      number: 6,
+      amounts: [30],
+      status,
+    })
+    return render(
+      <LiveFelt
+        tableState={tableState}
+        rollLog={initialRollLogState()}
+        playerName="Molly"
+        setPlayerName={noop}
+        roster={[]}
+        setTableState={noop}
+        diceResult={null}
+        diceSpeed={1}
+        onDiceSettled={noop}
+      />,
+    )
+  }
+
+  it('dims an inactive chip stack', () => {
+    const { container } = renderWithChip('inactive')
+    const group = container.querySelector('[data-testid="chip-stack-layer"] > g')
+    expect(group).toHaveAttribute('opacity', '0.45')
+  })
+
+  it('renders an active chip stack at full opacity', () => {
+    const { container } = renderWithChip('active')
+    const group = container.querySelector('[data-testid="chip-stack-layer"] > g')
+    expect(group).toHaveAttribute('opacity', '1')
+  })
+})

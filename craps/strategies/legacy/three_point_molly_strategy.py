@@ -67,8 +67,18 @@ class ThreePointMollyStrategy(BaseStrategy):
         if self.odds_strategy and game_state.phase == "point":
             odds_bets = self.odds_strategy.get_odds_bet(game_state, player, table)
             if odds_bets:
-                existing_odds = {
-                    (bet.parent_bet, bet.number)
+                # A parent bet can only ever have one odds bet attached
+                # at a time, so matching on parent identity alone is
+                # sufficient — and it's the only thing that's reliable:
+                # a Come bet's own `.number` is its traveled point (set
+                # once, matches the odds bet's inherited number below),
+                # but a Pass Line bet's `.number` is always None (the
+                # point lives on game_state, not the bet), so keying on
+                # (parent, parent.number) as this used to do never
+                # matched an existing Pass Line Odds bet — it silently
+                # let a fresh duplicate through every single roll.
+                existing_odds_parents = {
+                    bet.parent_bet
                     for bet in table.bets
                     if bet.bet_type.endswith("Odds") and bet.owner == player
                 }
@@ -77,7 +87,7 @@ class ThreePointMollyStrategy(BaseStrategy):
                     if (
                         parent
                         and parent.owner == player
-                        and (parent, parent.number) not in existing_odds
+                        and parent not in existing_odds_parents
                     ):
                         odds_bet.number = parent.number  # Ensure odds bet inherits number
                         bets.append(odds_bet)

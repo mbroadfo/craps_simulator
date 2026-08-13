@@ -123,15 +123,6 @@ class PlayerLineup:
         """Retrieve the strategy for a given player."""
         return player.betting_strategy if player in self.players else None
 
-    def should_odds_be_working(self, player: "Player") -> bool:
-        """
-        Determine if the player's strategy wants Come/Place/Lay odds working on a come-out roll.
-        """
-        strategy = self.get_strategy_for_player(player)
-        if strategy and hasattr(strategy, "should_come_odds_be_working"):
-            return strategy.should_come_odds_be_working()
-        return False
-
     def get_bet_amount(self, player: "Player") -> int:
         """
         Retrieve the bet amount for a given player.

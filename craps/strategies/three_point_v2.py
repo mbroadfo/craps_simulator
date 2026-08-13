@@ -13,11 +13,12 @@ class _ThreePointBaseV2(ContractStrategy):
     side): line bet on come-out, up to two traveled come-family bets, and
     odds on every contract bet.
 
-    Fidelity: odds bets are ephemeral (swept by settle_resolved_bets each
-    roll), so odds re-place every point-phase roll at
-    min(parent × multiplier, bankroll), exactly as v1's FreeOddsStrategy
-    produces them. Odds specs carry the parent's number, which v1 assigns
-    to the odds bet after creation.
+    Fidelity: odds are sized at min(parent × multiplier, bankroll),
+    matching v1's FreeOddsStrategy, and are placed once and stay on the
+    table — the `already` guard below just prevents placing a duplicate
+    for a contract bet that already has odds behind it. Odds specs
+    carry the parent's number, which v1 assigns to the odds bet after
+    creation.
     """
 
     line_type: str

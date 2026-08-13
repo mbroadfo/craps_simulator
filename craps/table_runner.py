@@ -68,14 +68,19 @@ class TableRunner:
         engine.lock_session()
         engine.assign_next_shooter()
 
-    def roll_once(self) -> PostRollSummary:
-        """One complete roll cycle: accept → roll → resolve → refresh → post-roll.
+    def prepare_next_roll(self) -> int:
+        """Phase 1 of a roll cycle: place this round's bets (publishes
+        BetPlaced/BetStatusChanged, then RoundReady). Dice are not
+        thrown yet — split out so a frontend can show what's about to
+        be at risk before the roll happens, instead of bets and dice
+        landing in the same instant."""
+        return self.engine.accept_bets()
 
-        The single place the per-roll sequence lives; the sync run() loop
-        and the async TableSession driver both call it.
-        """
+    def roll_and_resolve(self) -> PostRollSummary:
+        """Phase 2 of a roll cycle: throw dice, resolve, refresh
+        statuses, post-roll bookkeeping. Assumes prepare_next_roll()
+        already ran for this round."""
         engine = self.engine
-        engine.accept_bets()
         outcome = engine.roll_dice()
         if engine.game_state is None:
             raise RuntimeError("Game state not initialized")
@@ -84,6 +89,17 @@ class TableRunner:
         engine.refresh_bet_statuses()
         engine.log_player_bets()
         return engine.handle_post_roll(outcome, prev_phase)
+
+    def roll_once(self) -> PostRollSummary:
+        """One complete roll cycle: accept → roll → resolve → refresh → post-roll.
+
+        Thin wrapper for callers with no visual-reveal concerns (the
+        sync run() loop below, direct test/script calls) — the async
+        TableSession driver calls prepare_next_roll()/roll_and_resolve()
+        separately instead, to put a real gap between them.
+        """
+        self.prepare_next_roll()
+        return self.roll_and_resolve()
 
     def run(self) -> Statistics:
         self.start_session()

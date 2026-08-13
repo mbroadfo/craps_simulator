@@ -23,9 +23,10 @@ export function ChipStackLayer() {
         const shown = Math.min(sorted.length, 5)
         const slice = sorted.slice(0, shown)
         const size = 60 // matches the denomination picker's chips
+        const inactive = zone.status === 'inactive'
 
         return (
-          <g key={id}>
+          <g key={id} opacity={inactive ? 0.45 : 1}>
             {slice.map((denomValue, i) => {
               const d = DENOMS.find((x) => x.value === denomValue) ?? DENOMS[0]
               const isTop = i === shown - 1

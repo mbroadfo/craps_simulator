@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import List, Optional, Set, Tuple, TYPE_CHECKING, Union
 from craps.bet import Bet
 from craps.play_by_play import PlayByPlay
 from craps.house_rules import HouseRules
@@ -219,6 +219,31 @@ class Table:
 
         return resolved_bets
 
+    def _settle_attached(self, attached: Bet, settled_bets: List[Bet], resolved_bet_ids: Set[int]) -> None:
+        """Settle one attached (odds) bet by its OWN resolved status,
+        not its parent's — an odds bet that never actually won or lost
+        (still "active"/"inactive" because it was off, or "return"
+        because it's a Come Odds refunded on a come-out loss) must not
+        be charged or paid just because its parent resolved. Shared by
+        settle_resolved_bets()'s lost-parent and won-parent branches.
+        """
+        if attached.status == "lost":
+            attached.owner.lose_bet(attached, self.play_by_play)
+        elif attached.status == "won":
+            attached.owner.win_bet(attached, self.play_by_play)
+        else:
+            # "return"/"active"/"inactive": no bankroll effect —
+            # place_bet() never deducted it up front. Normalize to
+            # "return" so whatever BetResolved reports is an honest,
+            # single recognizable status for "refunded, not charged"
+            # regardless of which of those three it happened to be —
+            # the frontend renders a distinct "Returned" toast/feed
+            # line for it, never a loss.
+            attached.status = "return"
+        self.bets.remove(attached)
+        settled_bets.append(attached)
+        resolved_bet_ids.add(id(attached))
+
     def settle_resolved_bets(self) -> List[Bet]:
         """
         Settle resolved bets by paying winners, removing losers, and resetting status.
@@ -246,13 +271,12 @@ class Table:
                 settled_bets.append(bet)
                 resolved_bet_ids.add(id(bet))
 
-                # Also settle attached odds bets
+                # Also settle attached odds bets — see _settle_attached
+                # for why this follows each attached bet's OWN resolved
+                # status, not the parent's.
                 for attached in list(self.bets):
                     if attached.parent_bet == bet:
-                        attached.owner.lose_bet(attached, self.play_by_play)
-                        self.bets.remove(attached)
-                        settled_bets.append(attached)
-                        resolved_bet_ids.add(id(attached))
+                        self._settle_attached(attached, settled_bets, resolved_bet_ids)
 
             # ✅ Handle Winning Bets
             elif bet.status == "won":
@@ -283,12 +307,13 @@ class Table:
                     if self.play_by_play:
                         self.play_by_play.write(f"  🏆 {bet.owner.name}'s {bet.bet_type} bet returned after win.")
 
+                # _settle_attached again: an odds bet that was
+                # "inactive" (off) when the number hit never actually
+                # won — resolve_bet() never touched its status — so
+                # it's returned, not paid.
                 for attached in list(self.bets):
                     if attached.parent_bet == bet:
-                        attached.owner.win_bet(attached, self.play_by_play)
-                        self.bets.remove(attached)
-                        settled_bets.append(attached)
-                        resolved_bet_ids.add(id(attached))
+                        self._settle_attached(attached, settled_bets, resolved_bet_ids)
 
             # ✅ Handle Moved Bets
             elif bet.status.startswith("move "):
@@ -302,33 +327,49 @@ class Table:
                 settled_bets.append(bet)
                 resolved_bet_ids.add(id(bet))
 
-        # 🧹 Final pass: sweeps every remaining parent-linked (odds) bet
-        # not yet handled above — including ones whose status is still
-        # "active" because their parent hasn't resolved this roll.
-        # That's intentional and must stay: odds bets are ephemeral by
-        # design (see three_point_v2.py's own docstring) — the strategy
-        # re-places them fresh every point-phase roll, and v1's golden
-        # reference does the same, so the regression harness's wager
-        # totals depend on this exact remove-then-replace cadence.
+        # 🧹 Final pass. All odds bets now stay placed, exactly like
+        # Place/Buy/Lay — a still-"active"/"inactive" one here simply
+        # never resolved this roll and is left alone: no status
+        # mutation, no removal, no event. refresh_bet_statuses()
+        # (craps_engine.py) is what flips Come/Don't Come Odds between
+        # active/inactive; Pass Line/Don't Pass Odds never toggle (they
+        # always resolve the same roll as their parent, never spanning
+        # a phase transition while still active) but now stay placed
+        # too rather than being swept and re-placed every roll.
         #
-        # What must NOT happen is reporting this sweep as a resolution.
-        # A still-"active" bet swept here never actually won or lost —
-        # lose_bet()/win_bet() are correctly never called for it, no
-        # bankroll impact either way — but it used to land in
-        # settled_bets regardless, so resolve_bets()'s Step 3 published
-        # a BetResolved with status="active" for it anyway. The UI only
-        # knows won vs. not-won, so "not won" rendered as a loss the bet
-        # never actually took (that's the "how can odds lose on their
-        # own" bug). Only append to settled_bets — the list that drives
-        # published events — when the bet actually resolved.
+        # This used to be scoped to only Come/Don't Come Odds: the
+        # frozen v1 legacy strategies that place Pass Line/Don't Pass
+        # Odds via FreeOddsStrategy either had no duplicate-placement
+        # guard at all (IronCrossStrategy) or a guard comparing against
+        # the *parent* bet's own `.number` (ThreePointMolly/Dolly/
+        # PassLineStrategy) — which is always None for Pass Line/Don't
+        # Pass (the point lives on game_state, not the bet), so the
+        # guard silently never matched. The sweep was unintentionally
+        # the only thing preventing those from duplicating every roll —
+        # removing it reproducibly snowballed Pass Line Odds into extra
+        # bets (confirmed via direct repro: two "Pass Line Odds 9" bets
+        # on the same parent after one roll). Now fixed at the source
+        # (those strategies key on parent identity instead, which is
+        # correct for every bet type), so nothing here needs to special-
+        # case bet_type anymore.
+        #
+        # Defensive catch-all: an odds bet whose OWN status resolved to
+        # won/lost/return this roll but wasn't already swept up by its
+        # parent's attached-bet loop above (shouldn't happen in normal
+        # play — an odds bet only ever resolves the same roll its parent
+        # does, and that branch already handles it) still gets settled
+        # honestly here, following the same own-status rule as above.
         for bet in list(self.bets):
             if bet.parent_bet and id(bet) not in resolved_bet_ids:
-                if bet.status in {"lost", "return"}:
+                if bet.status == "lost":
                     bet.owner.lose_bet(bet, self.play_by_play)
-                    settled_bets.append(bet)
                 elif bet.status == "won":
                     bet.owner.win_bet(bet, self.play_by_play)
-                    settled_bets.append(bet)
+                elif bet.status == "return":
+                    pass  # no bankroll effect — never deducted up front
+                else:
+                    continue  # still active/inactive: leave it placed
+                settled_bets.append(bet)
                 self.bets.remove(bet)
 
         return settled_bets
@@ -336,15 +377,6 @@ class Table:
     def get_active_players(self) -> List["Player"]:
         """Retrieve all active players at the table."""
         return self.player_lineup.get_active_players_list()
-
-    def notify_players_of_point_hit(self) -> None:
-        """
-        Notifies each player that the point was hit and asks if they want their Come/Place/Lay Odds working on the next come-out roll.
-        """
-        for player in self.player_lineup.get_active_players_list():
-            if player.has_odds_bets(self):
-                should_work = self.player_lineup.should_odds_be_working(player)
-                player.update_come_odds_status(self, should_work)
 
     def has_odds_bet(self, linked_bet: Bet) -> bool:
         return any(

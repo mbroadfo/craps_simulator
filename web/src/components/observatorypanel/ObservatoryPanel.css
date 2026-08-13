@@ -197,5 +197,6 @@
 .obsFeedRow { font-size: 12px; padding: 3px 0; color: #8a8171; line-height: 1.4; }
 .obsFeedRow.sevenout, .obsFeedRow.loss { color: #e0564a; }
 .obsFeedRow.win { color: #2ecc71; }
+.obsFeedRow.return { color: #8a8f98; font-style: italic; }
 
 .obsEmpty { font-size: 12px; font-style: italic; color: #8a8171; }

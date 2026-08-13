@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type {
+  BetPlaced,
   BetResolved,
   DiceRolled,
   PointEstablished,
@@ -18,6 +19,16 @@ describe('playByPlayReducer', () => {
   it('narrates a shooter change', () => {
     const e: ShooterAssigned = { type: 'ShooterAssigned', seq: 0, table_id: 't1', shooter_index: 0, shooter_name: 'Molly' }
     expect(playByPlayReducer([], e)).toEqual([{ id: 0, text: '— Molly is up —', kind: 'neutral' }])
+  })
+
+  it('narrates a bet placement with a plain-number label', () => {
+    const e: BetPlaced = { type: 'BetPlaced', seq: 1, table_id: 't1', player_name: 'Molly', bet_type: 'Place', amount: 12, number: 6 }
+    expect(playByPlayReducer([], e)).toEqual([{ id: 1, text: 'Molly bets $12 on Place 6', kind: 'neutral' }])
+  })
+
+  it('narrates a bet placement with no number as just the bet type', () => {
+    const e: BetPlaced = { type: 'BetPlaced', seq: 2, table_id: 't1', player_name: 'Molly', bet_type: 'Pass Line', amount: 10, number: null }
+    expect(playByPlayReducer([], e)).toEqual([{ id: 2, text: 'Molly bets $10 on Pass Line', kind: 'neutral' }])
   })
 
   it('narrates a dice roll', () => {
@@ -81,6 +92,50 @@ describe('playByPlayReducer', () => {
       removed: true,
     }
     expect(playByPlayReducer([], e)).toEqual([{ id: 6, text: 'Linus loses $5 on Hop 3-3', kind: 'loss' }])
+  })
+
+  it('produces no line for a swept odds bet (ephemeral re-place, not a real resolution)', () => {
+    // craps/table.py's ephemeral-odds sweep (see three_point_v2.py)
+    // removes and re-places an odds bet every roll its parent doesn't
+    // itself resolve, reported as BetResolved(status="swept") so the
+    // frontend still pops the stale chip — but it never actually won
+    // or lost, so it must not read as a loss in the roll feed either
+    // (the original "how can odds lose on their own" bug).
+    const e: BetResolved = {
+      type: 'BetResolved',
+      seq: 9,
+      table_id: 't1',
+      player_name: 'Molly',
+      bet_type: 'Pass Line Odds',
+      amount: 40,
+      number: 5,
+      status: 'swept',
+      payout: 0,
+      win_payout: 0,
+      removed: true,
+    }
+    expect(playByPlayReducer([], e)).toEqual([])
+  })
+
+  it('narrates a returned odds bet as a refund, not a loss', () => {
+    // Regression test for a real reported bug: a Come Odds bet
+    // refunded when its parent resolves (off during come-out, or a
+    // come-out loss) used to read as "Molly loses $50 on Come Odds 6"
+    // in the feed — money that was never actually taken.
+    const e: BetResolved = {
+      type: 'BetResolved',
+      seq: 10,
+      table_id: 't1',
+      player_name: 'Molly',
+      bet_type: 'Come Odds',
+      amount: 50,
+      number: 6,
+      status: 'return',
+      payout: 0,
+      win_payout: 0,
+      removed: true,
+    }
+    expect(playByPlayReducer([], e)).toEqual([{ id: 10, text: "Molly's Come Odds 6 bet is returned", kind: 'return' }])
   })
 
   it('narrates session end', () => {

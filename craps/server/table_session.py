@@ -1,11 +1,14 @@
 """One live table: a TableRunner driven as an asyncio task (D4).
 
-The engine stays synchronous — ``roll_once()`` is called directly from
-the drive coroutine (a roll is microseconds of CPU), with pacing via
-``asyncio.sleep`` and pause/resume via an ``asyncio.Event`` gate. At
-TURBO (0ms) the loop still yields once per roll so it can't starve the
-server. The flat shooter count here executes the identical roll
-sequence as TableRunner.run()'s nested loop.
+The engine stays synchronous — ``prepare_next_roll()``/``roll_and_resolve()``
+are called directly from the drive coroutine (a roll is microseconds of
+CPU), with pacing via ``asyncio.sleep`` and pause/resume via an
+``asyncio.Event`` gate. Unlike ``TableRunner.run()``'s nested loop
+(which calls the two as one atomic ``roll_once()``), this driver calls
+them separately so a round's bets are published — and can be shown on
+a live felt — before that round's dice are thrown, not in the same
+instant. At TURBO (0ms) the loop still yields once per roll so it
+can't starve the server.
 """
 from __future__ import annotations
 import asyncio
@@ -61,11 +64,31 @@ class TableSession:
         # continuous Auto Play/Turbo run happened to leave configured.
         self._skip_next_delay = False
 
-    def start(self) -> None:
+    def start(self, start_paused: bool = False) -> None:
+        """Start the drive task.
+
+        By default the table starts "running": the loop begins rolling
+        immediately at whatever pace is configured — the right behavior
+        for a fire-and-forget API session. `start_paused=True` is for a
+        human-driven frontend that wants a table to land paused, with
+        zero rolls, until an explicit resume()/step() — calling pause()
+        right after start() can't reliably achieve that: _drive()'s gate
+        is only checked once per loop iteration, *before* the pacing
+        sleep, so a pause() arriving mid-sleep can never cancel the roll
+        already in flight for that iteration; only the iteration after
+        it is affected. Clearing the gate here, before the task is even
+        scheduled to run (asyncio.create_task defers the coroutine body
+        to the next event-loop tick), means _drive()'s very first
+        `await self._gate.wait()` blocks immediately — no race.
+        """
         if self.state != "created":
             raise RuntimeError(f"table {self.table_id} is already {self.state}")
         self.runner.start_session()
-        self.state = "running"
+        if start_paused:
+            self._gate.clear()
+            self.state = "paused"
+        else:
+            self.state = "running"
         self._task = asyncio.create_task(self._drive(), name=f"table:{self.table_id}")
 
     def pause(self) -> None:
@@ -116,6 +139,16 @@ class TableSession:
         shooters_done = 0
         try:
             while shooters_done < runner.max_shooters:
+                # Bets for the upcoming roll are placed unconditionally,
+                # ungated by pause — a paused table should still show
+                # what's about to be at risk, it just shouldn't roll
+                # the dice yet. Only the roll itself waits on the gate/
+                # pace below. Putting this at the top of the loop (not
+                # after the pacing sleep) also means a round's bets can
+                # never fire after the session should have ended: the
+                # while condition is re-checked before we ever get back
+                # here, and max_rolls's break below exits before that.
+                runner.prepare_next_roll()
                 await self._gate.wait()
                 if self._skip_next_delay:
                     self._skip_next_delay = False
@@ -124,7 +157,7 @@ class TableSession:
                     await asyncio.sleep(self.roll_delay_ms / 1000)
                 else:
                     await asyncio.sleep(0)  # TURBO still yields per roll
-                summary = runner.roll_once()
+                summary = runner.roll_and_resolve()
                 rolls += 1
                 if summary.new_shooter_assigned:
                     shooters_done += 1

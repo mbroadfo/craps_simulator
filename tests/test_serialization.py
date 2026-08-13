@@ -18,6 +18,7 @@ from craps.events import (
     PointEstablished,
     PointHit,
     RiskUpdated,
+    RoundReady,
     SessionFinalized,
     SessionStarted,
     SevenOut,
@@ -77,6 +78,7 @@ ONE_OF_EACH = [
     PointHit(point=6),
     SevenOut(shooter_index=1, shooter_results=(("Linus", -20), ("Hardy", 5))),
     SessionFinalized(session_rolls=120),
+    RoundReady(bet_count=2),
 ]
 
 

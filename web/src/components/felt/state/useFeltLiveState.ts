@@ -11,7 +11,7 @@
  * is a separate future step with no backend support today).
  */
 import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
-import { drainFadeUps, type PlayerState, type TableState } from '../../../lib/tableReducer'
+import { drainFadeUps, type ChipStack, type FadeUp, type PlayerState, type TableState } from '../../../lib/tableReducer'
 import { chipDenomsForAmount, rackDenomsForAmount } from '../chips/chipDecompose'
 import { stackedToastY } from '../toast/toastStack'
 import { defaultCfg, type ChipZone, type FeltUiState, type RosterEntry, type Toast } from '../types'
@@ -24,6 +24,68 @@ const noop = () => {}
 /** Bankroll minus the seat's starting bankroll, or null with no roll history yet. */
 export function netFor(player: PlayerState | undefined): number | null {
   return player && player.history.length > 0 ? player.bankroll - player.history[0] : null
+}
+
+/**
+ * Collapses this seat's ChipStacks into felt zones, carrying each
+ * stack's working/not-working status through. Two ChipStacks (e.g. two
+ * Come bets on the same number) can share a felt zone — if any part of
+ * the pile is off, the whole zone reads as inactive, matching how a
+ * dimmed stack looks on a real table.
+ */
+export function buildChipZones(chips: Map<string, ChipStack>, playerName: string): Record<string, ChipZone> {
+  const zones: Record<string, ChipZone> = {}
+  for (const stack of chips.values()) {
+    if (stack.player !== playerName) continue
+    const zone = feltZoneFor(stack.betType, stack.number)
+    if (!zone) continue
+    const total = stack.amounts.reduce((s, a) => s + a, 0)
+    const denoms = chipDenomsForAmount(total)
+    const existing = zones[zone.zoneId]
+    const status = existing?.status === 'inactive' || stack.status === 'inactive' ? 'inactive' : stack.status
+    zones[zone.zoneId] = existing
+      ? { ...existing, denoms: [...existing.denoms, ...denoms], status }
+      : { x: zone.x, y: zone.y, denoms, status }
+  }
+  return zones
+}
+
+/**
+ * Groups this seat's fadeUps into one net toast per felt neighborhood
+ * (Pass Line + Pass Line Odds; a Come bet and its odds on the same
+ * number often resolve in the same roll — see the caller's own
+ * comment for why they're merged instead of stacked). allReturn tracks
+ * whether *every* resolution in a bucket was a refund: a returned odds
+ * bet contributes exactly 0 to the sum, so a bucket that also contains
+ * a real win or loss already nets to the true $ amount and should read
+ * as that win/loss, not "Returned" — only a bucket built *entirely*
+ * from returns gets the neutral treatment.
+ */
+export function buildToastBuckets(
+  fadeUps: FadeUp[],
+  playerName: string,
+): Array<{ x: number; y: number; amount: number; kind: 'win' | 'loss' | 'return' }> {
+  const buckets = new Map<string, { x: number; y: number; amount: number; allReturn: boolean }>()
+  for (const f of fadeUps) {
+    if (f.player !== playerName) continue
+    const zone = feltZoneFor(f.betType, f.number)
+    if (!zone) continue
+    const key = `${Math.round(zone.x / 70)}_${Math.round(zone.y / 70)}`
+    const isReturn = f.kind === 'return'
+    const existing = buckets.get(key)
+    if (existing) {
+      existing.amount += f.delta
+      existing.allReturn = existing.allReturn && isReturn
+    } else {
+      buckets.set(key, { x: zone.x, y: zone.y, amount: f.delta, allReturn: isReturn })
+    }
+  }
+  return [...buckets.values()].map(({ x, y, amount, allReturn }) => ({
+    x,
+    y,
+    amount,
+    kind: allReturn ? 'return' : amount >= 0 ? 'win' : 'loss',
+  }))
 }
 
 export function useFeltLiveState(
@@ -57,39 +119,17 @@ export function useFeltLiveState(
   useEffect(() => {
     const fresh = tableState.fadeUps.filter((f) => f.seq > drainedThrough.current)
     if (fresh.length === 0) return
-    let maxSeq = drainedThrough.current
-    const buckets = new Map<string, { x: number; y: number; amount: number }>()
-    for (const f of fresh) {
-      maxSeq = Math.max(maxSeq, f.seq)
-      if (f.player !== playerName) continue
-      const zone = feltZoneFor(f.betType, f.number)
-      if (!zone) continue
-      const key = `${Math.round(zone.x / 70)}_${Math.round(zone.y / 70)}`
-      const existing = buckets.get(key)
-      if (existing) existing.amount += f.delta
-      else buckets.set(key, { x: zone.x, y: zone.y, amount: f.delta })
-    }
-    for (const { x, y, amount } of buckets.values()) {
+    const maxSeq = Math.max(drainedThrough.current, ...fresh.map((f) => f.seq))
+    for (const { x, y, amount, kind } of buildToastBuckets(fresh, playerName)) {
       const id = nextToastId++
-      setToasts((prev) => [...prev, { id, amount, x, y: stackedToastY(prev, x, y - 50) }])
+      setToasts((prev) => [...prev, { id, amount, kind, x, y: stackedToastY(prev, x, y - 50) }])
       setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 1500)
     }
     drainedThrough.current = maxSeq
     setTableState((s) => drainFadeUps(s, maxSeq))
   }, [tableState.fadeUps, playerName, setTableState])
 
-  const chips: Record<string, ChipZone> = {}
-  for (const stack of tableState.chips.values()) {
-    if (stack.player !== playerName) continue
-    const zone = feltZoneFor(stack.betType, stack.number)
-    if (!zone) continue
-    const total = stack.amounts.reduce((s, a) => s + a, 0)
-    const denoms = chipDenomsForAmount(total)
-    const existing = chips[zone.zoneId]
-    chips[zone.zoneId] = existing
-      ? { ...existing, denoms: [...existing.denoms, ...denoms] }
-      : { x: zone.x, y: zone.y, denoms }
-  }
+  const chips = buildChipZones(tableState.chips, playerName)
 
   // rack has no real "unplaced inventory" concept for a bot — the
   // chip rail is visible in live mode, though (Mike wants to watch it

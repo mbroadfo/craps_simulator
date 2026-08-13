@@ -63,10 +63,25 @@ class IronCrossStrategy(BaseStrategy):
 
         elif game_state.phase == "point":
             # If Pass Line is active and odds are allowed, place odds bet
+            # — but only if it doesn't already have one behind it. A
+            # parent bet can only ever carry one odds bet at a time;
+            # without this guard, get_odds_bet() (which just looks at
+            # active contract bets, not existing odds) would hand back
+            # a fresh Pass Line Odds bet every single point-phase roll,
+            # stacking a new one on top of the last instead of leaving
+            # it in place.
             if self.play_pass_line and self.odds_type:
                 odds_bets = self.free_odds.get_odds_bet(game_state, player, table)
                 if odds_bets:
-                    bets.extend(odds_bets)
+                    existing_odds_parents = {
+                        b.parent_bet
+                        for b in table.bets
+                        if b.bet_type.endswith("Odds") and b.owner == player
+                    }
+                    bets.extend(
+                        odds_bet for odds_bet in odds_bets
+                        if odds_bet.parent_bet not in existing_odds_parents
+                    )
 
             # Reactivate inactive Place bets
             for bet in table.bets:

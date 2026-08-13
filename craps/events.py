@@ -93,6 +93,15 @@ class BetStatusChanged(Event):
 
 
 @dataclass(frozen=True)
+class RoundReady(Event):
+    """accept_bets() has finished for the upcoming roll — everything at
+    risk for the next roll is now fully placed and published. Dice for
+    this round have not been thrown yet. The frontend's signal that
+    it's safe to re-enable manual roll controls."""
+    bet_count: int
+
+
+@dataclass(frozen=True)
 class NumberHit(Event):
     """ATS tracking recorded a number this roll (message pre-formatted)."""
     total: int

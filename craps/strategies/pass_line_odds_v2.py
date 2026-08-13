@@ -10,9 +10,9 @@ class PassLineOddsV2(ContractStrategy):
     based odds when the point is on.
 
     Fidelity notes vs v1: odds size off the *table minimum* (not the pass
-    line amount) and are not capped by bankroll; the odds bet is ephemeral
-    (swept each roll by settle_resolved_bets), so it re-places every
-    point-phase roll exactly as v1 does.
+    line amount) and are not capped by bankroll; the odds bet is placed
+    once and stays on the table — the `view.has("Pass Line Odds")` guard
+    below just prevents placing a duplicate.
     """
 
     name = "Pass Line Odds v2"

@@ -112,12 +112,6 @@ class Player:
         """Check if the player has any active Come Odds bets."""
         return any(bet.bet_type == "Come Odds" and bet.status == "active" for bet in table.bets if bet.owner == self)
 
-    def update_come_odds_status(self, table: "Table", should_work: bool) -> None:
-        """Update the status of the player's Come Odds bets based on strategy preference."""
-        for bet in table.bets:
-            if bet.owner == self and bet.bet_type == "Come Odds":
-                bet.status = "active" if should_work else "inactive"
-
     def get_total_at_risk(self, table: "Table") -> int:
         """Return the total amount this player has at risk on the table."""
         return sum(bet.amount for bet in table.bets if bet.owner == self and bet.status == "active")

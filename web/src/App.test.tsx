@@ -91,7 +91,11 @@ async function startTable() {
     { name: '3-Point Molly', dealer_call: "$10 on the line, chasing two come bets with odds" },
   ])
   createTable.mockResolvedValue(snapshot({ state: 'created' }))
-  start.mockResolvedValue(snapshot({ state: 'running' }))
+  // handleStart calls start(id, true) directly — the table lands
+  // paused without a separate pause() round trip (see App.tsx's
+  // handleStart comment on why the old start()-then-pause() lost the
+  // race against table_session.py's drive loop almost every time).
+  start.mockResolvedValue(snapshot({ state: 'paused' }))
   pause.mockResolvedValue(snapshot({ state: 'paused' }))
 
   render(<App />)
@@ -149,14 +153,23 @@ describe('App — pause/resume/step/speed error handling', () => {
   it('handleStep: a successful call updates the snapshot from the response', async () => {
     await startTable()
     step.mockResolvedValueOnce(snapshot({ state: 'paused', session_rolls: 1 }))
+    const rollBtn = () => screen.getByTitle('Roll — advance one roll, then stay paused')
 
     await act(async () => {
-      fireEvent.click(screen.getByTitle('Roll — advance one roll, then stay paused'))
+      fireEvent.click(rollBtn())
     })
 
     await waitFor(() => expect(step).toHaveBeenCalledWith('table-1'))
-    // still paused, still enabled — no error, no crash
-    expect(screen.getByTitle('Roll — advance one roll, then stay paused')).not.toBeDisabled()
+    // No error, no crash — but still disabled: a successful REST
+    // response alone doesn't re-enable Roll, only the next round's
+    // RoundReady event (over SSE) does, once its bets are revealed —
+    // see App.tsx's two-phase reveal state machine.
+    expect(rollBtn()).toBeDisabled()
+
+    await act(async () => {
+      onEnvelopeRef.current?.({ seq: 1, table_id: 'table-1', type: 'RoundReady', bet_count: 0 })
+    })
+    expect(rollBtn()).not.toBeDisabled()
   })
 
   it('handleSpeedChange: a rejected request surfaces as an error message, not an unhandled rejection', async () => {
@@ -182,29 +195,33 @@ describe('App — pause/resume/step/speed error handling', () => {
   })
 })
 
-// Regression test for a real reported bug: new bets (e.g. Come bets)
-// placed by the engine between one roll's dice landing and the next
-// roll's dice being thrown were invisible — accept_bets() (BetPlaced)
-// always runs before roll_dice() for the *next* roll (see
-// TableRunner.roll_once's own "accept -> roll -> resolve" docstring),
-// so a BetPlaced arriving while the previous roll's animation was
-// still in flight got swept into the same pendingEnvelopes queue as
-// that roll's own resolution and only appeared in the instant
-// everything flushed together — never as its own visible moment.
-describe('App — BetPlaced is never held back by the dice-animation gate', () => {
-  it('a BetPlaced that arrives mid-animation applies immediately, not only once the dice settle', async () => {
+// Regression test for the two-phase roll cycle: table_session.py's
+// _drive() now publishes a round's bets (BetsRequested, BetPlaced,
+// RoundReady) strictly *before* that round's own DiceRolled — the
+// opposite order from the old atomic roll_once(). BetPlaced used to be
+// exempt from every gate (it always belonged to the *next* roll under
+// the old cadence); now the *next* round's prep must be held back
+// until the *current* round's animation settles AND an extra
+// REVEAL_DELAY_MS has passed, so the just-resolved round's toasts get
+// a moment on screen before new chips land on top of them.
+describe('App — next round\'s bets wait for this round\'s animation and reveal delay', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('holds a new round\'s BetPlaced/RoundReady back until the current animation settles, then the extra reveal delay', async () => {
     await startTable()
     expect(onEnvelopeRef.current).not.toBeNull()
 
-    // '$25' can legitimately appear elsewhere on screen (stats panel,
-    // table limits, possibly more than once per chip depending on how
-    // ChipStackLayer labels a single-chip stack) — count before/after
-    // rather than assert an exact number, same spirit as
-    // Felt.test.tsx's own chip-placement assertions.
     const before = screen.queryAllByText('$25').length
+    const rollBtn = () => screen.getByTitle('Roll — advance one roll, then stay paused')
 
+    // Round N's dice are thrown (not settled yet)...
     await act(async () => {
-      // A DiceRolled for the *previous* roll is still animating...
       onEnvelopeRef.current?.({
         seq: 1,
         table_id: 'table-1',
@@ -219,13 +236,16 @@ describe('App — BetPlaced is never held back by the dice-animation gate', () =
         shooter_name: 'Pass-Line',
       })
     })
+    expect(rollBtn()).toBeDisabled()
 
-    // ...and nothing has settled it (no timer advanced, no onSettled
-    // fired) when the engine's *next* roll_once() places a new Come
-    // bet ahead of throwing those dice.
+    // ...and round N+1's bets are already published, per
+    // table_session.py's _drive(): prepare_next_roll() runs ungated,
+    // strictly before the pause gate/pace ever let roll_and_resolve()
+    // fire for round N+1.
     await act(async () => {
+      onEnvelopeRef.current?.({ seq: 2, table_id: 'table-1', type: 'BetsRequested' })
       onEnvelopeRef.current?.({
-        seq: 2,
+        seq: 3,
         table_id: 'table-1',
         type: 'BetPlaced',
         player_name: 'Pass-Line',
@@ -233,9 +253,147 @@ describe('App — BetPlaced is never held back by the dice-animation gate', () =
         amount: 25,
         number: null,
       })
+      onEnvelopeRef.current?.({ seq: 4, table_id: 'table-1', type: 'RoundReady', bet_count: 1 })
+    })
+
+    // Not visible yet — round N hasn't even settled.
+    expect(screen.queryAllByText('$25').length).toBe(before)
+    expect(rollBtn()).toBeDisabled()
+
+    // Round N's dice animation settles (1000ms at default 1x speed).
+    await act(async () => vi.advanceTimersByTime(1000))
+
+    // Still not visible — that only flushed round N's own queue;
+    // round N+1's reveal is on its own, later timer.
+    expect(screen.queryAllByText('$25').length).toBe(before)
+    expect(rollBtn()).toBeDisabled()
+
+    // The extra reveal delay passes.
+    await act(async () => vi.advanceTimersByTime(500))
+
+    expect(screen.queryAllByText('$25').length).toBeGreaterThan(before)
+    expect(rollBtn()).not.toBeDisabled()
+  })
+
+  it('reveals immediately (no held-back queue) for the very first round after Start, before any roll has happened', async () => {
+    await startTable()
+
+    const before = screen.queryAllByText('$25').length
+
+    await act(async () => {
+      onEnvelopeRef.current?.({ seq: 1, table_id: 'table-1', type: 'BetsRequested' })
+      onEnvelopeRef.current?.({
+        seq: 2,
+        table_id: 'table-1',
+        type: 'BetPlaced',
+        player_name: 'Pass-Line',
+        bet_type: 'Pass Line',
+        amount: 25,
+        number: null,
+      })
+      onEnvelopeRef.current?.({ seq: 3, table_id: 'table-1', type: 'RoundReady', bet_count: 1 })
     })
 
     expect(screen.queryAllByText('$25').length).toBeGreaterThan(before)
+    expect(screen.getByTitle('Roll — advance one roll, then stay paused')).not.toBeDisabled()
+  })
+
+  it('never doubles a Pass Line chip into $20 when the backend outpaces the dice animation (regression for a real reported bug)', async () => {
+    // At the default pace (500ms between rolls) the backend routinely
+    // gets ahead of the ~1000ms dice-settle animation: a second
+    // round's entire prep-and-resolution can arrive before the first
+    // round's own dice have even landed. flushOneRoundOfPending/
+    // flushOneRoundOfReveal (App.tsx) must drain exactly one round at
+    // a time regardless — flushing everything queued used to apply a
+    // later round's resolution before its own BetPlaced had even been
+    // revealed, orphaning the pop and letting the *next* round's
+    // BetPlaced stack onto the same felt zone once the reveal queue
+    // caught up: two separate $10 Pass Line placements merging into
+    // one $20 pile.
+    await startTable()
+    const twentyDollarChips = () => screen.queryAllByText('$20').length
+
+    await act(async () => {
+      onEnvelopeRef.current?.({
+        seq: 1, table_id: 'table-1', type: 'DiceRolled',
+        shooter_index: 0, roll_number: 1, dice: [3, 4], total: 7,
+        phase: 'come-out', point: null, table_risk: 0, shooter_name: 'Pass-Line',
+      })
+      onEnvelopeRef.current?.({
+        seq: 2, table_id: 'table-1', type: 'BetResolved',
+        player_name: 'Pass-Line', bet_type: 'Pass Line', amount: 10, number: null,
+        status: 'won', payout: 20, win_payout: 20, removed: true,
+      })
+      // Round 2's full prep-and-resolution, and round 3's prep, all
+      // arrive before round 1's animation has settled at all.
+      onEnvelopeRef.current?.({ seq: 3, table_id: 'table-1', type: 'BetsRequested' })
+      onEnvelopeRef.current?.({
+        seq: 4, table_id: 'table-1', type: 'BetPlaced',
+        player_name: 'Pass-Line', bet_type: 'Pass Line', amount: 10, number: null,
+      })
+      onEnvelopeRef.current?.({ seq: 5, table_id: 'table-1', type: 'RoundReady', bet_count: 1 })
+      onEnvelopeRef.current?.({
+        seq: 6, table_id: 'table-1', type: 'DiceRolled',
+        shooter_index: 0, roll_number: 2, dice: [2, 5], total: 7,
+        phase: 'come-out', point: null, table_risk: 0, shooter_name: 'Pass-Line',
+      })
+      onEnvelopeRef.current?.({
+        seq: 7, table_id: 'table-1', type: 'BetResolved',
+        player_name: 'Pass-Line', bet_type: 'Pass Line', amount: 10, number: null,
+        status: 'won', payout: 20, win_payout: 20, removed: true,
+      })
+      onEnvelopeRef.current?.({ seq: 8, table_id: 'table-1', type: 'BetsRequested' })
+      onEnvelopeRef.current?.({
+        seq: 9, table_id: 'table-1', type: 'BetPlaced',
+        player_name: 'Pass-Line', bet_type: 'Pass Line', amount: 10, number: null,
+      })
+      onEnvelopeRef.current?.({ seq: 10, table_id: 'table-1', type: 'RoundReady', bet_count: 1 })
+    })
+    expect(twentyDollarChips()).toBe(0)
+
+    // Round 1's animation settles — only round 1's own resolution applies.
+    await act(async () => vi.advanceTimersByTime(1000))
+    expect(twentyDollarChips()).toBe(0)
+
+    // Round 2's reveal delay passes — its lone $10 Pass Line appears.
+    await act(async () => vi.advanceTimersByTime(500))
+    expect(twentyDollarChips()).toBe(0)
+
+    // Round 2's own (chained) animation settles, popping that chip...
+    await act(async () => vi.advanceTimersByTime(1000))
+    expect(twentyDollarChips()).toBe(0)
+
+    // ...and round 3's reveal delay passes — its own lone $10 Pass
+    // Line appears. Never stacked with a leftover from round 2.
+    await act(async () => vi.advanceTimersByTime(500))
+    expect(twentyDollarChips()).toBe(0)
+  })
+})
+
+describe('App — Roll button re-enable gating', () => {
+  it('clicking Roll disables it immediately, optimistically, before any envelope arrives', async () => {
+    step.mockResolvedValue(snapshot({ state: 'paused' }))
+    await startTable()
+    const rollBtn = screen.getByTitle('Roll — advance one roll, then stay paused')
+    expect(rollBtn).not.toBeDisabled()
+
+    await act(async () => {
+      fireEvent.click(rollBtn)
+    })
+
+    expect(rollBtn).toBeDisabled()
+  })
+
+  it('a rejected step() call re-enables the button', async () => {
+    step.mockRejectedValueOnce(new Error('409: table finished'))
+    await startTable()
+    const rollBtn = screen.getByTitle('Roll — advance one roll, then stay paused')
+
+    await act(async () => {
+      fireEvent.click(rollBtn)
+    })
+
+    await waitFor(() => expect(rollBtn).not.toBeDisabled())
   })
 })
 
