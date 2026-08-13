@@ -106,4 +106,39 @@ describe('DiceAnimation phase timeline', () => {
     act(() => vi.advanceTimersByTime(1000))
     expect(onSettled).toHaveBeenCalledTimes(2)
   })
+
+  it('queues three overlapping results without losing any — onSettled fires once per result, in order', () => {
+    // Regression test for a real reported bug: a single queued-result
+    // slot let a third overlapping roll silently overwrite a second
+    // one that had never gotten its own settle yet. App.tsx's per-
+    // round envelope draining depends on onSettled() firing exactly
+    // once per actual roll (see its own comment) — losing one meant
+    // that round's bets/resolution never applied, and every later
+    // round fell one settle further behind for the rest of the
+    // session, eventually looking like the session had stalled.
+    const onSettled = vi.fn()
+    const { rerender } = render(<DiceAnimation result={null} speed={1} onSettled={onSettled} />)
+    rerender(<DiceAnimation result={[3, 3]} speed={1} onSettled={onSettled} />)
+
+    // Two more rolls arrive back-to-back while the first is still
+    // mid-flight — neither has settled yet.
+    act(() => vi.advanceTimersByTime(200))
+    rerender(<DiceAnimation result={[5, 2]} speed={1} onSettled={onSettled} />)
+    act(() => vi.advanceTimersByTime(200))
+    rerender(<DiceAnimation result={[1, 6]} speed={1} onSettled={onSettled} />)
+    expect(onSettled).not.toHaveBeenCalled()
+
+    // First cycle settles (started at t=0, 1000ms total) — only one
+    // settle so far, and the second (not the third) cycle starts.
+    act(() => vi.advanceTimersByTime(600))
+    expect(onSettled).toHaveBeenCalledTimes(1)
+
+    // Second cycle settles — the third one is still waiting, not lost.
+    act(() => vi.advanceTimersByTime(1000))
+    expect(onSettled).toHaveBeenCalledTimes(2)
+
+    // Third cycle settles — nothing left queued.
+    act(() => vi.advanceTimersByTime(1000))
+    expect(onSettled).toHaveBeenCalledTimes(3)
+  })
 })

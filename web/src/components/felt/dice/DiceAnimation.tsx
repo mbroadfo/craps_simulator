@@ -326,7 +326,15 @@ export function DiceAnimation({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const sceneRef = useRef<DiceScene | null>(null)
   const waypoints = useRef<[DieWaypoints, DieWaypoints] | null>(null)
-  const queuedResult = useRef<[number, number] | null>(null)
+  // A real FIFO, not a single slot: at normal speeds the backend can
+  // outpace the ~1s animation by more than one roll (App.tsx's
+  // per-round envelope draining now depends on onSettled() firing
+  // exactly once per actual roll — see its own comment). A single
+  // slot here used to let a third overlapping result silently
+  // overwrite a second one that had never gotten its own settle yet,
+  // permanently losing an onSettled() call and starving App.tsx's
+  // queues, which never fully drain again for the rest of the session.
+  const queuedResults = useRef<[number, number][]>([])
   const timers = useRef<number[]>([])
 
   useEffect(() => {
@@ -375,7 +383,7 @@ export function DiceAnimation({
   useEffect(() => {
     if (!result) return
     if (phase === 'launching' || phase === 'bouncing') {
-      queuedResult.current = result
+      queuedResults.current.push(result)
       return
     }
     runCycle(result)
@@ -402,9 +410,8 @@ export function DiceAnimation({
       sceneRef.current?.settle(wp, nextResult)
       setPhase('settled')
       onSettled()
-      const queued = queuedResult.current
-      queuedResult.current = null
-      if (queued) runCycle(queued)
+      const next = queuedResults.current.shift()
+      if (next) runCycle(next)
     }
 
     setPhase('launching')
