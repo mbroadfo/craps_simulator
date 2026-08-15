@@ -374,6 +374,11 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
     // ref reflects the true current value the instant runCycle sets it.
     const cycleActive = useRef(false)
     const timers = useRef<number[]>([])
+    // Kept in sync every render so runCycle can read the *current*
+    // speed even mid-chain — see runCycle's own comment for why the
+    // `speed` prop itself isn't enough there.
+    const speedRef = useRef(speed)
+    speedRef.current = speed
 
     useEffect(() => {
       const canvas = canvasRef.current
@@ -444,7 +449,18 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
       for (const id of timers.current) window.clearTimeout(id)
       timers.current = []
 
-      const { flightMs, bounceMs } = durationsFor(speed)
+      // speedRef.current, not the `speed` prop directly: settle() below
+      // can recursively call runCycle() again for an already-queued
+      // roll, from *this same* closure — if the speed slider changes
+      // while a backlog is draining (routine below 5x, where the
+      // animation is slow enough for the backend to outpace it), that
+      // recursive call would otherwise keep using whatever `speed` was
+      // active when the outermost enqueue() call started this chain,
+      // not the slider's new value — reading the prop straight up
+      // silently ignored the slider for the rest of a long backlog
+      // (a real reported bug: "moving the slider while playing has no
+      // effect"). The ref is updated every render, so it's always current.
+      const { flightMs, bounceMs } = durationsFor(speedRef.current)
       const wp = computeDieWaypoints(pickLandingCenter())
       waypoints.current = wp
 

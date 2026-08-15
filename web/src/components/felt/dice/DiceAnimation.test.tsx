@@ -227,4 +227,38 @@ describe('DiceAnimation phase timeline', () => {
     act(() => vi.advanceTimersByTime(1000))
     expect(onSettled).toHaveBeenCalledTimes(1)
   })
+
+  it('picks up a mid-chain speed change for still-queued rolls, not just future ones', () => {
+    // Regression test for a real reported bug: "moving the slider
+    // while it's playing has no effect." At slow speeds the backend
+    // routinely outpaces the ~1s animation, building a backlog in
+    // queuedResults — settle() drains it by recursively calling
+    // runCycle() from *within the same closure* the chain started
+    // with. Reading the `speed` prop directly there meant every
+    // queued roll kept animating at whatever speed was active when
+    // the chain began, silently ignoring the slider for the rest of
+    // a long backlog — sometimes the whole remainder of a session, if
+    // the backend kept re-filling it as fast as the stale-speed
+    // animation drained it. Reading speedRef.current instead picks up
+    // the change on the very next queued roll.
+    const onSettled = vi.fn()
+    const { rerender, ref } = renderDice(1, onSettled)
+
+    // Backlog of two: the first starts animating at 1x; the second
+    // queues, since the first won't settle for another 1000ms.
+    act(() => ref.current?.enqueue([3, 4]))
+    act(() => ref.current?.enqueue([5, 2]))
+    expect(onSettled).not.toHaveBeenCalled()
+
+    // The slider moves to Turbo while the first roll is still mid-flight.
+    rerender(<DiceAnimation ref={ref} speed={10} onSettled={onSettled} />)
+
+    // First roll finishes out its original 1x cycle (already committed,
+    // 1000ms later) — and the second (queued) roll must now animate at
+    // the *new* speed, cascading to its own settle instantly rather
+    // than taking another 1000ms, so both onSettled() calls land within
+    // this same tick.
+    act(() => vi.advanceTimersByTime(1000))
+    expect(onSettled).toHaveBeenCalledTimes(2)
+  })
 })
