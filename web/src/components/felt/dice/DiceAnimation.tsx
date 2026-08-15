@@ -72,7 +72,6 @@ type Phase = 'idle' | 'launching' | 'bouncing' | 'settled'
 
 const FLIGHT_MS = 700
 const BOUNCE_MS = 300
-const FAST_FLIGHT_MS = 300 // speed >= 5x: shortened, no bounce
 const ROLL_SOUND_URL = '/sounds/dice-roll.mp3'
 
 const DIE_HALF = 35 // world units (== felt viewBox units)
@@ -86,9 +85,17 @@ const BOUNCE_CYCLES = 2.5
 // slots: [+X, -X, +Y, -Y, +Z, -Z].
 const FACE_VALUES = [2, 5, 1, 6, 3, 4]
 
+// Above this speed the animation is skipped entirely (instant settle,
+// same as Turbo) rather than just shortened — a faster/shortened tier
+// used to exist here (5x-9.9x got a 300ms flight with no bounce), but
+// a half-length animation is still a real animation: it's still
+// subject to the same round-overlap timing this whole file's queueing
+// exists to handle, for a visual payoff that barely reads at speed
+// anyway. One threshold is simpler to reason about than two.
+const ANIMATE_BELOW_SPEED = 5
+
 function durationsFor(speed: number) {
-  if (speed >= 10) return { flightMs: 0, bounceMs: 0 } // Turbo: skip the animation entirely
-  if (speed >= 5) return { flightMs: FAST_FLIGHT_MS, bounceMs: 0 }
+  if (speed >= ANIMATE_BELOW_SPEED) return { flightMs: 0, bounceMs: 0 }
   return { flightMs: FLIGHT_MS, bounceMs: BOUNCE_MS }
 }
 

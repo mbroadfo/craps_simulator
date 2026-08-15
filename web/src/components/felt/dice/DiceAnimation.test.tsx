@@ -89,13 +89,23 @@ describe('DiceAnimation phase timeline', () => {
     expect(onSettled).toHaveBeenCalledTimes(1)
   })
 
-  it('at 5x+ speed shortens the cycle to 300ms and skips the bounce phase entirely', () => {
+  it('at 5x and above the animation is fully skipped, same as Turbo — not just shortened', () => {
     const onSettled = vi.fn()
-    const { container, ref } = renderDice(6, onSettled)
+    const { container, ref } = renderDice(5, onSettled)
+    act(() => ref.current?.enqueue([1, 1]))
+
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'settled')
+    expect(onSettled).toHaveBeenCalledTimes(1)
+  })
+
+  it('just below the 5x threshold still plays the full animation', () => {
+    const onSettled = vi.fn()
+    const { container, ref } = renderDice(4.9, onSettled)
     act(() => ref.current?.enqueue([1, 1]))
 
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
-    act(() => vi.advanceTimersByTime(300))
+    expect(onSettled).not.toHaveBeenCalled()
+    act(() => vi.advanceTimersByTime(1000))
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'settled')
     expect(onSettled).toHaveBeenCalledTimes(1)
   })
