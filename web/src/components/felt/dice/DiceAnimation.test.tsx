@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { act, cleanup, render } from '@testing-library/react'
+import { createRef } from 'react'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { DiceAnimation } from './DiceAnimation'
+import { DiceAnimation, type DiceAnimationHandle } from './DiceAnimation'
 
 // jsdom has no WebGL context, so the Three.js/Cannon-es scene inside
 // DiceAnimation always falls back to its no-op path here (see its own
@@ -10,6 +11,12 @@ import { DiceAnimation } from './DiceAnimation'
 // phase-timing/onSettled/queueing contract App.tsx's gating depends
 // on, which is deliberately decoupled from whether rendering works.
 // Actual rendering quality can only be judged in a real browser.
+//
+// Rolls are pushed in via the imperative `enqueue()` handle, not a
+// `result` prop — see the component's own docstring for why (a prop
+// fed through setState can have several of its values collapse into
+// one under React's batching, which is exactly the bug the "many
+// enqueue() calls in one batch" tests below guard against).
 
 beforeAll(() => {
   if (!('ResizeObserver' in globalThis)) {
@@ -45,16 +52,22 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
+function renderDice(speed: number, onSettled: () => void) {
+  const ref = createRef<DiceAnimationHandle>()
+  const view = render(<DiceAnimation ref={ref} speed={speed} onSettled={onSettled} />)
+  return { ...view, ref }
+}
+
 describe('DiceAnimation phase timeline', () => {
-  it('starts idle with no result', () => {
-    const { container } = render(<DiceAnimation result={null} speed={1} onSettled={vi.fn()} />)
+  it('starts idle with nothing enqueued', () => {
+    const { container } = renderDice(1, vi.fn())
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'idle')
   })
 
   it('at normal speed: launches immediately, bounces at 700ms, settles and calls onSettled once at 1000ms', () => {
     const onSettled = vi.fn()
-    const { container, rerender } = render(<DiceAnimation result={null} speed={1} onSettled={onSettled} />)
-    rerender(<DiceAnimation result={[3, 4]} speed={1} onSettled={onSettled} />)
+    const { container, ref } = renderDice(1, onSettled)
+    act(() => ref.current?.enqueue([3, 4]))
 
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
 
@@ -69,8 +82,8 @@ describe('DiceAnimation phase timeline', () => {
 
   it('at Turbo (speed >= 10) settles immediately with no visible flight', () => {
     const onSettled = vi.fn()
-    const { container, rerender } = render(<DiceAnimation result={null} speed={10} onSettled={onSettled} />)
-    rerender(<DiceAnimation result={[2, 5]} speed={10} onSettled={onSettled} />)
+    const { container, ref } = renderDice(10, onSettled)
+    act(() => ref.current?.enqueue([2, 5]))
 
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'settled')
     expect(onSettled).toHaveBeenCalledTimes(1)
@@ -78,8 +91,8 @@ describe('DiceAnimation phase timeline', () => {
 
   it('at 5x+ speed shortens the cycle to 300ms and skips the bounce phase entirely', () => {
     const onSettled = vi.fn()
-    const { container, rerender } = render(<DiceAnimation result={null} speed={6} onSettled={onSettled} />)
-    rerender(<DiceAnimation result={[1, 1]} speed={6} onSettled={onSettled} />)
+    const { container, ref } = renderDice(6, onSettled)
+    act(() => ref.current?.enqueue([1, 1]))
 
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
     act(() => vi.advanceTimersByTime(300))
@@ -89,11 +102,11 @@ describe('DiceAnimation phase timeline', () => {
 
   it('queues a new result that arrives mid-animation instead of restarting, then auto-chains the next cycle immediately', () => {
     const onSettled = vi.fn()
-    const { container, rerender } = render(<DiceAnimation result={null} speed={1} onSettled={onSettled} />)
-    rerender(<DiceAnimation result={[3, 3]} speed={1} onSettled={onSettled} />)
+    const { container, ref } = renderDice(1, onSettled)
+    act(() => ref.current?.enqueue([3, 3]))
 
     act(() => vi.advanceTimersByTime(400)) // still mid-flight
-    rerender(<DiceAnimation result={[5, 2]} speed={1} onSettled={onSettled} />)
+    act(() => ref.current?.enqueue([5, 2]))
     // the queued result must not restart the in-progress cycle
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
     expect(onSettled).not.toHaveBeenCalled()
@@ -117,15 +130,15 @@ describe('DiceAnimation phase timeline', () => {
     // round fell one settle further behind for the rest of the
     // session, eventually looking like the session had stalled.
     const onSettled = vi.fn()
-    const { rerender } = render(<DiceAnimation result={null} speed={1} onSettled={onSettled} />)
-    rerender(<DiceAnimation result={[3, 3]} speed={1} onSettled={onSettled} />)
+    const { ref } = renderDice(1, onSettled)
+    act(() => ref.current?.enqueue([3, 3]))
 
     // Two more rolls arrive back-to-back while the first is still
     // mid-flight — neither has settled yet.
     act(() => vi.advanceTimersByTime(200))
-    rerender(<DiceAnimation result={[5, 2]} speed={1} onSettled={onSettled} />)
+    act(() => ref.current?.enqueue([5, 2]))
     act(() => vi.advanceTimersByTime(200))
-    rerender(<DiceAnimation result={[1, 6]} speed={1} onSettled={onSettled} />)
+    act(() => ref.current?.enqueue([1, 6]))
     expect(onSettled).not.toHaveBeenCalled()
 
     // First cycle settles (started at t=0, 1000ms total) — only one
@@ -140,5 +153,68 @@ describe('DiceAnimation phase timeline', () => {
     // Third cycle settles — nothing left queued.
     act(() => vi.advanceTimersByTime(1000))
     expect(onSettled).toHaveBeenCalledTimes(3)
+  })
+
+  it('never loses a roll when many enqueue() calls happen synchronously in the same batch (the actual reported bug)', () => {
+    // Regression test for the real production incident: App.tsx used
+    // to feed rolls in through a `result` prop driven by
+    // setDiceResult(...), a plain React state setter. React batches
+    // state updates — for a non-functional setState call, only the
+    // *last* value in a batch survives. At Turbo (or just enough
+    // backend-ahead-of-frontend backlog at any speed) many SSE
+    // DiceRolled messages can be processed within a single JS tick,
+    // before React ever renders — every setDiceResult call but the
+    // last one was silently discarded, so DiceAnimation never even
+    // saw most of the rolls, onSettled() fired far less than once per
+    // round, and the felt looked like the session had stopped dozens
+    // of shooters early even though the backend kept finishing
+    // normally in the background. enqueue() is an imperative ref call,
+    // outside React state entirely — every call here happens
+    // synchronously inside one `act()`, simulating exactly that kind
+    // of same-tick burst, and none may be lost.
+    const onSettled = vi.fn()
+    const { ref } = renderDice(1, onSettled)
+
+    act(() => {
+      ref.current?.enqueue([1, 1])
+      ref.current?.enqueue([2, 2])
+      ref.current?.enqueue([3, 3])
+      ref.current?.enqueue([4, 4])
+      ref.current?.enqueue([5, 5])
+    })
+
+    // Only the first has started animating; the other four are queued.
+    expect(onSettled).not.toHaveBeenCalled()
+
+    for (let expected = 1; expected <= 5; expected++) {
+      act(() => vi.advanceTimersByTime(1000))
+      expect(onSettled).toHaveBeenCalledTimes(expected)
+    }
+  })
+
+  it('reset() drops any in-flight/queued cycle and returns to idle', () => {
+    // A session reset (App.tsx's handleReset/attach) must clear this
+    // component's own state too — it persists across sessions (no
+    // remount) — or a stale mid-animation cycle from the *previous*
+    // session could make a new session's first enqueue() queue behind
+    // it instead of starting immediately.
+    const onSettled = vi.fn()
+    const { container, ref } = renderDice(1, onSettled)
+    act(() => ref.current?.enqueue([3, 4]))
+    act(() => ref.current?.enqueue([5, 2])) // queued, mid-flight
+
+    act(() => ref.current?.reset())
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'idle')
+
+    // Fully clocking out any timers the old cycle might have left
+    // scheduled must not call onSettled — it was reset, not settled.
+    act(() => vi.advanceTimersByTime(2000))
+    expect(onSettled).not.toHaveBeenCalled()
+
+    // A fresh enqueue() after reset starts a brand new cycle right away.
+    act(() => ref.current?.enqueue([6, 6]))
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
+    act(() => vi.advanceTimersByTime(1000))
+    expect(onSettled).toHaveBeenCalledTimes(1)
   })
 })

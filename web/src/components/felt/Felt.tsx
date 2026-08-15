@@ -1,10 +1,10 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react'
 import './Felt.css'
 import { ActionBar } from './actionbar/ActionBar'
 import { ChipRail } from './chips/ChipRail'
 import { ChipStackLayer } from './chips/ChipStackLayer'
 import { DevControlsPanel } from './devcontrols/DevControlsPanel'
-import { DiceAnimation } from './dice/DiceAnimation'
+import { DiceAnimation, type DiceAnimationHandle } from './dice/DiceAnimation'
 import { ShooterHistory } from './history/ShooterHistory'
 import { AtsPanel } from './panels/AtsPanel'
 import { BoxNumbers } from './panels/BoxNumbers'
@@ -57,11 +57,13 @@ export function Felt() {
  * of the current-roll/bot-roster column) — the felt itself knows
  * nothing about session lifecycle in live mode at all.
  *
- * `diceResult`/`diceSpeed`/`onDiceSettled` drive DiceAnimation (Phase
- * A: flying/tumbling/bouncing dice overlaying the felt, see
+ * `diceAnimationRef`/`diceSpeed`/`onDiceSettled` drive DiceAnimation
+ * (Phase A: flying/tumbling/bouncing dice overlaying the felt, see
  * dice/DiceAnimation.tsx) — App.tsx owns the actual gating of chip/
- * fade-up/ATS state behind `onDiceSettled`; the felt just renders the
- * animation and forwards the callback.
+ * fade-up/ATS state behind `onDiceSettled`, and pushes each roll in
+ * via the ref's imperative `enqueue()` (see DiceAnimation's own
+ * docstring for why that's a ref call, not a React prop); the felt
+ * just renders the animation and forwards the ref/callback.
  */
 export function LiveFelt({
   tableState,
@@ -71,7 +73,7 @@ export function LiveFelt({
   roster,
   setTableState,
   sidebar,
-  diceResult,
+  diceAnimationRef,
   diceSpeed,
   onDiceSettled,
 }: {
@@ -82,14 +84,14 @@ export function LiveFelt({
   roster: RosterEntry[]
   setTableState: Dispatch<SetStateAction<TableState>>
   sidebar?: ReactNode
-  diceResult: [number, number] | null
+  diceAnimationRef: RefObject<DiceAnimationHandle | null>
   diceSpeed: number
   onDiceSettled: () => void
 }) {
   const state = useFeltLiveState(tableState, rollLog, playerName, setPlayerName, roster, setTableState)
   return (
     <FeltStateProvider value={state}>
-      <FeltInner mode="live" sidebar={sidebar} diceResult={diceResult} diceSpeed={diceSpeed} onDiceSettled={onDiceSettled} />
+      <FeltInner mode="live" sidebar={sidebar} diceAnimationRef={diceAnimationRef} diceSpeed={diceSpeed} onDiceSettled={onDiceSettled} />
     </FeltStateProvider>
   )
 }
@@ -97,13 +99,13 @@ export function LiveFelt({
 function FeltInner({
   mode,
   sidebar,
-  diceResult,
+  diceAnimationRef,
   diceSpeed,
   onDiceSettled,
 }: {
   mode: 'dev' | 'live'
   sidebar?: ReactNode
-  diceResult?: [number, number] | null
+  diceAnimationRef?: RefObject<DiceAnimationHandle | null>
   diceSpeed?: number
   onDiceSettled?: () => void
 }) {
@@ -189,7 +191,7 @@ function FeltInner({
               rollDice() is a local random roller) — the animation is
               live-mode only. */}
           {mode === 'live' && (
-            <DiceAnimation result={diceResult ?? null} speed={diceSpeed ?? 1} onSettled={onDiceSettled ?? (() => {})} />
+            <DiceAnimation ref={diceAnimationRef} speed={diceSpeed ?? 1} onSettled={onDiceSettled ?? (() => {})} />
           )}
         </div>
 

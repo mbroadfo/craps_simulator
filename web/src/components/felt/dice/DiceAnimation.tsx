@@ -31,8 +31,26 @@
  * App.tsx holds back chip/fade-up/ATS-affecting state updates until
  * `onSettled` fires — see its own comment for why that gating lives
  * there instead of here.
+ *
+ * Rolls are pushed in via an imperative `enqueue()` (a ref handle),
+ * not a `result` prop. That's deliberate, not a style choice: React
+ * batches state updates, and for a plain (non-functional) `setState`
+ * call, only the *last* value in a batch survives — at Turbo/fast
+ * pace the backend can publish many DiceRolled events within a single
+ * JS tick, all arriving before React ever renders. A `result` prop
+ * fed via `setDiceResult(...)` used to silently collapse a whole
+ * burst of rolls down to just the final one, so DiceAnimation (and
+ * the one onSettled() call per roll App.tsx's queue-draining depends
+ * on) never even saw most of them — everything from that point stayed
+ * stuck in App.tsx's pending queues for the rest of the session (a
+ * real reported bug: the felt looked like it had stopped, well before
+ * all shooters had actually played out server-side). `enqueue()` runs
+ * synchronously in the SSE handler itself, outside React state
+ * entirely, so every roll reliably reaches the queue below exactly
+ * once — same reasoning as `queuedResults` itself (a real FIFO, not a
+ * single overwritable slot) one level up.
  */
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
 import './DiceAnimation.css'
@@ -313,127 +331,151 @@ class DiceScene {
   }
 }
 
-export function DiceAnimation({
-  result,
-  speed,
-  onSettled,
-}: {
-  result: [number, number] | null
-  speed: number
-  onSettled: () => void
-}) {
-  const [phase, setPhase] = useState<Phase>('idle')
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const sceneRef = useRef<DiceScene | null>(null)
-  const waypoints = useRef<[DieWaypoints, DieWaypoints] | null>(null)
-  // A real FIFO, not a single slot: at normal speeds the backend can
-  // outpace the ~1s animation by more than one roll (App.tsx's
-  // per-round envelope draining now depends on onSettled() firing
-  // exactly once per actual roll — see its own comment). A single
-  // slot here used to let a third overlapping result silently
-  // overwrite a second one that had never gotten its own settle yet,
-  // permanently losing an onSettled() call and starving App.tsx's
-  // queues, which never fully drain again for the rest of the session.
-  const queuedResults = useRef<[number, number][]>([])
-  const timers = useRef<number[]>([])
+export interface DiceAnimationHandle {
+  /** Push one roll's result in. Runs synchronously (see the module
+   * docstring for why this is imperative, not a `result` prop). */
+  enqueue: (result: [number, number]) => void
+  /** Drops any in-flight/queued cycle and returns to idle — the
+   * component itself persists across sessions (no remount), so a
+   * fresh session's App.tsx reset must clear this too, or a stale
+   * mid-animation cycle from the *previous* session could make the
+   * new session's first enqueue() queue behind it instead of starting. */
+  reset: () => void
+}
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    try {
-      sceneRef.current = new DiceScene(canvas)
-    } catch {
-      sceneRef.current = null // WebGL unavailable — phase timers/onSettled still run, just nothing renders
-    }
-    return () => {
-      sceneRef.current?.dispose()
-      sceneRef.current = null
-    }
-  }, [])
+export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; onSettled: () => void }>(
+  function DiceAnimation({ speed, onSettled }, ref) {
+    const [phase, setPhase] = useState<Phase>('idle')
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const sceneRef = useRef<DiceScene | null>(null)
+    const waypoints = useRef<[DieWaypoints, DieWaypoints] | null>(null)
+    // A real FIFO, not a single slot: at normal speeds the backend can
+    // outpace the ~1s animation by more than one roll (App.tsx's
+    // per-round envelope draining now depends on onSettled() firing
+    // exactly once per actual roll — see its own comment). A single
+    // slot here used to let a third overlapping result silently
+    // overwrite a second one that had never gotten its own settle yet,
+    // permanently losing an onSettled() call and starving App.tsx's
+    // queues, which never fully drain again for the rest of the session.
+    const queuedResults = useRef<[number, number][]>([])
+    // Authoritative "is a cycle currently running" flag for enqueue()'s
+    // decision — a ref, deliberately not derived from the `phase` React
+    // state. enqueue() can be called several times synchronously in a
+    // row (a burst of SSE messages) with no render in between; reading
+    // `phase` state there would see the same stale value on every call
+    // in that burst, since state only updates on the next render — a
+    // ref reflects the true current value the instant runCycle sets it.
+    const cycleActive = useRef(false)
+    const timers = useRef<number[]>([])
 
-  // Same getBoundingClientRect()+ResizeObserver pattern useSidebarAutoFit.ts
-  // uses for the same "responsive SVG, sibling canvas needs real pixels"
-  // problem — the orthographic camera's frustum is fixed to the felt's
-  // viewBox extents, so only the renderer's pixel size needs to track it.
-  useEffect(() => {
-    const felt = document.getElementById('felt')
-    if (!felt) return
-    const sync = () => {
-      const box = felt.getBoundingClientRect()
-      if (box.width > 0 && box.height > 0) sceneRef.current?.resize(box.width, box.height)
-    }
-    sync()
-    const observer = new ResizeObserver(sync)
-    observer.observe(felt)
-    window.addEventListener('resize', sync)
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('resize', sync)
-    }
-  }, [])
+    useEffect(() => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      try {
+        sceneRef.current = new DiceScene(canvas)
+      } catch {
+        sceneRef.current = null // WebGL unavailable — phase timers/onSettled still run, just nothing renders
+      }
+      return () => {
+        sceneRef.current?.dispose()
+        sceneRef.current = null
+      }
+    }, [])
 
-  useEffect(() => {
-    const clearTimers = () => {
+    // Same getBoundingClientRect()+ResizeObserver pattern useSidebarAutoFit.ts
+    // uses for the same "responsive SVG, sibling canvas needs real pixels"
+    // problem — the orthographic camera's frustum is fixed to the felt's
+    // viewBox extents, so only the renderer's pixel size needs to track it.
+    useEffect(() => {
+      const felt = document.getElementById('felt')
+      if (!felt) return
+      const sync = () => {
+        const box = felt.getBoundingClientRect()
+        if (box.width > 0 && box.height > 0) sceneRef.current?.resize(box.width, box.height)
+      }
+      sync()
+      const observer = new ResizeObserver(sync)
+      observer.observe(felt)
+      window.addEventListener('resize', sync)
+      return () => {
+        observer.disconnect()
+        window.removeEventListener('resize', sync)
+      }
+    }, [])
+
+    useEffect(() => {
+      const clearTimers = () => {
+        for (const id of timers.current) window.clearTimeout(id)
+        timers.current = []
+      }
+      return clearTimers
+    }, [])
+
+    // No deps array: recreated every render so `runCycle` always closes
+    // over the current `speed` prop — this component re-renders rarely
+    // (only on real prop/state changes), so there's no meaningful cost
+    // to skipping memoization here.
+    useImperativeHandle(ref, () => ({
+      enqueue(result: [number, number]) {
+        if (cycleActive.current) {
+          queuedResults.current.push(result)
+          return
+        }
+        runCycle(result)
+      },
+      reset() {
+        for (const id of timers.current) window.clearTimeout(id)
+        timers.current = []
+        queuedResults.current = []
+        cycleActive.current = false
+        setPhase('idle')
+      },
+    }))
+
+    function runCycle(nextResult: [number, number]) {
+      cycleActive.current = true
       for (const id of timers.current) window.clearTimeout(id)
       timers.current = []
-    }
-    return clearTimers
-  }, [])
 
-  useEffect(() => {
-    if (!result) return
-    if (phase === 'launching' || phase === 'bouncing') {
-      queuedResults.current.push(result)
-      return
-    }
-    runCycle(result)
-    // Deliberately only re-runs when `result` itself changes — phase
-    // transitions are driven by the timers inside runCycle, not by
-    // this effect re-firing.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result])
+      const { flightMs, bounceMs } = durationsFor(speed)
+      const wp = computeDieWaypoints(pickLandingCenter())
+      waypoints.current = wp
 
-  function runCycle(nextResult: [number, number]) {
-    for (const id of timers.current) window.clearTimeout(id)
-    timers.current = []
+      if (flightMs > 0) {
+        new Audio(ROLL_SOUND_URL).play().catch(() => {}) // autoplay can be blocked; a failed play() is silent, not an error
+        sceneRef.current?.startRoll(wp, nextResult, flightMs, flightMs + bounceMs)
+      }
 
-    const { flightMs, bounceMs } = durationsFor(speed)
-    const wp = computeDieWaypoints(pickLandingCenter())
-    waypoints.current = wp
+      const settle = () => {
+        sceneRef.current?.settle(wp, nextResult)
+        setPhase('settled')
+        onSettled()
+        const next = queuedResults.current.shift()
+        if (next) runCycle(next)
+        else cycleActive.current = false
+      }
 
-    if (flightMs > 0) {
-      new Audio(ROLL_SOUND_URL).play().catch(() => {}) // autoplay can be blocked; a failed play() is silent, not an error
-      sceneRef.current?.startRoll(wp, nextResult, flightMs, flightMs + bounceMs)
-    }
-
-    const settle = () => {
-      sceneRef.current?.settle(wp, nextResult)
-      setPhase('settled')
-      onSettled()
-      const next = queuedResults.current.shift()
-      if (next) runCycle(next)
+      setPhase('launching')
+      if (flightMs === 0) {
+        settle()
+        return
+      }
+      timers.current.push(
+        window.setTimeout(() => {
+          if (bounceMs > 0) {
+            setPhase('bouncing')
+            timers.current.push(window.setTimeout(settle, bounceMs))
+          } else {
+            settle()
+          }
+        }, flightMs),
+      )
     }
 
-    setPhase('launching')
-    if (flightMs === 0) {
-      settle()
-      return
-    }
-    timers.current.push(
-      window.setTimeout(() => {
-        if (bounceMs > 0) {
-          setPhase('bouncing')
-          timers.current.push(window.setTimeout(settle, bounceMs))
-        } else {
-          settle()
-        }
-      }, flightMs),
+    return (
+      <div className="diceAnimation" data-phase={phase}>
+        <canvas ref={canvasRef} />
+      </div>
     )
-  }
-
-  return (
-    <div className="diceAnimation" data-phase={phase}>
-      <canvas ref={canvasRef} />
-    </div>
-  )
-}
+  },
+)

@@ -5,7 +5,9 @@
 // no `test.globals: true`).
 import '@testing-library/jest-dom/vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { createRef } from 'react'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { DiceAnimationHandle } from './dice/DiceAnimation'
 import { Felt, LiveFelt } from './Felt'
 import { initialRollLogState } from './state/liveRollLog'
 import { initialState } from '../../lib/tableReducer'
@@ -92,13 +94,14 @@ describe('Felt', () => {
 
 // Thin prop-plumbing checks — DiceAnimation's own phase/timing/queueing
 // behavior is fully covered by dice/DiceAnimation.test.tsx; these only
-// confirm LiveFelt actually threads diceResult/diceSpeed/onDiceSettled
-// through to it rather than dropping them.
+// confirm LiveFelt actually threads the diceAnimationRef/diceSpeed/
+// onDiceSettled through to it rather than dropping them.
 describe('LiveFelt dice wiring', () => {
   const noop = () => {}
 
-  function renderLive(diceResult: [number, number] | null, diceSpeed: number, onDiceSettled: () => void) {
-    return render(
+  function renderLive(diceSpeed: number, onDiceSettled: () => void) {
+    const diceAnimationRef = createRef<DiceAnimationHandle>()
+    const view = render(
       <LiveFelt
         tableState={initialState()}
         rollLog={initialRollLogState()}
@@ -106,11 +109,12 @@ describe('LiveFelt dice wiring', () => {
         setPlayerName={noop}
         roster={[]}
         setTableState={noop}
-        diceResult={diceResult}
+        diceAnimationRef={diceAnimationRef}
         diceSpeed={diceSpeed}
         onDiceSettled={onDiceSettled}
       />,
     )
+    return { ...view, diceAnimationRef }
   }
 
   beforeEach(() => {
@@ -121,19 +125,21 @@ describe('LiveFelt dice wiring', () => {
     vi.useRealTimers()
   })
 
-  it('passes a null diceResult through as idle (no animation started)', () => {
-    const { container } = renderLive(null, 1, noop)
+  it('starts idle with nothing enqueued', () => {
+    const { container } = renderLive(1, noop)
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'idle')
   })
 
-  it('passes a real diceResult through and starts the animation', () => {
-    const { container } = renderLive([3, 4], 1, noop)
+  it('forwards the ref through so App.tsx can enqueue a roll and start the animation', () => {
+    const { container, diceAnimationRef } = renderLive(1, noop)
+    act(() => diceAnimationRef.current?.enqueue([3, 4]))
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
   })
 
   it('wires onDiceSettled through end-to-end — it fires once the animation settles', () => {
     const onDiceSettled = vi.fn()
-    renderLive([3, 4], 1, onDiceSettled)
+    const { diceAnimationRef } = renderLive(1, onDiceSettled)
+    act(() => diceAnimationRef.current?.enqueue([3, 4]))
 
     act(() => vi.advanceTimersByTime(1000)) // normal-speed cycle: 700ms flight + 300ms bounce
     expect(onDiceSettled).toHaveBeenCalledTimes(1)
@@ -164,7 +170,7 @@ describe('LiveFelt chip status rendering', () => {
         setPlayerName={noop}
         roster={[]}
         setTableState={noop}
-        diceResult={null}
+        diceAnimationRef={createRef<DiceAnimationHandle>()}
         diceSpeed={1}
         onDiceSettled={noop}
       />,

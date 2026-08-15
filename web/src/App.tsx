@@ -20,6 +20,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import type { DiceAnimationHandle } from './components/felt/dice/DiceAnimation'
 import { LiveFelt } from './components/felt/Felt'
 import { initialRollLogState, rollLogReducer, type RollLogState } from './components/felt/state/liveRollLog'
 import { initialPlayByPlay, playByPlayReducer, type PlayByPlayEntry } from './components/felt/state/playByPlay'
@@ -61,7 +62,13 @@ export default function App() {
   const [seats, setSeats] = useState<Seat[]>([])
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [diceResult, setDiceResult] = useState<[number, number] | null>(null)
+  // Not React state: DiceAnimation is fed each roll via this ref's
+  // imperative enqueue() call, not a prop — see DiceAnimation's own
+  // docstring for why a `result` prop (driven by setState) used to
+  // silently lose rolls under React's batching whenever the backend
+  // outpaced a render (routine at Turbo, and possible at any speed
+  // once enough backlog piles up).
+  const diceAnimationRef = useRef<DiceAnimationHandle>(null)
   const stream = useRef<StreamHandle | null>(null)
   // While the dice animation plays, envelopes that would move chips,
   // pop fade-up toasts, or light ATS numbers are queued here instead
@@ -154,7 +161,7 @@ export default function App() {
       setFeed(initialPlayByPlay())
       diceAnimating.current = false
       pendingEnvelopes.current = []
-      setDiceResult(null)
+      diceAnimationRef.current?.reset()
       awaitingReveal.current = false
       inPrepPhase.current = false
       revealQueue.current = []
@@ -194,7 +201,7 @@ export default function App() {
           awaitingReveal.current = true
           inPrepPhase.current = false
           setAwaitingRoll(true)
-          setDiceResult(envelope.dice)
+          diceAnimationRef.current?.enqueue(envelope.dice)
         }
         // Marks the start of "next round's prep" — everything from
         // here until the next DiceRolled belongs to the upcoming roll,
@@ -401,7 +408,7 @@ export default function App() {
     setError(null)
     diceAnimating.current = false
     pendingEnvelopes.current = []
-    setDiceResult(null)
+    diceAnimationRef.current?.reset()
     awaitingReveal.current = false
     inPrepPhase.current = false
     revealQueue.current = []
@@ -451,7 +458,7 @@ export default function App() {
         setPlayerName={setPlayerName}
         roster={roster}
         setTableState={setState}
-        diceResult={diceResult}
+        diceAnimationRef={diceAnimationRef}
         diceSpeed={speed}
         onDiceSettled={handleDiceSettled}
         sidebar={
