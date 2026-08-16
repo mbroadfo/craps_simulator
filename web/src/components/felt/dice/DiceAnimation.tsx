@@ -99,6 +99,21 @@ function durationsFor(speed: number) {
   return { flightMs: FLIGHT_MS, bounceMs: BOUNCE_MS }
 }
 
+// If the animation can't keep pace with how fast rolls are actually
+// arriving — a slow machine, or just the inherent steady-state gap
+// below 5x (the backend can produce a roll every ~500ms at 1x; a full
+// animation cycle takes ~1000ms, so the backlog in queuedResults grows
+// even on a fast machine given enough time) — waiting it out only
+// drifts the felt further and further behind real game state for the
+// rest of the session. Once the backlog is this many deep, force
+// instant settling (regardless of the speed prop) to burn it down,
+// and stay there until it's back to fully empty, not just under the
+// threshold — otherwise a session near the line would flicker between
+// animated and instant every other roll. A sawtooth of "animate for a
+// while, catch up in a burst" once it resumes is the intended
+// trade-off, not a bug.
+const DEGRADE_QUEUE_DEPTH = 3
+
 function createFaceTexture(value: number): THREE.CanvasTexture {
   const canvas = document.createElement('canvas')
   canvas.width = 128
@@ -379,6 +394,9 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
     // `speed` prop itself isn't enough there.
     const speedRef = useRef(speed)
     speedRef.current = speed
+    // True while forcing instant settling to burn down a deep backlog
+    // — see DEGRADE_QUEUE_DEPTH's own comment.
+    const degraded = useRef(false)
 
     useEffect(() => {
       const canvas = canvasRef.current
@@ -440,6 +458,7 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
         timers.current = []
         queuedResults.current = []
         cycleActive.current = false
+        degraded.current = false
         setPhase('idle')
       },
     }))
@@ -448,6 +467,17 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
       cycleActive.current = true
       for (const id of timers.current) window.clearTimeout(id)
       timers.current = []
+
+      // A deep-enough backlog forces instant settling regardless of
+      // speed, until it's fully drained — see DEGRADE_QUEUE_DEPTH.
+      // Checked here (queuedResults.current holds everything still
+      // waiting *behind* this roll) so it reflects how far behind we
+      // are the instant a new cycle is about to start, on every call —
+      // both the external enqueue() path and settle()'s internal
+      // recursive one.
+      const backlog = queuedResults.current.length
+      if (backlog >= DEGRADE_QUEUE_DEPTH) degraded.current = true
+      else if (backlog === 0) degraded.current = false
 
       // speedRef.current, not the `speed` prop directly: settle() below
       // can recursively call runCycle() again for an already-queued
@@ -460,7 +490,7 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
       // silently ignored the slider for the rest of a long backlog
       // (a real reported bug: "moving the slider while playing has no
       // effect"). The ref is updated every render, so it's always current.
-      const { flightMs, bounceMs } = durationsFor(speedRef.current)
+      const { flightMs, bounceMs } = degraded.current ? { flightMs: 0, bounceMs: 0 } : durationsFor(speedRef.current)
       const wp = computeDieWaypoints(pickLandingCenter())
       waypoints.current = wp
 

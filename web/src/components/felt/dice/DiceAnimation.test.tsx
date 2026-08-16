@@ -182,6 +182,11 @@ describe('DiceAnimation phase timeline', () => {
     // outside React state entirely — every call here happens
     // synchronously inside one `act()`, simulating exactly that kind
     // of same-tick burst, and none may be lost.
+    // Kept to 3 calls (1 running + 2 queued), under DEGRADE_QUEUE_DEPTH
+    // — the separate "forces instant settling" test below covers what
+    // happens once a backlog gets deep enough; this one stays focused
+    // on proving the imperative-call-batching guarantee on its own,
+    // with every roll still taking its own full normal-speed cycle.
     const onSettled = vi.fn()
     const { ref } = renderDice(1, onSettled)
 
@@ -189,14 +194,12 @@ describe('DiceAnimation phase timeline', () => {
       ref.current?.enqueue([1, 1])
       ref.current?.enqueue([2, 2])
       ref.current?.enqueue([3, 3])
-      ref.current?.enqueue([4, 4])
-      ref.current?.enqueue([5, 5])
     })
 
-    // Only the first has started animating; the other four are queued.
+    // Only the first has started animating; the other two are queued.
     expect(onSettled).not.toHaveBeenCalled()
 
-    for (let expected = 1; expected <= 5; expected++) {
+    for (let expected = 1; expected <= 3; expected++) {
       act(() => vi.advanceTimersByTime(1000))
       expect(onSettled).toHaveBeenCalledTimes(expected)
     }
@@ -260,5 +263,36 @@ describe('DiceAnimation phase timeline', () => {
     // this same tick.
     act(() => vi.advanceTimersByTime(1000))
     expect(onSettled).toHaveBeenCalledTimes(2)
+  })
+
+  it('forces instant settling once the backlog is deep enough, then resumes normal speed once fully drained', () => {
+    // At 1x the backend can outpace the ~1s animation even on a fast
+    // machine (steady-state norm, not just a slow-PC symptom) — left
+    // alone, the felt would drift further and further behind actual
+    // game state for the rest of the session. Once queuedResults is
+    // deep enough, subsequent rolls settle instantly (regardless of
+    // the speed prop) until the backlog is fully drained, then normal-
+    // speed animation resumes.
+    const onSettled = vi.fn()
+    const { ref } = renderDice(1, onSettled)
+
+    act(() => {
+      ref.current?.enqueue([1, 1]) // starts animating immediately at 1x (queue is empty)
+      ref.current?.enqueue([2, 2]) // queues
+      ref.current?.enqueue([3, 3]) // queues
+      ref.current?.enqueue([4, 4]) // queues
+      ref.current?.enqueue([5, 5]) // queues — 4 waiting once roll 1 settles, past the threshold
+    })
+    expect(onSettled).not.toHaveBeenCalled()
+
+    // Roll 1 finishes its normal 1x cycle; by then the backlog is deep
+    // enough that rolls 2-4 cascade through instantly in this same
+    // tick, leaving only roll 5 — which finds an empty queue, clears
+    // the degraded flag, and needs its own full cycle.
+    act(() => vi.advanceTimersByTime(1000))
+    expect(onSettled).toHaveBeenCalledTimes(4)
+
+    act(() => vi.advanceTimersByTime(1000))
+    expect(onSettled).toHaveBeenCalledTimes(5)
   })
 })
