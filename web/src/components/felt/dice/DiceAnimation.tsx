@@ -85,25 +85,31 @@ const BOUNCE_CYCLES = 2.5
 // slots: [+X, -X, +Y, -Y, +Z, -Z].
 const FACE_VALUES = [2, 5, 1, 6, 3, 4]
 
-// Above this speed the animation is skipped entirely (instant settle,
-// same as Turbo) rather than just shortened — a faster/shortened tier
-// used to exist here (5x-9.9x got a 300ms flight with no bounce), but
-// a half-length animation is still a real animation: it's still
-// subject to the same round-overlap timing this whole file's queueing
-// exists to handle, for a visual payoff that barely reads at speed
-// anyway. One threshold is simpler to reason about than two.
+// At and above this speed the animation is skipped entirely (instant
+// settle, same as Turbo) — a visual payoff that barely reads at speed
+// anyway, and not worth the same round-overlap timing this whole
+// file's queueing exists to handle. Below it, flight/bounce scale
+// down continuously with speed (see durationsFor) rather than sitting
+// at a flat 1000ms until this cliff: a flat duration meant the slider
+// had no visible effect on how fast rounds actually played out
+// anywhere in the 1x-4.9x range (a real reported bug) — the backend's
+// own per-round pace already scales by 1/speed (see App.tsx's
+// DEFAULT_ROLL_DELAY_MS / speed), so the animation needs to track it
+// to avoid becoming the pacing bottleneck itself.
 const ANIMATE_BELOW_SPEED = 5
 
 function durationsFor(speed: number) {
   if (speed >= ANIMATE_BELOW_SPEED) return { flightMs: 0, bounceMs: 0 }
-  return { flightMs: FLIGHT_MS, bounceMs: BOUNCE_MS }
+  const scale = 1 / speed
+  return { flightMs: Math.round(FLIGHT_MS * scale), bounceMs: Math.round(BOUNCE_MS * scale) }
 }
 
 // If the animation can't keep pace with how fast rolls are actually
 // arriving — a slow machine, or just the inherent steady-state gap
-// below 5x (the backend can produce a roll every ~500ms at 1x; a full
-// animation cycle takes ~1000ms, so the backlog in queuedResults grows
-// even on a fast machine given enough time) — waiting it out only
+// below 5x (the backend's per-round pace and durationsFor's flight/
+// bounce both scale by 1/speed, but not identically — 500ms vs 1000ms
+// at 1x — so the backlog in queuedResults grows even on a fast machine
+// given enough time, at any speed in this range) — waiting it out only
 // drifts the felt further and further behind real game state for the
 // rest of the session. Once the backlog is this many deep, force
 // instant settling (regardless of the speed prop) to burn it down,
@@ -397,6 +403,12 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
     // True while forcing instant settling to burn down a deep backlog
     // — see DEGRADE_QUEUE_DEPTH's own comment.
     const degraded = useRef(false)
+    // The roll-sound clip (ROLL_SOUND_URL) runs longer than the visual
+    // flight+bounce — tracked here so it can be cut off the instant the
+    // dice actually stop (or the animation is reset/paused), instead of
+    // trailing on and sounding like dice are still rolling after they've
+    // visibly settled (a real reported bug).
+    const activeAudio = useRef<HTMLAudioElement | null>(null)
 
     useEffect(() => {
       const canvas = canvasRef.current
@@ -441,6 +453,14 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
       return clearTimers
     }, [])
 
+    function stopActiveAudio() {
+      const audio = activeAudio.current
+      if (!audio) return
+      audio.pause()
+      audio.currentTime = 0
+      activeAudio.current = null
+    }
+
     // No deps array: recreated every render so `runCycle` always closes
     // over the current `speed` prop — this component re-renders rarely
     // (only on real prop/state changes), so there's no meaningful cost
@@ -459,6 +479,7 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
         queuedResults.current = []
         cycleActive.current = false
         degraded.current = false
+        stopActiveAudio()
         setPhase('idle')
       },
     }))
@@ -495,11 +516,19 @@ export const DiceAnimation = forwardRef<DiceAnimationHandle, { speed: number; on
       waypoints.current = wp
 
       if (flightMs > 0) {
-        new Audio(ROLL_SOUND_URL).play().catch(() => {}) // autoplay can be blocked; a failed play() is silent, not an error
+        stopActiveAudio() // a backlog can start a new roll before the previous one's clip finished
+        const audio = new Audio(ROLL_SOUND_URL)
+        // Matches the flight/bounce scaling above so the clatter still
+        // tracks the shortened roll instead of playing at its recorded
+        // (1x) pace regardless of speed.
+        audio.playbackRate = speedRef.current
+        activeAudio.current = audio
+        audio.play().catch(() => {}) // autoplay can be blocked; a failed play() is silent, not an error
         sceneRef.current?.startRoll(wp, nextResult, flightMs, flightMs + bounceMs)
       }
 
       const settle = () => {
+        stopActiveAudio() // the clip runs longer than flightMs+bounceMs; cut it the instant the dice visually stop
         sceneRef.current?.settle(wp, nextResult)
         setPhase('settled')
         onSettled()

@@ -33,6 +33,10 @@ beforeAll(() => {
   // component's own .catch(() => {}) is meant to swallow. Stub it so
   // that rejection doesn't spam the test output.
   window.HTMLMediaElement.prototype.play = () => Promise.resolve()
+  // Same story for pause() — the component now cuts the roll-sound
+  // clip short (stopActiveAudio()) rather than letting it run past the
+  // visual settle, so pause() is called on every real cycle.
+  window.HTMLMediaElement.prototype.pause = () => {}
 })
 
 let felt: HTMLDivElement
@@ -98,14 +102,42 @@ describe('DiceAnimation phase timeline', () => {
     expect(onSettled).toHaveBeenCalledTimes(1)
   })
 
-  it('just below the 5x threshold still plays the full animation', () => {
+  it('just below the 5x threshold still animates, but scaled down to a fraction of the normal-speed duration', () => {
+    // At 4.9x, flight (700ms/4.9 ≈ 143ms) + bounce (300ms/4.9 ≈ 61ms)
+    // ≈ 204ms total — still a real, visible animation (unlike >=5x,
+    // which is instant), just far shorter than the flat 1000ms every
+    // sub-5x speed used to take regardless of the slider.
     const onSettled = vi.fn()
     const { container, ref } = renderDice(4.9, onSettled)
     act(() => ref.current?.enqueue([1, 1]))
 
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
     expect(onSettled).not.toHaveBeenCalled()
-    act(() => vi.advanceTimersByTime(1000))
+    act(() => vi.advanceTimersByTime(203))
+    expect(onSettled).not.toHaveBeenCalled()
+    act(() => vi.advanceTimersByTime(1))
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'settled')
+    expect(onSettled).toHaveBeenCalledTimes(1)
+  })
+
+  it('scales flight and bounce duration with speed, so the slider has a real effect below the 5x cliff', () => {
+    // Regression test for a real reported bug: "moving the slider up
+    // to 4.9 has no impact on the game speed." durationsFor used to
+    // return the same flat 700ms/300ms for every speed from 1 up to
+    // just under 5, so the animation itself became the pacing
+    // bottleneck the closer the slider got to (but stayed under) the
+    // instant-settle cliff. At speed=2 the cycle should now take half
+    // as long as normal speed: 350ms flight + 150ms bounce = 500ms.
+    const onSettled = vi.fn()
+    const { container, ref } = renderDice(2, onSettled)
+    act(() => ref.current?.enqueue([4, 4]))
+
+    act(() => vi.advanceTimersByTime(349))
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'launching')
+    act(() => vi.advanceTimersByTime(1))
+    expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'bouncing')
+    expect(onSettled).not.toHaveBeenCalled()
+    act(() => vi.advanceTimersByTime(150))
     expect(container.querySelector('.diceAnimation')).toHaveAttribute('data-phase', 'settled')
     expect(onSettled).toHaveBeenCalledTimes(1)
   })

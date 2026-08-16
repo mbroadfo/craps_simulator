@@ -28,8 +28,10 @@ beforeAll(() => {
   // jsdom has no audio decoding pipeline — HTMLMediaElement.play()
   // rejects with "not implemented" by default; LiveFelt's dice
   // animation plays a roll sound, so this needs the same stub
-  // DiceAnimation.test.tsx uses.
+  // DiceAnimation.test.tsx uses. pause() is stubbed too since the
+  // animation now cuts the clip short at settle time.
   window.HTMLMediaElement.prototype.play = () => Promise.resolve()
+  window.HTMLMediaElement.prototype.pause = () => {}
 })
 
 // RTL's auto-cleanup-between-tests relies on detecting a global

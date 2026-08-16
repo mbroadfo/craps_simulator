@@ -55,6 +55,7 @@ beforeAll(() => {
     globalThis.ResizeObserver = ResizeObserverStub
   }
   window.HTMLMediaElement.prototype.play = () => Promise.resolve()
+  window.HTMLMediaElement.prototype.pause = () => {}
 })
 
 afterEach(() => {
