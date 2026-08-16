@@ -59,3 +59,38 @@ def test_round_ready_precedes_dice_rolled():
     round_ready_idx = next(i for i, e in enumerate(events) if isinstance(e, RoundReady))
     dice_rolled_idx = next(i for i, e in enumerate(events) if isinstance(e, DiceRolled))
     assert round_ready_idx < dice_rolled_idx
+
+
+def test_table_is_swept_clean_after_the_final_shooters_seven_out():
+    """Regression test for a real reported bug: bets were still visible
+    on the felt after the last shooter's 7-out. A winning Place/Buy/Lay
+    bet that stays up per leave_winning_bets_up (the default house
+    rule) is normal mid-session — the next shooter's rolls eventually
+    resolve or re-activate it. But there IS no next shooter after the
+    final one, so without an explicit sweep it just lingers on the
+    table (and, via its already-published BetResolved, on the felt)
+    forever. Mirrors the async TableSession._drive() loop: call
+    prepare_next_roll()/roll_and_resolve() directly and stop once
+    shooters_done reaches max_shooters.
+    """
+    runner = TableRunner(
+        table_id="sweep-check",
+        # "Lay Outside" places Lay bets, which win (not lose) on a
+        # 7-out — combined with the default leave_winning_bets_up house
+        # rule, that's exactly the case that used to strand chips on
+        # the felt after the session ended (confirmed via direct repro
+        # before this fix: 2 leftover Lay bets, every seed tried).
+        players=[("Layla", "Lay Outside")],
+        max_shooters=3,
+        dice_seed=11,
+    )
+    runner.start_session()
+
+    shooters_done = 0
+    while shooters_done < runner.max_shooters:
+        runner.prepare_next_roll()
+        summary = runner.roll_and_resolve()
+        if summary.new_shooter_assigned:
+            shooters_done += 1
+
+    assert runner.engine.table.bets == []

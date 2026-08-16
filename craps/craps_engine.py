@@ -383,6 +383,46 @@ class CrapsEngine:
             shooter_name=shooter.name,
         ))
 
+    def sweep_table_at_session_end(self) -> None:
+        """Clear whatever bets are still on the table after the final
+        shooter's final 7-out — see handle_post_roll's call site. Every
+        one of these already had its verdict for this roll (or is just
+        sitting there per leave_winning_bets_up/come-out-off); nothing
+        further is owed, since a win already paid out via win_bet() the
+        roll it happened and placing a bet never deducts principal up
+        front (see Player.place_bet) — this only removes it from the
+        table and tells the frontend to drop the chip, via the same
+        BetResolved event every other resolution uses.
+        """
+        if not self.table:
+            return
+        for bet in list(self.table.bets):
+            if bet not in self.table.bets:
+                continue  # already removed alongside its parent, below
+            self.table.bets.remove(bet)
+            for attached in [b for b in self.table.bets if b.parent_bet is bet]:
+                self.table.bets.remove(attached)
+                self.events.publish(BetResolved(
+                    player_name=attached.owner.name,
+                    bet_type=attached.bet_type,
+                    amount=attached.amount,
+                    number=attached.number,
+                    status="return",
+                    payout=0,
+                    win_payout=0,
+                    removed=True,
+                ))
+            self.events.publish(BetResolved(
+                player_name=bet.owner.name,
+                bet_type=bet.bet_type,
+                amount=bet.amount,
+                number=bet.number,
+                status="return",
+                payout=0,
+                win_payout=0,
+                removed=True,
+            ))
+
     def refresh_bet_statuses(self) -> None:
         """Reset bet statuses based on game phase, house rules, and strategy preferences."""
         if not self.table or not self.game_state or not self.house_rules:
@@ -483,6 +523,15 @@ class CrapsEngine:
                     strategy.on_new_shooter()
             self.assign_next_shooter()
             new_shooter_assigned = True
+            if self.game_state.shooter is None:
+                # assign_next_shooter()'s own max-shooters guard no-op'd —
+                # this was the final shooter's final roll, so no future
+                # roll will ever resolve or re-activate whatever's still
+                # on the table (winning Place/Buy/Lay bets kept up per
+                # leave_winning_bets_up, bets left "inactive" for a
+                # come-out that will now never happen, etc.). Sweep it
+                # now instead of leaving it stranded on the felt forever.
+                self.sweep_table_at_session_end()
 
         # ✅ Shooter continues if it’s a come-out roll and not a 7-out
         shooter_continues = not seven_out and current_phase == "come-out"

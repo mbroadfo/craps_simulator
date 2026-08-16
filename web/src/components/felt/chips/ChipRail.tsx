@@ -1,4 +1,5 @@
 import { DENOMS } from '../data'
+import { FONT_MONO } from '../fonts'
 import { CHIP_H, CHIP_PATTERNS, CHIP_PITCH, CHIP_W, GROUP_GAP, RAIL_H, RAIL_ORDER, RAIL_W, RAIL_X0, RAIL_Y0 } from '../layout'
 import { useFeltState } from '../state/FeltStateContext'
 
@@ -51,6 +52,12 @@ export function ChipRail() {
 
   let x = RAIL_X0 + 14
   let chipIndex = 0
+  // rackDenomsForAmount deliberately textures the pile instead of
+  // spelling the total out in chip count (see its own comment) — the
+  // rack has no per-chip $ label the way a bet stack does, so without
+  // this the total bankroll-not-on-the-felt isn't actually readable at
+  // a glance, only its rough shape.
+  const total = groups.reduce((sum, gr) => sum + gr.value * gr.count, 0)
 
   return (
     <g id="rail-section-P1" data-testid="chip-rail">
@@ -73,6 +80,16 @@ export function ChipRail() {
           </g>
         )
       })}
+      <text
+        x={x + 16}
+        y={RAIL_Y0 + RAIL_H / 2 + 7}
+        fontFamily={FONT_MONO}
+        fontWeight={700}
+        fontSize={20}
+        fill="#f3ce74"
+      >
+        ${total}
+      </text>
     </g>
   )
 }
