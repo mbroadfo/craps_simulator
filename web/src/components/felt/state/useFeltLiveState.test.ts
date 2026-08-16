@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { ChipStack, FadeUp } from '../../../lib/tableReducer'
-import { buildChipZones, buildToastBuckets } from './useFeltLiveState'
+import type { ChipStack, FadeUp, PlayerState } from '../../../lib/tableReducer'
+import { buildChipZones, buildToastBuckets, rackBankroll } from './useFeltLiveState'
 
 function stack(overrides: Partial<ChipStack>): ChipStack {
   return { player: 'Molly', betType: 'Come Odds', number: 6, amounts: [50], status: 'active', ...overrides }
@@ -9,6 +9,27 @@ function stack(overrides: Partial<ChipStack>): ChipStack {
 function fadeUp(overrides: Partial<FadeUp>): FadeUp {
   return { seq: 0, player: 'Molly', betType: 'Come Odds', number: 6, delta: 0, kind: 'return', ...overrides }
 }
+
+describe('rackBankroll', () => {
+  it('falls back to the $500 starting bankroll with no seat selected yet', () => {
+    // Regression test for a real reported bug: the rack showed $0
+    // before Start (playerName is '' until a table is created — see
+    // App.tsx), instead of a believable starting bankroll.
+    expect(rackBankroll(undefined)).toBe(500)
+  })
+
+  it("uses the seat's real bankroll once one exists, even if it's $0", () => {
+    // A real bankrupt bot must not get silently overridden back to
+    // $500 by the same fallback — only the "no seat yet" case should.
+    const player: PlayerState = { bankroll: 0, history: [500, 0], atRisk: 0, atRiskHistory: [0, 0] }
+    expect(rackBankroll(player)).toBe(0)
+  })
+
+  it("uses the seat's real bankroll when it differs from the starting default", () => {
+    const player: PlayerState = { bankroll: 340, history: [500, 340], atRisk: 0, atRiskHistory: [0, 0] }
+    expect(rackBankroll(player)).toBe(340)
+  })
+})
 
 describe('buildChipZones', () => {
   it('carries an active stack\'s status onto its zone', () => {

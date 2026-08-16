@@ -21,9 +21,23 @@ import type { RollLogState } from './liveRollLog'
 let nextToastId = 0
 const noop = () => {}
 
+// Every bot is seated with this balance (craps/player.py's Player.__init__
+// default, also craps/player_setup.py) — not exposed by any API, so it's
+// duplicated here as the rack's pre-session placeholder. Before a table
+// exists there's no selected player yet (playerName is ''), so without
+// this the rack would show $0 instead of a believable starting bankroll.
+const DEFAULT_STARTING_BANKROLL = 500
+
 /** Bankroll minus the seat's starting bankroll, or null with no roll history yet. */
 export function netFor(player: PlayerState | undefined): number | null {
   return player && player.history.length > 0 ? player.bankroll - player.history[0] : null
+}
+
+/** The rack's bankroll figure — a real seat's, or the pre-session placeholder
+ * with no seat selected yet (a real reported bug: the rack showed $0 before
+ * Start instead of a believable starting bankroll). */
+export function rackBankroll(player: PlayerState | undefined): number {
+  return player?.bankroll ?? DEFAULT_STARTING_BANKROLL
 }
 
 /**
@@ -142,7 +156,7 @@ export function useFeltLiveState(
   // dollar label at all, so chip texture is the only signal it has.
   const feltTotal = Object.values(chips).reduce((sum, z) => sum + z.denoms.reduce((s, d) => s + d, 0), 0)
   const player = tableState.players.get(playerName)
-  const bankroll = player?.bankroll ?? 0
+  const bankroll = rackBankroll(player)
   const rack: Record<number, number> = {}
   for (const d of rackDenomsForAmount(Math.max(0, bankroll - feltTotal))) rack[d] = (rack[d] ?? 0) + 1
   const net = netFor(player)
