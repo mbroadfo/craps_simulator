@@ -26,6 +26,16 @@ dev = [
     "types-tqdm==4.68.0.20260608",
 ]
 
+[tool.setuptools]
+# config.py lives at the repo root but is imported *by the package*
+# (craps/craps_engine.py and craps/table_runner.py both do
+# `from config import ...`). packages.find only picks up `craps*`, so
+# without this a non-editable `pip install .` — which is what the
+# container build does — installs a package that can't import itself.
+# An editable install masks the problem by leaving the repo root on
+# sys.path.
+py-modules = ["config"]
+
 [tool.setuptools.packages.find]
 include = ["craps*"]
 

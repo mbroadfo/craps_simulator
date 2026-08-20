@@ -15,7 +15,7 @@ from craps.house_rules import HouseRules
 from craps.lineup import PlayerLineup
 from craps.play_by_play import PlayByPlay
 from craps.rules_engine import RulesEngine
-from craps.server.director import TableDirector
+from craps.server.director import TableDirector, TableLimitReached
 from craps.server.schemas import CreateTableRequest, PaceRequest
 from craps.server.table_session import TableSession
 
@@ -34,6 +34,12 @@ SSE_HEADERS = {
     "Connection": "keep-alive",
     "X-Accel-Buffering": "no",
 }
+
+#: Idle gap after which the stream emits an SSE comment frame. Well
+#: under the ~100s a proxy like Cloudflare's will wait before dropping a
+#: silent connection — and a paused table is legitimately silent, so
+#: without this a long pause kills the stream and the felt just stops.
+SSE_KEEPALIVE_SECONDS = 20.0
 
 
 def _director(request: Request) -> TableDirector:
@@ -76,6 +82,10 @@ async def create_table(request: Request, body: CreateTableRequest) -> Dict[str, 
             dice_seed=body.dice_seed,
             record=body.record,
         )
+    except TableLimitReached as exc:
+        # Capacity, not a client mistake — the caller can retry once a
+        # table finishes, so 503 rather than 409.
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     return session.snapshot()
@@ -157,14 +167,17 @@ async def table_events(
 ) -> Dict[str, Any]:
     """Paged event log for the live/just-finished session (D2)."""
     session = _session(request, table_id)
-    buffer = session.broadcaster.buffer
-    page = buffer[after_seq + 1 : after_seq + 1 + max(0, limit)]
+    broadcaster = session.broadcaster
+    page = broadcaster.events_after(after_seq, limit)
     return {
         "table_id": table_id,
         "events": page,
         "next_after_seq": page[-1]["seq"] if page else after_seq,
-        "total": len(buffer),
-        "finished": session.broadcaster.finished,
+        # Events ever published, not events still buffered — the buffer
+        # is now capped (MAX_BUFFERED_EVENTS), and this figure needs to
+        # keep matching the untrimmed recording's own total.
+        "total": broadcaster.next_seq,
+        "finished": broadcaster.finished,
     }
 
 
@@ -184,7 +197,15 @@ async def stream_table(request: Request, table_id: str) -> StreamingResponse:
             ) from exc
 
     async def event_source() -> AsyncIterator[str]:
-        async for envelope in session.broadcaster.listen(after_seq):
+        stream = session.broadcaster.listen(
+            after_seq, keepalive=SSE_KEEPALIVE_SECONDS
+        )
+        async for envelope in stream:
+            if envelope is None:
+                # Comment frame: keeps the connection alive through an
+                # idle stretch without being visible to EventSource.
+                yield ": keepalive\n\n"
+                continue
             data = json.dumps(envelope, separators=(",", ":"))
             yield f"id: {envelope['seq']}\nevent: {envelope['type']}\ndata: {data}\n\n"
 

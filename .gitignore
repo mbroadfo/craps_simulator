@@ -14,9 +14,16 @@ env/
 *.egg-info/
 .mypy_cache/
 .pytest_cache/
+.ruff_cache/
+build/
 output/
 sessions/
 node_modules/
+
+# Local environment config. Holds only PYTHONPATH today (VS Code reads
+# it), but an untracked .env is the norm — this repo now drives a
+# deployment, and a credential landing here must not reach git.
+.env
 
 # Ignore IDE-specific files
 .vscode/

@@ -1,0 +1,48 @@
+# Keep the build context small. output/ alone is ~560MB locally and
+# sessions/ ~63MB — a naive context upload would ship ~620MB of local
+# run artifacts to the daemon on every build.
+output/
+sessions/
+saves/
+
+# Virtualenvs and Python caches
+.venv/
+venv/
+env/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# Node: node_modules is reinstalled via `npm ci` in the web stage, and
+# dist is rebuilt there — never copy a stale local build into the image.
+node_modules/
+web/node_modules/
+web/dist/
+
+# VCS, CI, editors, OS
+.git/
+.gitignore
+.github/
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
+
+# Not needed at runtime
+tests/
+prototype/
+assets/
+scripts/
+terraform/
+*.ps1
+*.md
+*.png
+*.pkl
+.env

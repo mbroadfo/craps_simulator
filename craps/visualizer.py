@@ -1,5 +1,3 @@
-import matplotlib
-import matplotlib.pyplot as plt
 from typing import Any
 import os
 
@@ -17,6 +15,15 @@ class Visualizer:
 
     def visualize_bankrolls(self) -> None:
         """Visualize player bankrolls over time."""
+        # Imported here, not at module scope: CrapsEngine imports this
+        # class, so a top-level matplotlib import put matplotlib, numpy
+        # and PIL into *every* process that touches the engine —
+        # including the web server, which never draws a chart. That's
+        # ~100 MB of image and a slow import on a container cold start,
+        # for a CLI-only feature.
+        import matplotlib
+        import matplotlib.pyplot as plt
+
         plt.figure(figsize=(12, 6))
 
         # Plot each player's bankroll

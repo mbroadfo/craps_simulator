@@ -12,6 +12,7 @@ can't starve the server.
 """
 from __future__ import annotations
 import asyncio
+import time
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
@@ -37,6 +38,9 @@ class TableSession:
         self.table_id = table_id
         self.roll_delay_ms = roll_delay_ms
         self.state = "created"  # created → running ⇄ paused → finished | stopped
+        #: When the session reached a terminal state, for TableDirector's
+        #: eviction sweep. None while it can still roll.
+        self.ended_at: Optional[float] = None
         self.runner = TableRunner(
             table_id=table_id,
             players=players,
@@ -165,9 +169,11 @@ class TableSession:
                     break
             self.stats = runner.finalize()
             self.state = "finished"
+            self.ended_at = time.monotonic()
         except asyncio.CancelledError:
             self.stats = runner.finalize()
             self.state = "stopped"
+            self.ended_at = time.monotonic()
             raise
         finally:
             self.broadcaster.close()
