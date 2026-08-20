@@ -7,18 +7,35 @@ name = "craps_simulator"
 version = "0.1"
 description = "Craps simulation engine for testing betting strategies at scale"
 requires-python = ">=3.11"
+# Runtime deps for the web server only — what `pip install .` in the
+# container gets. colorama belongs here (craps/game_state.py imports it
+# at module scope, so it IS in the server's import path); matplotlib,
+# tqdm and psutil deliberately do not.
 dependencies = [
     "colorama==0.4.6",
     "fastapi==0.139.0",
-    "matplotlib==3.11.0",
-    "psutil==7.2.2",
     "pydantic==2.13.4",
-    "tqdm==4.68.3",
     "uvicorn==0.50.0",
 ]
 
 [project.optional-dependencies]
+# Bulk simulation and charting: run_simulation.py, craps/simulation_report.py
+# (matplotlib), craps/simulation_manager.py (tqdm), simulation_utils.py
+# (psutil). Split out because the server never reaches any of them —
+# importing craps.server.app loads none of these — and leaving them out
+# halves the container image (433MB → 208MB), which is what a
+# scale-to-zero deployment pays on every cold start.
+cli = [
+    "matplotlib==3.11.0",
+    "psutil==7.2.2",
+    "tqdm==4.68.3",
+]
+# Depends on cli on purpose: `mypy craps` type-checks the whole package
+# including the CLI-only modules, so it needs matplotlib/tqdm importable
+# or it fails with import-not-found. This keeps the documented
+# `pip install -e ".[dev]"` working unchanged.
 dev = [
+    "craps_simulator[cli]",
     "pytest==9.1.1",
     "mypy==2.1.0",
     "httpx==0.28.1",

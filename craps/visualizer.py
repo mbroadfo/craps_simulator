@@ -19,10 +19,26 @@ class Visualizer:
         # class, so a top-level matplotlib import put matplotlib, numpy
         # and PIL into *every* process that touches the engine —
         # including the web server, which never draws a chart. That's
-        # ~100 MB of image and a slow import on a container cold start,
-        # for a CLI-only feature.
-        import matplotlib
-        import matplotlib.pyplot as plt
+        # ~225 MB of image and a slow import on a container cold start,
+        # for a CLI-only feature. matplotlib now lives in the optional
+        # [cli] extra, so it can legitimately be absent.
+        #
+        # Caught rather than allowed to propagate because this is the
+        # one place the split fails *late*: charting runs at the very
+        # end of finalize_session, so a bare ImportError would throw
+        # away a long simulation's output at the finish line. The web
+        # server never reaches here at all (quiet_mode takes the other
+        # branch in craps_engine.finalize_session).
+        try:
+            import matplotlib
+            import matplotlib.pyplot as plt
+        except ImportError:
+            print(
+                "⚠️ Charts need the optional plotting dependencies — "
+                'install them with `pip install ".[cli]"`. '
+                "Skipping the bankroll chart; the session itself is unaffected."
+            )
+            return
 
         plt.figure(figsize=(12, 6))
 
