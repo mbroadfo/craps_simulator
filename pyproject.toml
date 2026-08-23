@@ -12,6 +12,10 @@ requires-python = ">=3.11"
 # at module scope, so it IS in the server's import path); matplotlib,
 # tqdm and psutil deliberately do not.
 dependencies = [
+    # boto3 is only reached by the deployed idle-shutdown path (imported
+    # lazily there), but it must be installed in the image for the task to
+    # be able to scale itself to zero.
+    "boto3==1.42.16",
     "colorama==0.4.6",
     "fastapi==0.139.0",
     "pydantic==2.13.4",

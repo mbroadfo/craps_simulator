@@ -256,7 +256,7 @@ $tfPolicyPath = Join-Path $tmp "tf-policy.json"
       "Action": ["iam:CreateRole","iam:DeleteRole","iam:GetRole","iam:PassRole","iam:TagRole","iam:UntagRole","iam:AttachRolePolicy","iam:DetachRolePolicy","iam:PutRolePolicy","iam:DeleteRolePolicy","iam:GetRolePolicy","iam:ListRolePolicies","iam:ListAttachedRolePolicies","iam:ListInstanceProfilesForRole","iam:CreateUser","iam:DeleteUser","iam:GetUser","iam:TagUser","iam:PutUserPolicy","iam:DeleteUserPolicy","iam:GetUserPolicy","iam:ListUserPolicies","iam:ListAccessKeys","iam:CreateAccessKey","iam:DeleteAccessKey"],
       "Resource": ["arn:aws:iam::${AccountId}:role/$App-*","arn:aws:iam::${AccountId}:user/$App-*"] },
     { "Sid": "Logs", "Effect": "Allow",
-      "Action": ["logs:CreateLogGroup","logs:DeleteLogGroup","logs:DescribeLogGroups","logs:PutRetentionPolicy","logs:TagResource","logs:UntagResource","logs:ListTagsForResource"],
+      "Action": ["logs:CreateLogGroup","logs:DeleteLogGroup","logs:DescribeLogGroups","logs:PutRetentionPolicy","logs:TagResource","logs:UntagResource","logs:ListTagsForResource","logs:DescribeLogStreams","logs:GetLogEvents","logs:FilterLogEvents","logs:StartLiveTail"],
       "Resource": "*" },
     { "Sid": "Ssm", "Effect": "Allow",
       "Action": ["ssm:PutParameter","ssm:GetParameter","ssm:GetParameters","ssm:GetParameterHistory","ssm:DeleteParameter","ssm:AddTagsToResource","ssm:RemoveTagsFromResource","ssm:ListTagsForResource"],

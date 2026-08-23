@@ -196,7 +196,22 @@ async def stream_table(request: Request, table_id: str) -> StreamingResponse:
                 status_code=400, detail=f"Bad Last-Event-ID {last_event_id!r}"
             ) from exc
 
+    # An open stream IS activity: during autoplay the browser makes no further
+    # requests, so without this the idle watchdog would sleep the service out
+    # from under a session someone is actively watching.
+    activity = getattr(request.app.state, "activity", None)
+
     async def event_source() -> AsyncIterator[str]:
+        if activity is not None:
+            activity.stream_opened()
+        try:
+            async for chunk in _stream_frames(session, after_seq):
+                yield chunk
+        finally:
+            if activity is not None:
+                activity.stream_closed()
+
+    async def _stream_frames(session: TableSession, after_seq: int) -> AsyncIterator[str]:
         stream = session.broadcaster.listen(
             after_seq, keepalive=SSE_KEEPALIVE_SECONDS
         )

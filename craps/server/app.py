@@ -12,14 +12,19 @@ from __future__ import annotations
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import AsyncIterator, Dict, Optional, Union
+from typing import Any, AsyncIterator, Dict, Optional, Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from craps.server.director import TableDirector
+from craps.server.idle_shutdown import ActivityTracker, watchdog_from_env
 from craps.server.routes import recordings_router, tables_router
+
+
+#: Paths that must NOT count as user activity for idle shutdown.
+HEALTH_PATHS = frozenset({"/health"})
 
 
 def _static_dir() -> Optional[Path]:
@@ -43,11 +48,30 @@ def _static_dir() -> Optional[Path]:
 def create_app(sessions_dir: Union[str, Path] = "sessions") -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        yield
-        await app.state.director.shutdown()
+        # No-op unless CRAPS_ECS_* is set, i.e. only when actually deployed.
+        watchdog = watchdog_from_env(app.state.activity)
+        try:
+            yield
+        finally:
+            if watchdog is not None:
+                watchdog.cancel()
+            await app.state.director.shutdown()
 
     app = FastAPI(title="Craps Observatory API", lifespan=lifespan)
     app.state.director = TableDirector(sessions_dir=sessions_dir)
+    app.state.activity = ActivityTracker()
+
+    @app.middleware("http")
+    async def track_activity(request: Request, call_next: Any) -> Any:
+        # /health is excluded deliberately. ECS runs the container health
+        # check from INSIDE the task (see the Dockerfile HEALTHCHECK and the
+        # task definition), hitting 127.0.0.1/health every 30s -- counting
+        # that as activity would keep the idle watchdog permanently reset
+        # and the service would never scale to zero, which is the entire
+        # cost model. The Cloudflare waker polls it too, for the same reason.
+        if request.url.path not in HEALTH_PATHS:
+            app.state.activity.touch()
+        return await call_next(request)
 
     app.add_middleware(
         CORSMiddleware,
