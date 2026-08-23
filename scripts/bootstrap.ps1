@@ -53,7 +53,10 @@ param(
   [Parameter(Mandatory = $true)][string]$CfAccountId,
   # Optional so the AWS half can be bootstrapped before a token exists.
   # Re-run with -CfToken later to set the secret; the script is idempotent.
-  [string]$CfToken = ""
+  [string]$CfToken = "",
+  # An IAM principal additionally allowed to assume these roles directly, so
+  # Terraform can be run locally without an admin key. Empty means CI-only.
+  [string]$LocalOperatorArn = ""
 )
 
 # Deliberately NOT "Stop": aws and gh write ordinary diagnostics to stderr,
@@ -62,6 +65,12 @@ param(
 # real message. Exit codes are checked explicitly instead, via Invoke-Native
 # and Assert-Ok below.
 $ErrorActionPreference = "Continue"
+
+# powershell.exe -File passes "a,b" as ONE string rather than binding it as an
+# array, which silently produced a single bogus subject
+# (...:ref:refs/heads/master,right-side-panel) matching no branch at all.
+# Normalize either invocation form into a real list.
+$Branch = @($Branch | ForEach-Object { $_ -split ',' } | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })
 
 $env:AWS_PROFILE = $Profile
 $env:AWS_DEFAULT_REGION = $Region
@@ -171,19 +180,40 @@ if ($providers.OpenIDConnectProviderList.Arn -contains $OidcArn) {
   Write-Ok "created"
 }
 
+# A second statement, so a human (or this session) can assume the role with
+# least privilege instead of keeping a long-lived admin key around. Note the
+# roles' inline policies deliberately omit iam:UpdateAssumeRolePolicy, so a
+# role cannot widen its own trust - changing it means re-running this script
+# with admin credentials.
+$localStatement = ""
+if (-not [string]::IsNullOrWhiteSpace($LocalOperatorArn)) {
+  $localStatement = @"
+,
+    {
+      "Sid": "LocalOperator",
+      "Effect": "Allow",
+      "Principal": { "AWS": "$LocalOperatorArn" },
+      "Action": "sts:AssumeRole"
+    }
+"@
+}
+
 $trustPath = Join-Path $tmp "trust.json"
 @"
 {
   "Version": "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Principal": { "Federated": "$OidcArn" },
-    "Action": "sts:AssumeRoleWithWebIdentity",
-    "Condition": {
-      "StringEquals": { "token.actions.githubusercontent.com:aud": "sts.amazonaws.com" },
-      "StringLike":   { "token.actions.githubusercontent.com:sub": [$RepoSubJson] }
-    }
-  }]
+  "Statement": [
+    {
+      "Sid": "GitHubActionsOidc",
+      "Effect": "Allow",
+      "Principal": { "Federated": "$OidcArn" },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": { "token.actions.githubusercontent.com:aud": "sts.amazonaws.com" },
+        "StringLike":   { "token.actions.githubusercontent.com:sub": [$RepoSubJson] }
+      }
+    }$localStatement
+  ]
 }
 "@ | Set-Content -Path $trustPath -Encoding ascii
 
@@ -229,8 +259,11 @@ $tfPolicyPath = Join-Path $tmp "tf-policy.json"
       "Action": ["logs:CreateLogGroup","logs:DeleteLogGroup","logs:DescribeLogGroups","logs:PutRetentionPolicy","logs:TagResource","logs:UntagResource","logs:ListTagsForResource"],
       "Resource": "*" },
     { "Sid": "Ssm", "Effect": "Allow",
-      "Action": ["ssm:PutParameter","ssm:GetParameter","ssm:GetParameters","ssm:GetParameterHistory","ssm:DeleteParameter","ssm:DescribeParameters","ssm:AddTagsToResource","ssm:RemoveTagsFromResource","ssm:ListTagsForResource"],
-      "Resource": "arn:aws:ssm:${Region}:${AccountId}:parameter$SsmSecretPath*" }
+      "Action": ["ssm:PutParameter","ssm:GetParameter","ssm:GetParameters","ssm:GetParameterHistory","ssm:DeleteParameter","ssm:AddTagsToResource","ssm:RemoveTagsFromResource","ssm:ListTagsForResource"],
+      "Resource": "arn:aws:ssm:${Region}:${AccountId}:parameter$SsmSecretPath*" },
+    { "Sid": "SsmList", "Effect": "Allow",
+      "Action": ["ssm:DescribeParameters"],
+      "Resource": "*" }
   ]
 }
 "@ | Set-Content -Path $tfPolicyPath -Encoding ascii
