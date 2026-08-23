@@ -50,7 +50,10 @@ param(
   [string]$Region = "us-west-2",
   [string]$Profile = "admin",
   [Parameter(Mandatory = $true)][string]$CfZoneId,
-  [Parameter(Mandatory = $true)][string]$CfToken
+  [Parameter(Mandatory = $true)][string]$CfAccountId,
+  # Optional so the AWS half can be bootstrapped before a token exists.
+  # Re-run with -CfToken later to set the secret; the script is idempotent.
+  [string]$CfToken = ""
 )
 
 # Deliberately NOT "Stop": aws and gh write ordinary diagnostics to stderr,
@@ -268,6 +271,7 @@ $vars = [ordered]@{
   TF_VAR_CUSTOM_DOMAIN   = $Domain
   TF_VAR_SSM_SECRET_PATH = $SsmSecretPath
   CLOUDFLARE_ZONE_ID     = $CfZoneId
+  CLOUDFLARE_ACCOUNT_ID  = $CfAccountId
 }
 foreach ($k in $vars.Keys) {
   $v = $vars[$k]
@@ -275,9 +279,14 @@ foreach ($k in $vars.Keys) {
   Assert-Ok "gh variable set $k" $o
   Write-Ok "variable $k"
 }
-$o = Invoke-Native { gh secret set CLOUDFLARE_API_TOKEN --repo $GithubRepo --body $CfToken }
-Assert-Ok "gh secret set CLOUDFLARE_API_TOKEN" $o
-Write-Ok "secret CLOUDFLARE_API_TOKEN"
+if ([string]::IsNullOrWhiteSpace($CfToken)) {
+  Write-Host "  [WARN] no -CfToken given; CLOUDFLARE_API_TOKEN not set." -ForegroundColor Yellow
+  Write-Host "         Terraform cannot manage DNS/tunnel/Access until you re-run with -CfToken." -ForegroundColor Yellow
+} else {
+  $o = Invoke-Native { gh secret set CLOUDFLARE_API_TOKEN --repo $GithubRepo --body $CfToken }
+  Assert-Ok "gh secret set CLOUDFLARE_API_TOKEN" $o
+  Write-Ok "secret CLOUDFLARE_API_TOKEN"
+}
 
 Write-Host "`nBootstrap complete." -ForegroundColor Green
 Write-Host "  state bucket : s3://$StateBucket"
