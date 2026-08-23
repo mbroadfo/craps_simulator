@@ -1,0 +1,18 @@
+# Terraform working files
+.terraform/
+.terraform.lock.hcl.bak
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Plans and logs can contain rendered secret values (the tunnel token, the
+# waker's access key) -- never commit them.
+tfplan
+*.tfplan
+*.log
+schema.json
+schema.err
+
+# Variable files: this repo is public and these carry account/zone ids.
+*.auto.tfvars
+terraform.tfvars
