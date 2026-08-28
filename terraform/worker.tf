@@ -13,6 +13,14 @@ resource "cloudflare_workers_script" "waker" {
   # under an unattended waker is not worth the freshness.
   compatibility_date = "2026-08-01"
 
+  # Persist console output. Debugging this Worker from request analytics
+  # alone was guesswork: analytics said "ran, no errors" while the wake
+  # silently never fired, with no way to see which branch it took.
+  observability = {
+    enabled            = true
+    head_sampling_rate = 1
+  }
+
   bindings = [
     { name = "AWS_REGION", type = "plain_text", text = var.aws_region },
     { name = "ECS_CLUSTER", type = "plain_text", text = aws_ecs_cluster.app.name },

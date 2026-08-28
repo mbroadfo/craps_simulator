@@ -13,7 +13,13 @@
  */
 
 const AWS_SERVICE = "ecs";
-const ECS_TARGET = "AmazonEC2ContainerServiceV20141113.UpdateService";
+const ECS_UPDATE = "AmazonEC2ContainerServiceV20141113.UpdateService";
+const ECS_DESCRIBE = "AmazonEC2ContainerServiceV20141113.DescribeServices";
+
+// Path the warming page polls. Served by this Worker, NOT the origin: a poll
+// to /health cannot work, because Access answers it long before the origin
+// would (see serviceIsRunning).
+const STATUS_PATH = "/__waker/status";
 
 // Short: this runs on every request while the origin is down, and a visitor
 // is waiting on it.
@@ -33,7 +39,7 @@ async function hmac(key, data) {
 }
 
 /** Minimal SigV4 for a single known POST. Not a general AWS client. */
-async function signedEcsRequest(env, body) {
+async function signedEcsRequest(env, body, target) {
   const region = env.AWS_REGION;
   const host = `${AWS_SERVICE}.${region}.amazonaws.com`;
   const now = new Date();
@@ -45,7 +51,7 @@ async function signedEcsRequest(env, body) {
     `content-type:application/x-amz-json-1.1\n` +
     `host:${host}\n` +
     `x-amz-date:${amzDate}\n` +
-    `x-amz-target:${ECS_TARGET}\n`;
+    `x-amz-target:${target}\n`;
   const signedHeaders = "content-type;host;x-amz-date;x-amz-target";
   const canonicalRequest = ["POST", "/", "", canonicalHeaders, signedHeaders, payloadHash].join("\n");
 
@@ -63,7 +69,7 @@ async function signedEcsRequest(env, body) {
     method: "POST",
     headers: {
       "Content-Type": "application/x-amz-json-1.1",
-      "X-Amz-Target": ECS_TARGET,
+      "X-Amz-Target": target,
       "X-Amz-Date": amzDate,
       Authorization:
         `AWS4-HMAC-SHA256 Credential=${env.AWS_ACCESS_KEY_ID}/${scope}, ` +
@@ -79,35 +85,72 @@ async function wakeService(env) {
     service: env.ECS_SERVICE,
     desiredCount: 1,
   });
-  const res = await fetch(await signedEcsRequest(env, body));
+  const res = await fetch(await signedEcsRequest(env, body, ECS_UPDATE));
   if (!res.ok) {
     console.log("wake failed", res.status, await res.text());
   }
   return res.ok;
 }
 
-async function originIsUp(url) {
+// Cached briefly so a burst of requests (page + assets) costs one API call.
+let runningCache = { at: 0, running: false };
+
+/**
+ * Whether the service currently has a task.
+ *
+ * Asks ECS rather than probing the origin over HTTP. An earlier version
+ * fetched /health through the public hostname, but Access sits in front of
+ * the origin and answers with a 302 to its login page -- and fetch() follows
+ * redirects by default, so the probe landed on a login page returning 200 and
+ * concluded the origin was healthy. The wake therefore never fired and every
+ * visit ended at Cloudflare error 1033.
+ */
+async function serviceIsRunning(env) {
+  const now = Date.now();
+  if (now - runningCache.at < 10000) return runningCache.running;
+
+  let running = false;
   try {
-    const res = await fetch(new URL("/health", url).toString(), {
-      method: "GET",
-      signal: AbortSignal.timeout(HEALTH_TIMEOUT_MS),
-    });
-    return res.ok;
-  } catch {
-    return false;
+    const body = JSON.stringify({ cluster: env.ECS_CLUSTER, services: [env.ECS_SERVICE] });
+    const res = await fetch(await signedEcsRequest(env, body, ECS_DESCRIBE));
+    if (res.ok) {
+      const data = await res.json();
+      const svc = (data.services || [])[0] || {};
+      running = (svc.runningCount || 0) >= 1;
+    } else {
+      console.log("describe failed", res.status, (await res.text()).slice(0, 200));
+    }
+  } catch (err) {
+    console.log("describe threw", String(err));
   }
+
+  runningCache = { at: now, running };
+  return running;
 }
 
 /**
- * Access sets this once a visitor has authenticated. Checking it means an
- * unauthenticated request can never start a Fargate task -- which is the
- * whole point of putting Access in front: the cost risk is someone finding
- * the URL and keeping the container awake.
+ * Whether this request should be allowed to start a Fargate task.
+ *
+ * IMPORTANT: this Worker runs BEFORE Cloudflare Access, so it cannot know
+ * whether the visitor is authenticated. Verified empirically -- an
+ * unauthenticated request reaches this Worker and only becomes a 302 when
+ * the Worker passes it through to the origin, which is where Access sits.
+ * An earlier version required a CF_Authorization cookie; that cookie does
+ * not exist on a first visit (Access sets it only after login), so the wake
+ * never fired and the visitor got Cloudflare error 1033 instead.
+ *
+ * So the wake cannot be gated on identity. It is gated on the request
+ * looking like a real browser navigation instead, which keeps scanners and
+ * asset probes from starting the task. The residual risk is bounded and
+ * small: someone who knows the URL can cause a wake, but Access still stops
+ * them using the app, and the container sleeps itself again after
+ * CRAPS_IDLE_SHUTDOWN_MINUTES. Worst case is a container that stays warm,
+ * not an open service.
  */
-function isAuthenticated(request) {
-  if (request.headers.get("Cf-Access-Jwt-Assertion")) return true;
-  const cookie = request.headers.get("Cookie") || "";
-  return /(?:^|;\s*)CF_Authorization=/.test(cookie);
+function looksLikeNavigation(request) {
+  if (request.method !== "GET") return false;
+  const accept = request.headers.get("Accept") || "";
+  return accept.includes("text/html");
 }
 
 function warmingPage(retryAfterSeconds) {
@@ -138,8 +181,12 @@ function warmingPage(retryAfterSeconds) {
   const started = Date.now();
   async function poll() {
     try {
-      const r = await fetch('/health', { cache: 'no-store' });
-      if (r.ok) { location.reload(); return; }
+      const r = await fetch('/__waker/status', { cache: 'no-store' });
+      const d = await r.json();
+      // A task exists, but cloudflared still has to register with the edge
+      // (~15s after the container starts). Reloading the instant the task
+      // appears just shows error 1033 instead.
+      if (d.running) { setTimeout(() => location.reload(), 15000); return; }
     } catch (e) { /* still down */ }
     if (Date.now() - started < 240000) setTimeout(poll, 3000);
   }
@@ -156,21 +203,39 @@ function warmingPage(retryAfterSeconds) {
   );
 }
 
+// Exported for out-of-runtime testing (scripts/verify_waker_sigv4.mjs).
+// The SigV4 implementation is the one piece that cannot be exercised through
+// the deployed Worker, because Access blocks unauthenticated access to it.
+export { signedEcsRequest, ECS_DESCRIBE, ECS_UPDATE };
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const running = await serviceIsRunning(env);
 
-    if (await originIsUp(url)) {
+    // Polled by the warming page. Answered here because anything served by
+    // the origin is behind Access and unreachable while the task is down.
+    if (url.pathname === STATUS_PATH) {
+      return new Response(JSON.stringify({ running }), {
+        headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+      });
+    }
+
+    if (running) {
       return fetch(request);
     }
 
-    // Origin is down. Only an authenticated visitor may start it; anyone
-    // else falls through to Access (or Cloudflare's own 1033).
-    if (!isAuthenticated(request)) {
+    const wakeable = looksLikeNavigation(request);
+    console.log(JSON.stringify({
+      at: "waker", path: url.pathname, running, wakeable, method: request.method,
+    }));
+
+    // Not a browser navigation (asset probe, scanner, HEAD/POST): fall
+    // through rather than starting a task.
+    if (!wakeable) {
       return fetch(request);
     }
 
-    // The visitor should not wait on the AWS API call itself.
     ctx.waitUntil(wakeService(env));
     return warmingPage(15);
   },

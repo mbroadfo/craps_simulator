@@ -58,6 +58,12 @@ resource "cloudflare_dns_record" "app" {
 # no rate limiting and no cap on table creation, so this is load-bearing.
 # Uses the built-in one-time-PIN identity provider: Access emails a code, so
 # there is no IdP to configure and no password anywhere.
+# NOTE: a service token would let the authenticated path be smoke-tested
+# without a human and an email client -- which is how the waker's auth check
+# shipped broken. Blocked for now: the Cloudflare API token lacks
+# "Access: Service Tokens -> Edit" (403 on POST /access/service_tokens).
+# Add that permission to the token to enable it.
+
 resource "cloudflare_zero_trust_access_policy" "allowed_emails" {
   account_id = var.cloudflare_account_id
   name       = "${var.APP_NAME}-allowed-emails"
