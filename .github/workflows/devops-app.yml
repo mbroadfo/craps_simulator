@@ -1,0 +1,73 @@
+name: "DevOps: App"
+# Builds the container (API + built SPA in one image) and publishes it.
+#
+# Auth: GitHub OIDC -> assumes the crapsim-ci role. No AWS keys.
+#
+# No force-new-deployment: the service idles at desiredCount 0, so there is
+# usually no task to roll. Registering a new task-definition revision is
+# enough -- the next wake starts from it.
+
+on:
+  push:
+    branches: [master, right-side-panel]
+    paths:
+      - 'craps/**'
+      - 'web/**'
+      - 'config.py'
+      - 'pyproject.toml'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - '.github/workflows/devops-app.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: devops-app
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.TF_VAR_APP_NAME }}-ci
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+
+      - name: Build and push
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          REPO: ${{ vars.TF_VAR_APP_NAME }}
+        run: |
+          # linux/amd64 explicitly: Fargate's default runtime platform. A
+          # runner that ever defaults to arm64 would otherwise produce an
+          # image the task cannot start, and the failure shows up only at
+          # wake time as a CannotPullContainerError.
+          docker build --platform linux/amd64 \
+            -t "$REGISTRY/$REPO:${GITHUB_SHA::12}" \
+            -t "$REGISTRY/$REPO:latest" .
+          docker push "$REGISTRY/$REPO:${GITHUB_SHA::12}"
+          docker push "$REGISTRY/$REPO:latest"
+
+      # Point the family at the image just pushed. The service references the
+      # family, so the next task it starts uses this revision.
+      - name: Register new task definition revision
+        env:
+          CLUSTER: ${{ vars.TF_VAR_APP_NAME }}
+          FAMILY: ${{ vars.TF_VAR_APP_NAME }}
+        run: |
+          aws ecs describe-task-definition --task-definition "$FAMILY" \
+            --query taskDefinition > td.json
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes,
+                  .compatibilities, .registeredAt, .registeredBy)' td.json > new-td.json
+          aws ecs register-task-definition --cli-input-json file://new-td.json \
+            --query 'taskDefinition.revision' --output text

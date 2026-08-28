@@ -56,7 +56,11 @@ param(
   [string]$CfToken = "",
   # An IAM principal additionally allowed to assume these roles directly, so
   # Terraform can be run locally without an admin key. Empty means CI-only.
-  [string]$LocalOperatorArn = ""
+  [string]$LocalOperatorArn = "",
+  # Cloudflare Access allowlist. This is the ONLY authentication in front of
+  # the app, so it is published as a GitHub variable for CI rather than left
+  # to be passed by hand on every apply.
+  [string[]]$AccessEmails = @()
 )
 
 # Deliberately NOT "Stop": aws and gh write ordinary diagnostics to stderr,
@@ -305,6 +309,10 @@ $vars = [ordered]@{
   TF_VAR_SSM_SECRET_PATH = $SsmSecretPath
   CLOUDFLARE_ZONE_ID     = $CfZoneId
   CLOUDFLARE_ACCOUNT_ID  = $CfAccountId
+}
+if ($AccessEmails.Count -gt 0) {
+  # Terraform list(string) wants JSON.
+  $vars["TF_VAR_ACCESS_EMAILS"] = "[" + (($AccessEmails | ForEach-Object { '"' + $_ + '"' }) -join ",") + "]"
 }
 foreach ($k in $vars.Keys) {
   $v = $vars[$k]

@@ -1,0 +1,79 @@
+name: "DevOps: Infra"
+# Terraform for the ECS/Fargate + Cloudflare Tunnel stack.
+#
+# Auth: GitHub OIDC -> assumes the crapsim-terraform role. No AWS keys.
+#
+# Required GitHub Variables (set by scripts/bootstrap.ps1):
+#   AWS_ACCOUNT_ID, AWS_REGION, TF_STATE_BUCKET, TF_VAR_APP_NAME,
+#   TF_VAR_ENVIRONMENT, TF_VAR_CUSTOM_DOMAIN, TF_VAR_SSM_SECRET_PATH,
+#   CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_ZONE_ID
+# Required Secrets: CLOUDFLARE_API_TOKEN
+
+on:
+  push:
+    branches: [master, right-side-panel]
+    paths:
+      - 'terraform/**'
+      - 'worker/**'          # the Worker script is uploaded by Terraform
+      - '.github/workflows/devops-infra.yml'
+  pull_request:
+    paths:
+      - 'terraform/**'
+      - 'worker/**'
+  workflow_dispatch:
+
+concurrency:
+  group: devops-infra        # never let two applies race for the state lock
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  TF_VAR_APP_NAME: ${{ vars.TF_VAR_APP_NAME }}
+  TF_VAR_ENVIRONMENT: ${{ vars.TF_VAR_ENVIRONMENT }}
+  TF_VAR_CUSTOM_DOMAIN: ${{ vars.TF_VAR_CUSTOM_DOMAIN }}
+  TF_VAR_SSM_SECRET_PATH: ${{ vars.TF_VAR_SSM_SECRET_PATH }}
+  TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+  TF_VAR_cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
+  TF_VAR_access_emails: ${{ vars.TF_VAR_ACCESS_EMAILS }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.TF_VAR_APP_NAME }}-terraform
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.11.3"
+
+      - name: Format check
+        run: terraform fmt -check -recursive
+
+      - name: Init
+        run: terraform init -input=false
+
+      - name: Validate
+        run: terraform validate
+
+      # On a PR, stop at the plan -- never mutate infrastructure from an
+      # unmerged branch.
+      - name: Plan
+        run: terraform plan -input=false -no-color
+
+      - name: Apply
+        if: github.event_name != 'pull_request'
+        run: terraform apply -input=false -auto-approve
