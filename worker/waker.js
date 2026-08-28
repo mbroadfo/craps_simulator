@@ -131,21 +131,21 @@ async function serviceIsRunning(env) {
 /**
  * Whether this request should be allowed to start a Fargate task.
  *
- * IMPORTANT: this Worker runs BEFORE Cloudflare Access, so it cannot know
- * whether the visitor is authenticated. Verified empirically -- an
- * unauthenticated request reaches this Worker and only becomes a 302 when
- * the Worker passes it through to the origin, which is where Access sits.
- * An earlier version required a CF_Authorization cookie; that cookie does
- * not exist on a first visit (Access sets it only after login), so the wake
- * never fired and the visitor got Cloudflare error 1033 instead.
+ * This is NOT the security boundary -- Cloudflare Access is, and it runs
+ * BEFORE this Worker. Verified: /__waker/status is served entirely here with
+ * no origin involved, and an unauthenticated request to it (including one
+ * shaped exactly like a browser navigation) returns 302 to the Access login
+ * rather than this Worker's JSON. Unauthenticated traffic therefore never
+ * reaches the wake logic at all, and cannot cause AWS spend.
  *
- * So the wake cannot be gated on identity. It is gated on the request
- * looking like a real browser navigation instead, which keeps scanners and
- * asset probes from starting the task. The residual risk is bounded and
- * small: someone who knows the URL can cause a wake, but Access still stops
- * them using the app, and the container sleeps itself again after
- * CRAPS_IDLE_SHUTDOWN_MINUTES. Worst case is a container that stays warm,
- * not an open service.
+ * That ordering is also why an earlier version was broken: it required a
+ * CF_Authorization cookie, which cannot be present on a first visit because
+ * Access only sets it after login. Checking identity here is both impossible
+ * and unnecessary.
+ *
+ * What remains is a cheap filter so an already-authenticated client does not
+ * wake the service for an asset probe or a stale background fetch -- only a
+ * real navigation should.
  */
 function looksLikeNavigation(request) {
   if (request.method !== "GET") return false;
